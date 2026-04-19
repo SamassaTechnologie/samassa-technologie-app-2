@@ -283,6 +283,27 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
       </a>
     </div>
 
+    <!-- MODULES CYBER CAFÉ -->
+    <div class="section-hd" style="margin-top:8px">🖥️ Cyber Café</div>
+    <div class="modules-grid">
+      <a href="recu_cyber.html" class="mod-card">
+        <div class="mod-top" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF)">🧾</div>
+        <div class="mod-body">
+          <div class="mod-name">Reçu Cyber Café</div>
+          <div class="mod-desc">Impressions, photos ID, scan, internet — avec raccourcis rapides et lien caisse.</div>
+          <span class="mod-btn" style="background:#4338CA;color:white;display:block;text-align:center;padding:8px;border-radius:8px;font-size:12px;font-weight:600">Créer un reçu →</span>
+        </div>
+      </a>
+      <a href="facture_cyber.html" class="mod-card">
+        <div class="mod-top" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF)">📄</div>
+        <div class="mod-body">
+          <div class="mod-name">Facture Cyber Café</div>
+          <div class="mod-desc">Factures avec TVA 18% pour services cyber café, catalogue rapide intégré.</div>
+          <span class="mod-btn" style="background:#3730A3;color:white;display:block;text-align:center;padding:8px;border-radius:8px;font-size:12px;font-weight:600">Créer une facture →</span>
+        </div>
+      </a>
+    </div>
+
     <!-- PAIEMENTS ACCEPTÉS -->
     <div class="section-hd">Modes de paiement acceptés</div>
     <div class="pm-row">
@@ -447,12 +468,20 @@ function showTab(id) {
 ============================================================ */
 function loadStats() {
   const factures      = JSON.parse(localStorage.getItem('samassa_factures') || '[]');
+  const facturesCyber = JSON.parse(localStorage.getItem('samassa_factures_cyber') || '[]');
   const interventions = JSON.parse(localStorage.getItem('samassa_interventions') || '[]');
+  const recusCyber    = JSON.parse(localStorage.getItem('samassa_recus_cyber') || '[]');
   const mouvements    = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
-  document.getElementById('st-factures').textContent     = factures.length;
-  document.getElementById('st-interventions').textContent = interventions.length;
-  const ca = factures.reduce((s, f) => s + (parseFloat(f.total) || 0), 0);
+
+  const totalFac = factures.length + facturesCyber.length;
+  const totalInt = interventions.length + recusCyber.length;
+
+  document.getElementById('st-factures').textContent      = totalFac;
+  document.getElementById('st-interventions').textContent = totalInt;
+
+  const ca = [...factures, ...facturesCyber].reduce((s, f) => s + (parseFloat(f.total) || 0), 0);
   document.getElementById('st-ca').textContent = ca > 0 ? fmtNum(ca) + ' FCFA' : '— FCFA';
+
   const entrees = mouvements.filter(m => m.type === 'entree').reduce((s, m) => s + m.amount, 0);
   const sorties = mouvements.filter(m => m.type === 'sortie').reduce((s, m) => s + m.amount, 0);
   const solde   = entrees - sorties;
@@ -568,7 +597,9 @@ function renderHistory() {
     { key: 'samassa_factures',      cls: 'dico-f', icon: '📄', label: 'Facture' },
     { key: 'samassa_recus',         cls: 'dico-r', icon: '🧾', label: 'Reçu' },
     { key: 'samassa_devis',         cls: 'dico-d', icon: '📋', label: 'Devis' },
-    { key: 'samassa_interventions', cls: 'dico-i', icon: '🔧', label: 'Intervention' }
+    { key: 'samassa_interventions', cls: 'dico-i', icon: '🔧', label: 'Intervention' },
+    { key: 'samassa_recus_cyber',   cls: 'dico-r', icon: '🖥️', label: 'Reçu Cyber' },
+    { key: 'samassa_factures_cyber',cls: 'dico-f', icon: '🖥️', label: 'Facture Cyber' }
   ];
   let all = [];
   types.forEach(t => {
@@ -600,7 +631,8 @@ function renderHistory() {
 
 function clearHistory() {
   if (!confirm('Effacer tout l\'historique des documents ?')) return;
-  ['samassa_factures', 'samassa_recus', 'samassa_devis', 'samassa_interventions'].forEach(k => localStorage.removeItem(k));
+  ['samassa_factures', 'samassa_recus', 'samassa_devis', 'samassa_interventions',
+   'samassa_recus_cyber', 'samassa_factures_cyber'].forEach(k => localStorage.removeItem(k));
   renderHistory(); loadStats();
   toast('Historique effacé.', 'info');
 }

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facture Cyber Café — SAMASSA TECHNOLOGIE</title>
+<meta name="theme-color" content="#0D1B2A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Samassa Pro">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
+<link rel="apple-touch-icon" href="icon-512x512.png">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── Thème indigo Cyber Café ── */
+.panel-header { background: linear-gradient(135deg,#1E1B4B,#3730A3); }
+.panel-header p { color: #A5B4FC; }
+.add-item-btn { background: #EEF2FF; border: 1.5px dashed #6366F1; color: #4338CA; }
+.add-item-btn:hover { background: #E0E7FF; }
+.btn-generate { background: #4338CA; color: white; }
+.btn-generate:hover { background: #3730A3; }
+.section-label.cyber { color: #4338CA; border-bottom-color: #E0E7FF; }
+
+/* Document */
+.dt-type.cyber  { color: #1E1B4B; }
+.co-tag.cyber   { color: #4338CA; }
+.doc-client-box { background: #EEF2FF; border-left: 4px solid #6366F1; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; }
+.dcb-label      { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; color:#4338CA; margin-bottom:3px; }
+.dcb-name       { font-size:15px; font-weight:700; color:var(--navy); }
+.payment-info-doc { background:#F8FBFD; border:1px solid var(--border); border-radius:8px; padding:12px 16px; margin-bottom:20px; font-size:12px; color:var(--text2); line-height:1.7; }
+
+/* Catalogue rapide */
+.quick-services { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.qs-btn { padding: 7px 8px; background: #EEF2FF; border: 1px solid #C7D2FE; border-radius: 7px; font-size: 11px; font-weight: 600; color: #4338CA; cursor: pointer; text-align: center; transition: all .15s; font-family: inherit; }
+.qs-btn:hover { background: #E0E7FF; border-color: #6366F1; }
+.qs-label { font-size: 10px; font-weight: 700; color: #6366F1; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">🖥️ Facture Cyber Café</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="layout">
+
+  <!-- ══════════════════ FORMULAIRE ══════════════════ -->
+  <div class="form-panel">
+    <div class="panel-header">
+      <h2>🖥️ Facture Cyber Café</h2>
+      <p>Remplissez les champs puis cliquez sur Générer</p>
+    </div>
+    <div class="form-body">
+
+      <div class="section-label cyber">Référence</div>
+      <div class="form-grid">
+        <div class="form-group"><label>N° de facture</label><input type="text" id="invoiceNumber" value="FCY-001"></div>
+        <div class="form-group"><label>Date</label><input type="date" id="invoiceDate"></div>
+        <div class="form-group span2"><label>Client / Entreprise</label><input type="text" id="clientName" placeholder="Nom du client ou de l'entreprise"></div>
+      </div>
+
+      <div class="section-label cyber">Entreprise</div>
+      <div class="form-grid">
+        <div class="form-group span2"><label>Nom</label><input type="text" id="companyName" value="SAMASSA TECHNOLOGIE"></div>
+        <div class="form-group span2"><label>Activité</label><input type="text" id="companyTagline" value="Cyber Café — Tout pour l'informatique"></div>
+        <div class="form-group span2">
+          <label>Adresse</label>
+          <textarea id="companyAddress" rows="2">Grand Marché de Kayes, près du 1er arrondissement de la police — Rue Soundiata Keita</textarea>
+        </div>
+        <div class="form-group"><label>Téléphone</label><input type="text" id="companyPhone" value="00223 77291931 / 62970630"></div>
+        <div class="form-group"><label>Email</label><input type="text" id="companyEmail" value="samassatechnologie10@gmail.com"></div>
+        <div class="form-group span2"><label>Gérant</label><input type="text" id="managerName" value="Boussé SAMASSA"></div>
+      </div>
+
+      <div class="section-label cyber">Articles / Services</div>
+
+      <!-- Raccourcis catalogue -->
+      <div class="qs-label">Raccourcis rapides</div>
+      <div class="quick-services">
+        <button class="qs-btn" onclick="addQuick('Impression N&B (A4)',1,100)">🖨️ Impression N&B</button>
+        <button class="qs-btn" onclick="addQuick('Impression Couleur (A4)',1,200)">🎨 Impression Couleur</button>
+        <button class="qs-btn" onclick="addQuick('Photocopie (A4)',1,75)">📋 Photocopie</button>
+        <button class="qs-btn" onclick="addQuick('Scan / Numérisation',1,200)">📷 Scan</button>
+        <button class="qs-btn" onclick="addQuick('Photo d\'identité (4 photos)',1,1000)">🪪 Photo ID (x4)</button>
+        <button class="qs-btn" onclick="addQuick('Photo d\'identité (2 photos)',1,500)">🪪 Photo ID (x2)</button>
+        <button class="qs-btn" onclick="addQuick('Navigation Internet (30 min)',1,250)">🌐 Internet 30 min</button>
+        <button class="qs-btn" onclick="addQuick('Navigation Internet (1 heure)',1,400)">🌐 Internet 1 heure</button>
+        <button class="qs-btn" onclick="addQuick('Saisie de document (A4)',1,500)">⌨️ Saisie doc</button>
+        <button class="qs-btn" onclick="addQuick('Laminage (A4)',1,300)">🗂️ Laminage</button>
+        <button class="qs-btn" onclick="addQuick('Reliure spirale',1,1000)">📚 Reliure</button>
+        <button class="qs-btn" onclick="addQuick('Téléchargement fichier',1,500)">⬇️ Téléchargement</button>
+        <button class="qs-btn" onclick="addQuick('Recharge téléphone',1,500)">🔋 Recharge tél.</button>
+        <button class="qs-btn" onclick="addQuick('Envoi Email avec PJ',1,200)">📧 Email + PJ</button>
+        <button class="qs-btn" onclick="addQuick('Scan Carte NINA',1,1000)">🪪 Scan Carte NINA</button>
+        <button class="qs-btn" onclick="addQuick('Impression recto-verso (A4)',1,150)">📄 Recto-Verso</button>
+      </div>
+
+      <div class="items-section">
+        <div class="item-header-labels" style="margin-top:10px"><span>Description</span><span>Qté</span><span>Prix unit.</span><span>Total HT</span></div>
+        <div id="itemsContainer">
+          <div class="item-row">
+            <div class="item-inputs">
+              <input type="text" placeholder="Service ou prestation" value="Impression N&amp;B (A4)">
+              <input type="number" placeholder="Qté" value="1" min="1">
+              <input type="number" placeholder="Prix" value="100" min="0">
+              <input type="number" placeholder="Total" readonly>
+            </div>
+            <div class="item-remark"><input type="text" placeholder="Remarques (optionnel)"></div>
+            <button class="remove-btn" onclick="removeItem(this)">✕</button>
+          </div>
+        </div>
+        <button class="add-item-btn btn" onclick="addItem()">+ Ajouter un article</button>
+      </div>
+
+      <div class="section-label cyber" style="margin-top:14px">Totaux</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Sous-total HT</label><input type="text" id="totalHT" readonly value="0 FCFA"></div>
+        <div class="form-group"><label>TVA 18%</label><input type="text" id="totalTVA" readonly value="0 FCFA"></div>
+        <div class="form-group span2">
+          <label>Total TTC (FCFA)</label>
+          <input type="text" id="totalTTC" readonly value="0 FCFA" style="font-weight:700;font-size:15px;background:#EEF2FF;border-color:#6366F1">
+        </div>
+      </div>
+
+    </div>
+    <div class="actions">
+      <button class="btn btn-generate" onclick="generateInvoice()">⚙️ Générer</button>
+      <button class="btn btn-print" onclick="printDoc()">🖨️ Imprimer</button>
+      <button class="btn btn-save" onclick="saveDoc()">💾 Enregistrer</button>
+      <button class="btn btn-wa" onclick="shareWhatsApp()">💬 WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════ APERÇU DOCUMENT ══════════════════ -->
+  <div class="doc-panel">
+    <div class="doc-placeholder" id="placeholder">
+      <div class="ph-icon">🖥️</div>
+      <p>Remplissez le formulaire<br>et cliquez sur <strong>Générer</strong></p>
+    </div>
+    <div class="doc-inner" id="docInner" style="display:none">
+      <div class="watermark"><img src="watermark.png" alt=""></div>
+      <div class="doc-z">
+
+        <!-- En-tête -->
+        <div class="doc-head">
+          <div>
+            <img src="logo.png" alt="Logo" class="co-logo">
+            <div class="co-name" id="d-coName">SAMASSA TECHNOLOGIE</div>
+            <div class="co-tag cyber" id="d-coTag">Cyber Café — Tout pour l'informatique</div>
+            <div class="co-detail">
+              <div id="d-coAddr"></div>
+              <div>Tél : <strong id="d-coPhone"></strong></div>
+              <div>Email : <span id="d-coEmail"></span></div>
+            </div>
+          </div>
+          <div class="dt-block">
+            <div class="dt-type cyber">FACTURE</div>
+            <div class="dt-num">N° <strong id="d-num"></strong></div>
+            <div class="dt-date-lbl">Date :</div>
+            <div class="dt-date-val" id="d-date"></div>
+          </div>
+        </div>
+
+        <!-- Client -->
+        <div class="doc-client-box">
+          <div class="dcb-label">Facturé à</div>
+          <div class="dcb-name" id="d-client"></div>
+        </div>
+
+        <!-- Table articles -->
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th style="width:40%;text-align:left">Description</th>
+              <th>Qté</th>
+              <th>Prix unitaire</th>
+              <th>Total HT</th>
+              <th>Remarques</th>
+            </tr>
+          </thead>
+          <tbody id="d-items"></tbody>
+        </table>
+
+        <!-- Totaux -->
+        <div class="totals-wrap">
+          <div class="totals-box">
+            <div class="t-row"><span class="t-lbl">Sous-total HT</span><span class="t-val" id="d-ht"></span></div>
+            <div class="t-row"><span class="t-lbl">TVA 18%</span><span class="t-val" id="d-tva"></span></div>
+            <div class="t-row ttc"><span class="t-lbl">TOTAL TTC</span><span class="t-val" id="d-ttc"></span></div>
+          </div>
+        </div>
+
+        <!-- Paiement -->
+        <div class="payment-info-doc">
+          <strong>💳 Modes de paiement acceptés : </strong>
+          🌊 <strong>Wave ⭐</strong> &nbsp;|&nbsp; 🟠 <strong>Orange Money</strong> &nbsp;|&nbsp; 🔵 <strong>Moov Money</strong> &nbsp;|&nbsp; 💵 <strong>Espèces</strong>
+        </div>
+
+        <!-- Footer signature -->
+        <div class="doc-footer">
+          <div style="font-size:12px;color:var(--text2)">
+            Grand Marché de Kayes<br>
+            Près du 1er arrondissement de la police<br>
+            Rue Soundiata Keita
+          </div>
+          <div class="sig-block">
+            <div class="sig-title">Le Gérant</div>
+            <img src="signature.png" alt="Signature" class="sig-img">
+            <img src="cachet.png" alt="Cachet" class="cachet-img">
+            <div class="sig-name" id="d-manager"></div>
+          </div>
+        </div>
+        <div class="thank-you">Merci pour votre confiance ! 🙏</div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="utils.js"></script>
+<script src="facture_cyber.js"></script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
+</body>
+</html>

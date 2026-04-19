@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reçu Cyber Café — SAMASSA TECHNOLOGIE</title>
+<meta name="theme-color" content="#0D1B2A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Samassa Pro">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
+<link rel="apple-touch-icon" href="icon-512x512.png">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── Couleur thème Cyber Café : violet/indigo ── */
+.panel-header { background: linear-gradient(135deg,#1E1B4B,#3730A3); }
+.panel-header p { color: #A5B4FC; }
+.add-item-btn { background: #EEF2FF; border: 1.5px dashed #6366F1; color: #4338CA; }
+.add-item-btn:hover { background: #E0E7FF; }
+.btn-generate { background: #4338CA; color: white; }
+.btn-generate:hover { background: #3730A3; }
+.btn-sms { background: #0F172A; color: white; }
+.btn-sms:hover { background: #1E293B; }
+/* section-label cyber = indigo */
+.section-label.cyber { color: #4338CA; border-bottom-color: #E0E7FF; }
+
+/* ── Document : même structure que recu.html ── */
+.recu-doc-header { background: var(--navy); border-radius: 10px 10px 0 0; padding: 22px 28px; display: flex; align-items: center; gap: 16px; margin: -40px -40px 22px; }
+.rdh-logo { width: 58px; height: 58px; border-radius: 50%; background: white; padding: 4px; object-fit: contain; flex-shrink: 0; }
+.rdh-brand { flex: 1; }
+.rdh-brand h2 { font-size: 17px; font-weight: 800; color: white; }
+.rdh-brand p  { font-size: 11px; color: #93B8D4; font-style: italic; }
+.rdh-brand .contacts { font-size: 11px; color: #6EA8CC; margin-top: 4px; }
+.rdh-right { text-align: right; }
+.recu-badge { background: #4338CA; color: white; font-size: 22px; font-weight: 800; padding: 7px 18px; border-radius: 8px; letter-spacing: 2px; display: inline-block; }
+.recu-num  { font-size: 12px; color: #93B8D4; margin-top: 4px; }
+.recu-date { font-size: 11px; color: #6EA8CC; margin-top: 3px; }
+
+.client-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.ci-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.ci-box-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text3); margin-bottom: 7px; }
+.ci-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid var(--border); }
+.ci-row:last-child { border-bottom: none; }
+.ci-lbl { font-size: 12px; color: var(--text2); }
+.ci-val { font-size: 12px; font-weight: 600; color: var(--text); }
+
+.pm-display-box { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 8px; border: 2px solid; margin-bottom: 18px; }
+.pm-box-wave   { background: #ECFEFF; border-color: var(--wave); }
+.pm-box-orange { background: #FFF7ED; border-color: var(--orange); }
+.pm-box-moov   { background: #EFF6FF; border-color: var(--moov); }
+.pm-box-cash   { background: #F0FDF4; border-color: var(--green); }
+.pm-display-icon { font-size: 30px; flex-shrink: 0; }
+.pm-display-name { font-size: 16px; font-weight: 800; color: var(--text); }
+.pm-display-sub  { font-size: 12px; color: var(--text2); }
+.pm-display-amount { margin-left: auto; font-size: 18px; font-weight: 800; color: var(--text); }
+
+/* Catalogue rapide */
+.quick-services { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+.qs-btn { padding: 7px 8px; background: #EEF2FF; border: 1px solid #C7D2FE; border-radius: 7px; font-size: 11px; font-weight: 600; color: #4338CA; cursor: pointer; text-align: center; transition: all .15s; font-family: inherit; }
+.qs-btn:hover { background: #E0E7FF; border-color: #6366F1; }
+.qs-label { font-size: 10px; font-weight: 700; color: #6366F1; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">🖥️ Reçu Cyber Café</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="layout">
+
+  <!-- ══════════════════ FORMULAIRE ══════════════════ -->
+  <div class="form-panel">
+    <div class="panel-header">
+      <h2>🖥️ Reçu Cyber Café</h2>
+      <p>Impressions, photos, scans, internet et plus</p>
+    </div>
+    <div class="form-body">
+
+      <div class="section-label cyber">Référence</div>
+      <div class="form-grid">
+        <div class="form-group"><label>N° de reçu</label><input type="text" id="receiptNumber" value="CYB-001"></div>
+        <div class="form-group"><label>Date</label><input type="date" id="receiptDate"></div>
+      </div>
+
+      <div class="section-label cyber">Client</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Nom</label><input type="text" id="clientLastName" placeholder="Nom du client"></div>
+        <div class="form-group"><label>Prénom</label><input type="text" id="clientFirstName" placeholder="Prénom"></div>
+        <div class="form-group span2"><label>Téléphone client (optionnel)</label><input type="text" id="clientPhone" placeholder="+223 XX XX XX XX"></div>
+      </div>
+
+      <div class="section-label cyber">Services</div>
+
+      <!-- Raccourcis catalogue cyber café -->
+      <div class="qs-label">Raccourcis rapides</div>
+      <div class="quick-services">
+        <button class="qs-btn" onclick="addQuick('Impression N&B (A4)',1,100)">🖨️ Impression N&B</button>
+        <button class="qs-btn" onclick="addQuick('Impression Couleur (A4)',1,200)">🎨 Impression Couleur</button>
+        <button class="qs-btn" onclick="addQuick('Photocopie (A4)',1,75)">📋 Photocopie</button>
+        <button class="qs-btn" onclick="addQuick('Scan / Numérisation',1,200)">📷 Scan</button>
+        <button class="qs-btn" onclick="addQuick('Photo d\'identité (4 photos)',1,1000)">🪪 Photo ID (x4)</button>
+        <button class="qs-btn" onclick="addQuick('Photo d\'identité (2 photos)',1,500)">🪪 Photo ID (x2)</button>
+        <button class="qs-btn" onclick="addQuick('Navigation Internet (30 min)',1,250)">🌐 Internet 30 min</button>
+        <button class="qs-btn" onclick="addQuick('Navigation Internet (1 heure)',1,400)">🌐 Internet 1 heure</button>
+        <button class="qs-btn" onclick="addQuick('Saisie de document (A4)',1,500)">⌨️ Saisie doc</button>
+        <button class="qs-btn" onclick="addQuick('Laminage (A4)',1,300)">🗂️ Laminage</button>
+        <button class="qs-btn" onclick="addQuick('Reliure spirale',1,1000)">📚 Reliure</button>
+        <button class="qs-btn" onclick="addQuick('Téléchargement fichier',1,500)">⬇️ Téléchargement</button>
+        <button class="qs-btn" onclick="addQuick('Recharge téléphone',1,500)">🔋 Recharge tél.</button>
+        <button class="qs-btn" onclick="addQuick('Envoi Email avec PJ',1,200)">📧 Email + PJ</button>
+        <button class="qs-btn" onclick="addQuick('Scan Carte NINA',1,1000)">🪪 Scan Carte NINA</button>
+        <button class="qs-btn" onclick="addQuick('Impression recto-verso (A4)',1,150)">📄 Recto-Verso</button>
+      </div>
+
+      <div class="item-header-labels" style="margin-top:10px"><span>Description</span><span>Qté</span><span>Prix unit.</span><span>Total</span></div>
+      <div id="itemsContainer">
+        <div class="item-row">
+          <div class="item-inputs">
+            <input type="text" placeholder="Service ou prestation" value="Impression N&amp;B (A4)">
+            <input type="number" placeholder="Qté" value="1" min="1">
+            <input type="number" placeholder="Prix" value="100" min="0">
+            <input type="number" placeholder="Total" readonly>
+          </div>
+          <button class="remove-btn" onclick="removeItem(this)">✕</button>
+        </div>
+      </div>
+      <button class="add-item-btn btn" onclick="addItem()">+ Ajouter un service</button>
+
+      <div class="section-label cyber" style="margin-top:14px">Montant total</div>
+      <div class="form-group">
+        <label>Total (FCFA)</label>
+        <input type="text" id="totalAmount" readonly value="0 FCFA" style="font-weight:700;font-size:15px;background:#EEF2FF;border-color:#6366F1">
+      </div>
+
+      <div class="section-label cyber" style="margin-top:14px">Mode de paiement</div>
+      <div class="payment-methods">
+        <div class="pm-option" data-pm="Wave">
+          <div class="pm-badge wave">W</div>
+          <div><div class="pm-name">Wave <span class="pm-rec">★ TOP</span></div><div class="pm-sub">~1% frais</div></div>
+        </div>
+        <div class="pm-option" data-pm="Orange Money">
+          <div class="pm-badge orange">OM</div>
+          <div><div class="pm-name">Orange Money</div><div class="pm-sub">~1.5% frais</div></div>
+        </div>
+        <div class="pm-option" data-pm="Moov Money">
+          <div class="pm-badge moov">MM</div>
+          <div><div class="pm-name">Moov Money</div><div class="pm-sub">~1.5% frais</div></div>
+        </div>
+        <div class="pm-option" data-pm="Espèces">
+          <div class="pm-badge cash">💵</div>
+          <div><div class="pm-name">Espèces</div><div class="pm-sub">0% frais</div></div>
+        </div>
+      </div>
+      <input type="hidden" id="paymentMethod" value="Wave">
+
+      <div class="section-label cyber" style="margin-top:14px">Entreprise</div>
+      <div class="form-grid">
+        <div class="form-group span2"><label>Nom</label><input type="text" id="companyName" value="SAMASSA TECHNOLOGIE"></div>
+        <div class="form-group span2"><label>Activité</label><input type="text" id="companyTagline" value="Cyber Café — Tout pour l'informatique"></div>
+        <div class="form-group"><label>Téléphone</label><input type="text" id="companyPhone" value="77291931 / 62970630"></div>
+        <div class="form-group"><label>Email</label><input type="text" id="companyEmail" value="samassatechnologie10@gmail.com"></div>
+      </div>
+
+    </div>
+    <div class="actions">
+      <button class="btn btn-generate" onclick="generateReceipt()">⚙️ Générer</button>
+      <button class="btn btn-print" onclick="printDoc()">🖨️ Imprimer</button>
+      <button class="btn btn-save" onclick="saveDoc()">💾 Enregistrer + Caisse</button>
+      <button class="btn btn-wa" onclick="shareWhatsApp()">💬 WhatsApp</button>
+      <button class="btn btn-sms" onclick="sendSMS()">📱 SMS</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════ DOCUMENT ══════════════════ -->
+  <div class="doc-panel">
+    <div class="doc-placeholder" id="placeholder">
+      <div class="ph-icon">🖥️</div>
+      <p>Remplissez le formulaire<br>et cliquez sur <strong>Générer</strong></p>
+    </div>
+    <div class="doc-inner" id="docInner" style="display:none">
+      <div class="watermark"><img src="watermark.png" alt=""></div>
+      <div class="doc-z">
+
+        <!-- En-tête document -->
+        <div class="recu-doc-header">
+          <img src="logo.png" alt="Logo" class="rdh-logo">
+          <div class="rdh-brand">
+            <h2 id="d-coName">SAMASSA TECHNOLOGIE</h2>
+            <p id="d-coTag">Cyber Café — Tout pour l'informatique</p>
+            <div class="contacts">📞 <span id="d-coPhone"></span> &nbsp;|&nbsp; ✉️ <span id="d-coEmail"></span></div>
+          </div>
+          <div class="rdh-right">
+            <div class="recu-badge">REÇU</div>
+            <div class="recu-num">N° <strong id="d-num"></strong></div>
+            <div class="recu-date">📅 <span id="d-date"></span></div>
+          </div>
+        </div>
+
+        <!-- Infos client (sans NINA) -->
+        <div class="client-info-grid">
+          <div class="ci-box">
+            <div class="ci-box-title">Informations Client</div>
+            <div class="ci-row"><span class="ci-lbl">Nom</span><span class="ci-val" id="d-lastName"></span></div>
+            <div class="ci-row"><span class="ci-lbl">Prénom</span><span class="ci-val" id="d-firstName"></span></div>
+            <div class="ci-row"><span class="ci-lbl">Téléphone</span><span class="ci-val" id="d-cliPhone"></span></div>
+          </div>
+          <div class="ci-box">
+            <div class="ci-box-title">Cyber Café</div>
+            <div class="ci-row"><span class="ci-lbl">Grand Marché de Kayes</span></div>
+            <div class="ci-row"><span class="ci-lbl">Rue Soundiata Keita</span></div>
+            <div class="ci-row"><span class="ci-lbl">Kayes, Mali</span></div>
+          </div>
+        </div>
+
+        <!-- Table services -->
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:white;background:#3730A3;padding:7px 14px;border-radius:6px;margin-bottom:10px">Services rendus</div>
+        <table class="doc-table">
+          <thead>
+            <tr>
+              <th style="width:50%;text-align:left">Service / Prestation</th>
+              <th>Qté</th>
+              <th>Prix unitaire</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="d-items"></tbody>
+          <tfoot>
+            <tr>
+              <td style="text-align:right">MONTANT TOTAL</td>
+              <td id="d-total" colspan="3" style="text-align:center"></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- Mode paiement -->
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:white;background:var(--navy);padding:7px 14px;border-radius:6px;margin-bottom:10px">Mode de paiement</div>
+        <div id="d-pmBox" class="pm-display-box pm-box-wave">
+          <div class="pm-display-icon" id="d-pmIcon">🌊</div>
+          <div>
+            <div class="pm-display-name" id="d-pmName">Wave</div>
+            <div class="pm-display-sub">Paiement reçu et confirmé ✅</div>
+          </div>
+          <div class="pm-display-amount" id="d-pmAmount"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="doc-footer">
+          <div style="font-size:12px;color:var(--text2)">
+            Grand Marché de Kayes<br>
+            Près du 1er arrondissement de la police<br>
+            Rue Soundiata Keita — Kayes, Mali
+          </div>
+          <div class="sig-block">
+            <div class="sig-title">Signature &amp; Cachet</div>
+            <img src="signature.png" alt="Signature" class="sig-img">
+            <img src="cachet.png" alt="Cachet" class="cachet-img">
+          </div>
+        </div>
+        <div class="thank-you">Merci pour votre visite — Ce reçu est votre preuve de paiement 🙏</div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="utils.js"></script>
+<script src="recu_cyber.js"></script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
+</body>
+</html>
