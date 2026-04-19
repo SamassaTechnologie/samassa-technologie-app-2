@@ -511,7 +511,10 @@ function renderMouvements() {
   tbody.innerHTML = list.map(m => `
     <tr>
       <td>${new Date(m.date).toLocaleDateString('fr-FR')}</td>
-      <td class="td-desc">${m.desc}</td>
+      <td class="td-desc">
+        ${m.desc}
+        ${m.auto ? '<span style="font-size:10px;background:#F0FDF4;color:#15803D;padding:1px 7px;border-radius:12px;font-weight:600;margin-left:5px;border:1px solid #DCFCE7">🧾 Reçu auto</span>' : ''}
+      </td>
       <td><span class="badge" style="background:var(--bg);color:var(--text2)">${m.cat}</span></td>
       <td>${pmIcons[m.pm] || ''} ${m.pm}</td>
       <td class="td-entree">${m.type === 'entree' ? '+' + fmtNum(m.amount) + ' F' : '—'}</td>

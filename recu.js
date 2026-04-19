@@ -81,15 +81,66 @@ function printDoc() {
 }
 
 function saveDoc() {
-  const total = parseFloat(ST.v('totalAmount').replace(/\D/g, '')) || 0;
+  if (ST.el('docInner').style.display === 'none') generateReceipt();
+
+  const total  = parseFloat(ST.v('totalAmount').replace(/\D/g, '')) || 0;
+  const client = ST.v('clientFirstName') + ' ' + ST.v('clientLastName');
+  const num    = ST.v('receiptNumber');
+  const date   = ST.fmtDate(ST.v('receiptDate'));
+
+  if (!total) { ST.toast('Le montant est vide — veuillez saisir au moins un service.', 'error'); return; }
+
+  /* 1️⃣  Enregistrer le reçu dans l'historique */
   ST.save('samassa_recus', {
-    number: ST.v('receiptNumber'),
-    client: ST.v('clientFirstName') + ' ' + ST.v('clientLastName'),
-    date:   ST.fmtDate(ST.v('receiptDate')),
+    number: num,
+    client,
+    date,
     total,
     mode:   selectedPM,
     statut: 'Payé',
   });
+
+  /* 2️⃣  Ajouter automatiquement au solde de caisse comme Entrée */
+  const mouvements = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
+  mouvements.push({
+    id:        Date.now(),
+    date:      ST.v('receiptDate'),
+    type:      'entree',
+    desc:      'Reçu ' + num + ' — ' + client,
+    amount:    total,
+    pm:        selectedPM,
+    cat:       'Vente service',
+    auto:      true,           // marqué "automatique" pour info
+    timestamp: new Date().toISOString()
+  });
+  localStorage.setItem('samassa_mouvements', JSON.stringify(mouvements));
+
+  ST.toast('Reçu enregistré ✓  —  +' + ST.fmtNum(total) + ' FCFA ajouté à la caisse 💰', 'success');
+}
+
+/* ---- Envoyer par SMS ---- */
+function sendSMS() {
+  if (ST.el('docInner').style.display === 'none') generateReceipt();
+
+  const cl  = ST.v('clientFirstName') + ' ' + ST.v('clientLastName');
+  const num = ST.v('receiptNumber');
+  const t   = ST.v('totalAmount');
+  const d   = ST.fmtDate(ST.v('receiptDate'));
+  const pmIcons = { Wave: '[Wave]', 'Orange Money': '[Orange Money]', 'Moov Money': '[Moov Money]', Espèces: '[Espèces]' };
+
+  /* Message court optimisé pour SMS (160 caractères idéalement) */
+  const msg = `SAMASSA TECH - Recu N°${num} - ${cl} - ${t} - ${pmIcons[selectedPM] || selectedPM} - ${d} - Merci! Tel: 77291931`;
+
+  const phone = ST.v('clientPhone').replace(/\s/g, '');
+
+  if (phone) {
+    /* Si le téléphone est renseigné → ouvrir l'app SMS directement */
+    window.open('sms:' + phone + '?body=' + encodeURIComponent(msg), '_blank');
+  } else {
+    /* Sinon → ouvrir SMS sans numéro (l'utilisateur saisit lui-même) */
+    window.open('sms:?body=' + encodeURIComponent(msg), '_blank');
+    ST.toast('Téléphone client non renseigné — SMS ouvert sans numéro.', 'info');
+  }
 }
 
 function shareWhatsApp() {

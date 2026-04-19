@@ -19,6 +19,8 @@
 .add-item-btn:hover { background: #DCFCE7; }
 .btn-generate { background: var(--green); color: white; }
 .btn-generate:hover { background: #15803D; }
+.btn-sms { background: #0F172A; color: white; }
+.btn-sms:hover { background: #1E293B; }
 
 /* Document */
 .recu-doc-header { background: var(--navy); border-radius: 10px 10px 0 0; padding: 22px 28px; display: flex; align-items: center; gap: 16px; margin: -40px -40px 22px; }
@@ -129,8 +131,9 @@
     <div class="actions">
       <button class="btn btn-generate" onclick="generateReceipt()">⚙️ Générer</button>
       <button class="btn btn-print" onclick="printDoc()">🖨️ Imprimer</button>
-      <button class="btn btn-save" onclick="saveDoc()">💾 Enregistrer</button>
+      <button class="btn btn-save" onclick="saveDoc()">💾 Enregistrer + Caisse</button>
       <button class="btn btn-wa" onclick="shareWhatsApp()">💬 WhatsApp</button>
+      <button class="btn btn-sms" onclick="sendSMS()">📱 SMS</button>
     </div>
   </div>
 
