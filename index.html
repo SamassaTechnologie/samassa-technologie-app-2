@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAMASSA TECHNOLOGIE — Suite Pro</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-512x512.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --blue:#0088CC;--blue-dark:#006699;--blue-light:#E8F4FD;
+  --navy:#0D1B2A;--text:#1A2D44;--text2:#4A6080;--text3:#8099B0;
+  --bg:#F0F5FA;--white:#FFFFFF;
+  --green:#16A34A;--red:#DC2626;--amber:#D97706;--purple:#7C3AED;
+  --orange:#EA580C;--wave:#0891B2;--moov:#1D4ED8;
+  --border:#D0DDE8;--shadow:0 2px 12px rgba(13,27,42,.08);
+  --radius:10px;--radius-lg:14px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+/* HEADER */
+.header{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
+.header-inner{max-width:1300px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:16px}
+.logo-wrap{display:flex;align-items:center;gap:14px}
+.logo-img{width:50px;height:50px;border-radius:50%;background:white;padding:4px;object-fit:contain}
+.brand h1{font-size:19px;font-weight:700;color:white;letter-spacing:.4px}
+.brand p{font-size:11px;color:#93B8D4;font-style:italic}
+.header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.ver-badge{background:rgba(0,136,204,.3);color:#7CC8EE;font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(0,136,204,.4)}
+
+/* NAV TABS */
+.nav-tabs{background:var(--navy);border-top:1px solid rgba(255,255,255,.08)}
+.nav-tabs-inner{max-width:1300px;margin:0 auto;display:flex;padding:0 24px}
+.nav-tab{padding:11px 18px;font-size:13px;font-weight:600;color:#93B8D4;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+.nav-tab:hover{color:white}
+.nav-tab.active{color:white;border-bottom-color:var(--blue)}
+
+/* MAIN */
+.main{max-width:1300px;margin:0 auto;padding:24px}
+
+/* DASHBOARD */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:white;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:18px}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
+.stat-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.stat-val{font-size:22px;font-weight:800;color:var(--text);line-height:1}
+.stat-sub{font-size:11px;color:var(--text3);margin-top:4px}
+
+/* MODULES */
+.section-hd{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
+.modules-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px}
+.mod-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:all .22s;cursor:pointer}
+.mod-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,136,204,.14);border-color:var(--blue)}
+.mod-top{height:88px;display:flex;align-items:center;justify-content:center;font-size:40px}
+.mod-top.blue  {background:linear-gradient(135deg,#E8F4FD,#C9E5F5)}
+.mod-top.green {background:linear-gradient(135deg,#F0FDF4,#DCFCE7)}
+.mod-top.amber {background:linear-gradient(135deg,#FFFBEB,#FEF3C7)}
+.mod-top.purple{background:linear-gradient(135deg,#F5F3FF,#EDE9FE)}
+.mod-body{padding:15px}
+.mod-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px}
+.mod-desc{font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.4}
+.mod-btn{display:block;text-align:center;padding:8px;border-radius:8px;font-size:12px;font-weight:600;transition:all .2s}
+.btn-blue  {background:var(--blue);color:white} .btn-blue:hover{background:var(--blue-dark)}
+.btn-green {background:var(--green);color:white} .btn-green:hover{background:#15803D}
+.btn-amber {background:#B45309;color:white} .btn-amber:hover{background:#92400E}
+.btn-purple{background:var(--purple);color:white} .btn-purple:hover{background:#6D28D9}
+
+/* PAIEMENTS */
+.pm-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
+.pm-card{background:white;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.pm-card.best{border-color:#BAE6FD;background:#F0F9FF}
+.pm-logo{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0}
+.pml-wave  {background:#CFFAFE;color:var(--wave)}
+.pml-orange{background:#FFEDD5;color:var(--orange)}
+.pml-moov  {background:#DBEAFE;color:var(--moov)}
+.pml-cash  {background:#DCFCE7;color:var(--green)}
+.pm-info .pm-name{font-size:13px;font-weight:700;color:var(--text)}
+.pm-info .pm-sub {font-size:10px;color:var(--text3)}
+.best-tag{font-size:9px;background:#FEF3C7;color:#92400E;padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px}
+
+/* MOUVEMENTS */
+.card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:22px}
+.card-hd{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.card-hd h3{font-size:15px;font-weight:700;color:var(--text)}
+.card-body{padding:20px}
+
+/* FORMULAIRE MOUVEMENT */
+.mv-form{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:end}
+.fg{display:flex;flex-direction:column;gap:4px}
+label{font-size:11px;font-weight:600;color:var(--text2)}
+input,select{padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;color:var(--text);background:white;outline:none;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--blue)}
+.btn-add-mv{background:var(--blue);color:white;border:none;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s;font-family:inherit}
+.btn-add-mv:hover{background:var(--blue-dark)}
+
+/* SOLDE SUMMARY */
+.solde-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px}
+.solde-card{border-radius:10px;padding:14px 16px;text-align:center}
+.sc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+.sc-val{font-size:18px;font-weight:800;line-height:1}
+.solde-entrees{background:#F0FDF4;border:1px solid #DCFCE7} .solde-entrees .sc-lbl{color:#15803D} .solde-entrees .sc-val{color:var(--green)}
+.solde-sorties{background:#FEF2F2;border:1px solid #FECACA} .solde-sorties .sc-lbl{color:#B91C1C} .solde-sorties .sc-val{color:var(--red)}
+.solde-net{background:var(--navy);border:1px solid var(--navy)} .solde-net .sc-lbl{color:#93B8D4} .solde-net .sc-val{color:white}
+
+/* TABLE */
+table.mv-table{width:100%;border-collapse:collapse;font-size:13px}
+table.mv-table thead tr{background:var(--bg)}
+table.mv-table thead th{padding:9px 12px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:2px solid var(--border)}
+table.mv-table tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+table.mv-table tbody tr:hover{background:#F8FBFD}
+table.mv-table tbody tr:last-child td{border-bottom:none}
+.td-desc{font-weight:600;color:var(--text)}
+.td-entree{font-weight:700;color:var(--green)}
+.td-sortie{font-weight:700;color:var(--red)}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-entree{background:#F0FDF4;color:var(--green)}
+.badge-sortie{background:#FEF2F2;color:var(--red)}
+.del-btn{background:#FEE2E2;color:var(--red);border:none;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;transition:background .2s}
+.del-btn:hover{background:#FECACA}
+.empty-row{text-align:center;padding:32px;color:var(--text3);font-style:italic}
+
+/* FILTRE */
+.filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.filter-row select, .filter-row input{padding:7px 11px;font-size:12px;min-width:120px}
+.clear-btn{background:none;border:1px solid var(--border);color:var(--text2);padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s}
+.clear-btn:hover{background:var(--red);color:white;border-color:var(--red)}
+.export-btn{background:var(--navy);color:white;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;margin-left:auto}
+.export-btn:hover{background:#0A2030}
+
+/* RECENT DOCS */
+.doc-item{display:flex;align-items:center;gap:14px;padding:11px 20px;border-bottom:1px solid #F0F5FA;transition:background .15s}
+.doc-item:last-child{border-bottom:none}
+.doc-item:hover{background:#F8FBFD}
+.doc-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.dico-f{background:#EFF6FF;} .dico-r{background:#F0FDF4;} .dico-d{background:#FFFBEB;} .dico-i{background:#F5F3FF;}
+.doc-ref{font-weight:600;font-size:13px;color:var(--text)}
+.doc-client{font-size:12px;color:var(--text2)}
+.doc-amount{font-weight:700;font-size:13px;color:var(--text)}
+.doc-date{font-size:11px;color:var(--text3)}
+.st-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block}
+.st-paye{background:#F0FDF4;color:var(--green)} .st-attente{background:#FFFBEB;color:var(--amber)} .st-impaye{background:#FEF2F2;color:var(--red)}
+
+/* FOOTER */
+footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
+.footer-inner{max-width:1300px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+.footer-brand{font-weight:700;font-size:15px;margin-bottom:3px}
+.footer-sub{font-size:12px;color:#93B8D4}
+.footer-links{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links a{color:#93B8D4;font-size:13px;transition:color .2s}
+.footer-links a:hover{color:white}
+.footer-copy{text-align:center;font-size:12px;color:#576F82;margin-top:16px;max-width:1300px;margin:16px auto 0}
+
+/* PAGE SECTIONS */
+.page-section{display:none}
+.page-section.active{display:block}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.stats-grid,.modules-grid,.pm-row{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.stats-grid,.modules-grid,.pm-row,.solde-row{grid-template-columns:1fr}.mv-form{grid-template-columns:1fr 1fr}.mv-form>*:last-child{grid-column:span 2}.header-inner{flex-wrap:wrap}.nav-tab{padding:9px 12px;font-size:12px}}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.mod-card{animation:fadeUp .35s ease backwards}
+.mod-card:nth-child(1){animation-delay:.05s}.mod-card:nth-child(2){animation-delay:.1s}
+.mod-card:nth-child(3){animation-delay:.15s}.mod-card:nth-child(4){animation-delay:.2s}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;color:white;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .3s ease}
+.toast.success{background:var(--green)}.toast.error{background:var(--red)}.toast.info{background:var(--blue)}
+@keyframes toastIn{from{transform:translateX(80px);opacity:0}to{transform:none;opacity:1}}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-wrap">
+      <img src="logo.png" alt="Logo" class="logo-img">
+      <div class="brand"><h1>SAMASSA TECHNOLOGIE</h1><p>Tout pour l'informatique — Grand Marché de Kayes, Mali</p></div>
+    </div>
+    <div class="header-right"><span class="ver-badge">Suite Pro v2.0</span></div>
+  </div>
+  <nav class="nav-tabs">
+    <div class="nav-tabs-inner">
+      <div class="nav-tab active" onclick="showTab('dashboard')">🏠 Tableau de bord</div>
+      <div class="nav-tab" onclick="showTab('mouvements')">💰 Mouvements de caisse</div>
+      <div class="nav-tab" onclick="showTab('historique')">📂 Historique</div>
+    </div>
+  </nav>
+</header>
+
+<main class="main">
+
+  <!-- ════════════════════════════════════════
+       ONGLET : TABLEAU DE BORD
+  ════════════════════════════════════════ -->
+  <div class="page-section active" id="tab-dashboard">
+
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#EFF6FF">📄</div>
+        <div class="stat-label">Factures émises</div>
+        <div class="stat-val" id="st-factures">0</div>
+        <div class="stat-sub">Documents créés</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#F0FDF4">💰</div>
+        <div class="stat-label">CA total facturé</div>
+        <div class="stat-val" id="st-ca" style="font-size:16px">— FCFA</div>
+        <div class="stat-sub">Toutes factures</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#F0FDF4">✅</div>
+        <div class="stat-label">Solde de caisse</div>
+        <div class="stat-val" id="st-solde" style="font-size:16px">— FCFA</div>
+        <div class="stat-sub">Entrées − Sorties</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#F5F3FF">🔧</div>
+        <div class="stat-label">Interventions</div>
+        <div class="stat-val" id="st-interventions">0</div>
+        <div class="stat-sub">Fiches créées</div>
+      </div>
+    </div>
+
+    <!-- MODULES -->
+    <div class="section-hd">Modules de gestion documentaire</div>
+    <div class="modules-grid">
+      <a href="facture.html" class="mod-card">
+        <div class="mod-top blue">📄</div>
+        <div class="mod-body">
+          <div class="mod-name">Facture</div>
+          <div class="mod-desc">Factures professionnelles avec TVA 18%, signature et cachet.</div>
+          <span class="mod-btn btn-blue">Créer une facture →</span>
+        </div>
+      </a>
+      <a href="recu.html" class="mod-card">
+        <div class="mod-top green">🧾</div>
+        <div class="mod-body">
+          <div class="mod-name">Reçu de Paiement</div>
+          <div class="mod-desc">Reçus avec Wave, Orange Money, Moov Money et numéro NINA.</div>
+          <span class="mod-btn btn-green">Créer un reçu →</span>
+        </div>
+      </a>
+      <a href="devis.html" class="mod-card">
+        <div class="mod-top amber">📋</div>
+        <div class="mod-body">
+          <div class="mod-name">Devis</div>
+          <div class="mod-desc">Devis en FCFA avec date de validité configurable.</div>
+          <span class="mod-btn btn-amber">Créer un devis →</span>
+        </div>
+      </a>
+      <a href="intervention.html" class="mod-card">
+        <div class="mod-top purple">🔧</div>
+        <div class="mod-body">
+          <div class="mod-name">Fiche d'Intervention</div>
+          <div class="mod-desc">Fiches techniques avec diagnostic, actions et double signature.</div>
+          <span class="mod-btn btn-purple">Créer une fiche →</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- PAIEMENTS ACCEPTÉS -->
+    <div class="section-hd">Modes de paiement acceptés</div>
+    <div class="pm-row">
+      <div class="pm-card best">
+        <div class="pm-logo pml-wave">W</div>
+        <div class="pm-info"><div class="pm-name">Wave <span class="best-tag">⭐ TOP</span></div><div class="pm-sub">Frais ~1% — Recommandé</div></div>
+      </div>
+      <div class="pm-card">
+        <div class="pm-logo pml-orange">OM</div>
+        <div class="pm-info"><div class="pm-name">Orange Money</div><div class="pm-sub">Réseau le plus étendu</div></div>
+      </div>
+      <div class="pm-card">
+        <div class="pm-logo pml-moov">MM</div>
+        <div class="pm-info"><div class="pm-name">Moov Money</div><div class="pm-sub">Disponible partout</div></div>
+      </div>
+      <div class="pm-card">
+        <div class="pm-logo pml-cash">💵</div>
+        <div class="pm-info"><div class="pm-name">Espèces / Cash</div><div class="pm-sub">Paiement en main propre</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       ONGLET : MOUVEMENTS DE CAISSE
+  ════════════════════════════════════════ -->
+  <div class="page-section" id="tab-mouvements">
+
+    <div class="card">
+      <div class="card-hd">
+        <h3>➕ Enregistrer un mouvement</h3>
+      </div>
+      <div class="card-body">
+        <div class="mv-form" id="mvForm">
+          <div class="fg">
+            <label>Date</label>
+            <input type="date" id="mv-date">
+          </div>
+          <div class="fg">
+            <label>Type</label>
+            <select id="mv-type">
+              <option value="entree">📈 Entrée (recette)</option>
+              <option value="sortie">📉 Sortie (dépense)</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Description</label>
+            <input type="text" id="mv-desc" placeholder="Ex: Vente réparation PC">
+          </div>
+          <div class="fg">
+            <label>Montant (FCFA)</label>
+            <input type="number" id="mv-amount" placeholder="0" min="0">
+          </div>
+          <div class="fg">
+            <label>Mode paiement</label>
+            <select id="mv-pm">
+              <option>Wave</option>
+              <option>Orange Money</option>
+              <option>Moov Money</option>
+              <option>Espèces</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label>Catégorie</label>
+            <select id="mv-cat">
+              <option>Vente service</option>
+              <option>Vente matériel</option>
+              <option>Réparation</option>
+              <option>Achat fourniture</option>
+              <option>Salaire</option>
+              <option>Loyer</option>
+              <option>Transport</option>
+              <option>Autre</option>
+            </select>
+          </div>
+          <div class="fg" style="align-self:end">
+            <button class="btn-add-mv" onclick="addMouvement()">+ Ajouter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-hd">
+        <h3>📊 Résumé de caisse</h3>
+        <div class="filter-row">
+          <select id="flt-type" onchange="renderMouvements()">
+            <option value="">Tous les types</option>
+            <option value="entree">Entrées seulement</option>
+            <option value="sortie">Sorties seulement</option>
+          </select>
+          <select id="flt-pm" onchange="renderMouvements()">
+            <option value="">Tous modes</option>
+            <option>Wave</option>
+            <option>Orange Money</option>
+            <option>Moov Money</option>
+            <option>Espèces</option>
+          </select>
+          <input type="text" id="flt-search" placeholder="🔍 Rechercher..." oninput="renderMouvements()" style="min-width:160px">
+          <button class="clear-btn" onclick="clearMouvements()">🗑 Tout effacer</button>
+          <button class="export-btn" onclick="exportCSV()">⬇ Exporter CSV</button>
+        </div>
+      </div>
+      <div class="card-body" style="padding:16px 20px 0">
+        <div class="solde-row" id="solde-summary"></div>
+      </div>
+      <div id="mv-table-wrap">
+        <table class="mv-table">
+          <thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th>Mode</th><th>Entrée</th><th>Sortie</th><th></th></tr></thead>
+          <tbody id="mv-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
+       ONGLET : HISTORIQUE
+  ════════════════════════════════════════ -->
+  <div class="page-section" id="tab-historique">
+    <div class="card">
+      <div class="card-hd">
+        <h3>📂 Historique des documents</h3>
+        <button class="clear-btn" onclick="clearHistory()">🗑 Effacer l'historique</button>
+      </div>
+      <div id="history-list"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div><div class="footer-brand">SAMASSA TECHNOLOGIE</div><div class="footer-sub">Grand Marché de Kayes, près du 1er arrondissement de la police — Rue Soundiata Keita</div></div>
+    <div class="footer-links">
+      <a href="tel:+22377291931">📞 77 29 19 31</a>
+      <a href="tel:+22362970630">📞 62 97 06 30</a>
+      <a href="mailto:samassatechnologie10@gmail.com">📧 samassatechnologie10@gmail.com</a>
+    </div>
+  </div>
+  <div class="footer-copy">© 2025 SAMASSA TECHNOLOGIE — Suite de Gestion Pro v2.0 — Tous droits réservés</div>
+</footer>
+
+<script>
+/* ============================================================
+   NAVIGATION PAR ONGLETS
+============================================================ */
+function showTab(id) {
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  const tabs = ['dashboard', 'mouvements', 'historique'];
+  const idx = tabs.indexOf(id);
+  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+  if (id === 'dashboard')    loadStats();
+  if (id === 'mouvements')   renderMouvements();
+  if (id === 'historique')   renderHistory();
+}
+
+/* ============================================================
+   STATISTIQUES
+============================================================ */
+function loadStats() {
+  const factures      = JSON.parse(localStorage.getItem('samassa_factures') || '[]');
+  const interventions = JSON.parse(localStorage.getItem('samassa_interventions') || '[]');
+  const mouvements    = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
+  document.getElementById('st-factures').textContent     = factures.length;
+  document.getElementById('st-interventions').textContent = interventions.length;
+  const ca = factures.reduce((s, f) => s + (parseFloat(f.total) || 0), 0);
+  document.getElementById('st-ca').textContent = ca > 0 ? fmtNum(ca) + ' FCFA' : '— FCFA';
+  const entrees = mouvements.filter(m => m.type === 'entree').reduce((s, m) => s + m.amount, 0);
+  const sorties = mouvements.filter(m => m.type === 'sortie').reduce((s, m) => s + m.amount, 0);
+  const solde   = entrees - sorties;
+  const soldeEl = document.getElementById('st-solde');
+  soldeEl.textContent = fmtNum(Math.abs(solde)) + ' FCFA';
+  soldeEl.style.color = solde >= 0 ? 'var(--green)' : 'var(--red)';
+}
+
+function fmtNum(n) { return Math.round(n).toLocaleString('fr-FR'); }
+
+/* ============================================================
+   MOUVEMENTS DE CAISSE
+============================================================ */
+function addMouvement() {
+  const date   = document.getElementById('mv-date').value;
+  const type   = document.getElementById('mv-type').value;
+  const desc   = document.getElementById('mv-desc').value.trim();
+  const amount = parseFloat(document.getElementById('mv-amount').value) || 0;
+  const pm     = document.getElementById('mv-pm').value;
+  const cat    = document.getElementById('mv-cat').value;
+  if (!date || !desc || !amount) { toast('Veuillez remplir tous les champs obligatoires.', 'error'); return; }
+  const list = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
+  list.push({ id: Date.now(), date, type, desc, amount, pm, cat, timestamp: new Date().toISOString() });
+  localStorage.setItem('samassa_mouvements', JSON.stringify(list));
+  document.getElementById('mv-desc').value = '';
+  document.getElementById('mv-amount').value = '';
+  toast((type === 'entree' ? '📈 Entrée' : '📉 Sortie') + ' enregistrée : ' + fmtNum(amount) + ' FCFA ✓');
+  renderMouvements();
+  loadStats();
+}
+
+function renderMouvements() {
+  let list = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
+  const fltType   = document.getElementById('flt-type')?.value   || '';
+  const fltPM     = document.getElementById('flt-pm')?.value     || '';
+  const fltSearch = (document.getElementById('flt-search')?.value || '').toLowerCase();
+  if (fltType)   list = list.filter(m => m.type === fltType);
+  if (fltPM)     list = list.filter(m => m.pm   === fltPM);
+  if (fltSearch) list = list.filter(m => m.desc.toLowerCase().includes(fltSearch) || m.cat.toLowerCase().includes(fltSearch));
+  list.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  const entrees = list.filter(m => m.type === 'entree').reduce((s, m) => s + m.amount, 0);
+  const sorties = list.filter(m => m.type === 'sortie').reduce((s, m) => s + m.amount, 0);
+  const net     = entrees - sorties;
+  document.getElementById('solde-summary').innerHTML = `
+    <div class="solde-card solde-entrees"><div class="sc-lbl">📈 Total Entrées</div><div class="sc-val">+${fmtNum(entrees)} FCFA</div></div>
+    <div class="solde-card solde-sorties"><div class="sc-lbl">📉 Total Sorties</div><div class="sc-val">-${fmtNum(sorties)} FCFA</div></div>
+    <div class="solde-card solde-net"><div class="sc-lbl">💼 Solde Net</div><div class="sc-val">${net >= 0 ? '+' : ''}${fmtNum(net)} FCFA</div></div>`;
+
+  const pmIcons = { Wave: '🌊', 'Orange Money': '🟠', 'Moov Money': '🔵', Espèces: '💵' };
+  const tbody = document.getElementById('mv-tbody');
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="7" class="empty-row">Aucun mouvement enregistré</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(m => `
+    <tr>
+      <td>${new Date(m.date).toLocaleDateString('fr-FR')}</td>
+      <td class="td-desc">${m.desc}</td>
+      <td><span class="badge" style="background:var(--bg);color:var(--text2)">${m.cat}</span></td>
+      <td>${pmIcons[m.pm] || ''} ${m.pm}</td>
+      <td class="td-entree">${m.type === 'entree' ? '+' + fmtNum(m.amount) + ' F' : '—'}</td>
+      <td class="td-sortie">${m.type === 'sortie' ? '-' + fmtNum(m.amount) + ' F' : '—'}</td>
+      <td><button class="del-btn" onclick="deleteMouvement(${m.id})" title="Supprimer">✕</button></td>
+    </tr>`).join('');
+}
+
+function deleteMouvement(id) {
+  if (!confirm('Supprimer ce mouvement ?')) return;
+  let list = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
+  list = list.filter(m => m.id !== id);
+  localStorage.setItem('samassa_mouvements', JSON.stringify(list));
+  renderMouvements(); loadStats();
+}
+
+function clearMouvements() {
+  if (!confirm('Effacer TOUS les mouvements de caisse ? Cette action est irréversible.')) return;
+  localStorage.removeItem('samassa_mouvements');
+  renderMouvements(); loadStats();
+  toast('Tous les mouvements ont été effacés.', 'info');
+}
+
+function exportCSV() {
+  const list = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
+  if (!list.length) { toast('Aucun mouvement à exporter.', 'error'); return; }
+  const rows = [['Date','Type','Description','Catégorie','Mode Paiement','Entrée (FCFA)','Sortie (FCFA)']];
+  list.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(m => {
+    rows.push([
+      new Date(m.date).toLocaleDateString('fr-FR'),
+      m.type === 'entree' ? 'Entrée' : 'Sortie',
+      m.desc, m.cat, m.pm,
+      m.type === 'entree' ? m.amount : '',
+      m.type === 'sortie' ? m.amount : ''
+    ]);
+  });
+  const csv = rows.map(r => r.join(';')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'samassa-mouvements-' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+  toast('Fichier CSV exporté avec succès ✓');
+}
+
+/* ============================================================
+   HISTORIQUE DOCUMENTS
+============================================================ */
+function renderHistory() {
+  const types = [
+    { key: 'samassa_factures',      cls: 'dico-f', icon: '📄', label: 'Facture' },
+    { key: 'samassa_recus',         cls: 'dico-r', icon: '🧾', label: 'Reçu' },
+    { key: 'samassa_devis',         cls: 'dico-d', icon: '📋', label: 'Devis' },
+    { key: 'samassa_interventions', cls: 'dico-i', icon: '🔧', label: 'Intervention' }
+  ];
+  let all = [];
+  types.forEach(t => {
+    const items = JSON.parse(localStorage.getItem(t.key) || '[]');
+    items.forEach(i => all.push({ ...i, _t: t }));
+  });
+  all.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+  const container = document.getElementById('history-list');
+  if (!all.length) {
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3)"><div style="font-size:42px;opacity:.25;margin-bottom:10px">📂</div><p>Aucun document enregistré pour le moment</p></div>';
+    return;
+  }
+  container.innerHTML = all.map(d => {
+    const stCls = d.statut === 'Payé' ? 'st-paye' : d.statut === 'Impayé' ? 'st-impaye' : 'st-attente';
+    return `<div class="doc-item">
+      <div class="doc-ico ${d._t.cls}">${d._t.icon}</div>
+      <div style="flex:1;min-width:0">
+        <div class="doc-ref">${d._t.label} N° ${d.number || '—'}</div>
+        <div class="doc-client">${d.client || 'Client non spécifié'}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="doc-amount">${d.total ? fmtNum(d.total) + ' FCFA' : '—'}</div>
+        <div class="doc-date">${d.date || ''}</div>
+        ${d.statut ? `<span class="st-badge ${stCls}">${d.statut}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function clearHistory() {
+  if (!confirm('Effacer tout l\'historique des documents ?')) return;
+  ['samassa_factures', 'samassa_recus', 'samassa_devis', 'samassa_interventions'].forEach(k => localStorage.removeItem(k));
+  renderHistory(); loadStats();
+  toast('Historique effacé.', 'info');
+}
+
+/* ============================================================
+   TOAST & INIT
+============================================================ */
+function toast(msg, type = 'success') {
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.style.opacity = '0', 2700);
+  setTimeout(() => t.remove(), 3100);
+}
+
+// Init
+document.getElementById('mv-date').value = new Date().toISOString().split('T')[0];
+loadStats();
+
+// PWA
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+</script>
+</body>
+</html>

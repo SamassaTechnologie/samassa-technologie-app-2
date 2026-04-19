@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facture — SAMASSA TECHNOLOGIE</title>
+<link rel="icon" href="icon-512x512.png">
+<link rel="stylesheet" href="style.css">
+<style>
+.panel-header { background: linear-gradient(135deg,var(--navy),#0A3A5C); }
+.panel-header p { color: #93B8D4; }
+.add-item-btn { background: var(--blue-light); border: 1.5px dashed var(--blue); color: var(--blue); }
+.add-item-btn:hover { background: #D0E8F7; }
+.btn-generate { background: var(--blue); color: white; }
+.btn-generate:hover { background: var(--blue-dark); }
+.dt-type.facture { color: var(--navy); }
+.co-tag.facture  { color: var(--blue); }
+.doc-client-box  { background: var(--blue-light); border-left: 4px solid var(--blue); border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; }
+.dcb-label { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);margin-bottom:3px; }
+.dcb-name  { font-size:15px;font-weight:700;color:var(--navy); }
+.payment-info-doc { background:#F8FBFD;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--text2);line-height:1.7; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">📄 Nouvelle Facture</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="layout">
+  <div class="form-panel">
+    <div class="panel-header"><h2>📄 Informations de la facture</h2><p>Remplissez les champs puis cliquez sur Générer</p></div>
+    <div class="form-body">
+
+      <div class="section-label">Référence</div>
+      <div class="form-grid">
+        <div class="form-group"><label>N° de facture</label><input type="text" id="invoiceNumber" value="FAC-001"></div>
+        <div class="form-group"><label>Date</label><input type="date" id="invoiceDate"></div>
+        <div class="form-group span2"><label>Client / Entreprise</label><input type="text" id="clientName" placeholder="Nom du client ou de l'entreprise"></div>
+      </div>
+
+      <div class="section-label">Entreprise</div>
+      <div class="form-grid">
+        <div class="form-group span2"><label>Nom</label><input type="text" id="companyName" value="SAMASSA TECHNOLOGIE"></div>
+        <div class="form-group span2"><label>Slogan</label><input type="text" id="companyTagline" value="Tout pour l'informatique"></div>
+        <div class="form-group span2"><label>Adresse</label><textarea id="companyAddress" rows="2">Grand Marché de Kayes, près du 1er arrondissement de la police — Rue Soundiata Keita</textarea></div>
+        <div class="form-group"><label>Téléphone</label><input type="text" id="companyPhone" value="00223 77291931 / 62970630"></div>
+        <div class="form-group"><label>Email</label><input type="text" id="companyEmail" value="samassatechnologie10@gmail.com"></div>
+        <div class="form-group span2"><label>Gérant</label><input type="text" id="managerName" value="Boussé SAMASSA"></div>
+      </div>
+
+      <div class="section-label">Articles</div>
+      <div class="items-section">
+        <div class="item-header-labels"><span>Description</span><span>Qté</span><span>Prix unit.</span><span>Total HT</span></div>
+        <div id="itemsContainer">
+          <div class="item-row">
+            <div class="item-inputs">
+              <input type="text" placeholder="Description du service ou produit" value="Activation de Microsoft Office 2019">
+              <input type="number" placeholder="Qté" value="1" min="1">
+              <input type="number" placeholder="Prix" value="2000" min="0">
+              <input type="number" placeholder="Total" readonly>
+            </div>
+            <div class="item-remark"><input type="text" placeholder="Remarques (optionnel)"></div>
+            <button class="remove-btn" onclick="removeItem(this)">✕</button>
+          </div>
+        </div>
+        <button class="add-item-btn btn" onclick="addItem()">+ Ajouter un article</button>
+      </div>
+
+      <div class="section-label" style="margin-top:14px">Totaux</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Sous-total HT</label><input type="text" id="totalHT" readonly value="0 FCFA"></div>
+        <div class="form-group"><label>TVA 18%</label><input type="text" id="totalTVA" readonly value="0 FCFA"></div>
+        <div class="form-group span2"><label>Total TTC (FCFA)</label><input type="text" id="totalTTC" readonly value="0 FCFA" style="font-weight:700;font-size:15px;background:var(--blue-light);border-color:var(--blue)"></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-generate" onclick="generateInvoice()">⚙️ Générer</button>
+      <button class="btn btn-print" onclick="printDoc()">🖨️ Imprimer</button>
+      <button class="btn btn-save" onclick="saveDoc()">💾 Enregistrer</button>
+      <button class="btn btn-wa" onclick="shareWhatsApp()">💬 WhatsApp</button>
+    </div>
+  </div>
+
+  <div class="doc-panel">
+    <div class="doc-placeholder" id="placeholder">
+      <div class="ph-icon">📄</div>
+      <p>Remplissez le formulaire<br>et cliquez sur <strong>Générer</strong></p>
+    </div>
+    <div class="doc-inner" id="docInner" style="display:none">
+      <div class="watermark"><img src="watermark.png" alt=""></div>
+      <div class="doc-z">
+        <div class="doc-head">
+          <div>
+            <img src="logo.png" alt="Logo" class="co-logo">
+            <div class="co-name" id="d-coName">SAMASSA TECHNOLOGIE</div>
+            <div class="co-tag facture" id="d-coTag">Tout pour l'informatique</div>
+            <div class="co-detail">
+              <div id="d-coAddr"></div>
+              <div>Tél : <strong id="d-coPhone"></strong></div>
+              <div>Email : <span id="d-coEmail"></span></div>
+            </div>
+          </div>
+          <div class="dt-block">
+            <div class="dt-type facture">FACTURE</div>
+            <div class="dt-num">N° <strong id="d-num"></strong></div>
+            <div class="dt-date-lbl">Date :</div>
+            <div class="dt-date-val" id="d-date"></div>
+          </div>
+        </div>
+        <div class="doc-client-box">
+          <div class="dcb-label">Facturé à</div>
+          <div class="dcb-name" id="d-client"></div>
+        </div>
+        <table class="doc-table">
+          <thead><tr><th style="width:40%;text-align:left">Description</th><th>Qté</th><th>Prix unitaire</th><th>Total HT</th><th>Remarques</th></tr></thead>
+          <tbody id="d-items"></tbody>
+        </table>
+        <div class="totals-wrap">
+          <div class="totals-box">
+            <div class="t-row"><span class="t-lbl">Sous-total HT</span><span class="t-val" id="d-ht"></span></div>
+            <div class="t-row"><span class="t-lbl">TVA 18%</span><span class="t-val" id="d-tva"></span></div>
+            <div class="t-row ttc"><span class="t-lbl">TOTAL TTC</span><span class="t-val" id="d-ttc"></span></div>
+          </div>
+        </div>
+        <div class="payment-info-doc">
+          <strong>💳 Modes de paiement acceptés : </strong>
+          🌊 <strong>Wave ⭐</strong> &nbsp;|&nbsp; 🟠 <strong>Orange Money</strong> &nbsp;|&nbsp; 🔵 <strong>Moov Money</strong> &nbsp;|&nbsp; 💵 <strong>Espèces</strong>
+        </div>
+        <div class="doc-footer">
+          <div style="font-size:12px;color:var(--text2)">Grand Marché de Kayes<br>Près du 1er arrondissement de la police<br>Rue Soundiata Keita</div>
+          <div class="sig-block">
+            <div class="sig-title">Le Gérant</div>
+            <img src="signature.png" alt="Signature" class="sig-img">
+            <img src="cachet.png" alt="Cachet" class="cachet-img">
+            <div class="sig-name" id="d-manager"></div>
+          </div>
+        </div>
+        <div class="thank-you">Merci pour votre confiance ! 🙏</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="utils.js"></script>
+<script src="facture.js"></script>
+</body>
+</html>

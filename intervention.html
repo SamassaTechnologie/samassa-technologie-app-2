@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fiche d'Intervention — SAMASSA TECHNOLOGIE</title>
+<link rel="icon" href="icon-512x512.png">
+<link rel="stylesheet" href="style.css">
+<style>
+.panel-header { background: linear-gradient(135deg,#2E1065,#4C1D95); }
+.panel-header p { color: #C4B5FD; }
+.btn-generate { background: #7C3AED; color: white; }
+.btn-generate:hover { background: #6D28D9; }
+
+/* Document styles */
+.dt-type.int { color: #6D28D9; }
+.co-tag.int  { color: #7C3AED; }
+.doc-client-box.int { background: #F5F3FF; border-left-color: #7C3AED; }
+.doc-client-box.int .dcb-label { color: #7C3AED; }
+
+.info-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
+.info-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 13px 14px;
+}
+.info-box.full { grid-column: span 2; }
+.ib-title { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text3); margin-bottom: 8px; }
+.ib-row { display: flex; justify-content: space-between; align-items: baseline; padding: 3px 0; border-bottom: 1px solid var(--border); }
+.ib-row:last-child { border-bottom: none; }
+.ib-lbl { font-size: 12px; color: var(--text2); }
+.ib-val { font-size: 13px; font-weight: 600; color: var(--text); text-align: right; max-width: 55%; word-break: break-word; }
+
+.desc-box {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 13px 14px; margin-bottom: 12px;
+  font-size: 13px; color: var(--text); line-height: 1.65; white-space: pre-line;
+}
+.section-doc-title {
+  background: #4C1D95; color: white;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  padding: 7px 14px; border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.billing-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 6px; }
+.billing-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 12px;
+  text-align: center;
+}
+.billing-card.total { background: #4C1D95; border-color: #4C1D95; }
+.billing-card .bc-lbl { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.billing-card.total .bc-lbl { color: #C4B5FD; }
+.billing-card .bc-val { font-size: 15px; font-weight: 700; color: var(--text); }
+.billing-card.total .bc-val { color: white; font-size: 17px; }
+
+.status-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; }
+.status-paye    { background: #DCFCE7; color: #15803D; }
+.status-impaye  { background: #FEE2E2; color: #DC2626; }
+.status-acompte { background: #FEF3C7; color: #B45309; }
+
+.double-sig { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 28px; padding-top: 16px; border-top: 1px dashed var(--border); }
+.sig-client-box {
+  border: 1px dashed var(--border);
+  border-radius: 8px; padding: 12px;
+  min-height: 110px;
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.sig-client-name { font-size: 12px; font-style: italic; color: var(--text2); text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">🔧 Fiche d'Intervention</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="layout">
+
+  <!-- ══════════════ FORMULAIRE ══════════════ -->
+  <div class="form-panel">
+    <div class="panel-header">
+      <h2>🔧 Nouvelle fiche d'intervention</h2>
+      <p>Renseignez les détails de l'intervention technique</p>
+    </div>
+    <div class="form-body">
+
+      <div class="section-label purple">Référence</div>
+      <div class="form-grid">
+        <div class="form-group"><label>N° d'intervention</label><input type="text" id="interventionNumber" value="INT-001"></div>
+        <div class="form-group"><label>Date</label><input type="date" id="interventionDate"></div>
+        <div class="form-group"><label>Heure</label><input type="time" id="interventionTime"></div>
+        <div class="form-group"><label>Technicien</label><input type="text" id="technicianName" value="Boussé SAMASSA"></div>
+      </div>
+
+      <div class="section-label purple">Client</div>
+      <div class="form-grid">
+        <div class="form-group span2"><label>Nom du client</label><input type="text" id="clientName" placeholder="Nom complet ou entreprise"></div>
+        <div class="form-group"><label>Téléphone</label><input type="text" id="clientPhone" placeholder="+223 XX XX XX XX"></div>
+        <div class="form-group"><label>Adresse</label><input type="text" id="clientAddress" placeholder="Quartier, ville..."></div>
+      </div>
+
+      <div class="section-label purple">Équipement</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Type d'équipement</label>
+          <select id="equipmentType">
+            <option value="">— Sélectionner —</option>
+            <option>Ordinateur de bureau</option>
+            <option>Ordinateur portable</option>
+            <option>Imprimante</option>
+            <option>Serveur</option>
+            <option>Routeur / Switch</option>
+            <option>Téléphone / Smartphone</option>
+            <option>Photocopieuse</option>
+            <option>Écran / Moniteur</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="form-group"><label>Marque / Modèle</label><input type="text" id="equipmentBrand" placeholder="Ex: HP Pavilion 15"></div>
+        <div class="form-group span2">
+          <label>Description du problème</label>
+          <textarea id="problemDescription" rows="3" placeholder="Décrivez le problème signalé par le client..."></textarea>
+        </div>
+      </div>
+
+      <div class="section-label purple">Actions effectuées</div>
+      <div class="form-grid">
+        <div class="form-group span2">
+          <label>Travaux réalisés</label>
+          <textarea id="actionsPerformed" rows="3" placeholder="Décrivez les actions réalisées..."></textarea>
+        </div>
+        <div class="form-group span2">
+          <label>Résultat / Observation</label>
+          <textarea id="interventionResult" rows="2" placeholder="État de l'équipement après intervention..."></textarea>
+        </div>
+      </div>
+
+      <div class="section-label purple">Facturation</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Main d'œuvre (FCFA)</label>
+          <input type="number" id="laborCost" value="0" min="0" step="500" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>Pièces / Fournitures (FCFA)</label>
+          <input type="number" id="partsCost" value="0" min="0" step="500" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>Déplacement (FCFA)</label>
+          <input type="number" id="travelCost" value="0" min="0" step="500" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>Statut paiement</label>
+          <select id="paymentStatus">
+            <option value="Payé">✅ Payé</option>
+            <option value="Impayé">❌ Impayé</option>
+            <option value="Acompte">⚠️ Acompte versé</option>
+          </select>
+        </div>
+        <div class="form-group span2">
+          <label>Total (FCFA)</label>
+          <input type="text" id="totalCostDisplay" readonly value="0 FCFA" style="font-weight:700;font-size:15px;background:#F5F3FF;border-color:#7C3AED">
+          <input type="hidden" id="totalCost" value="0">
+        </div>
+      </div>
+
+    </div>
+    <div class="actions">
+      <button class="btn btn-generate" onclick="generateIntervention()">⚙️ Générer</button>
+      <button class="btn btn-print" onclick="printDoc()">🖨️ Imprimer</button>
+      <button class="btn btn-save" onclick="saveDoc()">💾 Enregistrer</button>
+      <button class="btn btn-wa" onclick="shareWhatsApp()">💬 WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- ══════════════ APERÇU ══════════════ -->
+  <div class="doc-panel" id="docPanel">
+    <div class="doc-placeholder" id="placeholder">
+      <div class="ph-icon">🔧</div>
+      <p>Remplissez le formulaire<br>et cliquez sur <strong>Générer</strong></p>
+    </div>
+    <div class="doc-inner" id="docInner" style="display:none">
+      <div class="watermark"><img src="watermark.png" alt=""></div>
+      <div class="doc-z">
+
+        <!-- En-tête -->
+        <div class="doc-head">
+          <div>
+            <img src="logo.png" alt="Logo" class="co-logo">
+            <div class="co-name">SAMASSA TECHNOLOGIE</div>
+            <div class="co-tag int">Tout pour l'informatique</div>
+            <div class="co-detail">
+              Grand Marché de Kayes, près du 1er arrondissement de la police<br>
+              Rue Soundiata Keita<br>
+              Tél : 00223 77291931 / 62970630<br>
+              Email : samassatechnologie10@gmail.com
+            </div>
+          </div>
+          <div class="dt-block">
+            <div class="dt-type int" style="font-size:22px;line-height:1.2">FICHE D'INTERVENTION</div>
+            <div class="dt-num">N° <strong id="d-intNum"></strong></div>
+            <div class="dt-date-lbl">Date / Heure :</div>
+            <div class="dt-date-val" id="d-intDate"></div>
+            <div style="margin-top:8px">
+              <span id="d-payStatus" class="status-badge status-paye">Payé</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Technicien & Client -->
+        <div class="info-grid-2">
+          <div class="info-box">
+            <div class="ib-title">Technicien</div>
+            <div class="ib-row"><span class="ib-lbl">Nom</span><span class="ib-val" id="d-tech"></span></div>
+          </div>
+          <div class="info-box">
+            <div class="ib-title">Informations Client</div>
+            <div class="ib-row"><span class="ib-lbl">Nom</span><span class="ib-val" id="d-cliName"></span></div>
+            <div class="ib-row"><span class="ib-lbl">Tél.</span><span class="ib-val" id="d-cliPhone"></span></div>
+            <div class="ib-row"><span class="ib-lbl">Adresse</span><span class="ib-val" id="d-cliAddress"></span></div>
+          </div>
+        </div>
+
+        <!-- Équipement -->
+        <div class="section-doc-title">Équipement concerné</div>
+        <div class="info-grid-2" style="margin-bottom:16px">
+          <div class="info-box">
+            <div class="ib-title">Type</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text)" id="d-eqType"></div>
+          </div>
+          <div class="info-box">
+            <div class="ib-title">Marque / Modèle</div>
+            <div style="font-size:14px;font-weight:600;color:var(--text)" id="d-eqBrand"></div>
+          </div>
+        </div>
+
+        <!-- Problème -->
+        <div class="section-doc-title">Description du problème</div>
+        <div class="desc-box" id="d-problem"></div>
+
+        <!-- Actions -->
+        <div class="section-doc-title">Actions effectuées</div>
+        <div class="desc-box" id="d-actions"></div>
+
+        <!-- Résultat -->
+        <div class="section-doc-title">Résultat / Observation</div>
+        <div class="desc-box" id="d-result"></div>
+
+        <!-- Facturation -->
+        <div class="section-doc-title">Facturation</div>
+        <div class="billing-grid">
+          <div class="billing-card">
+            <div class="bc-lbl">Main d'œuvre</div>
+            <div class="bc-val" id="d-labor"></div>
+          </div>
+          <div class="billing-card">
+            <div class="bc-lbl">Pièces / Fournitures</div>
+            <div class="bc-val" id="d-parts"></div>
+          </div>
+          <div class="billing-card">
+            <div class="bc-lbl">Déplacement</div>
+            <div class="bc-val" id="d-travel"></div>
+          </div>
+        </div>
+        <div class="billing-card total" style="text-align:center;padding:14px;border-radius:8px;margin-bottom:20px">
+          <div class="bc-lbl">MONTANT TOTAL</div>
+          <div class="bc-val" id="d-total"></div>
+        </div>
+
+        <!-- Double signature -->
+        <div class="double-sig">
+          <div class="sig-block">
+            <div class="sig-title">Signature du Technicien</div>
+            <img src="signature.png" alt="Signature" class="sig-img">
+            <img src="cachet.png" alt="Cachet" class="cachet-img">
+            <div class="sig-name" id="d-techSig"></div>
+          </div>
+          <div class="sig-client-box">
+            <div class="sig-title" style="text-align:center">Signature du Client</div>
+            <div style="flex:1"></div>
+            <div class="sig-client-name">Lu et approuvé</div>
+          </div>
+        </div>
+
+        <div class="thank-you">Merci pour votre confiance — SAMASSA TECHNOLOGIE, Tout pour l'informatique 🙏</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="utils.js"></script>
+<script src="intervention.js"></script>
+</body>
+</html>

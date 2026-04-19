@@ -1,0 +1,14 @@
+{
+  "name": "SAMASSA TECHNOLOGIE — Suite Pro",
+  "short_name": "Samassa Pro",
+  "description": "Suite de gestion documentaire professionnelle",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F0F5FA",
+  "theme_color": "#0D1B2A",
+  "lang": "fr",
+  "icons": [
+    { "src": "icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
