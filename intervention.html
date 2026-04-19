@@ -4,7 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fiche d'Intervention — SAMASSA TECHNOLOGIE</title>
-<link rel="icon" href="icon-512x512.png">
+<meta name="theme-color" content="#0D1B2A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Samassa Pro">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
+<link rel="apple-touch-icon" href="icon-512x512.png">
 <link rel="stylesheet" href="style.css">
 <style>
 .panel-header { background: linear-gradient(135deg,#2E1065,#4C1D95); }
@@ -296,5 +302,6 @@
 
 <script src="utils.js"></script>
 <script src="intervention.js"></script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
 </body>
 </html>

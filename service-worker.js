@@ -1,35 +1,83 @@
 /* ============================================================
-   SAMASSA TECHNOLOGIE — Service Worker PWA v2.0
-   Cache offline pour utilisation sans connexion
+   SAMASSA TECHNOLOGIE — Service Worker PWA v2.1
+   Installable sur PC (Windows/Mac/Linux) ET téléphone
+   Stratégie : Cache-First pour les assets, Network-First pour les pages
 ============================================================ */
-const CACHE_NAME = 'samassa-pro-v2';
-const ASSETS = [
-  '/', '/index.html', '/facture.html', '/recu.html',
-  '/devis.html', '/intervention.html',
-  '/style.css', '/utils.js',
-  '/facture.js', '/recu.js', '/devis.js', '/intervention.js',
-  '/logo.png', '/icon-512x512.png',
-  '/signature.png', '/cachet.png', '/watermark.png'
+const CACHE_NAME   = 'samassa-pro-v2.1';
+const CACHE_PAGES  = 'samassa-pages-v2.1';
+
+/* Fichiers mis en cache immédiatement à l'installation */
+const STATIC_ASSETS = [
+  'index.html',
+  'facture.html',
+  'recu.html',
+  'devis.html',
+  'intervention.html',
+  'style.css',
+  'utils.js',
+  'facture.js',
+  'recu.js',
+  'devis.js',
+  'intervention.js',
+  'manifest.json',
+  'logo.png',
+  'icon-512x512.png',
+  'signature.png',
+  'cachet.png',
+  'watermark.png'
 ];
 
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+/* ---- INSTALL : mise en cache de tous les assets ---- */
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(STATIC_ASSETS))
+      .then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
-self.addEventListener('activate', e => {
-  e.waitUntil(
+/* ---- ACTIVATE : nettoyage des anciens caches ---- */
+self.addEventListener('activate', event => {
+  event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE_NAME && key !== CACHE_PAGES)
+          .map(key => caches.delete(key))
+      )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+/* ---- FETCH : stratégie Cache-First pour assets, Network-First pour pages ---- */
+self.addEventListener('fetch', event => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  /* Ignorer les requêtes non-GET et hors origine */
+  if (request.method !== 'GET' || !url.origin.includes(self.location.origin)) return;
+
+  /* Assets statiques (CSS, JS, images) → Cache-First */
+  const isAsset = /\.(css|js|png|jpg|jpeg|gif|ico|svg|woff2?)$/i.test(url.pathname);
+  if (isAsset) {
+    event.respondWith(
+      caches.match(request).then(cached => cached || fetch(request).then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+        return response;
+      }))
+    );
+    return;
+  }
+
+  /* Pages HTML → Network-First (online = frais, offline = cache) */
+  event.respondWith(
+    fetch(request)
+      .then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_PAGES).then(cache => cache.put(request, clone));
+        return response;
+      })
+      .catch(() => caches.match(request).then(cached => cached || caches.match('index.html')))
   );
 });

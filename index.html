@@ -4,8 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SAMASSA TECHNOLOGIE — Suite Pro</title>
+
+<!-- == PWA : installable sur PC Windows/Mac/Linux et téléphone == -->
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon-512x512.png">
+<meta name="theme-color" content="#0D1B2A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Samassa Pro">
+<meta name="application-name" content="Samassa Pro">
+<meta name="msapplication-TileColor" content="#0D1B2A">
+<meta name="msapplication-TileImage" content="icon-512x512.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
+<link rel="apple-touch-icon" sizes="512x512" href="icon-512x512.png">
+<link rel="shortcut icon" href="icon-512x512.png">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -29,6 +41,9 @@ a{text-decoration:none;color:inherit}
 .brand p{font-size:11px;color:#93B8D4;font-style:italic}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
 .ver-badge{background:rgba(0,136,204,.3);color:#7CC8EE;font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(0,136,204,.4)}
+.install-btn{background:var(--blue);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all .2s;white-space:nowrap;animation:pulse 2s infinite}
+.install-btn:hover{background:var(--blue-dark);transform:scale(1.03)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,136,204,.4)}50%{box-shadow:0 0 0 6px rgba(0,136,204,0)}}
 
 /* NAV TABS */
 .nav-tabs{background:var(--navy);border-top:1px solid rgba(255,255,255,.08)}
@@ -180,7 +195,12 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
       <img src="logo.png" alt="Logo" class="logo-img">
       <div class="brand"><h1>SAMASSA TECHNOLOGIE</h1><p>Tout pour l'informatique — Grand Marché de Kayes, Mali</p></div>
     </div>
-    <div class="header-right"><span class="ver-badge">Suite Pro v2.0</span></div>
+    <div class="header-right">
+      <span class="ver-badge">Suite Pro v2.0</span>
+      <button class="install-btn" id="installBtn" onclick="installApp()" style="display:none">
+        ⬇ Installer l'app
+      </button>
+    </div>
   </div>
   <nav class="nav-tabs">
     <div class="nav-tabs-inner">
@@ -598,8 +618,54 @@ function toast(msg, type = 'success') {
 document.getElementById('mv-date').value = new Date().toISOString().split('T')[0];
 loadStats();
 
-// PWA
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
+/* ============================================================
+   PWA — Installation sur PC et téléphone
+============================================================ */
+let deferredPrompt = null;
+
+/* Intercepter l'événement beforeinstallprompt (Chrome/Edge PC + Android) */
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = 'flex';
+});
+
+/* Cacher le bouton si déjà installé */
+window.addEventListener('appinstalled', () => {
+  deferredPrompt = null;
+  const btn = document.getElementById('installBtn');
+  if (btn) btn.style.display = 'none';
+  toast('Application installée avec succès ! ✓', 'success');
+});
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(result => {
+      if (result.outcome === 'accepted') {
+        toast('Installation en cours... ✓', 'success');
+      }
+      deferredPrompt = null;
+    });
+  } else {
+    /* Guide manuel si le prompt n'est pas disponible */
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if (isIOS && isSafari) {
+      alert('Pour installer sur iPhone/iPad :\n\n1. Appuyez sur le bouton Partager ⬆\n2. Sélectionnez "Sur l\'écran d\'accueil"\n3. Appuyez sur "Ajouter"');
+    } else {
+      alert('Pour installer l\'application :\n\nSur Chrome/Edge PC : cliquez l\'icône ⊕ dans la barre d\'adresse\nSur Android : Menu ⋮ → "Ajouter à l\'écran d\'accueil"');
+    }
+  }
+}
+
+/* Enregistrement du Service Worker */
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+    .then(reg => console.log('SW Samassa Pro enregistré :', reg.scope))
+    .catch(err => console.error('SW erreur :', err));
+}
 </script>
 </body>
 </html>
