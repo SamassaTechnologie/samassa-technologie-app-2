@@ -90,15 +90,32 @@ function saveDoc() {
 
   if (!total) { ST.toast('Le montant est vide — veuillez saisir au moins un service.', 'error'); return; }
 
+  /* Collecter le détail des services pour le modal historique */
+  const services = [];
+  document.querySelectorAll('.item-row').forEach(r => {
+    const ins = r.querySelectorAll('.item-inputs input');
+    services.push({
+      desc:  ins[0].value,
+      qty:   parseFloat(ins[1].value) || 1,
+      price: parseFloat(ins[3].value) || 0
+    });
+  });
+
   /* 1️⃣  Enregistrer le reçu dans l'historique */
-  ST.save('samassa_recus', {
-    number: num,
+  const list = JSON.parse(localStorage.getItem('samassa_recus') || '[]');
+  list.push({
+    number:    num,
     client,
+    phone:     ST.v('clientPhone') || '',
+    nina:      ST.v('clientNina')  || '',
     date,
     total,
-    mode:   selectedPM,
-    statut: 'Payé',
+    mode:      selectedPM,
+    statut:    'Payé',
+    services,
+    timestamp: new Date().toISOString()
   });
+  localStorage.setItem('samassa_recus', JSON.stringify(list));
 
   /* 2️⃣  Ajouter automatiquement au solde de caisse comme Entrée */
   const mouvements = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
@@ -110,7 +127,7 @@ function saveDoc() {
     amount:    total,
     pm:        selectedPM,
     cat:       'Vente service',
-    auto:      true,           // marqué "automatique" pour info
+    auto:      true,
     timestamp: new Date().toISOString()
   });
   localStorage.setItem('samassa_mouvements', JSON.stringify(mouvements));

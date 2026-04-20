@@ -137,15 +137,31 @@ function saveDoc() {
     return;
   }
 
+  /* Collecter le détail des services pour le modal historique */
+  const services = [];
+  document.querySelectorAll('.item-row').forEach(r => {
+    const ins = r.querySelectorAll('.item-inputs input');
+    services.push({
+      desc:  ins[0].value,
+      qty:   parseFloat(ins[1].value) || 1,
+      price: parseFloat(ins[3].value) || 0
+    });
+  });
+
   /* 1️⃣  Enregistrer le reçu cyber dans son historique propre */
-  ST.save('samassa_recus_cyber', {
-    number: num,
+  const recusList = JSON.parse(localStorage.getItem('samassa_recus_cyber') || '[]');
+  recusList.push({
+    number:    num,
     client,
+    phone:     ST.v('clientPhone') || '',
     date,
     total,
-    mode:   selectedPM,
-    statut: 'Payé',
+    mode:      selectedPM,
+    statut:    'Payé',
+    services,
+    timestamp: new Date().toISOString()
   });
+  localStorage.setItem('samassa_recus_cyber', JSON.stringify(recusList));
 
   /* 2️⃣  Ajouter automatiquement au solde de caisse commun */
   const mouvements = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');

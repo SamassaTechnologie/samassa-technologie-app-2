@@ -80,15 +80,83 @@ function printDoc() {
 }
 
 function saveDoc() {
-  const total = parseFloat(ST.v('totalCost')) || 0;
-  ST.save('samassa_interventions', {
-    number:    ST.v('interventionNumber'),
-    client:    ST.v('clientName'),
-    date:      ST.fmtDate(ST.v('interventionDate')),
-    equipment: ST.v('equipmentType') + ' ' + ST.v('equipmentBrand'),
+  if (ST.el('docInner').style.display === 'none') generateIntervention();
+
+  recalcTotal();
+  const total   = parseFloat(ST.v('totalCost')) || 0;
+  const statut  = ST.v('paymentStatus');
+  const client  = ST.v('clientName') || 'Client';
+  const intNum  = ST.v('interventionNumber');
+  const dateRaw = ST.v('interventionDate');
+  const dateFmt = ST.fmtDate(dateRaw);
+
+  /* 1️⃣  Enregistrer la fiche d'intervention */
+  const list = JSON.parse(localStorage.getItem('samassa_interventions') || '[]');
+  list.push({
+    number:    intNum,
+    client,
+    phone:     ST.v('clientPhone') || '',
+    date:      dateFmt,
+    equipment: ST.v('equipmentType') + (ST.v('equipmentBrand') ? ' — ' + ST.v('equipmentBrand') : ''),
+    problem:   ST.v('problemDescription'),
+    actions:   ST.v('actionsPerformed'),
     total,
-    statut:    ST.v('paymentStatus'),
+    statut,
+    timestamp: new Date().toISOString()
   });
+  localStorage.setItem('samassa_interventions', JSON.stringify(list));
+
+  /* 2️⃣  Si statut = "Payé" → générer automatiquement un reçu + alimenter la caisse */
+  if (statut === 'Payé' && total > 0) {
+
+    /* Générer le numéro du reçu automatique lié à l'intervention */
+    const recuNum = 'REC-INT-' + intNum.replace('INT-', '');
+
+    /* Sauvegarder le reçu dans l'historique des reçus */
+    const recus = JSON.parse(localStorage.getItem('samassa_recus') || '[]');
+    recus.push({
+      number:    recuNum,
+      client,
+      phone:     ST.v('clientPhone') || '',
+      date:      dateFmt,
+      total,
+      mode:      'Espèces',          /* mode par défaut — modifiable */
+      statut:    'Payé',
+      fromInt:   intNum,             /* lien vers la fiche d'intervention */
+      services:  [
+        {
+          desc:  'Intervention technique — ' + (ST.v('equipmentType') || 'Équipement'),
+          qty:   1,
+          price: total
+        }
+      ],
+      timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('samassa_recus', JSON.stringify(recus));
+
+    /* Ajouter au solde de caisse */
+    const mouvements = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
+    mouvements.push({
+      id:        Date.now(),
+      date:      dateRaw,
+      type:      'entree',
+      desc:      'Reçu ' + recuNum + ' (Intervention ' + intNum + ') — ' + client,
+      amount:    total,
+      pm:        'Espèces',
+      cat:       'Réparation',
+      auto:      true,
+      timestamp: new Date().toISOString()
+    });
+    localStorage.setItem('samassa_mouvements', JSON.stringify(mouvements));
+
+    ST.toast(
+      '✓ Fiche enregistrée · Reçu ' + recuNum + ' généré · +' + ST.fmtNum(total) + ' FCFA ajouté à la caisse 💰',
+      'success'
+    );
+
+  } else {
+    ST.toast('Fiche d\'intervention enregistrée ✓', 'success');
+  }
 }
 
 function shareWhatsApp() {

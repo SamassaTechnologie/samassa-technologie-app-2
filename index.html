@@ -156,6 +156,11 @@ table.mv-table tbody tr:last-child td{border-bottom:none}
 .doc-date{font-size:11px;color:var(--text3)}
 .st-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block}
 .st-paye{background:#F0FDF4;color:var(--green)} .st-attente{background:#FFFBEB;color:var(--amber)} .st-impaye{background:#FEF2F2;color:var(--red)}
+.hist-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid;transition:all .15s;font-family:inherit;text-decoration:none;white-space:nowrap}
+.hist-btn-detail{background:#EFF6FF;color:var(--blue);border-color:#BFDBFE}
+.hist-btn-detail:hover{background:#DBEAFE}
+.hist-btn-print{background:#F8FBFD;color:var(--text2);border-color:var(--border)}
+.hist-btn-print:hover{background:var(--navy);color:white;border-color:var(--navy)}
 
 /* FOOTER */
 footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
@@ -308,19 +313,48 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
     <div class="section-hd">Modes de paiement acceptés</div>
     <div class="pm-row">
       <div class="pm-card best">
-        <div class="pm-logo pml-wave">W</div>
+        <div class="pm-logo pml-wave">
+          <!-- Logo Wave SVG -->
+          <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="18" fill="#00BFA5"/>
+            <path d="M15 55 Q28 35 42 55 Q56 75 70 55 Q84 35 85 45" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <text x="50" y="88" text-anchor="middle" font-family="Arial Black,sans-serif" font-weight="900" font-size="22" fill="white">wave</text>
+          </svg>
+        </div>
         <div class="pm-info"><div class="pm-name">Wave <span class="best-tag">⭐ TOP</span></div><div class="pm-sub">Frais ~1% — Recommandé</div></div>
       </div>
       <div class="pm-card">
-        <div class="pm-logo pml-orange">OM</div>
+        <div class="pm-logo pml-orange">
+          <!-- Logo Orange Money SVG -->
+          <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="18" fill="#FF6600"/>
+            <circle cx="50" cy="44" r="22" fill="white"/>
+            <circle cx="50" cy="44" r="14" fill="#FF6600"/>
+            <text x="50" y="88" text-anchor="middle" font-family="Arial Black,sans-serif" font-weight="900" font-size="17" fill="white">ORANGE</text>
+          </svg>
+        </div>
         <div class="pm-info"><div class="pm-name">Orange Money</div><div class="pm-sub">Réseau le plus étendu</div></div>
       </div>
       <div class="pm-card">
-        <div class="pm-logo pml-moov">MM</div>
+        <div class="pm-logo pml-moov">
+          <!-- Logo Moov Money SVG -->
+          <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="18" fill="#0056A2"/>
+            <path d="M18 68 L18 36 L36 58 L50 36 L64 58 L82 36 L82 68" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+        </div>
         <div class="pm-info"><div class="pm-name">Moov Money</div><div class="pm-sub">Disponible partout</div></div>
       </div>
       <div class="pm-card">
-        <div class="pm-logo pml-cash">💵</div>
+        <div class="pm-logo pml-cash">
+          <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100" height="100" rx="18" fill="#16A34A"/>
+            <rect x="12" y="30" width="76" height="40" rx="6" fill="white" opacity="0.25"/>
+            <rect x="12" y="30" width="76" height="40" rx="6" stroke="white" stroke-width="4"/>
+            <circle cx="50" cy="50" r="10" fill="white"/>
+            <text x="50" y="55" text-anchor="middle" font-family="Arial Black,sans-serif" font-weight="900" font-size="14" fill="#16A34A">F</text>
+          </svg>
+        </div>
         <div class="pm-info"><div class="pm-name">Espèces / Cash</div><div class="pm-sub">Paiement en main propre</div></div>
       </div>
     </div>
@@ -594,12 +628,12 @@ function exportCSV() {
 ============================================================ */
 function renderHistory() {
   const types = [
-    { key: 'samassa_factures',      cls: 'dico-f', icon: '📄', label: 'Facture' },
-    { key: 'samassa_recus',         cls: 'dico-r', icon: '🧾', label: 'Reçu' },
-    { key: 'samassa_devis',         cls: 'dico-d', icon: '📋', label: 'Devis' },
-    { key: 'samassa_interventions', cls: 'dico-i', icon: '🔧', label: 'Intervention' },
-    { key: 'samassa_recus_cyber',   cls: 'dico-r', icon: '🖥️', label: 'Reçu Cyber' },
-    { key: 'samassa_factures_cyber',cls: 'dico-f', icon: '🖥️', label: 'Facture Cyber' }
+    { key: 'samassa_factures',      cls: 'dico-f', icon: '📄', label: 'Facture',       url: 'facture.html' },
+    { key: 'samassa_recus',         cls: 'dico-r', icon: '🧾', label: 'Reçu',          url: 'recu.html' },
+    { key: 'samassa_devis',         cls: 'dico-d', icon: '📋', label: 'Devis',          url: 'devis.html' },
+    { key: 'samassa_interventions', cls: 'dico-i', icon: '🔧', label: 'Intervention',   url: 'intervention.html' },
+    { key: 'samassa_recus_cyber',   cls: 'dico-r', icon: '🖥️', label: 'Reçu Cyber',    url: 'recu_cyber.html' },
+    { key: 'samassa_factures_cyber',cls: 'dico-f', icon: '🖥️', label: 'Facture Cyber', url: 'facture_cyber.html' }
   ];
   let all = [];
   types.forEach(t => {
@@ -612,21 +646,121 @@ function renderHistory() {
     container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3)"><div style="font-size:42px;opacity:.25;margin-bottom:10px">📂</div><p>Aucun document enregistré pour le moment</p></div>';
     return;
   }
-  container.innerHTML = all.map(d => {
-    const stCls = d.statut === 'Payé' ? 'st-paye' : d.statut === 'Impayé' ? 'st-impaye' : 'st-attente';
+
+  /* Sérialiser chaque doc pour les boutons onclick */
+  container.innerHTML = all.map((d, idx) => {
+    const stCls   = d.statut === 'Payé' ? 'st-paye' : d.statut === 'Impayé' ? 'st-impaye' : 'st-attente';
+    const isReceipt = d._t.key === 'samassa_recus' || d._t.key === 'samassa_recus_cyber';
+    const safeDoc   = JSON.stringify(d).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+
     return `<div class="doc-item">
       <div class="doc-ico ${d._t.cls}">${d._t.icon}</div>
       <div style="flex:1;min-width:0">
-        <div class="doc-ref">${d._t.label} N° ${d.number || '—'}</div>
-        <div class="doc-client">${d.client || 'Client non spécifié'}</div>
+        <div class="doc-ref">${d._t.label} N° ${d.number || '—'}
+          ${d.fromInt ? `<span style="font-size:10px;background:#EDE9FE;color:#6D28D9;padding:1px 6px;border-radius:10px;margin-left:5px">🔧 ${d.fromInt}</span>` : ''}
+        </div>
+        <div class="doc-client">${d.client || 'Client non spécifié'}
+          ${isReceipt && d.phone ? `<span style="margin-left:8px;color:var(--blue);font-size:11px;font-weight:600">📞 ${d.phone}</span>` : ''}
+        </div>
+        ${d.mode ? `<div style="font-size:11px;color:var(--text3);margin-top:2px">${pmIconHtml(d.mode)} ${d.mode}</div>` : ''}
       </div>
       <div style="text-align:right;flex-shrink:0">
         <div class="doc-amount">${d.total ? fmtNum(d.total) + ' FCFA' : '—'}</div>
         <div class="doc-date">${d.date || ''}</div>
         ${d.statut ? `<span class="st-badge ${stCls}">${d.statut}</span>` : ''}
+        <div style="display:flex;gap:5px;margin-top:6px;justify-content:flex-end">
+          ${isReceipt ? `<button class="hist-btn hist-btn-detail" onclick='showDocDetail(${idx})' title="Voir les détails">👁 Détails</button>` : ''}
+          <a href="${d._t.url}" class="hist-btn hist-btn-print" title="Ouvrir pour réimprimer">🖨️ Réimprimer</a>
+        </div>
       </div>
     </div>`;
   }).join('');
+
+  /* Stocker l'index global pour le modal */
+  window._histAll = all;
+}
+
+function pmIconHtml(mode) {
+  const m = { Wave:'🌊', 'Orange Money':'🟠', 'Moov Money':'🔵', Espèces:'💵' };
+  return m[mode] || '';
+}
+
+/* ── Modal Détails d'un reçu ── */
+function showDocDetail(idx) {
+  const d = window._histAll[idx];
+  if (!d) return;
+  const existing = document.getElementById('hist-modal');
+  if (existing) existing.remove();
+
+  const services = (d.services || []).map(s =>
+    `<tr>
+      <td style="padding:7px 12px;border-bottom:1px solid #F0F5FA;font-size:13px">${s.desc}</td>
+      <td style="padding:7px 12px;border-bottom:1px solid #F0F5FA;font-size:13px;text-align:center">${s.qty}</td>
+      <td style="padding:7px 12px;border-bottom:1px solid #F0F5FA;font-size:13px;text-align:right;font-weight:600">${fmtNum(s.price)} F</td>
+    </tr>`).join('') || `<tr><td colspan="3" style="padding:12px;text-align:center;color:#8099B0;font-size:13px">Aucun détail de service enregistré</td></tr>`;
+
+  const pmIcons = { Wave:'🌊', 'Orange Money':'🟠', 'Moov Money':'🔵', Espèces:'💵' };
+
+  const modal = document.createElement('div');
+  modal.id = 'hist-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(13,27,42,.6);z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)';
+  modal.innerHTML = `
+    <div style="background:white;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+      <!-- Header -->
+      <div style="background:var(--navy);padding:18px 20px;border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="color:white;font-size:15px;font-weight:700">${d._t.label} N° ${d.number || '—'}</div>
+          <div style="color:#93B8D4;font-size:12px;margin-top:2px">📅 ${d.date || '—'}</div>
+        </div>
+        <button onclick="document.getElementById('hist-modal').remove()" style="background:rgba(255,255,255,.15);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">✕</button>
+      </div>
+      <!-- Body -->
+      <div style="padding:20px">
+        <!-- Client -->
+        <div style="background:#F0F5FA;border-radius:10px;padding:14px 16px;margin-bottom:16px">
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8099B0;margin-bottom:8px">Informations Client</div>
+          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #E2EAF0">
+            <span style="font-size:12px;color:#4A6080">Nom complet</span>
+            <span style="font-size:13px;font-weight:700;color:#1A2D44">${d.client || '—'}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #E2EAF0">
+            <span style="font-size:12px;color:#4A6080">Téléphone</span>
+            <span style="font-size:13px;font-weight:700;color:#0088CC">${d.phone || '—'}</span>
+          </div>
+          ${d.nina ? `<div style="display:flex;justify-content:space-between;padding:4px 0">
+            <span style="font-size:12px;color:#4A6080">N° NINA</span>
+            <span style="font-size:13px;font-weight:700;color:#1A2D44">${d.nina}</span>
+          </div>` : ''}
+        </div>
+        <!-- Services -->
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8099B0;margin-bottom:8px">Services</div>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:16px;background:#F8FBFD;border-radius:8px;overflow:hidden">
+          <thead><tr style="background:#0D1B2A">
+            <th style="padding:8px 12px;color:white;font-size:11px;text-align:left">Description</th>
+            <th style="padding:8px 12px;color:white;font-size:11px;text-align:center">Qté</th>
+            <th style="padding:8px 12px;color:white;font-size:11px;text-align:right">Montant</th>
+          </tr></thead>
+          <tbody>${services}</tbody>
+        </table>
+        <!-- Total + Mode -->
+        <div style="display:flex;justify-content:space-between;align-items:center;background:#0D1B2A;border-radius:10px;padding:12px 16px;margin-bottom:14px">
+          <span style="color:#93B8D4;font-size:13px;font-weight:700">TOTAL PAYÉ</span>
+          <span style="color:white;font-size:18px;font-weight:800">${fmtNum(d.total || 0)} FCFA</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#F0FDF4;border:1.5px solid #DCFCE7;border-radius:10px">
+          <span style="font-size:22px">${pmIcons[d.mode] || '💵'}</span>
+          <div>
+            <div style="font-size:14px;font-weight:700;color:#1A2D44">${d.mode || 'Non spécifié'}</div>
+            <div style="font-size:11px;color:#4A6080">Paiement confirmé ✅</div>
+          </div>
+          <span style="margin-left:auto;background:#DCFCE7;color:#16A34A;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:700">${d.statut || '—'}</span>
+        </div>
+        ${d.fromInt ? `<div style="margin-top:12px;padding:10px 14px;background:#EDE9FE;border-radius:8px;font-size:12px;color:#6D28D9;font-weight:600">🔧 Généré depuis l'intervention ${d.fromInt}</div>` : ''}
+      </div>
+    </div>`;
+
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
 }
 
 function clearHistory() {
