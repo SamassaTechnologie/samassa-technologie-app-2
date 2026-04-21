@@ -26,6 +26,9 @@ const STATIC_ASSETS = [
   'manifest.json',
   'logo.png',
   'icon-512x512.png',
+  'logo-wave.png',
+  'logo-orange-money.jpg',
+  'logo-moov-money.png',
   'signature.png',
   'cachet.png',
   'watermark.png'

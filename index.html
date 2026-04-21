@@ -211,6 +211,7 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
     <div class="nav-tabs-inner">
       <div class="nav-tab active" onclick="showTab('dashboard')">🏠 Tableau de bord</div>
       <div class="nav-tab" onclick="showTab('mouvements')">💰 Mouvements de caisse</div>
+      <div class="nav-tab" onclick="showTab('retraits')">📋 Récupérations</div>
       <div class="nav-tab" onclick="showTab('historique')">📂 Historique</div>
     </div>
   </nav>
@@ -313,35 +314,20 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
     <div class="section-hd">Modes de paiement acceptés</div>
     <div class="pm-row">
       <div class="pm-card best">
-        <div class="pm-logo pml-wave">
-          <!-- Logo Wave SVG -->
-          <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="100" height="100" rx="18" fill="#00BFA5"/>
-            <path d="M15 55 Q28 35 42 55 Q56 75 70 55 Q84 35 85 45" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            <text x="50" y="88" text-anchor="middle" font-family="Arial Black,sans-serif" font-weight="900" font-size="22" fill="white">wave</text>
-          </svg>
+        <div class="pm-logo pml-wave" style="background:white;padding:2px;border:1px solid #E2EAF0">
+          <img src="logo-wave.png" alt="Wave" style="width:100%;height:100%;object-fit:contain;border-radius:7px">
         </div>
         <div class="pm-info"><div class="pm-name">Wave <span class="best-tag">⭐ TOP</span></div><div class="pm-sub">Frais ~1% — Recommandé</div></div>
       </div>
       <div class="pm-card">
-        <div class="pm-logo pml-orange">
-          <!-- Logo Orange Money SVG -->
-          <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="100" height="100" rx="18" fill="#FF6600"/>
-            <circle cx="50" cy="44" r="22" fill="white"/>
-            <circle cx="50" cy="44" r="14" fill="#FF6600"/>
-            <text x="50" y="88" text-anchor="middle" font-family="Arial Black,sans-serif" font-weight="900" font-size="17" fill="white">ORANGE</text>
-          </svg>
+        <div class="pm-logo pml-orange" style="background:white;padding:2px;border:1px solid #FFE0B2">
+          <img src="logo-orange-money.jpg" alt="Orange Money" style="width:100%;height:100%;object-fit:contain">
         </div>
         <div class="pm-info"><div class="pm-name">Orange Money</div><div class="pm-sub">Réseau le plus étendu</div></div>
       </div>
       <div class="pm-card">
-        <div class="pm-logo pml-moov">
-          <!-- Logo Moov Money SVG -->
-          <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="100" height="100" rx="18" fill="#0056A2"/>
-            <path d="M18 68 L18 36 L36 58 L50 36 L64 58 L82 36 L82 68" stroke="white" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          </svg>
+        <div class="pm-logo pml-moov" style="background:white;padding:2px;border:1px solid #DBEAFE">
+          <img src="logo-moov-money.png" alt="Moov Money" style="width:100%;height:100%;object-fit:contain">
         </div>
         <div class="pm-info"><div class="pm-name">Moov Money</div><div class="pm-sub">Disponible partout</div></div>
       </div>
@@ -455,6 +441,60 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
   </div>
 
   <!-- ════════════════════════════════════════
+       ONGLET : RÉCUPÉRATIONS / RETRAITS
+  ════════════════════════════════════════ -->
+  <div class="page-section" id="tab-retraits">
+
+    <!-- Stat du jour -->
+    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#FEF3C7">⏳</div>
+        <div class="stat-label">En attente</div>
+        <div class="stat-val" id="rt-attente" style="color:var(--amber)">0</div>
+        <div class="stat-sub">Cartes non récupérées</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#F0FDF4">✅</div>
+        <div class="stat-label">Récupérées aujourd'hui</div>
+        <div class="stat-val" id="rt-today" style="color:var(--green)">0</div>
+        <div class="stat-sub">Retraits du jour</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#EFF6FF">📊</div>
+        <div class="stat-label">Total récupérées</div>
+        <div class="stat-val" id="rt-total">0</div>
+        <div class="stat-sub">Depuis le début</div>
+      </div>
+    </div>
+
+    <!-- Filtre date -->
+    <div class="card">
+      <div class="card-hd">
+        <h3>⏳ Cartes en attente de récupération</h3>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input type="text" id="rt-search" placeholder="🔍 Rechercher client..." oninput="renderRetraits()" style="padding:7px 11px;font-size:12px;min-width:180px">
+          <button class="export-btn" onclick="exportRetraits()">⬇ Exporter CSV</button>
+        </div>
+      </div>
+      <div id="rt-pending-list"></div>
+    </div>
+
+    <!-- Historique journalier des retraits -->
+    <div class="card">
+      <div class="card-hd">
+        <h3>📋 Historique journalier des récupérations</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <label style="font-size:12px;font-weight:600;color:var(--text2)">Filtrer par date :</label>
+          <input type="date" id="rt-date-filter" onchange="renderRetraits()" style="padding:6px 10px;font-size:12px">
+          <button class="clear-btn" onclick="document.getElementById('rt-date-filter').value='';renderRetraits()">✕ Tout</button>
+        </div>
+      </div>
+      <div id="rt-history-list"></div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════
        ONGLET : HISTORIQUE
   ════════════════════════════════════════ -->
   <div class="page-section" id="tab-historique">
@@ -489,11 +529,12 @@ function showTab(id) {
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
-  const tabs = ['dashboard', 'mouvements', 'historique'];
+  const tabs = ['dashboard', 'mouvements', 'retraits', 'historique'];
   const idx = tabs.indexOf(id);
   document.querySelectorAll('.nav-tab')[idx].classList.add('active');
   if (id === 'dashboard')    loadStats();
   if (id === 'mouvements')   renderMouvements();
+  if (id === 'retraits')     renderRetraits();
   if (id === 'historique')   renderHistory();
 }
 
@@ -769,6 +810,190 @@ function clearHistory() {
    'samassa_recus_cyber', 'samassa_factures_cyber'].forEach(k => localStorage.removeItem(k));
   renderHistory(); loadStats();
   toast('Historique effacé.', 'info');
+}
+
+/* ============================================================
+   RÉCUPÉRATIONS / RETRAITS JOURNALIERS
+============================================================ */
+function renderRetraits() {
+  const recus    = JSON.parse(localStorage.getItem('samassa_recus') || '[]');
+  const retraits = JSON.parse(localStorage.getItem('samassa_retraits') || '[]');
+  const search   = (document.getElementById('rt-search')?.value || '').toLowerCase();
+  const dateFilt = document.getElementById('rt-date-filter')?.value || '';
+  const today    = new Date().toISOString().split('T')[0];
+
+  /* IDs déjà récupérés */
+  const retrievedNums = new Set(retraits.map(r => r.recuNumber));
+
+  /* Cartes en attente = reçus scan NINA non encore récupérés */
+  const pending = recus.filter(r =>
+    !retrievedNums.has(r.number) &&
+    (r.services || []).some(s => /nina|scan|carte|biom/i.test(s.desc))
+  ).filter(r => !search || r.client.toLowerCase().includes(search) || (r.phone || '').includes(search));
+
+  /* Stats */
+  const todayRetraits = retraits.filter(r => r.dateRetrait === today);
+  document.getElementById('rt-attente').textContent = pending.length;
+  document.getElementById('rt-today').textContent   = todayRetraits.length;
+  document.getElementById('rt-total').textContent   = retraits.length;
+
+  /* Liste en attente */
+  const pendingEl = document.getElementById('rt-pending-list');
+  if (!pending.length) {
+    pendingEl.innerHTML = `<div style="text-align:center;padding:32px;color:var(--text3)">
+      <div style="font-size:36px;opacity:.3;margin-bottom:8px">✅</div>
+      <p style="font-size:14px">Aucune carte en attente de récupération</p>
+    </div>`;
+  } else {
+    pendingEl.innerHTML = `<table class="mv-table">
+      <thead><tr>
+        <th>Reçu N°</th><th>Client</th><th>Téléphone</th><th>NINA</th>
+        <th>Date paiement</th><th>Rendez-vous estimé</th><th>Actions</th>
+      </tr></thead>
+      <tbody>${pending.map(r => {
+        const rdv = computeRdv(r.date);
+        const overdue = isOverdue(r.date);
+        return `<tr>
+          <td class="td-desc">${r.number}</td>
+          <td class="td-desc">${r.client}</td>
+          <td style="color:var(--blue)">${r.phone || '—'}</td>
+          <td style="font-size:11px;color:var(--text3)">${r.nina || '—'}</td>
+          <td>${r.date}</td>
+          <td><span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;${overdue ? 'background:#FEF2F2;color:var(--red)' : 'background:#FEF3C7;color:var(--amber)'}">${overdue ? '⚠️ Dépassé' : '📅 ' + rdv}</span></td>
+          <td>
+            <div style="display:flex;gap:6px">
+              <button class="hist-btn" style="background:#F0FDF4;color:var(--green);border-color:#DCFCE7"
+                onclick="confirmRetrait('${r.number}','${r.client}','${r.phone || ''}','${r.nina || ''}')">
+                ✅ Récupérée
+              </button>
+              <button class="hist-btn" style="background:#EFF6FF;color:var(--blue);border-color:#BFDBFE"
+                onclick="sendRdvSMS('${r.phone || ''}','${r.client}','${r.number}','${r.date}')">
+                📱 SMS RDV
+              </button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>`;
+  }
+
+  /* Historique journalier des retraits */
+  let filteredRetraits = [...retraits].sort((a, b) => new Date(b.dateRetrait) - new Date(a.dateRetrait));
+  if (dateFilt) filteredRetraits = filteredRetraits.filter(r => r.dateRetrait === dateFilt);
+
+  const histEl = document.getElementById('rt-history-list');
+  if (!filteredRetraits.length) {
+    histEl.innerHTML = `<div style="text-align:center;padding:28px;color:var(--text3);font-style:italic;font-size:13px">Aucune récupération enregistrée${dateFilt ? ' pour cette date' : ''}</div>`;
+    return;
+  }
+
+  /* Regrouper par date */
+  const byDate = {};
+  filteredRetraits.forEach(r => {
+    if (!byDate[r.dateRetrait]) byDate[r.dateRetrait] = [];
+    byDate[r.dateRetrait].push(r);
+  });
+
+  histEl.innerHTML = Object.entries(byDate).map(([date, items]) => `
+    <div style="padding:10px 20px;background:var(--bg);border-bottom:1px solid var(--border)">
+      <span style="font-size:12px;font-weight:700;color:var(--navy)">📅 ${new Date(date + 'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</span>
+      <span style="margin-left:10px;background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px">${items.length} retrait(s)</span>
+    </div>
+    ${items.map(r => `
+    <div class="doc-item">
+      <div class="doc-ico dico-r">🪪</div>
+      <div style="flex:1;min-width:0">
+        <div class="doc-ref">${r.client}</div>
+        <div class="doc-client">Reçu ${r.recuNumber} · NINA : ${r.nina || '—'} · ${r.phone || '—'}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:11px;color:var(--text3)">${r.heureRetrait || ''}</div>
+        <span class="st-badge st-paye">✅ Récupéré</span>
+        <div style="margin-top:5px">
+          <button class="hist-btn hist-btn-detail" onclick="sendPickupConfirmSMS('${r.phone || ''}','${r.client}','${r.recuNumber}','${r.dateRetrait}')">
+            📱 Renvoyer SMS
+          </button>
+        </div>
+      </div>
+    </div>`).join('')}
+  `).join('');
+}
+
+function computeRdv(dateStr) {
+  /* Rendez-vous = date paiement + 2 jours ouvrés (48h) */
+  try {
+    const d = new Date(dateStr.split('/').reverse().join('-') + 'T12:00:00');
+    d.setDate(d.getDate() + 2);
+    return d.toLocaleDateString('fr-FR');
+  } catch { return '—'; }
+}
+
+function isOverdue(dateStr) {
+  try {
+    const d = new Date(dateStr.split('/').reverse().join('-') + 'T12:00:00');
+    d.setDate(d.getDate() + 2);
+    return d < new Date();
+  } catch { return false; }
+}
+
+function confirmRetrait(recuNumber, client, phone, nina) {
+  if (!confirm('Confirmer la récupération de la carte de ' + client + ' ?\nUn SMS de confirmation sera envoyé.')) return;
+
+  const today    = new Date().toISOString().split('T')[0];
+  const heure    = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  const retraits = JSON.parse(localStorage.getItem('samassa_retraits') || '[]');
+  retraits.push({
+    recuNumber, client, phone, nina,
+    dateRetrait: today,
+    heureRetrait: heure,
+    timestamp: new Date().toISOString()
+  });
+  localStorage.setItem('samassa_retraits', JSON.stringify(retraits));
+
+  /* Envoyer SMS de confirmation de récupération */
+  sendPickupConfirmSMS(phone, client, recuNumber, today);
+
+  toast('✅ Récupération confirmée pour ' + client + ' — SMS envoyé', 'success');
+  renderRetraits();
+}
+
+function sendPickupConfirmSMS(phone, client, recuNumber, dateRetrait) {
+  const dateFr = new Date(dateRetrait + 'T12:00:00').toLocaleDateString('fr-FR');
+  const msg = `SAMASSA TECH - Bonjour ${client}, votre carte (Recu ${recuNumber}) a bien ete recuperee le ${dateFr}. Merci pour votre confiance! Tel: 77291931`;
+  const p = (phone || '').replace(/\s/g, '');
+  if (p) {
+    window.open('sms:' + p + '?body=' + encodeURIComponent(msg), '_blank');
+  } else {
+    window.open('sms:?body=' + encodeURIComponent(msg), '_blank');
+    toast('Téléphone non renseigné — SMS ouvert sans numéro.', 'info');
+  }
+}
+
+function sendRdvSMS(phone, client, recuNumber, datePaiement) {
+  const rdv = computeRdv(datePaiement);
+  const msg = `SAMASSA TECH - Bonjour ${client}, votre carte (Recu ${recuNumber}) est prete. Venez la recuperer d'ici le ${rdv}. Tel: 77291931 - Grand Marche de Kayes`;
+  const p = (phone || '').replace(/\s/g, '');
+  if (p) {
+    window.open('sms:' + p + '?body=' + encodeURIComponent(msg), '_blank');
+  } else {
+    window.open('sms:?body=' + encodeURIComponent(msg), '_blank');
+  }
+}
+
+function exportRetraits() {
+  const retraits = JSON.parse(localStorage.getItem('samassa_retraits') || '[]');
+  if (!retraits.length) { toast('Aucune récupération à exporter.', 'error'); return; }
+  const rows = [['Date Retrait','Heure','Client','Téléphone','NINA','N° Reçu']];
+  retraits.sort((a,b) => new Date(b.dateRetrait) - new Date(a.dateRetrait)).forEach(r => {
+    rows.push([r.dateRetrait, r.heureRetrait||'', r.client, r.phone||'', r.nina||'', r.recuNumber]);
+  });
+  const csv  = rows.map(r => r.join(';')).join('\n');
+  const blob = new Blob(['\uFEFF'+csv], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'samassa-retraits-' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+  toast('Export CSV des récupérations ✓');
 }
 
 /* ============================================================

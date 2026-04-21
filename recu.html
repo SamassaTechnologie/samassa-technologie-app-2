@@ -103,23 +103,44 @@
       <div class="section-label green" style="margin-top:14px">Mode de paiement</div>
       <div class="payment-methods">
         <div class="pm-option" data-pm="Wave">
-          <div class="pm-badge wave">W</div>
+          <div class="pm-badge wave"><img src="logo-wave.png" alt="Wave" style="width:32px;height:32px;object-fit:contain;border-radius:6px"></div>
           <div><div class="pm-name">Wave <span class="pm-rec">★ TOP</span></div><div class="pm-sub">~1% frais</div></div>
         </div>
         <div class="pm-option" data-pm="Orange Money">
-          <div class="pm-badge orange">OM</div>
+          <div class="pm-badge orange" style="background:white;border:1px solid #FFE0B2"><img src="logo-orange-money.jpg" alt="Orange Money" style="width:32px;height:32px;object-fit:contain"></div>
           <div><div class="pm-name">Orange Money</div><div class="pm-sub">~1.5% frais</div></div>
         </div>
         <div class="pm-option" data-pm="Moov Money">
-          <div class="pm-badge moov">MM</div>
+          <div class="pm-badge moov" style="background:white;padding:2px"><img src="logo-moov-money.png" alt="Moov Money" style="width:32px;height:32px;object-fit:contain"></div>
           <div><div class="pm-name">Moov Money</div><div class="pm-sub">~1.5% frais</div></div>
         </div>
         <div class="pm-option" data-pm="Espèces">
-          <div class="pm-badge cash">💵</div>
+          <div class="pm-badge cash" style="font-size:18px;color:white">💵</div>
           <div><div class="pm-name">Espèces</div><div class="pm-sub">0% frais</div></div>
         </div>
       </div>
       <input type="hidden" id="paymentMethod" value="Wave">
+
+      <div class="section-label green" style="margin-top:14px">Rendez-vous</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Délai</label>
+          <select id="rdvDelay" onchange="updateRdvDate()">
+            <option value="24">24 heures</option>
+            <option value="48" selected>48 heures</option>
+            <option value="72">72 heures</option>
+            <option value="custom">Date précise</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date du rendez-vous</label>
+          <input type="datetime-local" id="rdvDate">
+        </div>
+        <div class="form-group span2">
+          <label>Message personnalisé (optionnel)</label>
+          <input type="text" id="rdvNote" placeholder="Ex: Venez avec votre ancienne carte">
+        </div>
+      </div>
 
       <div class="section-label green" style="margin-top:14px">Entreprise</div>
       <div class="form-grid">
@@ -134,6 +155,7 @@
       <button class="btn btn-save" onclick="saveDoc()">💾 Enregistrer + Caisse</button>
       <button class="btn btn-wa" onclick="shareWhatsApp()">💬 WhatsApp</button>
       <button class="btn btn-sms" onclick="sendSMS()">📱 SMS</button>
+      <button class="btn" style="background:#7C3AED;color:white" onclick="sendRdvSMS()" title="Envoyer SMS confirmation + rendez-vous">📅 SMS Rendez-vous</button>
     </div>
   </div>
 
@@ -178,7 +200,7 @@
 
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:white;background:var(--navy);padding:7px 14px;border-radius:6px;margin-bottom:10px">Mode de paiement</div>
         <div id="d-pmBox" class="pm-display-box pm-box-wave">
-          <div class="pm-display-icon" id="d-pmIcon">🌊</div>
+          <div class="pm-display-icon" id="d-pmIcon"><img src="logo-wave.png" alt="Wave" style="width:36px;height:36px;object-fit:contain;border-radius:8px"></div>
           <div><div class="pm-display-name" id="d-pmName">Wave</div><div class="pm-display-sub">Paiement reçu et confirmé ✅</div></div>
           <div class="pm-display-amount" id="d-pmAmount"></div>
         </div>
@@ -197,8 +219,56 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION : CARTES EN ATTENTE DE RÉCUPÉRATION
+═══════════════════════════════════════════════════════════ -->
+<div style="max-width:1340px;margin:24px auto;padding:0 24px">
+
+  <div style="background:white;border-radius:14px;border:1px solid #D0DDE8;box-shadow:0 2px 12px rgba(13,27,42,.08);margin-bottom:22px">
+    <div style="padding:16px 20px;border-bottom:1px solid #D0DDE8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <h3 style="font-size:15px;font-weight:700;color:#1A2D44">🪪 Cartes en attente de récupération</h3>
+      <span style="font-size:12px;color:#8099B0">Cliquez sur un client pour confirmer la récupération de sa carte</span>
+    </div>
+    <div id="pendingCards-list"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SECTION : HISTORIQUE JOURNALIER DES RETRAITS
+  ═══════════════════════════════════════════════════════════ -->
+  <div style="background:white;border-radius:14px;border:1px solid #D0DDE8;box-shadow:0 2px 12px rgba(13,27,42,.08)">
+    <div style="padding:16px 20px;border-bottom:1px solid #D0DDE8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <h3 style="font-size:15px;font-weight:700;color:#1A2D44">📋 Historique journalier des retraits</h3>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <input type="date" id="histDate" style="padding:7px 11px;border:1.5px solid #D0DDE8;border-radius:8px;font-size:13px;font-family:inherit;outline:none" onchange="renderDailyHistory()">
+        <button onclick="exportDailyCSV()" style="background:#0D1B2A;color:white;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">⬇ Exporter CSV</button>
+      </div>
+    </div>
+    <!-- Résumé du jour -->
+    <div id="daily-summary" style="padding:14px 20px;border-bottom:1px solid #F0F5FA;display:grid;grid-template-columns:repeat(3,1fr);gap:12px"></div>
+    <!-- Table -->
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead>
+          <tr style="background:#F0F5FA">
+            <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#8099B0;text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:2px solid #D0DDE8">N° Reçu</th>
+            <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#8099B0;text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:2px solid #D0DDE8">Client</th>
+            <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#8099B0;text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:2px solid #D0DDE8">NINA</th>
+            <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#8099B0;text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:2px solid #D0DDE8">Services</th>
+            <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#8099B0;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #D0DDE8">Mode</th>
+            <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#8099B0;text-transform:uppercase;letter-spacing:.05em;text-align:right;border-bottom:2px solid #D0DDE8">Montant</th>
+            <th style="padding:9px 14px;font-size:11px;font-weight:700;color:#8099B0;text-transform:uppercase;letter-spacing:.05em;border-bottom:2px solid #D0DDE8">Statut</th>
+          </tr>
+        </thead>
+        <tbody id="daily-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <script src="utils.js"></script>
 <script src="recu.js"></script>
-<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
+<script>
+if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");
+</script>
 </body>
 </html>
