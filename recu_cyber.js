@@ -105,12 +105,17 @@ function generateReceipt() {
   });
   ST.el('d-total').textContent = ST.fmt(total);
 
-  /* Mode de paiement */
-  const icons = { Wave:'🌊', 'Orange Money':'🟠', 'Moov Money':'🔵', Espèces:'💵' };
+  /* Mode de paiement — vrais logos */
+  const PM_LOGO_HTML = {
+    Wave:           `<img src="logo-wave.png"         alt="Wave"         style="width:36px;height:36px;object-fit:contain;border-radius:8px">`,
+    'Orange Money': `<img src="logo-orange-money.jpg" alt="Orange Money" style="width:36px;height:36px;object-fit:contain">`,
+    'Moov Money':   `<img src="logo-moov-money.png"   alt="Moov Money"   style="width:36px;height:36px;object-fit:contain">`,
+    Espèces:        `<span style="font-size:28px">💵</span>`
+  };
   const pmCls = { Wave:'pm-box-wave', 'Orange Money':'pm-box-orange', 'Moov Money':'pm-box-moov', Espèces:'pm-box-cash' };
   const pmBox = ST.el('d-pmBox');
   pmBox.className = 'pm-display-box ' + (pmCls[selectedPM] || '');
-  ST.el('d-pmIcon').textContent   = icons[selectedPM] || '💵';
+  ST.el('d-pmIcon').innerHTML     = PM_LOGO_HTML[selectedPM] || '💵';
   ST.el('d-pmName').textContent   = selectedPM;
   ST.el('d-pmAmount').textContent = ST.fmt(total);
 

@@ -31,7 +31,7 @@
 .rdh-brand .contacts { font-size: 11px; color: #6EA8CC; margin-top: 4px; }
 .rdh-right { text-align: right; }
 .recu-badge { background: var(--green); color: white; font-size: 22px; font-weight: 800; padding: 7px 18px; border-radius: 8px; letter-spacing: 2px; display: inline-block; }
-.recu-num { font-size: 12px; color: #93B8D4; margin-top: 4px; }
+.recu-num  { font-size: 12px; color: #93B8D4; margin-top: 4px; }
 .recu-date { font-size: 11px; color: #6EA8CC; margin-top: 3px; }
 
 .client-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
@@ -47,7 +47,7 @@
 .pm-box-orange { background: #FFF7ED; border-color: var(--orange); }
 .pm-box-moov   { background: #EFF6FF; border-color: var(--moov); }
 .pm-box-cash   { background: #F0FDF4; border-color: var(--green); }
-.pm-display-icon { font-size: 30px; flex-shrink: 0; }
+.pm-display-icon { font-size: 30px; flex-shrink: 0; display:flex; align-items:center; }
 .pm-display-name { font-size: 16px; font-weight: 800; color: var(--text); }
 .pm-display-sub  { font-size: 12px; color: var(--text2); }
 .pm-display-amount { margin-left: auto; font-size: 18px; font-weight: 800; color: var(--text); }
@@ -62,6 +62,8 @@
 </div>
 
 <div class="layout">
+
+  <!-- ══════════════════ FORMULAIRE ══════════════════ -->
   <div class="form-panel">
     <div class="panel-header"><h2>🧾 Informations du reçu</h2><p>Renseignez les détails de la transaction</p></div>
     <div class="form-body">
@@ -103,19 +105,19 @@
       <div class="section-label green" style="margin-top:14px">Mode de paiement</div>
       <div class="payment-methods">
         <div class="pm-option" data-pm="Wave">
-          <div class="pm-badge wave"><img src="logo-wave.png" alt="Wave" style="width:32px;height:32px;object-fit:contain;border-radius:6px"></div>
+          <div class="pm-badge wave" style="background:white;border:1px solid #E2EAF0;overflow:hidden"><img src="logo-wave.png" alt="Wave" style="width:34px;height:34px;object-fit:contain;border-radius:6px"></div>
           <div><div class="pm-name">Wave <span class="pm-rec">★ TOP</span></div><div class="pm-sub">~1% frais</div></div>
         </div>
         <div class="pm-option" data-pm="Orange Money">
-          <div class="pm-badge orange" style="background:white;border:1px solid #FFE0B2"><img src="logo-orange-money.jpg" alt="Orange Money" style="width:32px;height:32px;object-fit:contain"></div>
+          <div class="pm-badge orange" style="background:white;border:1px solid #FFE0B2;overflow:hidden"><img src="logo-orange-money.jpg" alt="Orange Money" style="width:34px;height:34px;object-fit:contain"></div>
           <div><div class="pm-name">Orange Money</div><div class="pm-sub">~1.5% frais</div></div>
         </div>
         <div class="pm-option" data-pm="Moov Money">
-          <div class="pm-badge moov" style="background:white;padding:2px"><img src="logo-moov-money.png" alt="Moov Money" style="width:32px;height:32px;object-fit:contain"></div>
+          <div class="pm-badge moov" style="background:white;border:1px solid #DBEAFE;overflow:hidden"><img src="logo-moov-money.png" alt="Moov Money" style="width:34px;height:34px;object-fit:contain"></div>
           <div><div class="pm-name">Moov Money</div><div class="pm-sub">~1.5% frais</div></div>
         </div>
         <div class="pm-option" data-pm="Espèces">
-          <div class="pm-badge cash" style="font-size:18px;color:white">💵</div>
+          <div class="pm-badge cash" style="background:#16A34A;font-size:18px;color:white">💵</div>
           <div><div class="pm-name">Espèces</div><div class="pm-sub">0% frais</div></div>
         </div>
       </div>
@@ -137,7 +139,7 @@
           <input type="datetime-local" id="rdvDate">
         </div>
         <div class="form-group span2">
-          <label>Message personnalisé (optionnel)</label>
+          <label>Note pour le client (optionnel)</label>
           <input type="text" id="rdvNote" placeholder="Ex: Venez avec votre ancienne carte">
         </div>
       </div>
@@ -155,10 +157,11 @@
       <button class="btn btn-save" onclick="saveDoc()">💾 Enregistrer + Caisse</button>
       <button class="btn btn-wa" onclick="shareWhatsApp()">💬 WhatsApp</button>
       <button class="btn btn-sms" onclick="sendSMS()">📱 SMS</button>
-      <button class="btn" style="background:#7C3AED;color:white" onclick="sendRdvSMS()" title="Envoyer SMS confirmation + rendez-vous">📅 SMS Rendez-vous</button>
+      <button class="btn" style="background:#7C3AED;color:white" onclick="sendRdvSMS()">📅 SMS Rendez-vous</button>
     </div>
   </div>
 
+  <!-- ══════════════════ APERÇU DOCUMENT ══════════════════ -->
   <div class="doc-panel">
     <div class="doc-placeholder" id="placeholder"><div class="ph-icon">🧾</div><p>Remplissez le formulaire<br>et cliquez sur <strong>Générer</strong></p></div>
     <div class="doc-inner" id="docInner" style="display:none">
@@ -191,14 +194,14 @@
           </div>
         </div>
 
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--navy);background:var(--navy);color:white;padding:7px 14px;border-radius:6px;margin-bottom:10px">Détails de la transaction</div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--navy);color:white;padding:7px 14px;border-radius:6px;margin-bottom:10px">Détails de la transaction</div>
         <table class="doc-table">
           <thead><tr><th style="width:45%;text-align:left">Description</th><th>Qté</th><th>Prix unitaire</th><th>Total</th></tr></thead>
           <tbody id="d-items"></tbody>
           <tfoot><tr><td style="text-align:right">MONTANT TOTAL</td><td id="d-total" colspan="3" style="text-align:center"></td></tr></tfoot>
         </table>
 
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:white;background:var(--navy);padding:7px 14px;border-radius:6px;margin-bottom:10px">Mode de paiement</div>
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--navy);color:white;padding:7px 14px;border-radius:6px;margin-bottom:10px">Mode de paiement</div>
         <div id="d-pmBox" class="pm-display-box pm-box-wave">
           <div class="pm-display-icon" id="d-pmIcon"><img src="logo-wave.png" alt="Wave" style="width:36px;height:36px;object-fit:contain;border-radius:8px"></div>
           <div><div class="pm-display-name" id="d-pmName">Wave</div><div class="pm-display-sub">Paiement reçu et confirmé ✅</div></div>
@@ -220,21 +223,20 @@
 </div>
 
 <!-- ═══════════════════════════════════════════════════════════
-     SECTION : CARTES EN ATTENTE DE RÉCUPÉRATION
+     SECTION CARTES EN ATTENTE + HISTORIQUE JOURNALIER
 ═══════════════════════════════════════════════════════════ -->
 <div style="max-width:1340px;margin:24px auto;padding:0 24px">
 
+  <!-- Cartes en attente -->
   <div style="background:white;border-radius:14px;border:1px solid #D0DDE8;box-shadow:0 2px 12px rgba(13,27,42,.08);margin-bottom:22px">
     <div style="padding:16px 20px;border-bottom:1px solid #D0DDE8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <h3 style="font-size:15px;font-weight:700;color:#1A2D44">🪪 Cartes en attente de récupération</h3>
-      <span style="font-size:12px;color:#8099B0">Cliquez sur un client pour confirmer la récupération de sa carte</span>
+      <span style="font-size:12px;color:#8099B0">Cliquez sur un client pour confirmer la récupération</span>
     </div>
     <div id="pendingCards-list"></div>
   </div>
 
-  <!-- ═══════════════════════════════════════════════════════════
-       SECTION : HISTORIQUE JOURNALIER DES RETRAITS
-  ═══════════════════════════════════════════════════════════ -->
+  <!-- Historique journalier -->
   <div style="background:white;border-radius:14px;border:1px solid #D0DDE8;box-shadow:0 2px 12px rgba(13,27,42,.08)">
     <div style="padding:16px 20px;border-bottom:1px solid #D0DDE8;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <h3 style="font-size:15px;font-weight:700;color:#1A2D44">📋 Historique journalier des retraits</h3>
@@ -243,9 +245,7 @@
         <button onclick="exportDailyCSV()" style="background:#0D1B2A;color:white;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">⬇ Exporter CSV</button>
       </div>
     </div>
-    <!-- Résumé du jour -->
     <div id="daily-summary" style="padding:14px 20px;border-bottom:1px solid #F0F5FA;display:grid;grid-template-columns:repeat(3,1fr);gap:12px"></div>
-    <!-- Table -->
     <div style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;font-size:13px">
         <thead>
@@ -267,8 +267,17 @@
 
 <script src="utils.js"></script>
 <script src="recu.js"></script>
+<script src="firebase-config.js"></script>
+<script src="sync.js"></script>
+<!-- Actualiser les sections si sync distante -->
 <script>
-if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");
+document.addEventListener('samassa:sync', e => {
+  if (e.detail.key === 'samassa_recus') {
+    renderPendingCards();
+    renderDailyHistory();
+  }
+});
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-worker.js");
 </script>
 </body>
 </html>

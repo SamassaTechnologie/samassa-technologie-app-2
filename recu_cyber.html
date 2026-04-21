@@ -139,19 +139,19 @@
       <div class="section-label cyber" style="margin-top:14px">Mode de paiement</div>
       <div class="payment-methods">
         <div class="pm-option" data-pm="Wave">
-          <div class="pm-badge wave">W</div>
+          <div class="pm-badge wave" style="background:white;border:1px solid #E2EAF0;overflow:hidden"><img src="logo-wave.png" alt="Wave" style="width:34px;height:34px;object-fit:contain;border-radius:6px"></div>
           <div><div class="pm-name">Wave <span class="pm-rec">★ TOP</span></div><div class="pm-sub">~1% frais</div></div>
         </div>
         <div class="pm-option" data-pm="Orange Money">
-          <div class="pm-badge orange">OM</div>
+          <div class="pm-badge orange" style="background:white;border:1px solid #FFE0B2;overflow:hidden"><img src="logo-orange-money.jpg" alt="Orange Money" style="width:34px;height:34px;object-fit:contain"></div>
           <div><div class="pm-name">Orange Money</div><div class="pm-sub">~1.5% frais</div></div>
         </div>
         <div class="pm-option" data-pm="Moov Money">
-          <div class="pm-badge moov">MM</div>
+          <div class="pm-badge moov" style="background:white;border:1px solid #DBEAFE;overflow:hidden"><img src="logo-moov-money.png" alt="Moov Money" style="width:34px;height:34px;object-fit:contain"></div>
           <div><div class="pm-name">Moov Money</div><div class="pm-sub">~1.5% frais</div></div>
         </div>
         <div class="pm-option" data-pm="Espèces">
-          <div class="pm-badge cash">💵</div>
+          <div class="pm-badge cash" style="background:#16A34A;font-size:18px;color:white">💵</div>
           <div><div class="pm-name">Espèces</div><div class="pm-sub">0% frais</div></div>
         </div>
       </div>
@@ -239,7 +239,7 @@
         <!-- Mode paiement -->
         <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:white;background:var(--navy);padding:7px 14px;border-radius:6px;margin-bottom:10px">Mode de paiement</div>
         <div id="d-pmBox" class="pm-display-box pm-box-wave">
-          <div class="pm-display-icon" id="d-pmIcon">🌊</div>
+          <div class="pm-display-icon" id="d-pmIcon"><img src="logo-wave.png" alt="Wave" style="width:36px;height:36px;object-fit:contain;border-radius:8px"></div>
           <div>
             <div class="pm-display-name" id="d-pmName">Wave</div>
             <div class="pm-display-sub">Paiement reçu et confirmé ✅</div>
@@ -271,5 +271,7 @@
 <script src="utils.js"></script>
 <script src="recu_cyber.js"></script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
+<script src="firebase-config.js"></script>
+<script src="sync.js"></script>
 </body>
 </html>

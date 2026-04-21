@@ -202,6 +202,8 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
     </div>
     <div class="header-right">
       <span class="ver-badge">Suite Pro v2.0</span>
+      <span class="sync-indicator sync-init" id="cloud-status">☁ Connexion...</span>
+      <div id="sync-dot" style="width:8px;height:8px;border-radius:50%;background:#D97706;flex-shrink:0;margin-left:-6px" title="État de sync"></div>
       <button class="install-btn" id="installBtn" onclick="installApp()" style="display:none">
         ⬇ Installer l'app
       </button>
@@ -1060,6 +1062,20 @@ if ('serviceWorker' in navigator) {
     .then(reg => console.log('SW Samassa Pro enregistré :', reg.scope))
     .catch(err => console.error('SW erreur :', err));
 }
+</script>
+
+<!-- Synchronisation Firebase Cloud -->
+<script src="firebase-config.js"></script>
+<script src="sync.js"></script>
+
+<!-- Rechargement de l'UI quand sync distante reçoit des données -->
+<script>
+document.addEventListener('samassa:sync', e => {
+  loadStats();
+  const activeTab = document.querySelector('.page-section.active');
+  if (activeTab?.id === 'tab-mouvements') renderMouvements();
+  if (activeTab?.id === 'tab-historique') renderHistory();
+});
 </script>
 </body>
 </html>
