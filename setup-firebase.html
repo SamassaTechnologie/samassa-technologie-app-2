@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configuration Firebase — SAMASSA TECHNOLOGIE</title>
+<link rel="icon" href="icon-512x512.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0D1B2A;--blue:#0088CC;--blue-light:#E8F4FD;
+  --green:#16A34A;--red:#DC2626;--amber:#D97706;
+  --text:#1A2D44;--text2:#4A6080;--text3:#8099B0;
+  --bg:#F0F5FA;--white:#fff;--border:#D0DDE8;
+  --radius:10px;--shadow:0 2px 12px rgba(13,27,42,.08)
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.topbar{background:var(--navy);padding:14px 24px;display:flex;align-items:center;gap:14px}
+.back-link{color:#93B8D4;font-size:13px;text-decoration:none}
+.back-link:hover{color:white}
+.topbar-title{color:white;font-weight:700;font-size:16px;flex:1;text-align:center}
+.topbar-logo{width:36px;height:36px;border-radius:50%;background:white;padding:3px;object-fit:contain}
+
+.main{max-width:860px;margin:0 auto;padding:28px 20px 60px}
+.hero{background:linear-gradient(135deg,var(--navy),#0A3A5C);border-radius:14px;padding:28px 32px;color:white;margin-bottom:28px;text-align:center}
+.hero h1{font-size:22px;font-weight:800;margin-bottom:8px}
+.hero p{font-size:14px;color:#93B8D4;line-height:1.6}
+
+/* ÉTAPES */
+.step{background:white;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:18px;overflow:hidden}
+.step-header{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--bg);cursor:pointer;user-select:none}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--blue);color:white;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-title{font-size:15px;font-weight:700;color:var(--text);flex:1}
+.step-status{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+.st-todo{background:#F0F5FA;color:var(--text3)}
+.st-done{background:#F0FDF4;color:var(--green)}
+.st-active{background:#EFF6FF;color:var(--blue)}
+.step-body{padding:20px;display:none}
+.step-body.open{display:block}
+
+.screenshot{background:#F0F5FA;border:2px dashed var(--border);border-radius:8px;padding:16px;margin:12px 0;font-size:12px;color:var(--text2);text-align:center}
+.screenshot strong{display:block;font-size:14px;color:var(--text);margin-bottom:6px}
+
+.code-box{background:var(--navy);border-radius:8px;padding:14px 16px;font-family:'Courier New',monospace;font-size:12px;color:#A5F3FC;margin:12px 0;overflow-x:auto;position:relative}
+.code-box .copy-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.15);border:none;color:white;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit}
+.code-box .copy-btn:hover{background:rgba(255,255,255,.25)}
+
+.tip{background:#FFFBEB;border-left:4px solid var(--amber);border-radius:8px;padding:12px 14px;margin:10px 0;font-size:13px;color:var(--text2)}
+.tip strong{color:var(--amber);display:block;margin-bottom:3px}
+.warning{background:#FEF2F2;border-left:4px solid var(--red);border-radius:8px;padding:12px 14px;margin:10px 0;font-size:13px;color:var(--text2)}
+.success-box{background:#F0FDF4;border-left:4px solid var(--green);border-radius:8px;padding:12px 14px;margin:10px 0;font-size:13px;color:#15803D}
+
+label{font-size:12px;font-weight:600;color:var(--text2);display:block;margin-bottom:4px;margin-top:12px}
+input,select{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;color:var(--text);outline:none;transition:border-color .2s}
+input:focus,select:focus{border-color:var(--blue)}
+input.ok{border-color:var(--green);background:#F0FDF4}
+input.error{border-color:var(--red);background:#FEF2F2}
+
+.form-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.span2{grid-column:span 2}
+
+.btn{padding:11px 20px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-weight:700;font-family:inherit;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.btn-primary{background:var(--blue);color:white;width:100%;justify-content:center;font-size:15px;padding:14px}
+.btn-primary:hover{background:#006699}
+.btn-test{background:#059669;color:white}
+.btn-test:hover{background:#047857}
+.btn-open{background:var(--navy);color:white}
+.btn-open:hover{background:#0A2030}
+.btn-copy{background:var(--blue-light);color:var(--blue);border:1px solid #BAE6FD}
+.btn-copy:hover{background:#DBEAFE}
+
+.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+
+/* STATUS */
+.sync-test-result{padding:14px;border-radius:8px;margin-top:12px;display:none;font-size:13px;font-weight:600}
+.sync-ok{background:#F0FDF4;color:var(--green);border:1px solid #DCFCE7;display:flex;align-items:center;gap:8px}
+.sync-fail{background:#FEF2F2;color:var(--red);border:1px solid #FECACA;display:flex;align-items:center;gap:8px}
+
+/* PROGRESS */
+.progress-bar-wrap{background:#F0F5FA;border-radius:20px;height:8px;margin-bottom:6px;overflow:hidden}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:20px;transition:width .5s}
+.progress-label{font-size:12px;color:var(--text3);text-align:right}
+
+/* LINKS */
+a.ext-link{color:var(--blue);text-decoration:none;font-weight:600}
+a.ext-link:hover{text-decoration:underline}
+
+@media(max-width:600px){.form-grid2{grid-template-columns:1fr}.span2{grid-column:span 1}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">⚙️ Configuration Synchronisation Cloud</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="main">
+
+  <div class="hero">
+    <h1>☁️ Activer la Synchronisation Multi-Appareils</h1>
+    <p>Suivez ces 5 étapes simples pour synchroniser vos données entre votre téléphone, votre PC et tout autre appareil.<br>Le service Firebase est <strong style="color:#6EE7B7">100% gratuit</strong> pour votre usage.</p>
+    <div style="margin-top:16px">
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="progress-label">0 / 5 étapes complétées</div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ÉTAPE 1 : Créer un compte Google
+  ══════════════════════════════════ -->
+  <div class="step" id="step1">
+    <div class="step-header" onclick="toggleStep(1)">
+      <div class="step-num">1</div>
+      <div class="step-title">Créer / Ouvrir votre compte Google</div>
+      <span class="step-status st-active" id="s1-status">En cours</span>
+    </div>
+    <div class="step-body open" id="s1-body">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Firebase est un service Google. Vous avez besoin d'un compte Gmail pour vous connecter.</p>
+      <div class="actions">
+        <a href="https://accounts.google.com" target="_blank" class="btn btn-open">🔗 Ouvrir Gmail / Google</a>
+        <button class="btn btn-copy" onclick="markDone(1)">✓ J'ai un compte Google</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ÉTAPE 2 : Créer le projet Firebase
+  ══════════════════════════════════ -->
+  <div class="step" id="step2">
+    <div class="step-header" onclick="toggleStep(2)">
+      <div class="step-num">2</div>
+      <div class="step-title">Créer votre projet Firebase</div>
+      <span class="step-status st-todo" id="s2-status">À faire</span>
+    </div>
+    <div class="step-body" id="s2-body">
+      <div class="actions" style="margin-bottom:14px">
+        <a href="https://console.firebase.google.com" target="_blank" class="btn btn-open">🔗 Ouvrir Firebase Console</a>
+      </div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8">
+        <strong style="color:var(--text);display:block;margin-bottom:8px">Une fois sur Firebase Console :</strong>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--blue);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span><span>Cliquez sur <strong>"Ajouter un projet"</strong> (ou "Create a project")</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--blue);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span><span>Tapez le nom : <strong>samassa-kayes</strong></span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--blue);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span><span>Cliquez <strong>"Continuer"</strong> → Désactivez Google Analytics (pas nécessaire) → <strong>"Créer le projet"</strong></span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--blue);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">4</span><span>Attendez que le projet se crée, puis cliquez <strong>"Continuer"</strong></span></div>
+        </div>
+      </div>
+      <div class="tip">
+        <strong>💡 Conseil</strong>
+        Le nom du projet n'a pas d'importance. Choisissez quelque chose de simple comme <code>samassa-kayes</code> ou <code>samassa-tech</code>.
+      </div>
+      <div class="actions">
+        <button class="btn btn-copy" onclick="markDone(2)">✓ Projet créé avec succès</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ÉTAPE 3 : Activer Realtime Database
+  ══════════════════════════════════ -->
+  <div class="step" id="step3">
+    <div class="step-header" onclick="toggleStep(3)">
+      <div class="step-num">3</div>
+      <div class="step-title">Activer la base de données (Realtime Database)</div>
+      <span class="step-status st-todo" id="s3-status">À faire</span>
+    </div>
+    <div class="step-body" id="s3-body">
+      <div style="font-size:13px;color:var(--text2);line-height:1.8">
+        <strong style="color:var(--text);display:block;margin-bottom:8px">Dans votre projet Firebase :</strong>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:#059669;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span><span>Dans le menu gauche, cliquez sur <strong>"Realtime Database"</strong> (sous "Build")</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:#059669;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span><span>Cliquez <strong>"Créer une base de données"</strong></span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:#059669;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span><span>Choisissez l'emplacement : <strong>europe-west1 (Belgium)</strong> → Cliquez "Suivant"</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:#059669;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">4</span><span>Choisissez <strong>"Démarrer en mode test"</strong> → Cliquez "Activer"</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:#059669;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">5</span><span>Allez dans l'onglet <strong>"Règles" (Rules)</strong>, remplacez tout le contenu par :</span></div>
+        </div>
+      </div>
+      <div class="code-box">
+        <button class="copy-btn" onclick="copyCode(this,`{\n  &quot;rules&quot;: {\n    &quot;.read&quot;: true,\n    &quot;.write&quot;: true\n  }\n}`)">Copier</button>
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+      </div>
+      <div style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text2);margin-top:6px"><span style="background:#059669;color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">6</span><span>Cliquez <strong>"Publier"</strong> pour enregistrer les règles</span></div>
+
+      <div class="tip">
+        <strong>💡 Notez l'URL de votre base de données</strong>
+        Elle ressemble à : <code>https://samassa-kayes-default-rtdb.europe-west1.firebasedatabase.app</code><br>
+        Vous en aurez besoin à l'étape suivante.
+      </div>
+      <div class="actions">
+        <button class="btn btn-copy" onclick="markDone(3)">✓ Base de données activée</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ÉTAPE 4 : Copier les identifiants
+  ══════════════════════════════════ -->
+  <div class="step" id="step4">
+    <div class="step-header" onclick="toggleStep(4)">
+      <div class="step-num">4</div>
+      <div class="step-title">Copier vos identifiants Firebase ici</div>
+      <span class="step-status st-todo" id="s4-status">À faire</span>
+    </div>
+    <div class="step-body" id="s4-body">
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:14px">
+        <strong style="color:var(--text);display:block;margin-bottom:8px">Comment obtenir vos identifiants :</strong>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--amber);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">1</span><span>Dans Firebase, cliquez sur l'icône <strong>⚙️ (roue dentée)</strong> à côté de "Vue d'ensemble du projet"</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--amber);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">2</span><span>Cliquez <strong>"Paramètres du projet"</strong></span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--amber);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">3</span><span>Descendez jusqu'à <strong>"Vos applications"</strong> → Cliquez l'icône <strong>&lt;/&gt; (Web)</strong></span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--amber);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">4</span><span>Donnez un nom (ex: <strong>samassa-web</strong>) et cliquez <strong>"Enregistrer l'application"</strong></span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="background:var(--amber);color:white;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">5</span><span>Copiez chaque valeur du bloc <code>firebaseConfig</code> dans les champs ci-dessous</span></div>
+        </div>
+      </div>
+
+      <div style="background:#F0F5FA;border-radius:10px;padding:18px;border:1px solid var(--border)">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">📋 Collez vos identifiants ici :</div>
+        <div class="form-grid2">
+          <div>
+            <label>API Key</label>
+            <input type="text" id="cfg-apiKey" placeholder="AIzaSy..." oninput="validateFields()">
+          </div>
+          <div>
+            <label>Auth Domain</label>
+            <input type="text" id="cfg-authDomain" placeholder="samassa-kayes.firebaseapp.com" oninput="validateFields()">
+          </div>
+          <div class="span2">
+            <label>Database URL ⚠️ Important</label>
+            <input type="text" id="cfg-databaseURL" placeholder="https://samassa-kayes-default-rtdb.europe-west1.firebasedatabase.app" oninput="validateFields()">
+          </div>
+          <div>
+            <label>Project ID</label>
+            <input type="text" id="cfg-projectId" placeholder="samassa-kayes" oninput="validateFields()">
+          </div>
+          <div>
+            <label>Storage Bucket</label>
+            <input type="text" id="cfg-storageBucket" placeholder="samassa-kayes.appspot.com" oninput="validateFields()">
+          </div>
+          <div>
+            <label>Messaging Sender ID</label>
+            <input type="text" id="cfg-messagingSenderId" placeholder="123456789" oninput="validateFields()">
+          </div>
+          <div>
+            <label>App ID</label>
+            <input type="text" id="cfg-appId" placeholder="1:123456789:web:abc123..." oninput="validateFields()">
+          </div>
+          <div>
+            <label>Nom de votre boutique (libre)</label>
+            <input type="text" id="cfg-storeId" value="kayes-principal" oninput="validateFields()">
+          </div>
+        </div>
+        <div id="cfg-feedback" style="font-size:12px;color:var(--text3);margin-top:10px"></div>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="generateConfig()" id="btn-generate-cfg">
+          ⬇️ Générer mon fichier firebase-config.js
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ÉTAPE 5 : Tester la connexion
+  ══════════════════════════════════ -->
+  <div class="step" id="step5">
+    <div class="step-header" onclick="toggleStep(5)">
+      <div class="step-num">5</div>
+      <div class="step-title">Tester et activer la synchronisation</div>
+      <span class="step-status st-todo" id="s5-status">À faire</span>
+    </div>
+    <div class="step-body" id="s5-body">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">
+        Une fois votre fichier <code>firebase-config.js</code> mis à jour, testez la connexion ici.
+      </p>
+      <div class="success-box">
+        <strong>✅ Ce qui va se passer automatiquement :</strong><br>
+        • Vos données locales seront envoyées vers le cloud<br>
+        • Sur tout autre appareil, ouvrez simplement l'application et les données se chargent<br>
+        • Le badge <strong>☁ Synchronisé</strong> apparaîtra dans le header de toutes les pages
+      </div>
+
+      <div style="background:#F0F5FA;border-radius:10px;padding:16px;border:1px solid var(--border);margin-top:14px">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">🔍 Test de connexion Firebase :</div>
+        <button class="btn btn-test" onclick="testConnection()">▶ Tester la connexion</button>
+        <div id="test-result" class="sync-test-result"></div>
+      </div>
+
+      <div class="tip" style="margin-top:14px">
+        <strong>📱 Pour installer sur un autre appareil :</strong>
+        Copiez le dossier complet du projet sur le nouvel appareil (clé USB ou envoi par email).
+        Le fichier <code>firebase-config.js</code> doit être identique sur tous les appareils.
+        Au premier lancement, toutes vos données se chargent automatiquement depuis le cloud.
+      </div>
+
+      <div class="actions">
+        <a href="index.html" class="btn btn-primary">🏠 Retourner au tableau de bord</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div style="background:white;border-radius:var(--radius);border:1px solid var(--border);padding:22px;margin-top:24px">
+    <h3 style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px">❓ Questions fréquentes</h3>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:13px">
+      <div style="padding:12px;background:#F8FBFD;border-radius:8px">
+        <strong style="color:var(--text)">Est-ce que c'est gratuit ?</strong>
+        <p style="color:var(--text2);margin-top:4px">Oui, le plan gratuit Firebase (Spark) permet jusqu'à 1 Go de données et 10 Go de transfert par mois. C'est largement suffisant pour cette application.</p>
+      </div>
+      <div style="padding:12px;background:#F8FBFD;border-radius:8px">
+        <strong style="color:var(--text)">Mes données sont-elles sécurisées ?</strong>
+        <p style="color:var(--text2);margin-top:4px">Les données sont stockées sur les serveurs de Google (Firebase), protégées par HTTPS. Seules les personnes avec l'URL de votre base peuvent accéder aux données.</p>
+      </div>
+      <div style="padding:12px;background:#F8FBFD;border-radius:8px">
+        <strong style="color:var(--text)">Que se passe-t-il si je n'ai pas Internet ?</strong>
+        <p style="color:var(--text2);margin-top:4px">L'application fonctionne normalement hors-ligne. Dès que la connexion revient, les données se synchronisent automatiquement.</p>
+      </div>
+      <div style="padding:12px;background:#F8FBFD;border-radius:8px">
+        <strong style="color:var(--text)">J'ai une erreur "Permission denied"</strong>
+        <p style="color:var(--text2);margin-top:4px">Vérifiez que vous avez bien publié les règles de sécurité à l'étape 3. Les règles doivent contenir <code>".read": true, ".write": true</code>.</p>
+      </div>
+      <div style="padding:12px;background:#F8FBFD;border-radius:8px">
+        <strong style="color:var(--text)">J'ai une erreur "Invalid API key"</strong>
+        <p style="color:var(--text2);margin-top:4px">Vérifiez que vous avez bien copié la valeur <code>apiKey</code> complète sans espaces dans le fichier <code>firebase-config.js</code>.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let steps = {1:false,2:false,3:false,4:false,5:false};
+
+function toggleStep(n) {
+  const body = document.getElementById('s'+n+'-body');
+  body.classList.toggle('open');
+}
+
+function markDone(n) {
+  steps[n] = true;
+  document.getElementById('s'+n+'-status').textContent = '✓ Fait';
+  document.getElementById('s'+n+'-status').className   = 'step-status st-done';
+  document.getElementById('s'+n+'-body').classList.remove('open');
+  // Open next
+  if (n < 5) {
+    const nextBody = document.getElementById('s'+(n+1)+'-body');
+    nextBody.classList.add('open');
+    document.getElementById('s'+(n+1)+'-status').textContent = 'En cours';
+    document.getElementById('s'+(n+1)+'-status').className   = 'step-status st-active';
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = Object.values(steps).filter(Boolean).length;
+  document.getElementById('progress-fill').style.width = (done/5*100) + '%';
+  document.getElementById('progress-label').textContent = done + ' / 5 étapes complétées';
+}
+
+function validateFields() {
+  const required = ['cfg-apiKey','cfg-databaseURL','cfg-projectId','cfg-appId'];
+  let filled = 0;
+  required.forEach(id => {
+    const el = document.getElementById(id);
+    if (el.value.trim() && !el.value.includes('VOTRE')) {
+      el.classList.add('ok'); el.classList.remove('error'); filled++;
+    } else {
+      el.classList.remove('ok');
+    }
+  });
+  const fb = document.getElementById('cfg-feedback');
+  fb.textContent = filled === required.length
+    ? '✅ Tous les champs requis sont remplis — Vous pouvez générer le fichier'
+    : `⚠️ ${required.length - filled} champ(s) requis restant(s)`;
+  fb.style.color = filled === required.length ? 'var(--green)' : 'var(--amber)';
+}
+
+function generateConfig() {
+  const g = id => document.getElementById(id).value.trim();
+  const apiKey  = g('cfg-apiKey');
+  const authD   = g('cfg-authDomain');
+  const dbURL   = g('cfg-databaseURL');
+  const projId  = g('cfg-projectId');
+  const stoB    = g('cfg-storageBucket');
+  const sendId  = g('cfg-messagingSenderId');
+  const appId   = g('cfg-appId');
+  const storeId = g('cfg-storeId') || 'kayes-principal';
+
+  if (!apiKey || !dbURL || !projId || !appId) {
+    alert('Veuillez remplir au moins : API Key, Database URL, Project ID et App ID.');
+    return;
+  }
+
+  const content = `/* ============================================================
+   SAMASSA TECHNOLOGIE — firebase-config.js
+   Généré automatiquement le ${new Date().toLocaleDateString('fr-FR')}
+============================================================ */
+
+const FIREBASE_CONFIG = {
+  apiKey:            "${apiKey}",
+  authDomain:        "${authD || projId+'.firebaseapp.com'}",
+  databaseURL:       "${dbURL}",
+  projectId:         "${projId}",
+  storageBucket:     "${stoB || projId+'.appspot.com'}",
+  messagingSenderId: "${sendId}",
+  appId:             "${appId}"
+};
+
+const SAMASSA_STORE_ID = "${storeId}";
+
+const FIREBASE_ENABLED = true;
+`;
+
+  /* Télécharger le fichier */
+  const blob = new Blob([content], {type:'text/javascript'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'firebase-config.js';
+  a.click();
+
+  /* Sauvegarder localement pour le test */
+  localStorage.setItem('_firebase_test_config', JSON.stringify({
+    apiKey, authDomain: authD, databaseURL: dbURL, projectId: projId,
+    storageBucket: stoB, messagingSenderId: sendId, appId
+  }));
+
+  markDone(4);
+  alert('✅ Le fichier firebase-config.js a été téléchargé !\n\n📋 IMPORTANT :\nRemplacez le fichier firebase-config.js dans votre dossier de projet par ce nouveau fichier téléchargé.\n\nEnsuite passez à l\'étape 5 pour tester.');
+}
+
+async function testConnection() {
+  const result = document.getElementById('test-result');
+  result.style.display = 'flex';
+  result.className = 'sync-test-result sync-fail';
+  result.innerHTML = '⏳ Test en cours...';
+
+  const saved = localStorage.getItem('_firebase_test_config');
+  if (!saved) {
+    result.innerHTML = '❌ Veuillez d\'abord générer votre fichier à l\'étape 4.';
+    return;
+  }
+
+  try {
+    const cfg = JSON.parse(saved);
+    /* Charger Firebase SDK */
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
+    await loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js');
+    if (!firebase.apps.length) firebase.initializeApp(cfg);
+    const db = firebase.database();
+    /* Écriture test */
+    const testRef = db.ref('_test/connexion');
+    await testRef.set({ ok: true, ts: Date.now(), device: 'setup-page' });
+    /* Lecture test */
+    const snap = await testRef.get();
+    if (snap.exists() && snap.val().ok) {
+      result.className = 'sync-test-result sync-ok';
+      result.innerHTML = '✅ Connexion Firebase réussie ! La synchronisation est maintenant active sur tous vos appareils.';
+      markDone(5);
+    } else {
+      result.innerHTML = '❌ Connexion échouée — vérifiez votre Database URL';
+    }
+  } catch(e) {
+    result.innerHTML = '❌ Erreur : ' + e.message;
+  }
+}
+
+function loadScript(src) {
+  return new Promise((res,rej) => {
+    if (document.querySelector(`script[src="${src}"]`)) { res(); return; }
+    const s = document.createElement('script');
+    s.src = src; s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
+function copyCode(btn, text) {
+  const clean = text.replace(/&quot;/g,'"').replace(/&amp;/g,'&');
+  navigator.clipboard.writeText(clean).then(() => {
+    btn.textContent = '✓ Copié !';
+    setTimeout(() => btn.textContent = 'Copier', 2000);
+  });
+}
+</script>
+</body>
+</html>
