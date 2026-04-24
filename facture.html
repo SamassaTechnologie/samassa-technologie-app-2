@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>
+(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expiry){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Facture — SAMASSA TECHNOLOGIE</title>
@@ -150,10 +153,11 @@
   </div>
 </div>
 
+<script src="auth.js"></script>
+<script src="firebase-config.js"></script>
+<script src="sync.js"></script>
 <script src="utils.js"></script>
 <script src="facture.js"></script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
-<script src="firebase-config.js"></script>
-<script src="sync.js"></script>
 </body>
 </html>

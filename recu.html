@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>
+(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expiry){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reçu de Paiement — SAMASSA TECHNOLOGIE</title>
@@ -265,10 +268,11 @@
   </div>
 </div>
 
-<script src="utils.js"></script>
-<script src="recu.js"></script>
+<script src="auth.js"></script>
 <script src="firebase-config.js"></script>
 <script src="sync.js"></script>
+<script src="utils.js"></script>
+<script src="recu.js"></script>
 <!-- Actualiser les sections si sync distante -->
 <script>
 document.addEventListener('samassa:sync', e => {

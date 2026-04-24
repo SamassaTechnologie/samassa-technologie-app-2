@@ -3,12 +3,13 @@
    Installable sur PC (Windows/Mac/Linux) ET téléphone
    Stratégie : Cache-First pour les assets, Network-First pour les pages
 ============================================================ */
-const CACHE_NAME   = 'samassa-pro-v2.5';
-const CACHE_PAGES  = 'samassa-pages-v2.5';
+const CACHE_NAME   = 'samassa-pro-v2.7';
+const CACHE_PAGES  = 'samassa-pages-v2.7';
 
 /* Fichiers mis en cache immédiatement à l'installation */
 const STATIC_ASSETS = [
   'index.html',
+  'login.html',
   'facture.html',
   'recu.html',
   'devis.html',
@@ -16,6 +17,7 @@ const STATIC_ASSETS = [
   'recu_cyber.html',
   'facture_cyber.html',
   'style.css',
+  'auth.js',
   'utils.js',
   'facture.js',
   'recu.js',

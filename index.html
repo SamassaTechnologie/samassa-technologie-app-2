@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>
+/* ── Vérification session ── */
+(function(){
+  var s=localStorage.getItem('_samassa_session');
+  if(!s){window.location.replace('login.html');throw 0;}
+  try{var d=JSON.parse(s);if(Date.now()>=d.expiry){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}
+  catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SAMASSA TECHNOLOGIE — Suite Pro</title>
@@ -176,9 +185,113 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
 .page-section{display:none}
 .page-section.active{display:block}
 
-/* RESPONSIVE */
-@media(max-width:1100px){.stats-grid,.modules-grid,.pm-row{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.stats-grid,.modules-grid,.pm-row,.solde-row{grid-template-columns:1fr}.mv-form{grid-template-columns:1fr 1fr}.mv-form>*:last-child{grid-column:span 2}.header-inner{flex-wrap:wrap}.nav-tab{padding:9px 12px;font-size:12px}}
+
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE INDEX — iPhone 13 mini & Samsung S22 Ultra
+══════════════════════════════════════════════════════════ */
+
+/* Tablette ≤1100px : 2 colonnes */
+@media(max-width:1100px){
+  .stats-grid,.modules-grid,.pm-row{grid-template-columns:repeat(2,1fr)}
+}
+
+/* Mobile ≤700px */
+@media(max-width:700px){
+  /* Header */
+  .header-inner{flex-wrap:wrap;gap:6px;padding:10px 12px}
+  .header-right{gap:5px;flex-wrap:wrap;justify-content:flex-end}
+  .ver-badge{display:none}
+  .brand h1{font-size:15px}
+  .brand p{font-size:10px;display:none}
+  .logo-img{width:38px;height:38px}
+  /* Nav */
+  .nav-tabs-inner{padding:0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .nav-tabs-inner::-webkit-scrollbar{display:none}
+  .nav-tab{padding:9px 12px;font-size:12px;white-space:nowrap;flex-shrink:0}
+  /* Main */
+  .main{padding:12px}
+  /* Stats : 2 par ligne */
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .stat-card{padding:13px}
+  .stat-val{font-size:18px}
+  .stat-icon{width:34px;height:34px;font-size:18px}
+  .stat-sub{font-size:11px}
+  /* Modules : 2 par ligne */
+  .modules-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+  .mod-top{height:74px;font-size:36px}
+  .mod-body{padding:12px}
+  .mod-name{font-size:14px}
+  .mod-desc{font-size:11px;margin-bottom:10px}
+  .mod-btn{font-size:12px;padding:8px}
+  /* Modes paiement : 2x2 */
+  .pm-row{grid-template-columns:repeat(2,1fr);gap:10px}
+  .pm-card{padding:11px 12px}
+  .pm-name{font-size:12px}
+  /* Formulaire mouvements : 1 colonne */
+  .mv-form{grid-template-columns:1fr;gap:8px}
+  .mv-form>*:last-child{grid-column:span 1}
+  input,select{font-size:16px!important;padding:12px 11px}
+  .btn-add-mv{font-size:14px;padding:12px}
+  /* Résumé solde */
+  .solde-row{grid-template-columns:1fr;gap:8px}
+  /* Table mouvements : scroll horizontal */
+  table.mv-table{
+    display:block;overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    white-space:nowrap;font-size:12px
+  }
+  table.mv-table thead th,
+  table.mv-table tbody td{padding:8px 10px}
+  /* Filtre */
+  .filter-row{gap:7px}
+  .filter-row select,.filter-row input{font-size:13px;padding:8px 10px;min-width:0;flex:1}
+  .export-btn{padding:8px 12px;font-size:12px}
+  /* Toast */
+  .toast{left:10px;right:10px;bottom:12px;font-size:13px;text-align:center}
+  /* Historique */
+  .doc-item{padding:10px 14px;gap:10px}
+  .doc-ico{width:32px;height:32px;font-size:15px}
+  .doc-ref{font-size:12px}
+  .doc-client{font-size:11px}
+  .doc-amount{font-size:12px}
+  .doc-date{font-size:10px}
+  .hist-btn{font-size:10px;padding:3px 7px}
+  /* Section title */
+  .section-hd{font-size:11px}
+  /* Install button */
+  .install-btn{padding:7px 12px;font-size:11px}
+}
+
+/* Petit mobile ≤390px — iPhone 13 mini */
+@media(max-width:390px){
+  .header-inner{padding:8px 10px;gap:5px}
+  .brand h1{font-size:14px}
+  .nav-tab{padding:8px 9px;font-size:11px}
+  .main{padding:8px}
+  /* Stats : 1 par ligne sur 375px */
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .stat-card{padding:11px}
+  .stat-val{font-size:16px}
+  /* Modules : 1 colonne pour iPhone 13 mini */
+  .modules-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .mod-top{height:64px;font-size:30px}
+  .mod-body{padding:10px}
+  .mod-name{font-size:13px}
+  .mod-desc{display:none}
+  .mod-btn{font-size:11px;padding:7px}
+  /* PM : 2x2 compact */
+  .pm-card{padding:9px 10px}
+  .pm-logo{width:32px;height:32px}
+  .pm-name{font-size:11px}
+  .pm-sub{font-size:9px}
+  /* Filter row column */
+  .filter-row{flex-direction:column;align-items:stretch}
+  .filter-row select,.filter-row input{width:100%;min-width:0}
+  .export-btn{width:100%}
+  .clear-btn{width:100%}
+  /* Toast */
+  .toast{left:8px;right:8px;bottom:8px;font-size:12px;padding:10px 12px}
+}
 
 /* ANIMATIONS */
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
@@ -192,6 +305,9 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
 @keyframes toastIn{from{transform:translateX(80px);opacity:0}to{transform:none;opacity:1}}
 </style>
 </head>
+<script src="auth.js"></script>
+<script src="firebase-config.js"></script>
+<script src="sync.js"></script>
 <body>
 
 <header class="header">
@@ -202,9 +318,11 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
     </div>
     <div class="header-right">
       <span class="ver-badge">Suite Pro v2.0</span>
-      <span class="sync-indicator sync-init" id="cloud-status">☁ Connexion...</span>
+      <span class="sync-indicator sync-init" id="cloud-status">☁ Synchronisé</span>
       <div id="sync-dot" style="width:8px;height:8px;border-radius:50%;background:#D97706;flex-shrink:0;margin-left:-6px" title="État de sync"></div>
-      <a href="setup-firebase.html" style="background:rgba(124,58,237,.3);color:#C4B5FD;font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(124,58,237,.4);text-decoration:none;white-space:nowrap" title="Configurer la synchronisation cloud">⚙️ Config Sync</a>
+      <a href="setup-firebase.html" style="background:rgba(124,58,237,.3);color:#C4B5FD;font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(124,58,237,.4);text-decoration:none;white-space:nowrap" title="Configurer la synchronisation cloud">⚙️ Sync</a>
+      <button onclick="logout()" style="background:rgba(220,38,38,.25);color:#FCA5A5;border:1px solid rgba(220,38,38,.35);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap" title="Se déconnecter">🚪 Sortir</button>
+    </div>
       <button class="install-btn" id="installBtn" onclick="installApp()" style="display:none">
         ⬇ Installer l'app
       </button>
@@ -1015,6 +1133,13 @@ function toast(msg, type = 'success') {
 document.getElementById('mv-date').value = new Date().toISOString().split('T')[0];
 loadStats();
 
+function logout() {
+  if (confirm('Voulez-vous vous déconnecter de la suite ?')) {
+    localStorage.removeItem('_samassa_session');
+    window.location.replace('login.html');
+  }
+}
+
 /* ============================================================
    PWA — Installation sur PC et téléphone
 ============================================================ */
@@ -1066,17 +1191,20 @@ if ('serviceWorker' in navigator) {
 </script>
 
 <!-- Synchronisation Firebase Cloud -->
-<script src="firebase-config.js"></script>
-<script src="sync.js"></script>
 
 <!-- Rechargement de l'UI quand sync distante reçoit des données -->
 <script>
-document.addEventListener('samassa:sync', e => {
+document.addEventListener('samassa:sync', () => {
+  /* Recharger toutes les statistiques */
   loadStats();
+  /* Recharger l'onglet actif */
   const activeTab = document.querySelector('.page-section.active');
   if (activeTab?.id === 'tab-mouvements') renderMouvements();
   if (activeTab?.id === 'tab-historique') renderHistory();
 });
+
+/* Au démarrage, recharger les stats après que la sync initiale soit faite */
+document.addEventListener('samassa:sync', loadStats, { once: true });
 </script>
 </body>
 </html>

@@ -411,29 +411,214 @@ textarea { resize: vertical; min-height: 56px; }
 .toast.info    { background: var(--blue); }
 @keyframes toastIn { from { transform: translateX(80px); opacity: 0; } to { transform: none; opacity: 1; } }
 
-/* ---------- RESPONSIVE ---------- */
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE MOBILE — iPhone 13 mini (375px) & Samsung S22 Ultra (412px)
+   Toutes les pages : formulaires, documents, tableaux
+══════════════════════════════════════════════════════════════ */
+
+/* ── Tablette (≤ 920px) — Layout bascule en 1 colonne ── */
 @media (max-width: 920px) {
-  .layout { grid-template-columns: 1fr; }
-  .form-panel { position: static; max-height: none; }
-}
-@media (max-width: 600px) {
-  .layout { padding: 12px; gap: 16px; }
-  .doc-inner { padding: 20px; }
-  .item-inputs { grid-template-columns: 1fr 1fr; }
-  .item-inputs input:nth-child(4) { display: none; }
-  .doc-head { flex-direction: column; gap: 16px; }
-  .dt-block { text-align: left; }
-  .totals-wrap { justify-content: stretch; }
-  .totals-box { width: 100%; }
+  .layout {
+    grid-template-columns: 1fr;
+    padding: 14px;
+    gap: 14px;
+    max-width: 100%;
+  }
+  .form-panel {
+    position: static !important;
+    max-height: none !important;
+    top: auto;
+  }
 }
 
-/* ---------- PRINT ---------- */
+/* ── Mobile (≤ 600px) — Samsung S22 Ultra & similaires ── */
+@media (max-width: 600px) {
+
+  /* Évite le zoom iOS sur les inputs */
+  input, select, textarea { font-size: 16px !important; }
+
+  /* Base */
+  body { font-size: 14px; }
+
+  /* Topbar — plus compact */
+  .topbar {
+    padding: 10px 12px;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+  .topbar-title {
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .topbar-logo { width: 30px; height: 30px; }
+  .back-link   { font-size: 12px; white-space: nowrap; }
+
+  /* Layout */
+  .layout { padding: 10px; gap: 12px; }
+
+  /* Form panel */
+  .panel-header    { padding: 13px 14px; }
+  .panel-header h2 { font-size: 13px; }
+  .panel-header p  { font-size: 11px; }
+  .form-body       { padding: 14px 12px; }
+
+  /* Grilles de formulaire → 1 colonne */
+  .form-grid              { grid-template-columns: 1fr; gap: 8px; }
+  .form-grid.cols3        { grid-template-columns: 1fr; }
+  .form-group.span2,
+  .form-group.span3       { grid-column: span 1; }
+
+  /* Labels & inputs */
+  label { font-size: 12px; }
+  input, select, textarea { padding: 12px 11px; border-radius: 8px; }
+  textarea { min-height: 52px; }
+
+  /* Articles / lignes */
+  .item-header-labels { display: none; }
+  .item-inputs {
+    grid-template-columns: 1fr 60px 80px;
+    gap: 6px;
+  }
+  .item-inputs input:nth-child(1) {
+    grid-column: span 3;
+    font-size: 15px !important;
+  }
+  .item-inputs input:nth-child(4) { display: none; }
+  .item-row    { padding: 10px 34px 10px 10px; }
+  .remove-btn  { width: 26px; height: 26px; font-size: 12px; top: 8px; right: 6px; }
+  .add-item-btn { padding: 11px; font-size: 13px; }
+
+  /* Boutons d'action — 2 par ligne */
+  .actions {
+    padding: 10px 12px;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+    padding: 12px 8px;
+    font-size: 12px;
+    justify-content: center;
+    text-align: center;
+    gap: 4px;
+  }
+
+  /* Modes de paiement */
+  .payment-methods  { grid-template-columns: 1fr 1fr; gap: 7px; }
+  .pm-option        { padding: 9px 8px; gap: 7px; }
+  .pm-badge         { width: 34px; height: 34px; flex-shrink: 0; }
+  .pm-name          { font-size: 11px; }
+  .pm-sub           { font-size: 10px; }
+
+  /* Section labels */
+  .section-label { font-size: 10px; margin: 14px 0 8px; padding-bottom: 5px; }
+
+  /* Document aperçu */
+  .doc-panel { border-radius: 10px; }
+  .doc-inner { padding: 14px; }
+  .doc-placeholder { min-height: 180px; }
+  .doc-placeholder .ph-icon { font-size: 40px; }
+  .doc-placeholder p { font-size: 13px; }
+
+  /* En-tête document */
+  .doc-head { flex-direction: column; gap: 12px; }
+  .dt-block  { text-align: left; }
+  .dt-type   { font-size: 22px; letter-spacing: 1px; }
+  .co-logo   { width: 50px; height: 50px; }
+  .co-name   { font-size: 15px; }
+  .co-detail,
+  .co-tag    { font-size: 11px; }
+
+  /* Tables documents — scroll horizontal */
+  .doc-table {
+    font-size: 11px;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+  .doc-table thead th { padding: 7px 8px; font-size: 10px; letter-spacing: 0; }
+  .doc-table tbody td { padding: 7px 8px; }
+
+  /* Totaux */
+  .totals-wrap { justify-content: stretch; }
+  .totals-box  { width: 100%; }
+  .t-row       { padding: 6px 12px; font-size: 12px; }
+  .t-row.ttc .t-lbl,
+  .t-row.ttc .t-val { font-size: 13px; }
+
+  /* Signature */
+  .doc-footer  { flex-direction: column; gap: 16px; align-items: center; text-align: center; }
+  .sig-img     { width: 100px; }
+  .cachet-img  { width: 68px; }
+  .thank-you   { font-size: 12px; }
+
+  /* Toast */
+  .toast {
+    bottom: 12px; left: 10px; right: 10px;
+    font-size: 13px; padding: 11px 14px;
+    text-align: center;
+  }
+}
+
+/* ── Petit mobile (≤ 390px) — iPhone 13 mini ── */
+@media (max-width: 390px) {
+
+  /* Topbar ultra-compact */
+  .topbar          { padding: 9px 10px; gap: 6px; }
+  .topbar-title    { font-size: 12px; }
+  .topbar-logo     { width: 28px; height: 28px; }
+
+  /* Layout */
+  .layout    { padding: 8px; gap: 10px; }
+  .form-body { padding: 12px 10px; }
+  .panel-header { padding: 11px 12px; }
+
+  /* Inputs encore plus grands pour faciliter le toucher */
+  input, select, textarea { padding: 13px 11px; font-size: 16px !important; }
+
+  /* Articles 2 colonnes */
+  .item-inputs { grid-template-columns: 1fr 64px; gap: 6px; }
+  .item-inputs input:nth-child(1) { grid-column: span 2; }
+  .item-inputs input:nth-child(3) { font-size: 15px !important; }
+  .item-inputs input:nth-child(4) { display: none; }
+
+  /* Boutons pleine largeur sur très petit écran */
+  .btn {
+    flex: 1 1 100%;
+    padding: 13px 8px;
+    font-size: 13px;
+  }
+
+  /* Modes paiement compacts */
+  .pm-option  { padding: 8px 6px; gap: 5px; }
+  .pm-badge   { width: 30px; height: 30px; }
+  .pm-name    { font-size: 10px; }
+  .pm-sub     { display: none; }
+  .pm-rec     { display: none; }
+
+  /* Document */
+  .doc-inner  { padding: 10px; }
+  .dt-type    { font-size: 18px; }
+  .co-logo    { width: 44px; height: 44px; }
+  .co-name    { font-size: 14px; }
+}
+
+/* ── PRINT ── */
 @media print {
   .topbar, .form-panel { display: none !important; }
   .layout { display: block; padding: 0; max-width: none; }
-  .doc-panel { border: none; box-shadow: none; border-radius: 0; display: block !important; }
+  .doc-panel {
+    border: none; box-shadow: none; border-radius: 0;
+    display: block !important;
+  }
   .doc-inner { padding: 16px; }
   .doc-placeholder { display: none !important; }
   body { background: white; }
   .watermark { opacity: .03; }
+  .doc-table { display: table !important; white-space: normal; overflow: visible; }
+  .item-inputs input:nth-child(4) { display: block !important; }
 }
