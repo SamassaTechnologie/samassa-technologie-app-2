@@ -304,6 +304,7 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
 .toast.success{background:var(--green)}.toast.error{background:var(--red)}.toast.info{background:var(--blue)}
 @keyframes toastIn{from{transform:translateX(80px);opacity:0}to{transform:none;opacity:1}}
 </style>
+<link rel="stylesheet" href="mobile.css">
 </head>
 <script src="auth.js"></script>
 <script src="firebase-config.js"></script>
@@ -321,6 +322,7 @@ footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
       <span class="sync-indicator sync-init" id="cloud-status">☁ Synchronisé</span>
       <div id="sync-dot" style="width:8px;height:8px;border-radius:50%;background:#D97706;flex-shrink:0;margin-left:-6px" title="État de sync"></div>
       <a href="setup-firebase.html" style="background:rgba(124,58,237,.3);color:#C4B5FD;font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(124,58,237,.4);text-decoration:none;white-space:nowrap" title="Configurer la synchronisation cloud">⚙️ Sync</a>
+      <a href="guide-app-mobile.html" style="background:rgba(37,211,102,.15);color:#6EE7B7;font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(37,211,102,.3);text-decoration:none;white-space:nowrap" title="Créer l'application Android et iOS">📱 App</a>
       <button onclick="logout()" style="background:rgba(220,38,38,.25);color:#FCA5A5;border:1px solid rgba(220,38,38,.35);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap" title="Se déconnecter">🚪 Sortir</button>
     </div>
       <button class="install-btn" id="installBtn" onclick="installApp()" style="display:none">
@@ -1206,5 +1208,6 @@ document.addEventListener('samassa:sync', () => {
 /* Au démarrage, recharger les stats après que la sync initiale soit faite */
 document.addEventListener('samassa:sync', loadStats, { once: true });
 </script>
+<script src="capacitor-plugins.js"></script>
 </body>
 </html>

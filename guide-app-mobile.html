@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide App Android & iOS — SAMASSA TECHNOLOGIE</title>
+<link rel="icon" href="icon-512x512.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#0D1B2A;--blue:#0088CC;--green:#16A34A;--red:#DC2626;
+  --amber:#D97706;--purple:#7C3AED;--text:#1A2D44;--text2:#4A6080;
+  --text3:#8099B0;--bg:#F0F5FA;--border:#D0DDE8;
+  --shadow:0 2px 12px rgba(13,27,42,.08);
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+.topbar{background:var(--navy);padding:14px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+.back-link{color:#93B8D4;font-size:13px;text-decoration:none;white-space:nowrap}
+.topbar-title{color:white;font-weight:700;font-size:16px;flex:1;text-align:center}
+.topbar-logo{width:36px;height:36px;border-radius:50%;background:white;padding:3px;object-fit:contain}
+
+.main{max-width:920px;margin:0 auto;padding:28px 20px 60px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy),#0A3A5C,#006699);border-radius:16px;padding:32px;color:white;margin-bottom:28px;position:relative;overflow:hidden}
+.hero::after{content:'📱';position:absolute;right:24px;bottom:-10px;font-size:100px;opacity:.08}
+.hero h1{font-size:22px;font-weight:800;margin-bottom:8px}
+.hero p{font-size:14px;color:#93B8D4;line-height:1.6;max-width:580px}
+.hero-badges{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.hero-badge{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px}
+.badge-android{background:rgba(37,211,102,.2);color:#25D366;border:1px solid rgba(37,211,102,.3)}
+.badge-ios{background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.2)}
+.badge-free{background:rgba(0,136,204,.25);color:#7CC8EE;border:1px solid rgba(0,136,204,.3)}
+
+/* OPTIONS */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px}
+.option-card{background:white;border-radius:14px;border:1px solid var(--border);box-shadow:var(--shadow);padding:22px;cursor:pointer;transition:all .2s;position:relative}
+.option-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,136,204,.15);border-color:var(--blue)}
+.option-card.recommended{border-color:#F59E0B;border-width:2px}
+.rec-tag{position:absolute;top:-10px;left:20px;background:#F59E0B;color:white;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:.05em}
+.opt-icon{font-size:36px;margin-bottom:12px}
+.opt-title{font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px}
+.opt-desc{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px}
+.opt-pros{display:flex;flex-direction:column;gap:4px;margin-bottom:14px}
+.opt-pro{font-size:12px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.opt-pro::before{content:"✓";color:var(--green);font-weight:700}
+.opt-btn{display:block;text-align:center;padding:10px;border-radius:8px;font-size:13px;font-weight:700;transition:all .2s}
+.btn-blue{background:var(--blue);color:white}
+.btn-blue:hover{background:#006699}
+.btn-green{background:var(--green);color:white}
+.btn-purple{background:var(--purple);color:white}
+
+/* MÉTHODES */
+.method{display:none}
+.method.active{display:block}
+
+/* ÉTAPES */
+.steps-container{display:flex;flex-direction:column;gap:14px;margin-top:20px}
+.step-card{background:white;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden}
+.step-header{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer}
+.step-num{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:white;flex-shrink:0}
+.sn-blue  {background:var(--blue)}
+.sn-green {background:var(--green)}
+.sn-amber {background:var(--amber)}
+.sn-purple{background:var(--purple)}
+.sn-red   {background:var(--red)}
+.step-title-wrap{flex:1}
+.step-title{font-size:14px;font-weight:700;color:var(--text)}
+.step-sub  {font-size:12px;color:var(--text3);margin-top:2px}
+.step-tag{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
+.tag-done{background:#F0FDF4;color:var(--green)}
+.tag-todo{background:var(--bg);color:var(--text3)}
+.tag-auto{background:#EFF6FF;color:var(--blue)}
+.step-body{padding:0 20px 18px;display:none;border-top:1px solid var(--bg)}
+.step-body.open{display:block;padding-top:16px}
+
+.cmd-box{background:#0F172A;border-radius:8px;padding:14px 16px;margin:10px 0;font-family:'Courier New',monospace;font-size:13px;color:#A5F3FC;position:relative;overflow-x:auto}
+.cmd-box .cmd-label{font-size:10px;color:#475569;margin-bottom:6px;font-family:'Segoe UI',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.07em}
+.cmd-box pre{white-space:pre-wrap;word-break:break-all}
+.copy-btn{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:none;color:#94A3B8;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;transition:background .2s}
+.copy-btn:hover{background:rgba(255,255,255,.2);color:white}
+
+.info-box{border-radius:8px;padding:12px 14px;margin:10px 0;font-size:13px;line-height:1.6}
+.info-tip  {background:#FFFBEB;border-left:3px solid var(--amber);color:var(--text2)}
+.info-ok   {background:#F0FDF4;border-left:3px solid var(--green);color:#15803D}
+.info-warn {background:#FEF2F2;border-left:3px solid var(--red);color:var(--red)}
+.info-note {background:#EFF6FF;border-left:3px solid var(--blue);color:var(--text2)}
+.info-box strong{color:var(--text);display:block;margin-bottom:4px}
+
+.check-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin:10px 0}
+.check-list li{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2)}
+.check-list li::before{content:"✓";color:var(--green);font-weight:800;flex-shrink:0;margin-top:1px}
+
+.file-badge{display:inline-flex;align-items:center;gap:5px;background:#F0F5FA;border:1px solid var(--border);border-radius:6px;padding:3px 9px;font-size:12px;font-family:'Courier New',monospace;font-weight:600;color:var(--text)}
+
+.section-title{font-size:14px;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--blue);display:flex;align-items:center;gap:8px}
+
+/* FAQ */
+.faq-item{background:white;border-radius:10px;border:1px solid var(--border);margin-bottom:8px;overflow:hidden}
+.faq-q{padding:14px 18px;font-size:14px;font-weight:700;color:var(--text);cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.faq-q:hover{background:#F8FBFD}
+.faq-a{padding:0 18px 14px;font-size:13px;color:var(--text2);line-height:1.6;display:none}
+.faq-a.open{display:block}
+
+@media(max-width:600px){
+  .options-grid{grid-template-columns:1fr}
+  .main{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">📱 Créer l'App Android & iOS</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>📱 Transformer votre site en application mobile</h1>
+    <p>Votre suite Samassa Technologie peut devenir une vraie application installable sur Android et iPhone, avec accès hors-ligne, synchronisation Firebase, mot de passe et SMS natifs.</p>
+    <div class="hero-badges">
+      <span class="hero-badge badge-android">🤖 Android APK</span>
+      <span class="hero-badge badge-ios">🍎 iPhone / iPad</span>
+      <span class="hero-badge badge-free">💰 100% Gratuit</span>
+    </div>
+  </div>
+
+  <!-- OPTIONS -->
+  <div class="section-title">🛠️ Choisissez votre méthode</div>
+  <div class="options-grid">
+
+    <div class="option-card recommended" onclick="showMethod('capacitor')">
+      <span class="rec-tag">⭐ RECOMMANDÉ</span>
+      <div class="opt-icon">⚡</div>
+      <div class="opt-title">Capacitor (Android + iOS)</div>
+      <div class="opt-desc">Convertit votre site tel quel en vraie application native. Votre code HTML/CSS/JS est utilisé directement.</div>
+      <div class="opt-pros">
+        <div class="opt-pro">Aucun réécriture de code</div>
+        <div class="opt-pro">Android APK + iPhone IPA</div>
+        <div class="opt-pro">SMS, notifications, vibration natifs</div>
+        <div class="opt-pro">Sync Firebase identique</div>
+        <div class="opt-pro">Gratuit et open source</div>
+      </div>
+      <span class="opt-btn btn-blue">Voir le guide →</span>
+    </div>
+
+    <div class="option-card" onclick="showMethod('pwa')">
+      <div class="opt-icon">🌐</div>
+      <div class="opt-title">PWA (déjà activée !)</div>
+      <div class="opt-desc">Votre application est déjà installable en PWA. Pas besoin de Play Store. Installez-la directement depuis Chrome.</div>
+      <div class="opt-pros">
+        <div class="opt-pro">Déjà fonctionnel maintenant</div>
+        <div class="opt-pro">Aucune installation requise</div>
+        <div class="opt-pro">Android Chrome → Ajouter écran</div>
+        <div class="opt-pro">Fonctionne hors-ligne</div>
+      </div>
+      <span class="opt-btn btn-green">Voir le guide →</span>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       MÉTHODE 1 : CAPACITOR
+  ═══════════════════════════════════════ -->
+  <div class="method" id="method-capacitor">
+    <div class="section-title">⚡ Méthode Capacitor — Guide complet</div>
+
+    <div class="info-box info-note">
+      <strong>📋 Ce dont vous avez besoin</strong>
+      Un ordinateur Windows, Mac ou Linux avec une connexion Internet. Le processus prend environ 1 à 2 heures la première fois.
+    </div>
+
+    <div class="steps-container">
+
+      <!-- ÉTAPE 1 -->
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-blue">1</div>
+          <div class="step-title-wrap">
+            <div class="step-title">Installer Node.js</div>
+            <div class="step-sub">Environnement nécessaire pour Capacitor</div>
+          </div>
+          <span class="step-tag tag-todo">À faire</span>
+        </div>
+        <div class="step-body">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:12px">Node.js est le moteur qui permet d'utiliser Capacitor sur votre ordinateur.</p>
+          <div class="info-box info-tip"><strong>📥 Téléchargement</strong>Allez sur <strong>nodejs.org</strong> et téléchargez la version <strong>LTS (20.x)</strong>. Installez-la normalement.</div>
+          <p style="font-size:13px;color:var(--text2);margin:10px 0 6px">Vérifiez l'installation en ouvrant le terminal (cmd sur Windows) et tapez :</p>
+          <div class="cmd-box">
+            <div class="cmd-label">Terminal / Invite de commandes</div>
+            <button class="copy-btn" onclick="copyCmd(this,'node --version')">Copier</button>
+            <pre>node --version</pre>
+          </div>
+          <div class="info-box info-ok">Si vous voyez <strong>v20.x.x</strong> ou similaire, Node.js est installé ✓</div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2 -->
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-blue">2</div>
+          <div class="step-title-wrap">
+            <div class="step-title">Installer Android Studio</div>
+            <div class="step-sub">Nécessaire pour compiler l'APK Android</div>
+          </div>
+          <span class="step-tag tag-todo">À faire</span>
+        </div>
+        <div class="step-body">
+          <div class="info-box info-tip"><strong>📥 Téléchargement</strong>Allez sur <strong>developer.android.com/studio</strong> et téléchargez Android Studio. Taille : ~1 Go.</div>
+          <p style="font-size:13px;color:var(--text2);margin:10px 0 8px">Lors de l'installation, acceptez tous les paramètres par défaut. Android Studio va installer :</p>
+          <ul class="check-list">
+            <li>Android SDK (outils de compilation)</li>
+            <li>JDK 17 (Java nécessaire)</li>
+            <li>Émulateur Android (pour tester sans téléphone)</li>
+          </ul>
+          <div class="info-box info-note"><strong>⏱️ Temps d'installation</strong>Android Studio prend 20-30 minutes à s'installer et configurer la première fois.</div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3 -->
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-green">3</div>
+          <div class="step-title-wrap">
+            <div class="step-title">Installer les dépendances Capacitor</div>
+            <div class="step-sub">Dans le dossier de votre projet</div>
+          </div>
+          <span class="step-tag tag-todo">À faire</span>
+        </div>
+        <div class="step-body">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Ouvrez un terminal dans le dossier de votre projet Samassa (là où se trouvent vos fichiers HTML) et tapez ces commandes une par une :</p>
+          <div class="cmd-box">
+            <div class="cmd-label">Commande 1 — Installer Capacitor</div>
+            <button class="copy-btn" onclick="copyCmd(this,'npm install')">Copier</button>
+            <pre>npm install</pre>
+          </div>
+          <div class="cmd-box">
+            <div class="cmd-label">Commande 2 — Initialiser Capacitor</div>
+            <button class="copy-btn" onclick="copyCmd(this,'npx cap init')">Copier</button>
+            <pre>npx cap init</pre>
+          </div>
+          <div class="info-box info-tip"><strong>💡 Le fichier capacitor.config.json est déjà inclus dans votre ZIP</strong>Il est déjà configuré avec le nom "Samassa Tech Pro" et l'identifiant app correct.</div>
+          <div class="cmd-box">
+            <div class="cmd-label">Commande 3 — Ajouter Android</div>
+            <button class="copy-btn" onclick="copyCmd(this,'npx cap add android')">Copier</button>
+            <pre>npx cap add android</pre>
+          </div>
+          <div class="info-box info-ok">Un dossier <strong>android/</strong> sera créé dans votre projet ✓</div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 4 -->
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-green">4</div>
+          <div class="step-title-wrap">
+            <div class="step-title">Synchroniser et ouvrir Android Studio</div>
+            <div class="step-sub">Copier les fichiers web dans le projet Android</div>
+          </div>
+          <span class="step-tag tag-todo">À faire</span>
+        </div>
+        <div class="step-body">
+          <div class="cmd-box">
+            <div class="cmd-label">Synchroniser les fichiers web → Android</div>
+            <button class="copy-btn" onclick="copyCmd(this,'npx cap sync android')">Copier</button>
+            <pre>npx cap sync android</pre>
+          </div>
+          <div class="cmd-box">
+            <div class="cmd-label">Ouvrir dans Android Studio</div>
+            <button class="copy-btn" onclick="copyCmd(this,'npx cap open android')">Copier</button>
+            <pre>npx cap open android</pre>
+          </div>
+          <div class="info-box info-note"><strong>📱 Android Studio s'ouvre avec votre projet</strong>Attendez qu'il finisse de synchroniser Gradle (barre de progression en bas).</div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 5 -->
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-amber">5</div>
+          <div class="step-title-wrap">
+            <div class="step-title">Ajouter l'icône et l'écran de démarrage</div>
+            <div class="step-sub">Personnaliser l'apparence de l'app</div>
+          </div>
+          <span class="step-tag tag-todo">À faire</span>
+        </div>
+        <div class="step-body">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Dans Android Studio, allez dans <strong>app → res</strong> et remplacez les icônes par votre logo :</p>
+          <div class="info-box info-tip">
+            <strong>🎨 Plus simple : utiliser l'outil Image Asset</strong>
+            Dans Android Studio : Clic droit sur <strong>res</strong> → <strong>New → Image Asset</strong> → importez votre <span class="file-badge">icon-512x512.png</span> → il génère toutes les tailles automatiquement.
+          </div>
+          <div class="cmd-box">
+            <div class="cmd-label">Ou avec npx (recommandé)</div>
+            <button class="copy-btn" onclick="copyCmd(this,'npx @capacitor/assets generate --iconBackgroundColor \'#0D1B2A\' --splashBackgroundColor \'#0D1B2A\'')">Copier</button>
+            <pre>npx @capacitor/assets generate --iconBackgroundColor '#0D1B2A' --splashBackgroundColor '#0D1B2A'</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 6 -->
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-purple">6</div>
+          <div class="step-title-wrap">
+            <div class="step-title">Générer l'APK Android</div>
+            <div class="step-sub">Créer le fichier d'installation</div>
+          </div>
+          <span class="step-tag tag-todo">À faire</span>
+        </div>
+        <div class="step-body">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Dans Android Studio :</p>
+          <ul class="check-list">
+            <li>Menu <strong>Build → Build Bundle(s) / APK(s) → Build APK(s)</strong></li>
+            <li>Attendez la compilation (2-5 minutes)</li>
+            <li>Cliquez <strong>"locate"</strong> dans la notification en bas</li>
+            <li>L'APK se trouve dans <span class="file-badge">android/app/build/outputs/apk/debug/</span></li>
+          </ul>
+          <div class="info-box info-ok">
+            <strong>✅ Vous avez votre APK !</strong>
+            Envoyez ce fichier .apk par WhatsApp ou câble USB à votre téléphone et installez-le.
+          </div>
+          <div class="info-box info-warn">
+            <strong>⚠️ Activer "Sources inconnues" sur Android</strong>
+            Paramètres → Sécurité → Installer des apps inconnues → Autoriser pour votre gestionnaire de fichiers.
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 7 iOS -->
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-red">7</div>
+          <div class="step-title-wrap">
+            <div class="step-title">iPhone / iPad (iOS) — Optionnel</div>
+            <div class="step-sub">Nécessite un Mac avec Xcode</div>
+          </div>
+          <span class="step-tag tag-todo">Optionnel</span>
+        </div>
+        <div class="step-body">
+          <div class="info-box info-warn"><strong>⚠️ Requis : Mac avec macOS</strong>La compilation iOS nécessite obligatoirement un Mac avec Xcode. Impossible sur Windows.</div>
+          <div class="cmd-box">
+            <div class="cmd-label">Sur Mac uniquement</div>
+            <button class="copy-btn" onclick="copyCmd(this,'npx cap add ios\nnpx cap sync ios\nnpx cap open ios')">Copier</button>
+            <pre>npx cap add ios
+npx cap sync ios
+npx cap open ios</pre>
+          </div>
+          <div class="info-box info-tip"><strong>💡 Alternative sans Mac</strong>Utilisez <strong>Expo EAS Build</strong> (service cloud payant) ou partagez votre code avec quelqu'un qui a un Mac.</div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 8 : Mise à jour -->
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-blue">8</div>
+          <div class="step-title-wrap">
+            <div class="step-title">Mettre à jour l'application</div>
+            <div class="step-sub">Après chaque modification du site</div>
+          </div>
+          <span class="step-tag tag-auto">Automatique</span>
+        </div>
+        <div class="step-body">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:10px">Quand vous modifiez vos fichiers HTML/CSS/JS, lancez simplement :</p>
+          <div class="cmd-box">
+            <div class="cmd-label">Synchroniser et reconstruire</div>
+            <button class="copy-btn" onclick="copyCmd(this,'npx cap sync\nnpx cap open android')">Copier</button>
+            <pre>npx cap sync
+npx cap open android</pre>
+          </div>
+          <div class="info-box info-ok">Puis <strong>Build → Build APK(s)</strong> dans Android Studio.</div>
+        </div>
+      </div>
+
+    </div><!-- /steps -->
+  </div><!-- /method-capacitor -->
+
+  <!-- ═══════════════════════════════════════
+       MÉTHODE 2 : PWA (déjà activée)
+  ═══════════════════════════════════════ -->
+  <div class="method" id="method-pwa">
+    <div class="section-title">🌐 PWA — Déjà activée sur votre site</div>
+
+    <div class="info-box info-ok">
+      <strong>✅ Votre application est déjà installable en PWA !</strong>
+      Aucune installation d'outils nécessaire. Faites simplement ces étapes sur chaque téléphone.
+    </div>
+
+    <div class="steps-container">
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-green">1</div>
+          <div class="step-title-wrap"><div class="step-title">Sur Android (Chrome)</div></div>
+          <span class="step-tag tag-auto">Simple</span>
+        </div>
+        <div class="step-body">
+          <ul class="check-list">
+            <li>Ouvrez votre site dans <strong>Google Chrome</strong> sur Android</li>
+            <li>Appuyez sur les <strong>⋮ 3 points</strong> en haut à droite</li>
+            <li>Sélectionnez <strong>"Ajouter à l'écran d'accueil"</strong></li>
+            <li>Appuyez sur <strong>"Ajouter"</strong></li>
+            <li>L'application apparaît sur votre bureau comme une vraie app</li>
+          </ul>
+          <div class="info-box info-tip"><strong>💡 Encore plus simple</strong>Un bouton <strong>"⬇ Installer l'app"</strong> apparaît automatiquement dans le header de votre site quand Chrome détecte qu'elle est installable.</div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-green">2</div>
+          <div class="step-title-wrap"><div class="step-title">Sur iPhone / iPad (Safari)</div></div>
+          <span class="step-tag tag-auto">Simple</span>
+        </div>
+        <div class="step-body">
+          <ul class="check-list">
+            <li>Ouvrez votre site dans <strong>Safari</strong> sur iPhone</li>
+            <li>Appuyez sur le bouton <strong>Partager ⬆</strong> (barre du bas)</li>
+            <li>Descendez et appuyez sur <strong>"Sur l'écran d'accueil"</strong></li>
+            <li>Appuyez sur <strong>"Ajouter"</strong> en haut à droite</li>
+          </ul>
+          <div class="info-box info-ok">L'icône de votre app apparaît sur l'écran d'accueil ✓</div>
+        </div>
+      </div>
+
+      <div class="step-card">
+        <div class="step-header" onclick="toggleStep(this)">
+          <div class="step-num sn-blue">3</div>
+          <div class="step-title-wrap"><div class="step-title">Différence PWA vs APK natif</div></div>
+          <span class="step-tag tag-todo">Info</span>
+        </div>
+        <div class="step-body">
+          <table style="width:100%;border-collapse:collapse;font-size:12px">
+            <thead><tr style="background:var(--bg)"><th style="padding:8px 12px;text-align:left;border-bottom:2px solid var(--border)">Fonctionnalité</th><th style="padding:8px;text-align:center;border-bottom:2px solid var(--border)">PWA</th><th style="padding:8px;text-align:center;border-bottom:2px solid var(--border)">APK Natif</th></tr></thead>
+            <tbody>
+              <tr><td style="padding:8px 12px;border-bottom:1px solid var(--bg);color:var(--text2)">Installation sans Play Store</td><td style="text-align:center;border-bottom:1px solid var(--bg)">✅</td><td style="text-align:center;border-bottom:1px solid var(--bg)">✅</td></tr>
+              <tr><td style="padding:8px 12px;border-bottom:1px solid var(--bg);color:var(--text2)">Fonctionne hors-ligne</td><td style="text-align:center;border-bottom:1px solid var(--bg)">✅</td><td style="text-align:center;border-bottom:1px solid var(--bg)">✅</td></tr>
+              <tr><td style="padding:8px 12px;border-bottom:1px solid var(--bg);color:var(--text2)">Sync Firebase</td><td style="text-align:center;border-bottom:1px solid var(--bg)">✅</td><td style="text-align:center;border-bottom:1px solid var(--bg)">✅</td></tr>
+              <tr><td style="padding:8px 12px;border-bottom:1px solid var(--bg);color:var(--text2)">SMS natif Android</td><td style="text-align:center;border-bottom:1px solid var(--bg)">⚠️ Partiel</td><td style="text-align:center;border-bottom:1px solid var(--bg)">✅ Complet</td></tr>
+              <tr><td style="padding:8px 12px;border-bottom:1px solid var(--bg);color:var(--text2)">Notifications push</td><td style="text-align:center;border-bottom:1px solid var(--bg)">⚠️ Limitées</td><td style="text-align:center;border-bottom:1px solid var(--bg)">✅ Complètes</td></tr>
+              <tr><td style="padding:8px 12px;color:var(--text2)">Difficulté</td><td style="text-align:center">⭐ Facile</td><td style="text-align:center">⭐⭐⭐ Moyen</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div style="margin-top:28px">
+    <div class="section-title">❓ Questions fréquentes</div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Le fichier APK peut-il être partagé par WhatsApp ? <span>▼</span></div><div class="faq-a">Oui ! Envoyez directement le fichier .apk par WhatsApp ou par câble USB. Vos employés l'installent en activant "Sources inconnues" dans les paramètres Android.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">La synchronisation Firebase fonctionne-t-elle dans l'APK ? <span>▼</span></div><div class="faq-a">Oui, exactement comme dans le navigateur. Le fichier firebase-config.js est inclus dans l'APK et la sync fonctionne identiquement.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Faut-il publier sur le Play Store ? <span>▼</span></div><div class="faq-a">Non. Vous pouvez distribuer votre APK directement par WhatsApp ou par email. Le Play Store est optionnel (et nécessite 25$ de frais).</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Le mot de passe fonctionne-t-il dans l'app ? <span>▼</span></div><div class="faq-a">Oui ! Le système auth.js fonctionne identiquement dans l'APK. Au lancement, la page login.html s'affiche automatiquement.</div></div>
+    <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Peut-on avoir plusieurs appareils avec la même app ? <span>▼</span></div><div class="faq-a">Oui. Envoyez le même APK à tous vos appareils. Avec le même firebase-config.js, tous les appareils voient les mêmes données en temps réel.</div></div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+function showMethod(id) {
+  document.querySelectorAll('.method').forEach(m => m.classList.remove('active'));
+  document.getElementById('method-' + id).classList.add('active');
+  document.getElementById('method-' + id).scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function toggleStep(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+  const tag = header.querySelector('.step-tag');
+  if (body.classList.contains('open')) tag.classList.replace('tag-todo','tag-done');
+}
+
+function toggleFaq(q) {
+  const a = q.nextElementSibling;
+  a.classList.toggle('open');
+  q.querySelector('span').textContent = a.classList.contains('open') ? '▲' : '▼';
+}
+
+function copyCmd(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copié !';
+    setTimeout(() => btn.textContent = orig, 2000);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); ta.remove();
+    btn.textContent = '✓ Copié !';
+    setTimeout(() => btn.textContent = 'Copier', 2000);
+  });
+}
+</script>
+</body>
+</html>
