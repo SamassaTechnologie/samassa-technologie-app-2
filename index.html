@@ -1,1210 +1,1104 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script>
-/* ── Vérification session ── */
-(function(){
-  var s=localStorage.getItem('_samassa_session');
-  if(!s){window.location.replace('login.html');throw 0;}
-  try{var d=JSON.parse(s);if(Date.now()>=d.expiry){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}
-  catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}
-})();
-</script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SAMASSA TECHNOLOGIE — Suite Pro</title>
-
-<!-- == PWA : installable sur PC Windows/Mac/Linux et téléphone == -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0D1B2A">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Samassa Pro">
-<meta name="application-name" content="Samassa Pro">
-<meta name="msapplication-TileColor" content="#0D1B2A">
-<meta name="msapplication-TileImage" content="icon-512x512.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
-<link rel="apple-touch-icon" sizes="512x512" href="icon-512x512.png">
-<link rel="shortcut icon" href="icon-512x512.png">
+<link rel="icon" type="image/png" href="icon-512x512.png">
+<link rel="apple-touch-icon" href="icon-512x512.png">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
+/* ══════════════════════════════════════
+   RESET & VARIABLES
+══════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --blue:#0088CC;--blue-dark:#006699;--blue-light:#E8F4FD;
-  --navy:#0D1B2A;--text:#1A2D44;--text2:#4A6080;--text3:#8099B0;
-  --bg:#F0F5FA;--white:#FFFFFF;
-  --green:#16A34A;--red:#DC2626;--amber:#D97706;--purple:#7C3AED;
-  --orange:#EA580C;--wave:#0891B2;--moov:#1D4ED8;
-  --border:#D0DDE8;--shadow:0 2px 12px rgba(13,27,42,.08);
-  --radius:10px;--radius-lg:14px;
+  --navy:#0D1B2A;--navy2:#152233;--navy3:#1D2F45;
+  --blue:#0088CC;--blue-d:#006699;--blue-l:#E8F4FD;
+  --green:#16A34A;--green-bg:#F0FDF4;
+  --red:#DC2626;--red-bg:#FEF2F2;
+  --amber:#D97706;--amber-bg:#FFFBEB;
+  --purple:#7C3AED;--purple-bg:#F5F3FF;
+  --wave:#0891B2;--moov:#1D4ED8;--orange:#EA580C;
+  --text:#1A2D44;--text2:#4A6080;--text3:#8099B0;
+  --bg:#F0F5FA;--bg2:#F8FBFD;--white:#fff;
+  --border:#D0DDE8;
+  --sh:0 2px 12px rgba(13,27,42,.08);
+  --sh-sm:0 1px 4px rgba(13,27,42,.06);
+  --sh-md:0 4px 20px rgba(13,27,42,.12);
+  --r:12px;--r-sm:8px;--r-lg:16px;
 }
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-a{text-decoration:none;color:inherit}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;overscroll-behavior:none;padding-bottom:env(safe-area-inset-bottom)}
 
-/* HEADER */
-.header{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(0,0,0,.3)}
-.header-inner{max-width:1300px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:16px}
-.logo-wrap{display:flex;align-items:center;gap:14px}
-.logo-img{width:50px;height:50px;border-radius:50%;background:white;padding:4px;object-fit:contain}
-.brand h1{font-size:19px;font-weight:700;color:white;letter-spacing:.4px}
-.brand p{font-size:11px;color:#93B8D4;font-style:italic}
-.header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
-.ver-badge{background:rgba(0,136,204,.3);color:#7CC8EE;font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(0,136,204,.4)}
-.install-btn{background:var(--blue);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:all .2s;white-space:nowrap;animation:pulse 2s infinite}
-.install-btn:hover{background:var(--blue-dark);transform:scale(1.03)}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,136,204,.4)}50%{box-shadow:0 0 0 6px rgba(0,136,204,0)}}
+/* ══════════════════════════════════════
+   TOPBAR
+══════════════════════════════════════ */
+.topbar{background:var(--navy);padding:calc(12px + env(safe-area-inset-top,0px)) 18px 12px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:300;box-shadow:0 2px 16px rgba(0,0,0,.3)}
+.logo-img{width:40px;height:40px;border-radius:50%;background:white;padding:3px;object-fit:contain;flex-shrink:0}
+.brand{flex:1;min-width:0}
+.brand-name{font-size:15px;font-weight:800;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-sub{font-size:10px;color:#93B8D4;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+.tb-pill{font-size:10px;padding:4px 9px;border-radius:16px;font-weight:600;white-space:nowrap}
+.tb-ver{background:rgba(0,136,204,.25);color:#7CC8EE;border:1px solid rgba(0,136,204,.3)}
+.sync-pill{display:inline-flex;align-items:center;gap:4px;transition:all .3s}
+.sync-ok {background:rgba(22,163,74,.2);color:#86EFAC;border:1px solid rgba(22,163,74,.3)}
+.sync-ing{background:rgba(217,119,6,.2);color:#FCD34D;border:1px solid rgba(217,119,6,.3);animation:sp 1s infinite}
+.sync-off{background:rgba(128,153,176,.15);color:#94A3B8;border:1px solid rgba(128,153,176,.2)}
+.sync-err{background:rgba(220,38,38,.2);color:#FCA5A5;border:1px solid rgba(220,38,38,.3)}
+@keyframes sp{0%,100%{opacity:1}50%{opacity:.4}}
+.install-btn{background:var(--blue);color:white;border:none;padding:6px 11px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:none;align-items:center;gap:5px;animation:pulse 2.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,136,204,.4)}50%{box-shadow:0 0 0 5px rgba(0,136,204,0)}}
+#logout-btn{background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);color:#FCA5A5;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s}
+#logout-btn:hover{background:rgba(220,38,38,.35);color:white}
 
-/* NAV TABS */
-.nav-tabs{background:var(--navy);border-top:1px solid rgba(255,255,255,.08)}
-.nav-tabs-inner{max-width:1300px;margin:0 auto;display:flex;padding:0 24px}
-.nav-tab{padding:11px 18px;font-size:13px;font-weight:600;color:#93B8D4;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
-.nav-tab:hover{color:white}
-.nav-tab.active{color:white;border-bottom-color:var(--blue)}
+/* ══════════════════════════════════════
+   NOTIFICATION BANNER
+══════════════════════════════════════ */
+.notif-bar{background:linear-gradient(90deg,#1E1B4B,#312E81);color:white;padding:10px 18px;display:flex;align-items:center;gap:10px;font-size:13px;flex-wrap:wrap}
+.nb-btn{background:rgba(255,255,255,.2);border:none;color:white;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.nb-x{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:18px;line-height:1;padding:0 2px;flex-shrink:0}
 
-/* MAIN */
-.main{max-width:1300px;margin:0 auto;padding:24px}
+/* ══════════════════════════════════════
+   DESKTOP NAV
+══════════════════════════════════════ */
+.desk-nav{background:var(--navy2);border-bottom:1px solid rgba(255,255,255,.07)}
+.desk-nav-inner{max-width:1340px;margin:0 auto;display:flex;padding:0 18px;overflow-x:auto;scrollbar-width:none}
+.desk-nav-inner::-webkit-scrollbar{display:none}
+.dt{padding:11px 16px;font-size:13px;font-weight:600;color:#6B8AA8;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;display:flex;align-items:center;gap:7px;user-select:none}
+.dt:hover{color:#93B8D4}
+.dt.active{color:white;border-bottom-color:var(--blue)}
+.dt-badge{background:var(--red);color:white;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;padding:0 3px}
 
-/* DASHBOARD */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
-.stat-card{background:white;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:18px}
-.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
-.stat-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
-.stat-val{font-size:22px;font-weight:800;color:var(--text);line-height:1}
-.stat-sub{font-size:11px;color:var(--text3);margin-top:4px}
+/* ══════════════════════════════════════
+   BOTTOM NAV (mobile)
+══════════════════════════════════════ */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:290;background:var(--navy);border-top:1px solid rgba(255,255,255,.08);padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px))}
+.bn-row{display:flex}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 2px;transition:all .15s;position:relative;user-select:none}
+.bn-icon{font-size:20px;line-height:1;transition:transform .15s}
+.bn-label{font-size:10px;font-weight:600;color:#6B8AA8;white-space:nowrap}
+.bn-item.active .bn-label{color:var(--blue)}
+.bn-item.active .bn-icon{transform:scale(1.12)}
+.bn-badge{position:absolute;top:1px;right:calc(50% - 18px);background:var(--red);color:white;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 3px}
 
-/* MODULES */
-.section-hd{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px}
-.modules-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:28px}
-.mod-card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;transition:all .22s;cursor:pointer}
-.mod-card:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,136,204,.14);border-color:var(--blue)}
-.mod-top{height:88px;display:flex;align-items:center;justify-content:center;font-size:40px}
-.mod-top.blue  {background:linear-gradient(135deg,#E8F4FD,#C9E5F5)}
-.mod-top.green {background:linear-gradient(135deg,#F0FDF4,#DCFCE7)}
-.mod-top.amber {background:linear-gradient(135deg,#FFFBEB,#FEF3C7)}
-.mod-top.purple{background:linear-gradient(135deg,#F5F3FF,#EDE9FE)}
-.mod-body{padding:15px}
-.mod-name{font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px}
-.mod-desc{font-size:12px;color:var(--text2);margin-bottom:12px;line-height:1.4}
-.mod-btn{display:block;text-align:center;padding:8px;border-radius:8px;font-size:12px;font-weight:600;transition:all .2s}
-.btn-blue  {background:var(--blue);color:white} .btn-blue:hover{background:var(--blue-dark)}
-.btn-green {background:var(--green);color:white} .btn-green:hover{background:#15803D}
-.btn-amber {background:#B45309;color:white} .btn-amber:hover{background:#92400E}
-.btn-purple{background:var(--purple);color:white} .btn-purple:hover{background:#6D28D9}
+/* ══════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════ */
+.main{max-width:1340px;margin:0 auto;padding:18px 18px 110px}
+.ps{display:none}.ps.active{display:block}
 
-/* PAIEMENTS */
-.pm-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:28px}
-.pm-card{background:white;border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);padding:14px 16px;display:flex;align-items:center;gap:12px}
-.pm-card.best{border-color:#BAE6FD;background:#F0F9FF}
-.pm-logo{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0}
-.pml-wave  {background:#CFFAFE;color:var(--wave)}
-.pml-orange{background:#FFEDD5;color:var(--orange)}
-.pml-moov  {background:#DBEAFE;color:var(--moov)}
-.pml-cash  {background:#DCFCE7;color:var(--green)}
-.pm-info .pm-name{font-size:13px;font-weight:700;color:var(--text)}
-.pm-info .pm-sub {font-size:10px;color:var(--text3)}
-.best-tag{font-size:9px;background:#FEF3C7;color:#92400E;padding:1px 5px;border-radius:4px;font-weight:700;margin-left:4px}
+/* ══════════════════════════════════════
+   KPI GRID
+══════════════════════════════════════ */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:18px}
+.kpi{background:white;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh-sm);padding:15px 16px;position:relative;overflow:hidden;transition:box-shadow .2s}
+.kpi:hover{box-shadow:var(--sh)}
+.kpi-stripe{position:absolute;left:0;top:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.kpi-icon{width:38px;height:38px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:17px}
+.kpi-trend{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px}
+.trend-up  {background:#F0FDF4;color:var(--green)}
+.trend-down{background:#FEF2F2;color:var(--red)}
+.trend-neu {background:var(--bg);color:var(--text3)}
+.kpi-val{font-size:20px;font-weight:800;color:var(--text);line-height:1;margin-bottom:3px}
+.kpi-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em}
+.spark{height:32px;margin-top:8px}
 
-/* MOUVEMENTS */
-.card{background:white;border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow);margin-bottom:22px}
-.card-hd{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
-.card-hd h3{font-size:15px;font-weight:700;color:var(--text)}
-.card-body{padding:20px}
+/* ══════════════════════════════════════
+   SECTION HEADING
+══════════════════════════════════════ */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;flex-wrap:wrap;gap:7px}
+.sh-title{font-size:12px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em}
+.sh-link{font-size:12px;color:var(--blue);font-weight:600;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+.sh-link:hover{text-decoration:underline}
 
-/* FORMULAIRE MOUVEMENT */
-.mv-form{display:grid;grid-template-columns:1fr 1fr 1fr 1fr auto;gap:10px;align-items:end}
+/* ══════════════════════════════════════
+   QUICK ACTIONS
+══════════════════════════════════════ */
+.qa-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
+.qa{background:white;border:1px solid var(--border);border-radius:var(--r);padding:13px 8px;text-align:center;cursor:pointer;text-decoration:none;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.qa:hover{transform:translateY(-2px);box-shadow:var(--sh-md);border-color:var(--blue)}
+.qa-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.qa-lbl{font-size:12px;font-weight:700;color:var(--text)}
+.qa-sub{font-size:10px;color:var(--text3)}
+
+/* ══════════════════════════════════════
+   CARD
+══════════════════════════════════════ */
+.card{background:white;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh-sm)}
+.ch{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.ct{font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px}
+.cb{padding:15px 17px}
+
+/* ══════════════════════════════════════
+   GRID LAYOUTS
+══════════════════════════════════════ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:18px}
+.g31{display:grid;grid-template-columns:2fr 1fr;gap:15px;margin-bottom:18px}
+
+/* ══════════════════════════════════════
+   CHART
+══════════════════════════════════════ */
+.chart-box{position:relative;height:175px}
+.chart-box canvas{width:100%!important}
+.chart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:175px;color:var(--text3);gap:8px}
+.chart-empty-icon{font-size:30px;opacity:.25}
+
+/* ══════════════════════════════════════
+   PM BREAKDOWN
+══════════════════════════════════════ */
+.pm-list{display:flex;flex-direction:column;gap:10px}
+.pm-row{display:flex;align-items:center;gap:10px}
+.pm-logo{width:30px;height:30px;border-radius:7px;object-fit:contain;border:1px solid var(--border);flex-shrink:0;padding:2px}
+.pm-logo.cash{background:#DCFCE7;border-color:#DCFCE7;display:flex;align-items:center;justify-content:center;font-size:14px;padding:0}
+.pm-wrap{flex:1}
+.pm-top{display:flex;justify-content:space-between;margin-bottom:3px}
+.pm-name{font-size:12px;font-weight:700;color:var(--text)}
+.pm-val{font-size:12px;font-weight:700;color:var(--text)}
+.pm-bg{height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+.pm-fill{height:100%;border-radius:3px;transition:width .6s ease}
+
+/* ══════════════════════════════════════
+   RDV WIDGET
+══════════════════════════════════════ */
+.rdv-list{display:flex;flex-direction:column}
+.rdv-item{display:flex;align-items:center;gap:11px;padding:10px 17px;border-bottom:1px solid #F4F8FB}
+.rdv-item:last-child{border-bottom:none}
+.rdv-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));color:white;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rdv-info{flex:1;min-width:0}
+.rdv-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rdv-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.rdv-st{font-size:10px;font-weight:700;padding:2px 7px;border-radius:12px;white-space:nowrap;flex-shrink:0}
+.rdv-late{background:#FEF2F2;color:var(--red)}
+.rdv-soon{background:#F0FDF4;color:var(--green)}
+.rdv-wait{background:#FFFBEB;color:var(--amber)}
+.rdv-btn{background:var(--green-bg);color:var(--green);border:1px solid #DCFCE7;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.rdv-btn:hover{background:var(--green);color:white}
+
+/* ══════════════════════════════════════
+   ACTIVITY FEED
+══════════════════════════════════════ */
+.act-list{display:flex;flex-direction:column}
+.act-item{display:flex;align-items:center;gap:11px;padding:10px 17px;border-bottom:1px solid #F4F8FB;transition:background .15s}
+.act-item:last-child{border-bottom:none}
+.act-item:hover{background:var(--bg2)}
+.act-dot{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.act-info{flex:1;min-width:0}
+.act-title{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.act-right{text-align:right;flex-shrink:0}
+.act-amt{font-size:13px;font-weight:700}
+.act-time{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* ══════════════════════════════════════
+   MOUVEMENTS
+══════════════════════════════════════ */
+.mv-type-toggle{display:flex;border:1.5px solid var(--border);border-radius:var(--r-sm);overflow:hidden;margin-bottom:13px}
+.mv-tbtn{flex:1;padding:10px;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;color:var(--text2);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.mv-tbtn.e{background:var(--green);color:white}
+.mv-tbtn.s{background:var(--red);color:white}
 .fg{display:flex;flex-direction:column;gap:4px}
-label{font-size:11px;font-weight:600;color:var(--text2)}
-input,select{padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;color:var(--text);background:white;outline:none;transition:border-color .2s}
-input:focus,select:focus{border-color:var(--blue)}
-.btn-add-mv{background:var(--blue);color:white;border:none;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s;font-family:inherit}
-.btn-add-mv:hover{background:var(--blue-dark)}
+.fg-lbl{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.04em}
+input,select{padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:13px;font-family:inherit;color:var(--text);background:white;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,136,204,.1)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.fr.full .fg,.fr3.full .fg{grid-column:span 2}
+.btn-mv{background:var(--blue);color:white;border:none;padding:11px 20px;border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
+.btn-mv:hover{background:var(--blue-d)}
 
-/* SOLDE SUMMARY */
-.solde-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px}
-.solde-card{border-radius:10px;padding:14px 16px;text-align:center}
-.sc-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
-.sc-val{font-size:18px;font-weight:800;line-height:1}
-.solde-entrees{background:#F0FDF4;border:1px solid #DCFCE7} .solde-entrees .sc-lbl{color:#15803D} .solde-entrees .sc-val{color:var(--green)}
-.solde-sorties{background:#FEF2F2;border:1px solid #FECACA} .solde-sorties .sc-lbl{color:#B91C1C} .solde-sorties .sc-val{color:var(--red)}
-.solde-net{background:var(--navy);border:1px solid var(--navy)} .solde-net .sc-lbl{color:#93B8D4} .solde-net .sc-val{color:white}
+.sc-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:13px}
+.sc{border-radius:var(--r-sm);padding:13px;text-align:center}
+.sc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.sc-val{font-size:17px;font-weight:800;line-height:1}
+.sc-in {background:#F0FDF4;border:1px solid #DCFCE7}.sc-in .sc-lbl{color:#15803D}.sc-in .sc-val{color:var(--green)}
+.sc-out{background:#FEF2F2;border:1px solid #FECACA}.sc-out .sc-lbl{color:#B91C1C}.sc-out .sc-val{color:var(--red)}
+.sc-net{background:var(--navy);border:1px solid var(--navy3)}.sc-net .sc-lbl{color:#93B8D4}.sc-net .sc-val{color:white}
 
-/* TABLE */
-table.mv-table{width:100%;border-collapse:collapse;font-size:13px}
-table.mv-table thead tr{background:var(--bg)}
-table.mv-table thead th{padding:9px 12px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:2px solid var(--border)}
-table.mv-table tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
-table.mv-table tbody tr:hover{background:#F8FBFD}
-table.mv-table tbody tr:last-child td{border-bottom:none}
-.td-desc{font-weight:600;color:var(--text)}
-.td-entree{font-weight:700;color:var(--green)}
-.td-sortie{font-weight:700;color:var(--red)}
-.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
-.badge-entree{background:#F0FDF4;color:var(--green)}
-.badge-sortie{background:#FEF2F2;color:var(--red)}
-.del-btn{background:#FEE2E2;color:var(--red);border:none;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;transition:background .2s}
+.fbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:11px 17px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.fbar select,.fbar input{padding:7px 10px;font-size:12px;width:auto}
+.btn-cl{background:none;border:1px solid var(--border);color:var(--text2);padding:7px 11px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-cl:hover{background:var(--red-bg);color:var(--red);border-color:var(--red)}
+.btn-ex{background:var(--navy);color:white;border:none;padding:7px 13px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-ex:hover{background:var(--navy2)}
+
+.mv-table{width:100%;border-collapse:collapse;font-size:13px}
+.mv-table thead th{padding:9px 12px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:2px solid var(--border);background:var(--bg2)}
+.mv-table tbody td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text2)}
+.mv-table tbody tr:hover td{background:var(--bg2)}
+.td-d{font-weight:600;color:var(--text)}
+.td-in{font-weight:700;color:var(--green)}
+.td-out{font-weight:700;color:var(--red)}
+.del-btn{background:#FEE2E2;color:var(--red);border:none;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:12px;transition:background .15s}
 .del-btn:hover{background:#FECACA}
-.empty-row{text-align:center;padding:32px;color:var(--text3);font-style:italic}
+.auto-b{font-size:9px;background:#F0FDF4;color:var(--green);padding:1px 6px;border-radius:10px;font-weight:700;border:1px solid #DCFCE7;margin-left:5px}
 
-/* FILTRE */
-.filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.filter-row select, .filter-row input{padding:7px 11px;font-size:12px;min-width:120px}
-.clear-btn{background:none;border:1px solid var(--border);color:var(--text2);padding:7px 12px;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s}
-.clear-btn:hover{background:var(--red);color:white;border-color:var(--red)}
-.export-btn{background:var(--navy);color:white;border:none;padding:7px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s;margin-left:auto}
-.export-btn:hover{background:#0A2030}
+/* ══════════════════════════════════════
+   RETRAITS
+══════════════════════════════════════ */
+.rt-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:15px}
+.rt-st{background:white;border-radius:var(--r-sm);border:1px solid var(--border);padding:13px;text-align:center}
+.rt-st-val{font-size:22px;font-weight:800;color:var(--text);line-height:1}
+.rt-st-lbl{font-size:11px;color:var(--text3);margin-top:3px}
 
-/* RECENT DOCS */
-.doc-item{display:flex;align-items:center;gap:14px;padding:11px 20px;border-bottom:1px solid #F0F5FA;transition:background .15s}
+/* ══════════════════════════════════════
+   HISTORIQUE
+══════════════════════════════════════ */
+.doc-item{display:flex;align-items:center;gap:11px;padding:11px 17px;border-bottom:1px solid var(--border);transition:background .15s}
 .doc-item:last-child{border-bottom:none}
-.doc-item:hover{background:#F8FBFD}
-.doc-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.dico-f{background:#EFF6FF;} .dico-r{background:#F0FDF4;} .dico-d{background:#FFFBEB;} .dico-i{background:#F5F3FF;}
-.doc-ref{font-weight:600;font-size:13px;color:var(--text)}
-.doc-client{font-size:12px;color:var(--text2)}
-.doc-amount{font-weight:700;font-size:13px;color:var(--text)}
-.doc-date{font-size:11px;color:var(--text3)}
-.st-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;display:inline-block}
-.st-paye{background:#F0FDF4;color:var(--green)} .st-attente{background:#FFFBEB;color:var(--amber)} .st-impaye{background:#FEF2F2;color:var(--red)}
-.hist-btn{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid;transition:all .15s;font-family:inherit;text-decoration:none;white-space:nowrap}
-.hist-btn-detail{background:#EFF6FF;color:var(--blue);border-color:#BFDBFE}
-.hist-btn-detail:hover{background:#DBEAFE}
-.hist-btn-print{background:#F8FBFD;color:var(--text2);border-color:var(--border)}
-.hist-btn-print:hover{background:var(--navy);color:white;border-color:var(--navy)}
+.doc-item:hover{background:var(--bg2)}
+.doc-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.di-f{background:#EFF6FF}.di-r{background:var(--green-bg)}.di-d{background:var(--amber-bg)}.di-i{background:var(--purple-bg)}
+.doc-ref{font-weight:700;font-size:13px;color:var(--text)}
+.doc-cl{font-size:12px;color:var(--text2)}
+.doc-amt{font-weight:700;font-size:13px;color:var(--text)}
+.doc-dt{font-size:11px;color:var(--text3)}
+.sb{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-block}
+.sb-p{background:var(--green-bg);color:var(--green)}.sb-a{background:var(--amber-bg);color:var(--amber)}.sb-i{background:var(--red-bg);color:var(--red)}
+.hb{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid;transition:all .15s;font-family:inherit;text-decoration:none;white-space:nowrap}
+.hb-d{background:var(--blue-l);color:var(--blue);border-color:#BFDBFE}.hb-d:hover{background:#DBEAFE}
+.hb-p{background:var(--bg2);color:var(--text2);border-color:var(--border)}.hb-p:hover{background:var(--navy);color:white;border-color:var(--navy)}
 
-/* FOOTER */
-footer{background:var(--navy);color:white;padding:28px 24px;margin-top:40px}
-.footer-inner{max-width:1300px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
-.footer-brand{font-weight:700;font-size:15px;margin-bottom:3px}
-.footer-sub{font-size:12px;color:#93B8D4}
-.footer-links{display:flex;gap:20px;flex-wrap:wrap}
-.footer-links a{color:#93B8D4;font-size:13px;transition:color .2s}
-.footer-links a:hover{color:white}
-.footer-copy{text-align:center;font-size:12px;color:#576F82;margin-top:16px;max-width:1300px;margin:16px auto 0}
+/* ══════════════════════════════════════
+   MODAL
+══════════════════════════════════════ */
+.modal-ov{position:fixed;inset:0;background:rgba(13,27,42,.65);z-index:9000;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
+@media(min-width:600px){.modal-ov{align-items:center;padding:20px}}
+.modal-sh{background:white;border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 -8px 40px rgba(0,0,0,.25)}
+@media(min-width:600px){.modal-sh{border-radius:20px;max-height:85vh}}
+.m-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 4px}
+@media(min-width:600px){.m-handle{display:none}}
+.m-head{padding:15px 20px 0;display:flex;align-items:center;justify-content:space-between}
+.m-title{font-size:16px;font-weight:800;color:var(--text)}
+.m-close{width:30px;height:30px;border-radius:50%;background:var(--bg);border:none;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;color:var(--text2)}
+.m-body{padding:17px 20px}
 
-/* PAGE SECTIONS */
-.page-section{display:none}
-.page-section.active{display:block}
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+.toast{position:fixed;bottom:calc(80px + env(safe-area-inset-bottom,0px));right:16px;padding:11px 17px;border-radius:10px;font-size:14px;font-weight:600;color:white;z-index:9999;box-shadow:var(--sh-md);animation:toastIn .3s ease;max-width:calc(100vw - 32px)}
+.toast.success{background:var(--green)}.toast.error{background:var(--red)}.toast.info{background:var(--blue)}.toast.warning{background:var(--amber)}
+@keyframes toastIn{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
 
-
-/* ══════════════════════════════════════════════════════════
-   RESPONSIVE INDEX — iPhone 13 mini & Samsung S22 Ultra
-══════════════════════════════════════════════════════════ */
-
-/* Tablette ≤1100px : 2 colonnes */
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
 @media(max-width:1100px){
-  .stats-grid,.modules-grid,.pm-row{grid-template-columns:repeat(2,1fr)}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .g31{grid-template-columns:1fr}
+  .qa-grid{grid-template-columns:repeat(3,1fr)}
 }
-
-/* Mobile ≤700px */
-@media(max-width:700px){
-  /* Header */
-  .header-inner{flex-wrap:wrap;gap:6px;padding:10px 12px}
-  .header-right{gap:5px;flex-wrap:wrap;justify-content:flex-end}
-  .ver-badge{display:none}
-  .brand h1{font-size:15px}
-  .brand p{font-size:10px;display:none}
-  .logo-img{width:38px;height:38px}
-  /* Nav */
-  .nav-tabs-inner{padding:0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .nav-tabs-inner::-webkit-scrollbar{display:none}
-  .nav-tab{padding:9px 12px;font-size:12px;white-space:nowrap;flex-shrink:0}
-  /* Main */
-  .main{padding:12px}
-  /* Stats : 2 par ligne */
-  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px}
-  .stat-card{padding:13px}
-  .stat-val{font-size:18px}
-  .stat-icon{width:34px;height:34px;font-size:18px}
-  .stat-sub{font-size:11px}
-  /* Modules : 2 par ligne */
-  .modules-grid{grid-template-columns:repeat(2,1fr);gap:12px}
-  .mod-top{height:74px;font-size:36px}
-  .mod-body{padding:12px}
-  .mod-name{font-size:14px}
-  .mod-desc{font-size:11px;margin-bottom:10px}
-  .mod-btn{font-size:12px;padding:8px}
-  /* Modes paiement : 2x2 */
-  .pm-row{grid-template-columns:repeat(2,1fr);gap:10px}
-  .pm-card{padding:11px 12px}
-  .pm-name{font-size:12px}
-  /* Formulaire mouvements : 1 colonne */
-  .mv-form{grid-template-columns:1fr;gap:8px}
-  .mv-form>*:last-child{grid-column:span 1}
-  input,select{font-size:16px!important;padding:12px 11px}
-  .btn-add-mv{font-size:14px;padding:12px}
-  /* Résumé solde */
-  .solde-row{grid-template-columns:1fr;gap:8px}
-  /* Table mouvements : scroll horizontal */
-  table.mv-table{
-    display:block;overflow-x:auto;
-    -webkit-overflow-scrolling:touch;
-    white-space:nowrap;font-size:12px
-  }
-  table.mv-table thead th,
-  table.mv-table tbody td{padding:8px 10px}
-  /* Filtre */
-  .filter-row{gap:7px}
-  .filter-row select,.filter-row input{font-size:13px;padding:8px 10px;min-width:0;flex:1}
-  .export-btn{padding:8px 12px;font-size:12px}
-  /* Toast */
-  .toast{left:10px;right:10px;bottom:12px;font-size:13px;text-align:center}
-  /* Historique */
-  .doc-item{padding:10px 14px;gap:10px}
-  .doc-ico{width:32px;height:32px;font-size:15px}
-  .doc-ref{font-size:12px}
-  .doc-client{font-size:11px}
-  .doc-amount{font-size:12px}
-  .doc-date{font-size:10px}
-  .hist-btn{font-size:10px;padding:3px 7px}
-  /* Section title */
-  .section-hd{font-size:11px}
-  /* Install button */
-  .install-btn{padding:7px 12px;font-size:11px}
+@media(max-width:800px){
+  .g2{grid-template-columns:1fr}
+  .fr3{grid-template-columns:1fr 1fr}
+  .sc-row{grid-template-columns:1fr 1fr 1fr}
 }
-
-/* Petit mobile ≤390px — iPhone 13 mini */
-@media(max-width:390px){
-  .header-inner{padding:8px 10px;gap:5px}
-  .brand h1{font-size:14px}
-  .nav-tab{padding:8px 9px;font-size:11px}
-  .main{padding:8px}
-  /* Stats : 1 par ligne sur 375px */
-  .stats-grid{grid-template-columns:repeat(2,1fr);gap:8px}
-  .stat-card{padding:11px}
-  .stat-val{font-size:16px}
-  /* Modules : 1 colonne pour iPhone 13 mini */
-  .modules-grid{grid-template-columns:repeat(2,1fr);gap:8px}
-  .mod-top{height:64px;font-size:30px}
-  .mod-body{padding:10px}
-  .mod-name{font-size:13px}
-  .mod-desc{display:none}
-  .mod-btn{font-size:11px;padding:7px}
-  /* PM : 2x2 compact */
-  .pm-card{padding:9px 10px}
-  .pm-logo{width:32px;height:32px}
-  .pm-name{font-size:11px}
-  .pm-sub{font-size:9px}
-  /* Filter row column */
-  .filter-row{flex-direction:column;align-items:stretch}
-  .filter-row select,.filter-row input{width:100%;min-width:0}
-  .export-btn{width:100%}
-  .clear-btn{width:100%}
-  /* Toast */
-  .toast{left:8px;right:8px;bottom:8px;font-size:12px;padding:10px 12px}
+@media(max-width:600px){
+  .bottom-nav{display:block}
+  .desk-nav{display:none}
+  .main{padding:13px 12px 110px}
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:9px}
+  .kpi-val{font-size:17px}.kpi-icon{width:32px;height:32px;font-size:15px}
+  .qa-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .qa-icon{width:36px;height:36px;font-size:17px}
+  .fr{grid-template-columns:1fr}
+  .fr3{grid-template-columns:1fr}
+  .fr.full .fg{grid-column:span 1}
+  .sc-row{grid-template-columns:1fr}
+  .rt-stats{grid-template-columns:1fr 1fr 1fr}
+  .brand-name{font-size:14px}
+  .tb-ver{display:none}
+  .ch{padding:11px 13px}.cb{padding:13px}
+  .mv-table thead{display:none}
+  .mv-table tbody tr{display:block;border-bottom:1px solid var(--border)}
+  .mv-table tbody td{display:block;padding:3px 11px}
+  .mv-table tbody td:first-child{padding-top:9px}
+  .mv-table tbody td:last-child{padding-bottom:9px}
+  .fbar{padding:9px 12px}
 }
-
-/* ANIMATIONS */
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-.mod-card{animation:fadeUp .35s ease backwards}
-.mod-card:nth-child(1){animation-delay:.05s}.mod-card:nth-child(2){animation-delay:.1s}
-.mod-card:nth-child(3){animation-delay:.15s}.mod-card:nth-child(4){animation-delay:.2s}
-
-/* TOAST */
-.toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;color:white;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .3s ease}
-.toast.success{background:var(--green)}.toast.error{background:var(--red)}.toast.info{background:var(--blue)}
-@keyframes toastIn{from{transform:translateX(80px);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:380px){
+  .kpi-grid{grid-template-columns:1fr}
+  .qa-grid{grid-template-columns:repeat(2,1fr)}
+  .rt-stats{grid-template-columns:1fr}
+}
 </style>
 </head>
+<body>
+
+<!-- ═══════ TOPBAR ═══════ -->
+<div class="topbar">
+  <img src="logo.png" alt="Logo" class="logo-img">
+  <div class="brand">
+    <div class="brand-name">SAMASSA TECHNOLOGIE</div>
+    <div class="brand-sub">Suite Pro v2.8 — Grand Marché de Kayes</div>
+  </div>
+  <div class="tb-right">
+    <span class="tb-pill tb-ver">v2.8</span>
+    <span class="tb-pill sync-pill sync-off" id="cloud-status">☁ —</span>
+    <button class="install-btn" id="installBtn" onclick="installApp()">⬇ Installer</button>
+    <button id="logout-btn" onclick="logout()" title="Déconnecter">🔒</button>
+  </div>
+</div>
+
+<!-- ═══════ NOTIF BANNER ═══════ -->
+<div class="notif-bar" id="notif-bar" style="display:none">
+  <span>🔔</span>
+  <span style="flex:1">Activez les notifications pour les rappels de rendez-vous</span>
+  <button class="nb-btn" onclick="requestNotif()">Activer</button>
+  <button class="nb-x" onclick="document.getElementById('notif-bar').remove()">✕</button>
+</div>
+
+<!-- ═══════ DESKTOP NAV ═══════ -->
+<div class="desk-nav">
+  <div class="desk-nav-inner">
+    <div class="dt active" id="dt-dashboard"  onclick="showTab('dashboard')">🏠 Tableau de bord</div>
+    <div class="dt"        id="dt-mouvements" onclick="showTab('mouvements')">💰 Mouvements de caisse</div>
+    <div class="dt"        id="dt-retraits"   onclick="showTab('retraits')">
+      🪪 Récupérations
+      <span class="dt-badge" id="dt-badge-rdv" style="display:none">0</span>
+    </div>
+    <div class="dt"        id="dt-historique" onclick="showTab('historique')">📂 Historique</div>
+  </div>
+</div>
+
+<!-- ═══════ MAIN ═══════ -->
+<div class="main">
+
+<!-- ════ TAB : DASHBOARD ════ -->
+<div class="ps active" id="tab-dashboard">
+
+  <!-- KPIs -->
+  <div class="kpi-grid" style="margin-top:2px">
+    <div class="kpi">
+      <div class="kpi-stripe" style="background:var(--blue)"></div>
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:var(--blue-l)">💰</div>
+        <span class="kpi-trend trend-neu" id="kpi-ca-trend">Total</span>
+      </div>
+      <div class="kpi-val" id="kpi-ca">— FCFA</div>
+      <div class="kpi-lbl">CA Total facturé</div>
+      <div class="spark" id="spark-ca"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-stripe" style="background:var(--green)"></div>
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:var(--green-bg)">✅</div>
+        <span class="kpi-trend trend-neu" id="kpi-solde-trend">Solde</span>
+      </div>
+      <div class="kpi-val" id="kpi-solde">— FCFA</div>
+      <div class="kpi-lbl">Solde de caisse</div>
+      <div class="spark" id="spark-solde"></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-stripe" style="background:var(--amber)"></div>
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:var(--amber-bg)">🪪</div>
+        <span class="kpi-trend trend-neu">RDV</span>
+      </div>
+      <div class="kpi-val" id="kpi-rdv">—</div>
+      <div class="kpi-lbl">Cartes en attente</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-stripe" style="background:var(--purple)"></div>
+      <div class="kpi-top">
+        <div class="kpi-icon" style="background:var(--purple-bg)">📄</div>
+        <span class="kpi-trend trend-neu">Total</span>
+      </div>
+      <div class="kpi-val" id="kpi-docs">—</div>
+      <div class="kpi-lbl">Documents créés</div>
+    </div>
+  </div>
+
+  <!-- ACTIONS RAPIDES -->
+  <div class="sh"><span class="sh-title">⚡ Actions rapides</span></div>
+  <div class="qa-grid">
+    <a href="recu.html"           class="qa"><div class="qa-icon" style="background:var(--green-bg)">🧾</div><div class="qa-lbl">Reçu</div><div class="qa-sub">+ Caisse</div></a>
+    <a href="facture.html"        class="qa"><div class="qa-icon" style="background:var(--blue-l)">📄</div><div class="qa-lbl">Facture</div><div class="qa-sub">+ TVA</div></a>
+    <a href="recu_cyber.html"     class="qa"><div class="qa-icon" style="background:#EEF2FF">🖥️</div><div class="qa-lbl">Cyber</div><div class="qa-sub">Reçu</div></a>
+    <a href="intervention.html"   class="qa"><div class="qa-icon" style="background:var(--purple-bg)">🔧</div><div class="qa-lbl">Intervention</div><div class="qa-sub">Technique</div></a>
+    <a href="devis.html"          class="qa"><div class="qa-icon" style="background:var(--amber-bg)">📋</div><div class="qa-lbl">Devis</div><div class="qa-sub">Estimatif</div></a>
+    <a href="facture_cyber.html"  class="qa"><div class="qa-icon" style="background:#EEF2FF">🖥️</div><div class="qa-lbl">Fact.Cyber</div><div class="qa-sub">+ TVA</div></a>
+  </div>
+
+  <!-- CHART + PM -->
+  <div class="g31">
+    <div class="card">
+      <div class="ch">
+        <span class="ct">📊 Revenus — 7 derniers jours</span>
+        <select id="chart-filter" onchange="buildChart()" style="padding:5px 9px;font-size:12px;width:auto;border-radius:8px">
+          <option value="entrees">Entrées seulement</option>
+          <option value="all">Toutes opérations</option>
+        </select>
+      </div>
+      <div class="cb">
+        <div class="chart-box">
+          <canvas id="chart-7days"></canvas>
+          <div class="chart-empty" id="chart-empty" style="display:none">
+            <div class="chart-empty-icon">📊</div>
+            <span style="font-size:13px">Pas encore de données</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><span class="ct">💳 Répartition paiements</span></div>
+      <div class="cb"><div class="pm-list" id="pm-list"><div style="text-align:center;color:var(--text3);padding:20px;font-size:13px">Aucune transaction</div></div></div>
+    </div>
+  </div>
+
+  <!-- RDV + ACTIVITÉ -->
+  <div class="g2">
+    <div class="card">
+      <div class="ch">
+        <span class="ct">🪪 Cartes à récupérer</span>
+        <button class="sh-link" onclick="showTab('retraits')">Tout voir →</button>
+      </div>
+      <div class="rdv-list" id="dash-rdv"></div>
+    </div>
+    <div class="card">
+      <div class="ch">
+        <span class="ct">🕐 Activité récente</span>
+        <button class="sh-link" onclick="showTab('historique')">Tout voir →</button>
+      </div>
+      <div class="act-list" id="dash-act"></div>
+    </div>
+  </div>
+
+</div><!-- /tab-dashboard -->
+
+<!-- ════ TAB : MOUVEMENTS ════ -->
+<div class="ps" id="tab-mouvements">
+  <div class="card" style="margin-top:2px;margin-bottom:15px">
+    <div class="ch"><span class="ct">➕ Nouveau mouvement</span></div>
+    <div class="cb">
+      <div class="mv-type-toggle">
+        <button class="mv-tbtn e" id="mv-btn-e" onclick="setMvType('entree')">📈 Entrée (recette)</button>
+        <button class="mv-tbtn"   id="mv-btn-s" onclick="setMvType('sortie')">📉 Sortie (dépense)</button>
+      </div>
+      <input type="hidden" id="mv-type" value="entree">
+      <div class="fr" style="margin-bottom:10px">
+        <div class="fg"><label class="fg-lbl">Date</label><input type="date" id="mv-date"></div>
+        <div class="fg"><label class="fg-lbl">Montant (FCFA)</label><input type="number" id="mv-amount" placeholder="0" min="0"></div>
+      </div>
+      <div class="fg" style="margin-bottom:10px"><label class="fg-lbl">Description</label><input type="text" id="mv-desc" placeholder="Ex: Vente réparation PC, achat papier..."></div>
+      <div class="fr3">
+        <div class="fg"><label class="fg-lbl">Mode paiement</label><select id="mv-pm"><option>Wave</option><option>Orange Money</option><option>Moov Money</option><option>Espèces</option></select></div>
+        <div class="fg"><label class="fg-lbl">Catégorie</label><select id="mv-cat"><option>Vente service</option><option>Cyber Café</option><option>Vente matériel</option><option>Réparation</option><option>Achat fourniture</option><option>Salaire</option><option>Loyer</option><option>Transport</option><option>Autre</option></select></div>
+        <div class="fg" style="justify-content:flex-end;padding-top:16px"><button class="btn-mv" onclick="addMouvement()">+ Ajouter</button></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ch">
+      <span class="ct">📊 Résumé de caisse</span>
+      <div style="display:flex;gap:7px"><button class="btn-cl" onclick="clearMouvements()" title="Tout effacer">🗑</button><button class="btn-ex" onclick="exportCSV()">⬇ CSV</button></div>
+    </div>
+    <div style="padding:13px 17px;border-bottom:1px solid var(--border)"><div class="sc-row" id="sc-row"></div></div>
+    <div class="fbar">
+      <select id="flt-type" onchange="renderMouvements()"><option value="">Tous types</option><option value="entree">Entrées</option><option value="sortie">Sorties</option></select>
+      <select id="flt-pm"   onchange="renderMouvements()"><option value="">Tous modes</option><option>Wave</option><option>Orange Money</option><option>Moov Money</option><option>Espèces</option></select>
+      <input type="text" id="flt-search" placeholder="🔍 Rechercher..." oninput="renderMouvements()" style="max-width:150px">
+    </div>
+    <div style="overflow-x:auto">
+      <table class="mv-table">
+        <thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th>Mode</th><th>Entrée</th><th>Sortie</th><th></th></tr></thead>
+        <tbody id="mv-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div><!-- /tab-mouvements -->
+
+<!-- ════ TAB : RETRAITS ════ -->
+<div class="ps" id="tab-retraits">
+  <div class="rt-stats" style="margin-top:2px">
+    <div class="rt-st"><div class="rt-st-val" id="rt-att" style="color:var(--amber)">—</div><div class="rt-st-lbl">⏳ En attente</div></div>
+    <div class="rt-st"><div class="rt-st-val" id="rt-tod" style="color:var(--green)">—</div><div class="rt-st-lbl">✅ Aujourd'hui</div></div>
+    <div class="rt-st"><div class="rt-st-val" id="rt-tot" style="color:var(--blue)">—</div><div class="rt-st-lbl">📦 Total</div></div>
+  </div>
+  <div class="card" style="margin-bottom:15px">
+    <div class="ch">
+      <span class="ct">🪪 Cartes en attente</span>
+      <input type="text" id="rt-search" placeholder="🔍 Client..." oninput="renderRetraits()" style="padding:7px 10px;font-size:12px;width:auto;max-width:170px">
+    </div>
+    <div style="overflow-x:auto"><div id="rt-pending"></div></div>
+  </div>
+  <div class="card">
+    <div class="ch">
+      <span class="ct">📋 Historique journalier</span>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+        <input type="date" id="rt-date" onchange="renderRetraits()" style="padding:6px 9px;font-size:12px;width:auto">
+        <button class="btn-cl" onclick="document.getElementById('rt-date').value='';renderRetraits()">✕</button>
+        <button class="btn-ex" onclick="exportRetraits()">⬇ CSV</button>
+      </div>
+    </div>
+    <div id="rt-hist"></div>
+  </div>
+</div><!-- /tab-retraits -->
+
+<!-- ════ TAB : HISTORIQUE ════ -->
+<div class="ps" id="tab-historique">
+  <div class="card" style="margin-top:2px">
+    <div class="ch">
+      <span class="ct">📂 Documents créés</span>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;align-items:center">
+        <select id="h-type" onchange="renderHistory()" style="padding:7px 9px;font-size:12px;width:auto">
+          <option value="">Tous les types</option>
+          <option value="samassa_factures">Factures</option>
+          <option value="samassa_recus">Reçus</option>
+          <option value="samassa_devis">Devis</option>
+          <option value="samassa_interventions">Interventions</option>
+          <option value="samassa_recus_cyber">Reçus Cyber</option>
+          <option value="samassa_factures_cyber">Factures Cyber</option>
+        </select>
+        <input type="text" id="h-search" placeholder="🔍 Client..." oninput="renderHistory()" style="padding:7px 9px;font-size:12px;width:auto;max-width:130px">
+        <button class="btn-cl" onclick="clearHistory()">🗑</button>
+      </div>
+    </div>
+    <div id="history-list"></div>
+  </div>
+</div><!-- /tab-historique -->
+
+</div><!-- /main -->
+
+<!-- ═══════ BOTTOM NAV ═══════ -->
+<div class="bottom-nav">
+  <div class="bn-row">
+    <div class="bn-item active" id="bn-dashboard"  onclick="showTab('dashboard')">
+      <span class="bn-icon">🏠</span><span class="bn-label">Accueil</span>
+    </div>
+    <div class="bn-item" id="bn-mouvements" onclick="showTab('mouvements')">
+      <span class="bn-icon">💰</span><span class="bn-label">Caisse</span>
+    </div>
+    <div class="bn-item" id="bn-retraits" onclick="showTab('retraits')">
+      <span class="bn-icon">🪪</span><span class="bn-label">RDV</span>
+      <span class="bn-badge" id="bn-badge-rdv" style="display:none">0</span>
+    </div>
+    <div class="bn-item" id="bn-historique" onclick="showTab('historique')">
+      <span class="bn-icon">📂</span><span class="bn-label">Historique</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SCRIPTS ═══════ -->
 <script src="auth.js"></script>
 <script src="firebase-config.js"></script>
 <script src="sync.js"></script>
-<body>
-
-<header class="header">
-  <div class="header-inner">
-    <div class="logo-wrap">
-      <img src="logo.png" alt="Logo" class="logo-img">
-      <div class="brand"><h1>SAMASSA TECHNOLOGIE</h1><p>Tout pour l'informatique — Grand Marché de Kayes, Mali</p></div>
-    </div>
-    <div class="header-right">
-      <span class="ver-badge">Suite Pro v2.0</span>
-      <span class="sync-indicator sync-init" id="cloud-status">☁ Synchronisé</span>
-      <div id="sync-dot" style="width:8px;height:8px;border-radius:50%;background:#D97706;flex-shrink:0;margin-left:-6px" title="État de sync"></div>
-      <a href="setup-firebase.html" style="background:rgba(124,58,237,.3);color:#C4B5FD;font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid rgba(124,58,237,.4);text-decoration:none;white-space:nowrap" title="Configurer la synchronisation cloud">⚙️ Sync</a>
-      <button onclick="logout()" style="background:rgba(220,38,38,.25);color:#FCA5A5;border:1px solid rgba(220,38,38,.35);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap" title="Se déconnecter">🚪 Sortir</button>
-    </div>
-      <button class="install-btn" id="installBtn" onclick="installApp()" style="display:none">
-        ⬇ Installer l'app
-      </button>
-    </div>
-  </div>
-  <nav class="nav-tabs">
-    <div class="nav-tabs-inner">
-      <div class="nav-tab active" onclick="showTab('dashboard')">🏠 Tableau de bord</div>
-      <div class="nav-tab" onclick="showTab('mouvements')">💰 Mouvements de caisse</div>
-      <div class="nav-tab" onclick="showTab('retraits')">📋 Récupérations</div>
-      <div class="nav-tab" onclick="showTab('historique')">📂 Historique</div>
-    </div>
-  </nav>
-</header>
-
-<main class="main">
-
-  <!-- ════════════════════════════════════════
-       ONGLET : TABLEAU DE BORD
-  ════════════════════════════════════════ -->
-  <div class="page-section active" id="tab-dashboard">
-
-    <!-- STATS -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#EFF6FF">📄</div>
-        <div class="stat-label">Factures émises</div>
-        <div class="stat-val" id="st-factures">0</div>
-        <div class="stat-sub">Documents créés</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#F0FDF4">💰</div>
-        <div class="stat-label">CA total facturé</div>
-        <div class="stat-val" id="st-ca" style="font-size:16px">— FCFA</div>
-        <div class="stat-sub">Toutes factures</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#F0FDF4">✅</div>
-        <div class="stat-label">Solde de caisse</div>
-        <div class="stat-val" id="st-solde" style="font-size:16px">— FCFA</div>
-        <div class="stat-sub">Entrées − Sorties</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#F5F3FF">🔧</div>
-        <div class="stat-label">Interventions</div>
-        <div class="stat-val" id="st-interventions">0</div>
-        <div class="stat-sub">Fiches créées</div>
-      </div>
-    </div>
-
-    <!-- MODULES -->
-    <div class="section-hd">Modules de gestion documentaire</div>
-    <div class="modules-grid">
-      <a href="facture.html" class="mod-card">
-        <div class="mod-top blue">📄</div>
-        <div class="mod-body">
-          <div class="mod-name">Facture</div>
-          <div class="mod-desc">Factures professionnelles avec TVA 18%, signature et cachet.</div>
-          <span class="mod-btn btn-blue">Créer une facture →</span>
-        </div>
-      </a>
-      <a href="recu.html" class="mod-card">
-        <div class="mod-top green">🧾</div>
-        <div class="mod-body">
-          <div class="mod-name">Reçu de Paiement</div>
-          <div class="mod-desc">Reçus avec Wave, Orange Money, Moov Money et numéro NINA.</div>
-          <span class="mod-btn btn-green">Créer un reçu →</span>
-        </div>
-      </a>
-      <a href="devis.html" class="mod-card">
-        <div class="mod-top amber">📋</div>
-        <div class="mod-body">
-          <div class="mod-name">Devis</div>
-          <div class="mod-desc">Devis en FCFA avec date de validité configurable.</div>
-          <span class="mod-btn btn-amber">Créer un devis →</span>
-        </div>
-      </a>
-      <a href="intervention.html" class="mod-card">
-        <div class="mod-top purple">🔧</div>
-        <div class="mod-body">
-          <div class="mod-name">Fiche d'Intervention</div>
-          <div class="mod-desc">Fiches techniques avec diagnostic, actions et double signature.</div>
-          <span class="mod-btn btn-purple">Créer une fiche →</span>
-        </div>
-      </a>
-    </div>
-
-    <!-- MODULES CYBER CAFÉ -->
-    <div class="section-hd" style="margin-top:8px">🖥️ Cyber Café</div>
-    <div class="modules-grid">
-      <a href="recu_cyber.html" class="mod-card">
-        <div class="mod-top" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF)">🧾</div>
-        <div class="mod-body">
-          <div class="mod-name">Reçu Cyber Café</div>
-          <div class="mod-desc">Impressions, photos ID, scan, internet — avec raccourcis rapides et lien caisse.</div>
-          <span class="mod-btn" style="background:#4338CA;color:white;display:block;text-align:center;padding:8px;border-radius:8px;font-size:12px;font-weight:600">Créer un reçu →</span>
-        </div>
-      </a>
-      <a href="facture_cyber.html" class="mod-card">
-        <div class="mod-top" style="background:linear-gradient(135deg,#EEF2FF,#E0E7FF)">📄</div>
-        <div class="mod-body">
-          <div class="mod-name">Facture Cyber Café</div>
-          <div class="mod-desc">Factures avec TVA 18% pour services cyber café, catalogue rapide intégré.</div>
-          <span class="mod-btn" style="background:#3730A3;color:white;display:block;text-align:center;padding:8px;border-radius:8px;font-size:12px;font-weight:600">Créer une facture →</span>
-        </div>
-      </a>
-    </div>
-
-    <!-- PAIEMENTS ACCEPTÉS -->
-    <div class="section-hd">Modes de paiement acceptés</div>
-    <div class="pm-row">
-      <div class="pm-card best">
-        <div class="pm-logo pml-wave" style="background:white;padding:2px;border:1px solid #E2EAF0">
-          <img src="logo-wave.png" alt="Wave" style="width:100%;height:100%;object-fit:contain;border-radius:7px">
-        </div>
-        <div class="pm-info"><div class="pm-name">Wave <span class="best-tag">⭐ TOP</span></div><div class="pm-sub">Frais ~1% — Recommandé</div></div>
-      </div>
-      <div class="pm-card">
-        <div class="pm-logo pml-orange" style="background:white;padding:2px;border:1px solid #FFE0B2">
-          <img src="logo-orange-money.jpg" alt="Orange Money" style="width:100%;height:100%;object-fit:contain">
-        </div>
-        <div class="pm-info"><div class="pm-name">Orange Money</div><div class="pm-sub">Réseau le plus étendu</div></div>
-      </div>
-      <div class="pm-card">
-        <div class="pm-logo pml-moov" style="background:white;padding:2px;border:1px solid #DBEAFE">
-          <img src="logo-moov-money.png" alt="Moov Money" style="width:100%;height:100%;object-fit:contain">
-        </div>
-        <div class="pm-info"><div class="pm-name">Moov Money</div><div class="pm-sub">Disponible partout</div></div>
-      </div>
-      <div class="pm-card">
-        <div class="pm-logo pml-cash">
-          <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="100" height="100" rx="18" fill="#16A34A"/>
-            <rect x="12" y="30" width="76" height="40" rx="6" fill="white" opacity="0.25"/>
-            <rect x="12" y="30" width="76" height="40" rx="6" stroke="white" stroke-width="4"/>
-            <circle cx="50" cy="50" r="10" fill="white"/>
-            <text x="50" y="55" text-anchor="middle" font-family="Arial Black,sans-serif" font-weight="900" font-size="14" fill="#16A34A">F</text>
-          </svg>
-        </div>
-        <div class="pm-info"><div class="pm-name">Espèces / Cash</div><div class="pm-sub">Paiement en main propre</div></div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ════════════════════════════════════════
-       ONGLET : MOUVEMENTS DE CAISSE
-  ════════════════════════════════════════ -->
-  <div class="page-section" id="tab-mouvements">
-
-    <div class="card">
-      <div class="card-hd">
-        <h3>➕ Enregistrer un mouvement</h3>
-      </div>
-      <div class="card-body">
-        <div class="mv-form" id="mvForm">
-          <div class="fg">
-            <label>Date</label>
-            <input type="date" id="mv-date">
-          </div>
-          <div class="fg">
-            <label>Type</label>
-            <select id="mv-type">
-              <option value="entree">📈 Entrée (recette)</option>
-              <option value="sortie">📉 Sortie (dépense)</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label>Description</label>
-            <input type="text" id="mv-desc" placeholder="Ex: Vente réparation PC">
-          </div>
-          <div class="fg">
-            <label>Montant (FCFA)</label>
-            <input type="number" id="mv-amount" placeholder="0" min="0">
-          </div>
-          <div class="fg">
-            <label>Mode paiement</label>
-            <select id="mv-pm">
-              <option>Wave</option>
-              <option>Orange Money</option>
-              <option>Moov Money</option>
-              <option>Espèces</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label>Catégorie</label>
-            <select id="mv-cat">
-              <option>Vente service</option>
-              <option>Vente matériel</option>
-              <option>Réparation</option>
-              <option>Achat fourniture</option>
-              <option>Salaire</option>
-              <option>Loyer</option>
-              <option>Transport</option>
-              <option>Autre</option>
-            </select>
-          </div>
-          <div class="fg" style="align-self:end">
-            <button class="btn-add-mv" onclick="addMouvement()">+ Ajouter</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-hd">
-        <h3>📊 Résumé de caisse</h3>
-        <div class="filter-row">
-          <select id="flt-type" onchange="renderMouvements()">
-            <option value="">Tous les types</option>
-            <option value="entree">Entrées seulement</option>
-            <option value="sortie">Sorties seulement</option>
-          </select>
-          <select id="flt-pm" onchange="renderMouvements()">
-            <option value="">Tous modes</option>
-            <option>Wave</option>
-            <option>Orange Money</option>
-            <option>Moov Money</option>
-            <option>Espèces</option>
-          </select>
-          <input type="text" id="flt-search" placeholder="🔍 Rechercher..." oninput="renderMouvements()" style="min-width:160px">
-          <button class="clear-btn" onclick="clearMouvements()">🗑 Tout effacer</button>
-          <button class="export-btn" onclick="exportCSV()">⬇ Exporter CSV</button>
-        </div>
-      </div>
-      <div class="card-body" style="padding:16px 20px 0">
-        <div class="solde-row" id="solde-summary"></div>
-      </div>
-      <div id="mv-table-wrap">
-        <table class="mv-table">
-          <thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th>Mode</th><th>Entrée</th><th>Sortie</th><th></th></tr></thead>
-          <tbody id="mv-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ════════════════════════════════════════
-       ONGLET : RÉCUPÉRATIONS / RETRAITS
-  ════════════════════════════════════════ -->
-  <div class="page-section" id="tab-retraits">
-
-    <!-- Stat du jour -->
-    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:20px">
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#FEF3C7">⏳</div>
-        <div class="stat-label">En attente</div>
-        <div class="stat-val" id="rt-attente" style="color:var(--amber)">0</div>
-        <div class="stat-sub">Cartes non récupérées</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#F0FDF4">✅</div>
-        <div class="stat-label">Récupérées aujourd'hui</div>
-        <div class="stat-val" id="rt-today" style="color:var(--green)">0</div>
-        <div class="stat-sub">Retraits du jour</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon" style="background:#EFF6FF">📊</div>
-        <div class="stat-label">Total récupérées</div>
-        <div class="stat-val" id="rt-total">0</div>
-        <div class="stat-sub">Depuis le début</div>
-      </div>
-    </div>
-
-    <!-- Filtre date -->
-    <div class="card">
-      <div class="card-hd">
-        <h3>⏳ Cartes en attente de récupération</h3>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <input type="text" id="rt-search" placeholder="🔍 Rechercher client..." oninput="renderRetraits()" style="padding:7px 11px;font-size:12px;min-width:180px">
-          <button class="export-btn" onclick="exportRetraits()">⬇ Exporter CSV</button>
-        </div>
-      </div>
-      <div id="rt-pending-list"></div>
-    </div>
-
-    <!-- Historique journalier des retraits -->
-    <div class="card">
-      <div class="card-hd">
-        <h3>📋 Historique journalier des récupérations</h3>
-        <div style="display:flex;gap:8px;align-items:center">
-          <label style="font-size:12px;font-weight:600;color:var(--text2)">Filtrer par date :</label>
-          <input type="date" id="rt-date-filter" onchange="renderRetraits()" style="padding:6px 10px;font-size:12px">
-          <button class="clear-btn" onclick="document.getElementById('rt-date-filter').value='';renderRetraits()">✕ Tout</button>
-        </div>
-      </div>
-      <div id="rt-history-list"></div>
-    </div>
-
-  </div>
-
-  <!-- ════════════════════════════════════════
-       ONGLET : HISTORIQUE
-  ════════════════════════════════════════ -->
-  <div class="page-section" id="tab-historique">
-    <div class="card">
-      <div class="card-hd">
-        <h3>📂 Historique des documents</h3>
-        <button class="clear-btn" onclick="clearHistory()">🗑 Effacer l'historique</button>
-      </div>
-      <div id="history-list"></div>
-    </div>
-  </div>
-
-</main>
-
-<footer>
-  <div class="footer-inner">
-    <div><div class="footer-brand">SAMASSA TECHNOLOGIE</div><div class="footer-sub">Grand Marché de Kayes, près du 1er arrondissement de la police — Rue Soundiata Keita</div></div>
-    <div class="footer-links">
-      <a href="tel:+22377291931">📞 77 29 19 31</a>
-      <a href="tel:+22362970630">📞 62 97 06 30</a>
-      <a href="mailto:samassatechnologie10@gmail.com">📧 samassatechnologie10@gmail.com</a>
-    </div>
-  </div>
-  <div class="footer-copy">© 2025 SAMASSA TECHNOLOGIE — Suite de Gestion Pro v2.0 — Tous droits réservés</div>
-</footer>
 
 <script>
-/* ============================================================
-   NAVIGATION PAR ONGLETS
-============================================================ */
-function showTab(id) {
-  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + id).classList.add('active');
-  const tabs = ['dashboard', 'mouvements', 'retraits', 'historique'];
-  const idx = tabs.indexOf(id);
-  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
-  if (id === 'dashboard')    loadStats();
-  if (id === 'mouvements')   renderMouvements();
-  if (id === 'retraits')     renderRetraits();
-  if (id === 'historique')   renderHistory();
-}
-
-/* ============================================================
-   STATISTIQUES
-============================================================ */
-function loadStats() {
-  const factures      = JSON.parse(localStorage.getItem('samassa_factures') || '[]');
-  const facturesCyber = JSON.parse(localStorage.getItem('samassa_factures_cyber') || '[]');
-  const interventions = JSON.parse(localStorage.getItem('samassa_interventions') || '[]');
-  const recusCyber    = JSON.parse(localStorage.getItem('samassa_recus_cyber') || '[]');
-  const mouvements    = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
-
-  const totalFac = factures.length + facturesCyber.length;
-  const totalInt = interventions.length + recusCyber.length;
-
-  document.getElementById('st-factures').textContent      = totalFac;
-  document.getElementById('st-interventions').textContent = totalInt;
-
-  const ca = [...factures, ...facturesCyber].reduce((s, f) => s + (parseFloat(f.total) || 0), 0);
-  document.getElementById('st-ca').textContent = ca > 0 ? fmtNum(ca) + ' FCFA' : '— FCFA';
-
-  const entrees = mouvements.filter(m => m.type === 'entree').reduce((s, m) => s + m.amount, 0);
-  const sorties = mouvements.filter(m => m.type === 'sortie').reduce((s, m) => s + m.amount, 0);
-  const solde   = entrees - sorties;
-  const soldeEl = document.getElementById('st-solde');
-  soldeEl.textContent = fmtNum(Math.abs(solde)) + ' FCFA';
-  soldeEl.style.color = solde >= 0 ? 'var(--green)' : 'var(--red)';
-}
-
-function fmtNum(n) { return Math.round(n).toLocaleString('fr-FR'); }
-
-/* ============================================================
-   MOUVEMENTS DE CAISSE
-============================================================ */
-function addMouvement() {
-  const date   = document.getElementById('mv-date').value;
-  const type   = document.getElementById('mv-type').value;
-  const desc   = document.getElementById('mv-desc').value.trim();
-  const amount = parseFloat(document.getElementById('mv-amount').value) || 0;
-  const pm     = document.getElementById('mv-pm').value;
-  const cat    = document.getElementById('mv-cat').value;
-  if (!date || !desc || !amount) { toast('Veuillez remplir tous les champs obligatoires.', 'error'); return; }
-  const list = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
-  list.push({ id: Date.now(), date, type, desc, amount, pm, cat, timestamp: new Date().toISOString() });
-  localStorage.setItem('samassa_mouvements', JSON.stringify(list));
-  document.getElementById('mv-desc').value = '';
-  document.getElementById('mv-amount').value = '';
-  toast((type === 'entree' ? '📈 Entrée' : '📉 Sortie') + ' enregistrée : ' + fmtNum(amount) + ' FCFA ✓');
-  renderMouvements();
-  loadStats();
-}
-
-function renderMouvements() {
-  let list = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
-  const fltType   = document.getElementById('flt-type')?.value   || '';
-  const fltPM     = document.getElementById('flt-pm')?.value     || '';
-  const fltSearch = (document.getElementById('flt-search')?.value || '').toLowerCase();
-  if (fltType)   list = list.filter(m => m.type === fltType);
-  if (fltPM)     list = list.filter(m => m.pm   === fltPM);
-  if (fltSearch) list = list.filter(m => m.desc.toLowerCase().includes(fltSearch) || m.cat.toLowerCase().includes(fltSearch));
-  list.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-  const entrees = list.filter(m => m.type === 'entree').reduce((s, m) => s + m.amount, 0);
-  const sorties = list.filter(m => m.type === 'sortie').reduce((s, m) => s + m.amount, 0);
-  const net     = entrees - sorties;
-  document.getElementById('solde-summary').innerHTML = `
-    <div class="solde-card solde-entrees"><div class="sc-lbl">📈 Total Entrées</div><div class="sc-val">+${fmtNum(entrees)} FCFA</div></div>
-    <div class="solde-card solde-sorties"><div class="sc-lbl">📉 Total Sorties</div><div class="sc-val">-${fmtNum(sorties)} FCFA</div></div>
-    <div class="solde-card solde-net"><div class="sc-lbl">💼 Solde Net</div><div class="sc-val">${net >= 0 ? '+' : ''}${fmtNum(net)} FCFA</div></div>`;
-
-  const pmIcons = { Wave: '🌊', 'Orange Money': '🟠', 'Moov Money': '🔵', Espèces: '💵' };
-  const tbody = document.getElementById('mv-tbody');
-  if (!list.length) {
-    tbody.innerHTML = `<tr><td colspan="7" class="empty-row">Aucun mouvement enregistré</td></tr>`;
-    return;
-  }
-  tbody.innerHTML = list.map(m => `
-    <tr>
-      <td>${new Date(m.date).toLocaleDateString('fr-FR')}</td>
-      <td class="td-desc">
-        ${m.desc}
-        ${m.auto ? '<span style="font-size:10px;background:#F0FDF4;color:#15803D;padding:1px 7px;border-radius:12px;font-weight:600;margin-left:5px;border:1px solid #DCFCE7">🧾 Reçu auto</span>' : ''}
-      </td>
-      <td><span class="badge" style="background:var(--bg);color:var(--text2)">${m.cat}</span></td>
-      <td>${pmIcons[m.pm] || ''} ${m.pm}</td>
-      <td class="td-entree">${m.type === 'entree' ? '+' + fmtNum(m.amount) + ' F' : '—'}</td>
-      <td class="td-sortie">${m.type === 'sortie' ? '-' + fmtNum(m.amount) + ' F' : '—'}</td>
-      <td><button class="del-btn" onclick="deleteMouvement(${m.id})" title="Supprimer">✕</button></td>
-    </tr>`).join('');
-}
-
-function deleteMouvement(id) {
-  if (!confirm('Supprimer ce mouvement ?')) return;
-  let list = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
-  list = list.filter(m => m.id !== id);
-  localStorage.setItem('samassa_mouvements', JSON.stringify(list));
-  renderMouvements(); loadStats();
-}
-
-function clearMouvements() {
-  if (!confirm('Effacer TOUS les mouvements de caisse ? Cette action est irréversible.')) return;
-  localStorage.removeItem('samassa_mouvements');
-  renderMouvements(); loadStats();
-  toast('Tous les mouvements ont été effacés.', 'info');
-}
-
-function exportCSV() {
-  const list = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
-  if (!list.length) { toast('Aucun mouvement à exporter.', 'error'); return; }
-  const rows = [['Date','Type','Description','Catégorie','Mode Paiement','Entrée (FCFA)','Sortie (FCFA)']];
-  list.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(m => {
-    rows.push([
-      new Date(m.date).toLocaleDateString('fr-FR'),
-      m.type === 'entree' ? 'Entrée' : 'Sortie',
-      m.desc, m.cat, m.pm,
-      m.type === 'entree' ? m.amount : '',
-      m.type === 'sortie' ? m.amount : ''
-    ]);
+/* ══ NAVIGATION ══ */
+const TABS=['dashboard','mouvements','retraits','historique'];
+function showTab(id){
+  TABS.forEach(t=>{
+    document.getElementById('tab-'+t)?.classList.remove('active');
+    document.getElementById('dt-'+t)?.classList.remove('active');
+    document.getElementById('bn-'+t)?.classList.remove('active');
   });
-  const csv = rows.map(r => r.join(';')).join('\n');
-  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'samassa-mouvements-' + new Date().toISOString().split('T')[0] + '.csv';
-  a.click();
-  toast('Fichier CSV exporté avec succès ✓');
+  document.getElementById('tab-'+id)?.classList.add('active');
+  document.getElementById('dt-'+id)?.classList.add('active');
+  document.getElementById('bn-'+id)?.classList.add('active');
+  if(id==='dashboard') loadDashboard();
+  if(id==='mouvements')renderMouvements();
+  if(id==='retraits')  renderRetraits();
+  if(id==='historique')renderHistory();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ============================================================
-   HISTORIQUE DOCUMENTS
-============================================================ */
-function renderHistory() {
-  const types = [
-    { key: 'samassa_factures',      cls: 'dico-f', icon: '📄', label: 'Facture',       url: 'facture.html' },
-    { key: 'samassa_recus',         cls: 'dico-r', icon: '🧾', label: 'Reçu',          url: 'recu.html' },
-    { key: 'samassa_devis',         cls: 'dico-d', icon: '📋', label: 'Devis',          url: 'devis.html' },
-    { key: 'samassa_interventions', cls: 'dico-i', icon: '🔧', label: 'Intervention',   url: 'intervention.html' },
-    { key: 'samassa_recus_cyber',   cls: 'dico-r', icon: '🖥️', label: 'Reçu Cyber',    url: 'recu_cyber.html' },
-    { key: 'samassa_factures_cyber',cls: 'dico-f', icon: '🖥️', label: 'Facture Cyber', url: 'facture_cyber.html' }
+/* ══ HELPERS ══ */
+const $ = id=>document.getElementById(id);
+function fmtNum(n){return Math.round(n).toLocaleString('fr-FR')}
+function fmtK(n){return n>=1000000?(n/1000000).toFixed(1)+'M':n>=1000?(n/1000).toFixed(0)+'K':String(Math.round(n))}
+function today(){return new Date().toISOString().split('T')[0]}
+function fmtDate(s){try{return new Date(s).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'})}catch{return s||'—'}}
+function getData(k){try{return JSON.parse(localStorage.getItem(k)||'[]')}catch{return[]}}
+
+/* ══ SPARKLINE ══ */
+function drawSpark(id,vals,color){
+  const c=$( id); if(!c)return;
+  const W=c.offsetWidth||120,H=32;
+  const max=Math.max(...vals,1);
+  const pts=vals.map((v,i)=>`${(i/(vals.length-1))*W},${H-3-(v/max)*(H-6)}`).join(' ');
+  c.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:100%"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+
+/* ══ BAR CHART ══ */
+function drawChart(labels,values,color){
+  const canvas=$('chart-7days'); if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const DPR=window.devicePixelRatio||1;
+  const W=canvas.offsetWidth||400, H=175;
+  canvas.width=W*DPR; canvas.height=H*DPR;
+  ctx.scale(DPR,DPR);
+  const maxV=Math.max(...values,1);
+  const pL=44,pR=10,pT=14,pB=28;
+  const gW=W-pL-pR, gH=H-pT-pB;
+  ctx.clearRect(0,0,W,H);
+  /* Grid */
+  for(let i=0;i<=4;i++){
+    const y=pT+(gH/4)*i;
+    ctx.strokeStyle='rgba(208,221,232,.5)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(W-pR,y);ctx.stroke();
+    ctx.fillStyle='#8099B0';ctx.font=`10px 'Segoe UI',sans-serif`;ctx.textAlign='right';
+    ctx.fillText(fmtK(maxV*(1-i/4)),pL-4,y+4);
+  }
+  /* Bars */
+  const sp=gW/labels.length;
+  const bW=Math.max(6,sp*0.55);
+  labels.forEach((lbl,i)=>{
+    const v=values[i]||0;
+    const bH=(v/maxV)*gH;
+    const x=pL+sp*i+sp/2-bW/2;
+    const y=pT+gH-bH;
+    const isLast=i===labels.length-1;
+    ctx.fillStyle=isLast?color:(color+'70');
+    if(bH>0){
+      const r=Math.min(4,bW/2);
+      ctx.beginPath();
+      ctx.moveTo(x+r,y);ctx.lineTo(x+bW-r,y);ctx.quadraticCurveTo(x+bW,y,x+bW,y+r);
+      ctx.lineTo(x+bW,y+bH);ctx.lineTo(x,y+bH);ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+      ctx.fill();
+    }
+    ctx.fillStyle='#8099B0';ctx.font=`10px 'Segoe UI'`;ctx.textAlign='center';
+    ctx.fillText(lbl,pL+sp*i+sp/2,H-8);
+    if(v>0){ctx.fillStyle=isLast?color:'#4A6080';ctx.font=`bold 10px 'Segoe UI'`;ctx.fillText(fmtK(v),pL+sp*i+sp/2,y-3);}
+  });
+}
+
+function buildChart(){
+  const filter=$('chart-filter')?.value||'entrees';
+  const mvs=getData('samassa_mouvements');
+  const labels=[],values=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const ds=d.toISOString().split('T')[0];
+    labels.push(d.toLocaleDateString('fr-FR',{weekday:'short'}).slice(0,3));
+    const items=mvs.filter(m=>{
+      const md=(m.timestamp||'').split('T')[0];
+      if(md!==ds)return false;
+      return filter==='entrees'?m.type==='entree':true;
+    });
+    values.push(items.reduce((s,m)=>s+m.amount,0));
+  }
+  const hasData=values.some(v=>v>0);
+  $('chart-empty').style.display=hasData?'none':'flex';
+  if(hasData)setTimeout(()=>drawChart(labels,values,'#0088CC'),30);
+}
+
+function getLast7(key,typeFilter,amtField){
+  const data=getData(key); const vals=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const ds=d.toISOString().split('T')[0];
+    const items=data.filter(x=>{
+      const xd=(x.timestamp||x.date||'').split('T')[0];
+      if(xd!==ds)return false;
+      if(typeFilter)return x.type===typeFilter;
+      return true;
+    });
+    vals.push(items.reduce((s,x)=>s+(parseFloat(amtField?x[amtField]:x.amount)||0),0));
+  }
+  return vals;
+}
+
+/* ══ LOAD DASHBOARD ══ */
+function loadDashboard(){
+  loadStats();buildChart();buildPM();buildRdv();buildActivity();
+}
+
+function loadStats(){
+  const factures=getData('samassa_factures');
+  const facturesCyber=getData('samassa_factures_cyber');
+  const recus=getData('samassa_recus');
+  const recusCyber=getData('samassa_recus_cyber');
+  const devis=getData('samassa_devis');
+  const interventions=getData('samassa_interventions');
+  const mouvements=getData('samassa_mouvements');
+  const retraits=getData('samassa_retraits');
+
+  /* CA */
+  const ca=[...factures,...facturesCyber].reduce((s,f)=>s+(parseFloat(f.total)||0),0);
+  if($('kpi-ca'))$('kpi-ca').textContent=ca>0?fmtK(ca)+' FCFA':'— FCFA';
+
+  /* Solde */
+  const entrees=mouvements.filter(m=>m.type==='entree').reduce((s,m)=>s+m.amount,0);
+  const sorties=mouvements.filter(m=>m.type==='sortie').reduce((s,m)=>s+m.amount,0);
+  const solde=entrees-sorties;
+  const se=$('kpi-solde');
+  if(se){se.textContent=fmtK(Math.abs(solde))+' FCFA';se.style.color=solde>=0?'var(--green)':'var(--red)';}
+  const st=$('kpi-solde-trend');
+  if(st){st.textContent=solde>=0?'✓ Positif':'⚠ Négatif';st.className='kpi-trend '+(solde>=0?'trend-up':'trend-down');}
+
+  /* Docs */
+  const docs=factures.length+facturesCyber.length+recus.length+recusCyber.length+devis.length+interventions.length;
+  if($('kpi-docs'))$('kpi-docs').textContent=docs;
+
+  /* RDV */
+  const retrieved=new Set(retraits.map(r=>r.recuNumber));
+  const pending=recus.filter(r=>!retrieved.has(r.number)&&(r.services||[]).some(s=>/nina|scan|carte|biom/i.test(s.desc)));
+  if($('kpi-rdv'))$('kpi-rdv').textContent=pending.length;
+
+  /* Badges */
+  const n=pending.length;
+  [$('dt-badge-rdv'),$('bn-badge-rdv')].forEach(b=>b&&(b.textContent=n,b.style.display=n?'flex':'none'));
+
+  /* RT stats */
+  if($('rt-att'))$('rt-att').textContent=pending.length;
+  const todayR=retraits.filter(r=>r.dateRetrait===today());
+  if($('rt-tod'))$('rt-tod').textContent=todayR.length;
+  if($('rt-tot'))$('rt-tot').textContent=retraits.length;
+
+  /* Sparklines */
+  setTimeout(()=>{
+    drawSpark('spark-ca',getLast7('samassa_factures',null,'total'),'#0088CC');
+    drawSpark('spark-solde',getLast7('samassa_mouvements','entree'),'#16A34A');
+  },50);
+}
+
+function buildPM(){
+  const mvs=getData('samassa_mouvements').filter(m=>m.type==='entree');
+  const tot=mvs.reduce((s,m)=>s+m.amount,0)||1;
+  const modes=[
+    {name:'Wave',        src:'logo-wave.png',         color:'#0891B2'},
+    {name:'Orange Money',src:'logo-orange-money.jpg', color:'#EA580C'},
+    {name:'Moov Money',  src:'logo-moov-money.png',   color:'#1D4ED8'},
+    {name:'Espèces',     src:null,                    color:'#16A34A'}
   ];
-  let all = [];
-  types.forEach(t => {
-    const items = JSON.parse(localStorage.getItem(t.key) || '[]');
-    items.forEach(i => all.push({ ...i, _t: t }));
-  });
-  all.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-  const container = document.getElementById('history-list');
-  if (!all.length) {
-    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text3)"><div style="font-size:42px;opacity:.25;margin-bottom:10px">📂</div><p>Aucun document enregistré pour le moment</p></div>';
-    return;
+  const wrap=$('pm-list'); if(!wrap)return;
+  if(!mvs.length){wrap.innerHTML='<div style="text-align:center;color:var(--text3);padding:22px;font-size:13px">Aucune transaction</div>';return;}
+  const bd=modes.map(m=>({...m,amt:mvs.filter(e=>e.pm===m.name).reduce((s,e)=>s+e.amount,0)})).sort((a,b)=>b.amt-a.amt);
+  wrap.innerHTML=bd.map(m=>`<div class="pm-row">
+    ${m.src?`<img src="${m.src}" alt="${m.name}" class="pm-logo">`:`<div class="pm-logo cash">💵</div>`}
+    <div class="pm-wrap">
+      <div class="pm-top"><span class="pm-name">${m.name}</span><span class="pm-val">${fmtNum(m.amt)} F</span></div>
+      <div class="pm-bg"><div class="pm-fill" style="width:${Math.round(m.amt/tot*100)}%;background:${m.color}"></div></div>
+    </div>
+  </div>`).join('');
+}
+
+function buildRdv(){
+  const recus=getData('samassa_recus');
+  const retrieved=new Set(getData('samassa_retraits').map(r=>r.recuNumber));
+  const pending=recus.filter(r=>!retrieved.has(r.number)&&(r.services||[]).some(s=>/nina|scan|carte|biom/i.test(s.desc)));
+  const wrap=$('dash-rdv'); if(!wrap)return;
+  if(!pending.length){wrap.innerHTML='<div style="text-align:center;padding:22px;color:var(--text3);font-size:13px"><div style="font-size:24px;opacity:.3;margin-bottom:6px">✅</div>Aucune carte en attente</div>';return;}
+  wrap.innerHTML='<div class="rdv-list">'+pending.slice(0,5).map(r=>{
+    const od=isOverdue(r.date);
+    const init=r.client.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="rdv-item">
+      <div class="rdv-av">${init}</div>
+      <div class="rdv-info"><div class="rdv-name">${r.client}</div><div class="rdv-sub">📞 ${r.phone||'—'} · ${r.number}</div></div>
+      <span class="rdv-st ${od?'rdv-late':'rdv-wait'}">${od?'⚠️ Dépassé':'⏳ '+computeRdv(r.date)}</span>
+      <button class="rdv-btn" onclick="confirmRetrait('${r.number}','${r.client}','${r.phone||''}','${r.nina||''}')">✓ Récup.</button>
+    </div>`;
+  }).join('')+'</div>';
+}
+
+function buildActivity(){
+  const types=[
+    {k:'samassa_recus',i:'🧾',l:'Reçu',c:'#16A34A'},
+    {k:'samassa_factures',i:'📄',l:'Facture',c:'#0088CC'},
+    {k:'samassa_interventions',i:'🔧',l:'Intervention',c:'#7C3AED'},
+    {k:'samassa_devis',i:'📋',l:'Devis',c:'#D97706'},
+    {k:'samassa_recus_cyber',i:'🖥️',l:'Reçu Cyber',c:'#16A34A'},
+    {k:'samassa_factures_cyber',i:'🖥️',l:'Fact.Cyber',c:'#4338CA'},
+  ];
+  let all=[];
+  types.forEach(t=>getData(t.k).forEach(d=>all.push({...d,_t:t})));
+  all.sort((a,b)=>new Date(b.timestamp||0)-new Date(a.timestamp||0));
+  const wrap=$('dash-act'); if(!wrap)return;
+  if(!all.length){wrap.innerHTML='<div style="text-align:center;padding:22px;color:var(--text3);font-size:13px"><div style="font-size:24px;opacity:.3;margin-bottom:6px">📋</div>Aucune activité</div>';return;}
+  wrap.innerHTML=all.slice(0,8).map(d=>{
+    const tm=d.timestamp?new Date(d.timestamp).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'';
+    const dt=d.timestamp?new Date(d.timestamp).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'}):d.date||'';
+    return `<div class="act-item">
+      <div class="act-dot" style="background:${d._t.c}20">${d._t.i}</div>
+      <div class="act-info"><div class="act-title">${d._t.l} N° ${d.number||'—'}</div><div class="act-sub">${d.client||'—'}</div></div>
+      <div class="act-right"><div class="act-amt" style="color:${d._t.c}">${d.total?'+'+fmtNum(d.total)+' F':'—'}</div><div class="act-time">${dt} ${tm}</div></div>
+    </div>`;
+  }).join('');
+}
+
+/* ══ MOUVEMENTS ══ */
+let mvType='entree';
+function setMvType(t){
+  mvType=t;
+  $('mv-btn-e').className='mv-tbtn'+(t==='entree'?' e':'');
+  $('mv-btn-s').className='mv-tbtn'+(t==='sortie'?' s':'');
+}
+function addMouvement(){
+  const date=$('mv-date').value, desc=$('mv-desc').value.trim();
+  const amount=parseFloat($('mv-amount').value)||0;
+  const pm=$('mv-pm').value, cat=$('mv-cat').value;
+  if(!date||!desc||!amount){toast('Remplissez tous les champs.','error');return;}
+  const list=getData('samassa_mouvements');
+  list.push({id:Date.now(),date,type:mvType,desc,amount,pm,cat,timestamp:new Date().toISOString()});
+  localStorage.setItem('samassa_mouvements',JSON.stringify(list));
+  $('mv-desc').value=''; $('mv-amount').value='';
+  toast((mvType==='entree'?'📈 Entrée':'📉 Sortie')+' : +'+fmtNum(amount)+' FCFA ✓');
+  renderMouvements(); loadStats();
+  if($('tab-dashboard').classList.contains('active'))loadDashboard();
+}
+function renderMouvements(){
+  let list=getData('samassa_mouvements');
+  const ft=$('flt-type')?.value||'', fp=$('flt-pm')?.value||'', fs=($('flt-search')?.value||'').toLowerCase();
+  if(ft)list=list.filter(m=>m.type===ft);
+  if(fp)list=list.filter(m=>m.pm===fp);
+  if(fs)list=list.filter(m=>m.desc.toLowerCase().includes(fs)||m.cat.toLowerCase().includes(fs));
+  list.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const e=list.filter(m=>m.type==='entree').reduce((s,m)=>s+m.amount,0);
+  const s=list.filter(m=>m.type==='sortie').reduce((s,m)=>s+m.amount,0);
+  const n=e-s;
+  const sc=$('sc-row');
+  if(sc)sc.innerHTML=`
+    <div class="sc sc-in"><div class="sc-lbl">📈 Entrées</div><div class="sc-val">+${fmtNum(e)} F</div></div>
+    <div class="sc sc-out"><div class="sc-lbl">📉 Sorties</div><div class="sc-val">-${fmtNum(s)} F</div></div>
+    <div class="sc sc-net"><div class="sc-lbl">💼 Net</div><div class="sc-val">${n>=0?'+':''}${fmtNum(n)} F</div></div>`;
+  const pmI={Wave:'🌊','Orange Money':'🟠','Moov Money':'🔵',Espèces:'💵'};
+  const tb=$('mv-tbody'); if(!tb)return;
+  if(!list.length){tb.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text3)">Aucun mouvement</td></tr>`;return;}
+  tb.innerHTML=list.map(m=>`<tr>
+    <td>${new Date(m.date).toLocaleDateString('fr-FR')}</td>
+    <td class="td-d">${m.desc}${m.auto?'<span class="auto-b">auto</span>':''}</td>
+    <td><span style="font-size:11px;background:var(--bg);color:var(--text2);padding:2px 7px;border-radius:10px">${m.cat}</span></td>
+    <td style="font-size:12px;white-space:nowrap">${pmI[m.pm]||''} ${m.pm}</td>
+    <td class="td-in">${m.type==='entree'?'+'+fmtNum(m.amount)+' F':'—'}</td>
+    <td class="td-out">${m.type==='sortie'?'-'+fmtNum(m.amount)+' F':'—'}</td>
+    <td><button class="del-btn" onclick="deleteMv(${m.id})">✕</button></td>
+  </tr>`).join('');
+}
+function deleteMv(id){
+  if(!confirm('Supprimer ce mouvement ?'))return;
+  let list=getData('samassa_mouvements').filter(m=>m.id!==id);
+  localStorage.setItem('samassa_mouvements',JSON.stringify(list));
+  renderMouvements();loadStats();
+}
+function clearMouvements(){
+  if(!confirm('Effacer TOUS les mouvements ?'))return;
+  localStorage.removeItem('samassa_mouvements');renderMouvements();loadStats();toast('Effacé.','info');
+}
+function exportCSV(){
+  const list=getData('samassa_mouvements');
+  if(!list.length){toast('Aucun mouvement.','error');return;}
+  const rows=[['Date','Type','Description','Catégorie','Mode','Entrée','Sortie']];
+  list.sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach(m=>rows.push([new Date(m.date).toLocaleDateString('fr-FR'),m.type==='entree'?'Entrée':'Sortie',m.desc,m.cat,m.pm,m.type==='entree'?m.amount:'',m.type==='sortie'?m.amount:'']));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+rows.map(r=>r.join(';')).join('\n')],{type:'text/csv;charset=utf-8'}));
+  a.download='mouvements-'+today()+'.csv';a.click();toast('Export CSV ✓');
+}
+
+/* ══ RETRAITS ══ */
+function computeRdv(ds){try{const d=new Date(ds.split('/').reverse().join('-')+'T12:00:00');d.setDate(d.getDate()+2);return d.toLocaleDateString('fr-FR')}catch{return'—'}}
+function isOverdue(ds){try{const d=new Date(ds.split('/').reverse().join('-')+'T12:00:00');d.setDate(d.getDate()+2);return d<new Date()}catch{return false}}
+
+function renderRetraits(){
+  const recus=getData('samassa_recus');
+  const retraits=getData('samassa_retraits');
+  const search=($('rt-search')?.value||'').toLowerCase();
+  const dateFlt=$('rt-date')?.value||'';
+  const retrieved=new Set(retraits.map(r=>r.recuNumber));
+  const pending=recus.filter(r=>!retrieved.has(r.number)&&(r.services||[]).some(s=>/nina|scan|carte|biom/i.test(s.desc))).filter(r=>!search||r.client.toLowerCase().includes(search)||(r.phone||'').includes(search));
+  const todayR=retraits.filter(r=>r.dateRetrait===today());
+  if($('rt-att'))$('rt-att').textContent=pending.length;
+  if($('rt-tod'))$('rt-tod').textContent=todayR.length;
+  if($('rt-tot'))$('rt-tot').textContent=retraits.length;
+  const pEl=$('rt-pending'); if(!pEl)return;
+  if(!pending.length){pEl.innerHTML=`<div style="text-align:center;padding:28px;color:var(--text3)"><div style="font-size:28px;opacity:.3;margin-bottom:7px">✅</div><p style="font-size:13px">Aucune carte en attente</p></div>`;
+  }else{
+    pEl.innerHTML=`<table class="mv-table"><thead><tr><th>N° Reçu</th><th>Client</th><th>Tél.</th><th>NINA</th><th>Date paiement</th><th>RDV estimé</th><th>Actions</th></tr></thead><tbody>
+    ${pending.map(r=>{const od=isOverdue(r.date);return`<tr>
+      <td class="td-d">${r.number}</td><td class="td-d">${r.client}</td>
+      <td style="color:var(--blue)">${r.phone||'—'}</td>
+      <td style="font-size:11px;color:var(--text3)">${r.nina||'—'}</td>
+      <td>${r.date}</td>
+      <td><span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;${od?'background:#FEF2F2;color:var(--red)':'background:#FEF3C7;color:var(--amber)'}">${od?'⚠️ Dépassé':'📅 '+computeRdv(r.date)}</span></td>
+      <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="hb" style="background:var(--green-bg);color:var(--green);border-color:#DCFCE7" onclick="confirmRetrait('${r.number}','${r.client}','${r.phone||''}','${r.nina||''}')">✅ Récupérée</button>
+        <button class="hb" style="background:var(--blue-l);color:var(--blue);border-color:#BFDBFE" onclick="sendRdvSMS('${r.phone||''}','${r.client}','${r.number}','${r.date}')">📱 SMS RDV</button>
+      </div></td>
+    </tr>`}).join('')}</tbody></table>`;
   }
+  let filtered=[...retraits].sort((a,b)=>new Date(b.dateRetrait)-new Date(a.dateRetrait));
+  if(dateFlt)filtered=filtered.filter(r=>r.dateRetrait===dateFlt);
+  const hEl=$('rt-hist'); if(!hEl)return;
+  if(!filtered.length){hEl.innerHTML=`<div style="text-align:center;padding:26px;color:var(--text3);font-size:13px">Aucune récupération${dateFlt?' pour cette date':''}</div>`;return;}
+  const byDate={};
+  filtered.forEach(r=>{if(!byDate[r.dateRetrait])byDate[r.dateRetrait]=[];byDate[r.dateRetrait].push(r);});
+  hEl.innerHTML=Object.entries(byDate).map(([date,items])=>`
+    <div style="padding:9px 17px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+      <span style="font-size:12px;font-weight:700;color:var(--navy)">📅 ${new Date(date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</span>
+      <span style="background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">${items.length} retrait(s)</span>
+    </div>
+    ${items.map(r=>`<div class="doc-item">
+      <div class="doc-ico di-r">🪪</div>
+      <div style="flex:1;min-width:0"><div class="doc-ref">${r.client}</div><div class="doc-cl">Reçu ${r.recuNumber} · NINA: ${r.nina||'—'} · ${r.phone||'—'}</div></div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:11px;color:var(--text3)">${r.heureRetrait||''}</div>
+        <span class="sb sb-p">✅ Récupéré</span>
+        <div style="margin-top:4px"><button class="hb hb-d" onclick="sendPickupConfirmSMS('${r.phone||''}','${r.client}','${r.recuNumber}','${r.dateRetrait}')">📱 Renvoyer SMS</button></div>
+      </div>
+    </div>`).join('')}`).join('');
+}
+function confirmRetrait(num,client,phone,nina){
+  if(!confirm('Confirmer la récupération de la carte de '+client+' ?'))return;
+  const h=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  const list=getData('samassa_retraits');
+  list.push({recuNumber:num,client,phone,nina,dateRetrait:today(),heureRetrait:h,timestamp:new Date().toISOString()});
+  localStorage.setItem('samassa_retraits',JSON.stringify(list));
+  sendPickupConfirmSMS(phone,client,num,today());
+  toast('✅ Récupération confirmée + SMS envoyé','success');
+  renderRetraits();loadStats();
+  if($('tab-dashboard').classList.contains('active'))loadDashboard();
+}
+function sendPickupConfirmSMS(phone,client,num,dateR){
+  const df=new Date(dateR+'T12:00:00').toLocaleDateString('fr-FR');
+  const msg=`SAMASSA TECH - Bonjour ${client}, votre carte (Recu ${num}) a bien ete recuperee le ${df}. Merci! Tel: 77291931`;
+  const p=(phone||'').replace(/\s/g,'');
+  window.open((p?'sms:'+p:'sms:')+'?body='+encodeURIComponent(msg),'_blank');
+  if(!p)toast('Téléphone non renseigné','info');
+}
+function sendRdvSMS(phone,client,num,datePaiement){
+  const rdv=computeRdv(datePaiement);
+  const msg=`SAMASSA TECH - Bonjour ${client}, votre carte (Recu ${num}) est prete. Venez la recuperer d'ici le ${rdv}. Tel: 77291931 - Grand Marche de Kayes`;
+  const p=(phone||'').replace(/\s/g,'');
+  window.open((p?'sms:'+p:'sms:')+'?body='+encodeURIComponent(msg),'_blank');
+}
+function exportRetraits(){
+  const list=getData('samassa_retraits');
+  if(!list.length){toast('Aucune récupération.','error');return;}
+  const rows=[['Date','Heure','Client','Téléphone','NINA','N° Reçu']];
+  list.sort((a,b)=>new Date(b.dateRetrait)-new Date(a.dateRetrait)).forEach(r=>rows.push([r.dateRetrait,r.heureRetrait||'',r.client,r.phone||'',r.nina||'',r.recuNumber]));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+rows.map(r=>r.join(';')).join('\n')],{type:'text/csv;charset=utf-8'}));
+  a.download='retraits-'+today()+'.csv';a.click();toast('Export CSV ✓');
+}
 
-  /* Sérialiser chaque doc pour les boutons onclick */
-  container.innerHTML = all.map((d, idx) => {
-    const stCls   = d.statut === 'Payé' ? 'st-paye' : d.statut === 'Impayé' ? 'st-impaye' : 'st-attente';
-    const isReceipt = d._t.key === 'samassa_recus' || d._t.key === 'samassa_recus_cyber';
-    const safeDoc   = JSON.stringify(d).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
-
+/* ══ HISTORIQUE ══ */
+function renderHistory(){
+  const typeFilter=$('h-type')?.value||'';
+  const search=($('h-search')?.value||'').toLowerCase();
+  const types=[
+    {key:'samassa_factures',       cls:'di-f',icon:'📄',label:'Facture',      url:'facture.html'},
+    {key:'samassa_recus',          cls:'di-r',icon:'🧾',label:'Reçu',         url:'recu.html'},
+    {key:'samassa_devis',          cls:'di-d',icon:'📋',label:'Devis',         url:'devis.html'},
+    {key:'samassa_interventions',  cls:'di-i',icon:'🔧',label:'Intervention',  url:'intervention.html'},
+    {key:'samassa_recus_cyber',    cls:'di-r',icon:'🖥️',label:'Reçu Cyber',   url:'recu_cyber.html'},
+    {key:'samassa_factures_cyber', cls:'di-f',icon:'🖥️',label:'Fact. Cyber',  url:'facture_cyber.html'}
+  ];
+  let all=[];
+  (typeFilter?types.filter(t=>t.key===typeFilter):types).forEach(t=>getData(t.key).forEach(d=>all.push({...d,_t:t})));
+  if(search)all=all.filter(d=>(d.client||'').toLowerCase().includes(search)||(d.number||'').toLowerCase().includes(search));
+  all.sort((a,b)=>new Date(b.timestamp||0)-new Date(a.timestamp||0));
+  const c=$('history-list'); if(!c)return;
+  if(!all.length){c.innerHTML='<div style="text-align:center;padding:40px;color:var(--text3)"><div style="font-size:38px;opacity:.22;margin-bottom:10px">📂</div><p style="font-size:14px">Aucun document</p></div>';return;}
+  window._histAll=all;
+  const pmI={Wave:'🌊','Orange Money':'🟠','Moov Money':'🔵',Espèces:'💵'};
+  c.innerHTML=all.map((d,i)=>{
+    const stCls=d.statut==='Payé'?'sb-p':d.statut==='Impayé'?'sb-i':'sb-a';
+    const isRec=d._t.key==='samassa_recus'||d._t.key==='samassa_recus_cyber';
     return `<div class="doc-item">
       <div class="doc-ico ${d._t.cls}">${d._t.icon}</div>
       <div style="flex:1;min-width:0">
-        <div class="doc-ref">${d._t.label} N° ${d.number || '—'}
-          ${d.fromInt ? `<span style="font-size:10px;background:#EDE9FE;color:#6D28D9;padding:1px 6px;border-radius:10px;margin-left:5px">🔧 ${d.fromInt}</span>` : ''}
-        </div>
-        <div class="doc-client">${d.client || 'Client non spécifié'}
-          ${isReceipt && d.phone ? `<span style="margin-left:8px;color:var(--blue);font-size:11px;font-weight:600">📞 ${d.phone}</span>` : ''}
-        </div>
-        ${d.mode ? `<div style="font-size:11px;color:var(--text3);margin-top:2px">${pmIconHtml(d.mode)} ${d.mode}</div>` : ''}
+        <div class="doc-ref">${d._t.label} N° ${d.number||'—'}${d.fromInt?`<span style="font-size:10px;background:#EDE9FE;color:#6D28D9;padding:1px 6px;border-radius:10px;margin-left:5px">🔧 ${d.fromInt}</span>`:''}</div>
+        <div class="doc-cl">${d.client||'—'}${isRec&&d.phone?`<span style="margin-left:7px;color:var(--blue);font-size:11px;font-weight:600">📞 ${d.phone}</span>`:''}</div>
+        ${d.mode?`<div style="font-size:11px;color:var(--text3);margin-top:1px">${pmI[d.mode]||''} ${d.mode}</div>`:''}
       </div>
       <div style="text-align:right;flex-shrink:0">
-        <div class="doc-amount">${d.total ? fmtNum(d.total) + ' FCFA' : '—'}</div>
-        <div class="doc-date">${d.date || ''}</div>
-        ${d.statut ? `<span class="st-badge ${stCls}">${d.statut}</span>` : ''}
-        <div style="display:flex;gap:5px;margin-top:6px;justify-content:flex-end">
-          ${isReceipt ? `<button class="hist-btn hist-btn-detail" onclick='showDocDetail(${idx})' title="Voir les détails">👁 Détails</button>` : ''}
-          <a href="${d._t.url}" class="hist-btn hist-btn-print" title="Ouvrir pour réimprimer">🖨️ Réimprimer</a>
+        <div class="doc-amt">${d.total?fmtNum(d.total)+' F':'—'}</div>
+        <div class="doc-dt">${d.date||''}</div>
+        ${d.statut?`<span class="sb ${stCls}">${d.statut}</span>`:''}
+        <div style="display:flex;gap:4px;margin-top:5px;justify-content:flex-end;flex-wrap:wrap">
+          ${isRec?`<button class="hb hb-d" onclick="showDocDetail(${i})">👁 Détails</button>`:''}
+          <a href="${d._t.url}" class="hb hb-p">🖨️ Réimprimer</a>
         </div>
       </div>
     </div>`;
   }).join('');
-
-  /* Stocker l'index global pour le modal */
-  window._histAll = all;
 }
 
-function pmIconHtml(mode) {
-  const m = { Wave:'🌊', 'Orange Money':'🟠', 'Moov Money':'🔵', Espèces:'💵' };
-  return m[mode] || '';
-}
-
-/* ── Modal Détails d'un reçu ── */
-function showDocDetail(idx) {
-  const d = window._histAll[idx];
-  if (!d) return;
-  const existing = document.getElementById('hist-modal');
-  if (existing) existing.remove();
-
-  const services = (d.services || []).map(s =>
-    `<tr>
-      <td style="padding:7px 12px;border-bottom:1px solid #F0F5FA;font-size:13px">${s.desc}</td>
-      <td style="padding:7px 12px;border-bottom:1px solid #F0F5FA;font-size:13px;text-align:center">${s.qty}</td>
-      <td style="padding:7px 12px;border-bottom:1px solid #F0F5FA;font-size:13px;text-align:right;font-weight:600">${fmtNum(s.price)} F</td>
-    </tr>`).join('') || `<tr><td colspan="3" style="padding:12px;text-align:center;color:#8099B0;font-size:13px">Aucun détail de service enregistré</td></tr>`;
-
-  const pmIcons = { Wave:'🌊', 'Orange Money':'🟠', 'Moov Money':'🔵', Espèces:'💵' };
-
-  const modal = document.createElement('div');
-  modal.id = 'hist-modal';
-  modal.style.cssText = 'position:fixed;inset:0;background:rgba(13,27,42,.6);z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)';
-  modal.innerHTML = `
-    <div style="background:white;border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)">
-      <!-- Header -->
-      <div style="background:var(--navy);padding:18px 20px;border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:space-between">
-        <div>
-          <div style="color:white;font-size:15px;font-weight:700">${d._t.label} N° ${d.number || '—'}</div>
-          <div style="color:#93B8D4;font-size:12px;margin-top:2px">📅 ${d.date || '—'}</div>
-        </div>
-        <button onclick="document.getElementById('hist-modal').remove()" style="background:rgba(255,255,255,.15);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">✕</button>
-      </div>
-      <!-- Body -->
-      <div style="padding:20px">
-        <!-- Client -->
-        <div style="background:#F0F5FA;border-radius:10px;padding:14px 16px;margin-bottom:16px">
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8099B0;margin-bottom:8px">Informations Client</div>
-          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #E2EAF0">
-            <span style="font-size:12px;color:#4A6080">Nom complet</span>
-            <span style="font-size:13px;font-weight:700;color:#1A2D44">${d.client || '—'}</span>
-          </div>
-          <div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #E2EAF0">
-            <span style="font-size:12px;color:#4A6080">Téléphone</span>
-            <span style="font-size:13px;font-weight:700;color:#0088CC">${d.phone || '—'}</span>
-          </div>
-          ${d.nina ? `<div style="display:flex;justify-content:space-between;padding:4px 0">
-            <span style="font-size:12px;color:#4A6080">N° NINA</span>
-            <span style="font-size:13px;font-weight:700;color:#1A2D44">${d.nina}</span>
-          </div>` : ''}
-        </div>
-        <!-- Services -->
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8099B0;margin-bottom:8px">Services</div>
-        <table style="width:100%;border-collapse:collapse;margin-bottom:16px;background:#F8FBFD;border-radius:8px;overflow:hidden">
-          <thead><tr style="background:#0D1B2A">
-            <th style="padding:8px 12px;color:white;font-size:11px;text-align:left">Description</th>
-            <th style="padding:8px 12px;color:white;font-size:11px;text-align:center">Qté</th>
-            <th style="padding:8px 12px;color:white;font-size:11px;text-align:right">Montant</th>
-          </tr></thead>
-          <tbody>${services}</tbody>
-        </table>
-        <!-- Total + Mode -->
-        <div style="display:flex;justify-content:space-between;align-items:center;background:#0D1B2A;border-radius:10px;padding:12px 16px;margin-bottom:14px">
-          <span style="color:#93B8D4;font-size:13px;font-weight:700">TOTAL PAYÉ</span>
-          <span style="color:white;font-size:18px;font-weight:800">${fmtNum(d.total || 0)} FCFA</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:#F0FDF4;border:1.5px solid #DCFCE7;border-radius:10px">
-          <span style="font-size:22px">${pmIcons[d.mode] || '💵'}</span>
-          <div>
-            <div style="font-size:14px;font-weight:700;color:#1A2D44">${d.mode || 'Non spécifié'}</div>
-            <div style="font-size:11px;color:#4A6080">Paiement confirmé ✅</div>
-          </div>
-          <span style="margin-left:auto;background:#DCFCE7;color:#16A34A;padding:3px 12px;border-radius:20px;font-size:12px;font-weight:700">${d.statut || '—'}</span>
-        </div>
-        ${d.fromInt ? `<div style="margin-top:12px;padding:10px 14px;background:#EDE9FE;border-radius:8px;font-size:12px;color:#6D28D9;font-weight:600">🔧 Généré depuis l'intervention ${d.fromInt}</div>` : ''}
-      </div>
-    </div>`;
-
-  document.body.appendChild(modal);
-  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
-}
-
-function clearHistory() {
-  if (!confirm('Effacer tout l\'historique des documents ?')) return;
-  ['samassa_factures', 'samassa_recus', 'samassa_devis', 'samassa_interventions',
-   'samassa_recus_cyber', 'samassa_factures_cyber'].forEach(k => localStorage.removeItem(k));
-  renderHistory(); loadStats();
-  toast('Historique effacé.', 'info');
-}
-
-/* ============================================================
-   RÉCUPÉRATIONS / RETRAITS JOURNALIERS
-============================================================ */
-function renderRetraits() {
-  const recus    = JSON.parse(localStorage.getItem('samassa_recus') || '[]');
-  const retraits = JSON.parse(localStorage.getItem('samassa_retraits') || '[]');
-  const search   = (document.getElementById('rt-search')?.value || '').toLowerCase();
-  const dateFilt = document.getElementById('rt-date-filter')?.value || '';
-  const today    = new Date().toISOString().split('T')[0];
-
-  /* IDs déjà récupérés */
-  const retrievedNums = new Set(retraits.map(r => r.recuNumber));
-
-  /* Cartes en attente = reçus scan NINA non encore récupérés */
-  const pending = recus.filter(r =>
-    !retrievedNums.has(r.number) &&
-    (r.services || []).some(s => /nina|scan|carte|biom/i.test(s.desc))
-  ).filter(r => !search || r.client.toLowerCase().includes(search) || (r.phone || '').includes(search));
-
-  /* Stats */
-  const todayRetraits = retraits.filter(r => r.dateRetrait === today);
-  document.getElementById('rt-attente').textContent = pending.length;
-  document.getElementById('rt-today').textContent   = todayRetraits.length;
-  document.getElementById('rt-total').textContent   = retraits.length;
-
-  /* Liste en attente */
-  const pendingEl = document.getElementById('rt-pending-list');
-  if (!pending.length) {
-    pendingEl.innerHTML = `<div style="text-align:center;padding:32px;color:var(--text3)">
-      <div style="font-size:36px;opacity:.3;margin-bottom:8px">✅</div>
-      <p style="font-size:14px">Aucune carte en attente de récupération</p>
-    </div>`;
-  } else {
-    pendingEl.innerHTML = `<table class="mv-table">
-      <thead><tr>
-        <th>Reçu N°</th><th>Client</th><th>Téléphone</th><th>NINA</th>
-        <th>Date paiement</th><th>Rendez-vous estimé</th><th>Actions</th>
-      </tr></thead>
-      <tbody>${pending.map(r => {
-        const rdv = computeRdv(r.date);
-        const overdue = isOverdue(r.date);
-        return `<tr>
-          <td class="td-desc">${r.number}</td>
-          <td class="td-desc">${r.client}</td>
-          <td style="color:var(--blue)">${r.phone || '—'}</td>
-          <td style="font-size:11px;color:var(--text3)">${r.nina || '—'}</td>
-          <td>${r.date}</td>
-          <td><span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;${overdue ? 'background:#FEF2F2;color:var(--red)' : 'background:#FEF3C7;color:var(--amber)'}">${overdue ? '⚠️ Dépassé' : '📅 ' + rdv}</span></td>
-          <td>
-            <div style="display:flex;gap:6px">
-              <button class="hist-btn" style="background:#F0FDF4;color:var(--green);border-color:#DCFCE7"
-                onclick="confirmRetrait('${r.number}','${r.client}','${r.phone || ''}','${r.nina || ''}')">
-                ✅ Récupérée
-              </button>
-              <button class="hist-btn" style="background:#EFF6FF;color:var(--blue);border-color:#BFDBFE"
-                onclick="sendRdvSMS('${r.phone || ''}','${r.client}','${r.number}','${r.date}')">
-                📱 SMS RDV
-              </button>
-            </div>
-          </td>
-        </tr>`;
-      }).join('')}</tbody>
-    </table>`;
-  }
-
-  /* Historique journalier des retraits */
-  let filteredRetraits = [...retraits].sort((a, b) => new Date(b.dateRetrait) - new Date(a.dateRetrait));
-  if (dateFilt) filteredRetraits = filteredRetraits.filter(r => r.dateRetrait === dateFilt);
-
-  const histEl = document.getElementById('rt-history-list');
-  if (!filteredRetraits.length) {
-    histEl.innerHTML = `<div style="text-align:center;padding:28px;color:var(--text3);font-style:italic;font-size:13px">Aucune récupération enregistrée${dateFilt ? ' pour cette date' : ''}</div>`;
-    return;
-  }
-
-  /* Regrouper par date */
-  const byDate = {};
-  filteredRetraits.forEach(r => {
-    if (!byDate[r.dateRetrait]) byDate[r.dateRetrait] = [];
-    byDate[r.dateRetrait].push(r);
-  });
-
-  histEl.innerHTML = Object.entries(byDate).map(([date, items]) => `
-    <div style="padding:10px 20px;background:var(--bg);border-bottom:1px solid var(--border)">
-      <span style="font-size:12px;font-weight:700;color:var(--navy)">📅 ${new Date(date + 'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</span>
-      <span style="margin-left:10px;background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px">${items.length} retrait(s)</span>
+function showDocDetail(idx){
+  const d=window._histAll[idx]; if(!d)return;
+  const pmI={Wave:'🌊','Orange Money':'🟠','Moov Money':'🔵',Espèces:'💵'};
+  const svc=(d.services||[]).map(s=>`<tr><td style="padding:7px 12px;border-bottom:1px solid #F0F5FA;font-size:13px">${s.desc}</td><td style="padding:7px;text-align:center;border-bottom:1px solid #F0F5FA;font-size:13px">${s.qty}</td><td style="padding:7px 12px;text-align:right;border-bottom:1px solid #F0F5FA;font-size:13px;font-weight:600">${fmtNum(s.price)} F</td></tr>`).join('')||`<tr><td colspan="3" style="padding:12px;text-align:center;color:#8099B0">—</td></tr>`;
+  const m=document.createElement('div');m.id='hist-modal';
+  m.style.cssText='position:fixed;inset:0;background:rgba(13,27,42,.65);z-index:9001;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)';
+  m.innerHTML=`<div class="modal-sh"><div class="m-handle"></div><div class="m-head"><div class="m-title">${d._t.icon} ${d._t.label} N° ${d.number||'—'}</div><button class="m-close" onclick="document.getElementById('hist-modal').remove()">✕</button></div><div class="m-body">
+    <div style="background:#F0F5FA;border-radius:10px;padding:13px;margin-bottom:13px">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#8099B0;margin-bottom:7px">Client</div>
+      <div style="font-size:15px;font-weight:800;color:#1A2D44">${d.client||'—'}</div>
+      ${d.phone?`<div style="font-size:13px;color:#0088CC;margin-top:3px">📞 ${d.phone}</div>`:''}
+      ${d.nina?`<div style="font-size:12px;color:#4A6080;margin-top:2px">NINA : ${d.nina}</div>`:''}
+      <div style="font-size:12px;color:#4A6080;margin-top:3px">📅 ${d.date||'—'}</div>
     </div>
-    ${items.map(r => `
-    <div class="doc-item">
-      <div class="doc-ico dico-r">🪪</div>
-      <div style="flex:1;min-width:0">
-        <div class="doc-ref">${r.client}</div>
-        <div class="doc-client">Reçu ${r.recuNumber} · NINA : ${r.nina || '—'} · ${r.phone || '—'}</div>
-      </div>
-      <div style="text-align:right;flex-shrink:0">
-        <div style="font-size:11px;color:var(--text3)">${r.heureRetrait || ''}</div>
-        <span class="st-badge st-paye">✅ Récupéré</span>
-        <div style="margin-top:5px">
-          <button class="hist-btn hist-btn-detail" onclick="sendPickupConfirmSMS('${r.phone || ''}','${r.client}','${r.recuNumber}','${r.dateRetrait}')">
-            📱 Renvoyer SMS
-          </button>
-        </div>
-      </div>
-    </div>`).join('')}
-  `).join('');
+    <table style="width:100%;border-collapse:collapse;margin-bottom:13px;border-radius:8px;overflow:hidden"><thead><tr style="background:#0D1B2A"><th style="padding:8px 12px;color:white;font-size:11px;text-align:left">Service</th><th style="padding:8px;color:white;font-size:11px;text-align:center">Qté</th><th style="padding:8px 12px;color:white;font-size:11px;text-align:right">Montant</th></tr></thead><tbody>${svc}</tbody></table>
+    <div style="background:#0D1B2A;border-radius:10px;padding:11px 15px;display:flex;justify-content:space-between;align-items:center;margin-bottom:11px"><span style="color:#93B8D4;font-size:13px;font-weight:700">TOTAL</span><span style="color:white;font-size:17px;font-weight:800">${fmtNum(d.total||0)} FCFA</span></div>
+    ${d.mode?`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#F0FDF4;border:1.5px solid #DCFCE7;border-radius:10px"><span style="font-size:20px">${pmI[d.mode]||'💵'}</span><div><div style="font-size:13px;font-weight:700">${d.mode}</div><div style="font-size:11px;color:#4A6080">Paiement confirmé ✅</div></div></div>`:''}
+    ${d.fromInt?`<div style="margin-top:10px;padding:9px;background:#EDE9FE;border-radius:8px;font-size:12px;color:#6D28D9;font-weight:600">🔧 Généré depuis ${d.fromInt}</div>`:''}
+  </div></div>`;
+  document.body.appendChild(m);
+  m.addEventListener('click',e=>{if(e.target===m)m.remove();});
 }
 
-function computeRdv(dateStr) {
-  /* Rendez-vous = date paiement + 2 jours ouvrés (48h) */
-  try {
-    const d = new Date(dateStr.split('/').reverse().join('-') + 'T12:00:00');
-    d.setDate(d.getDate() + 2);
-    return d.toLocaleDateString('fr-FR');
-  } catch { return '—'; }
+function clearHistory(){
+  if(!confirm('Effacer tout l\'historique ?'))return;
+  ['samassa_factures','samassa_recus','samassa_devis','samassa_interventions','samassa_recus_cyber','samassa_factures_cyber'].forEach(k=>localStorage.removeItem(k));
+  renderHistory();loadStats();toast('Historique effacé.','info');
 }
 
-function isOverdue(dateStr) {
-  try {
-    const d = new Date(dateStr.split('/').reverse().join('-') + 'T12:00:00');
-    d.setDate(d.getDate() + 2);
-    return d < new Date();
-  } catch { return false; }
-}
-
-function confirmRetrait(recuNumber, client, phone, nina) {
-  if (!confirm('Confirmer la récupération de la carte de ' + client + ' ?\nUn SMS de confirmation sera envoyé.')) return;
-
-  const today    = new Date().toISOString().split('T')[0];
-  const heure    = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  const retraits = JSON.parse(localStorage.getItem('samassa_retraits') || '[]');
-  retraits.push({
-    recuNumber, client, phone, nina,
-    dateRetrait: today,
-    heureRetrait: heure,
-    timestamp: new Date().toISOString()
-  });
-  localStorage.setItem('samassa_retraits', JSON.stringify(retraits));
-
-  /* Envoyer SMS de confirmation de récupération */
-  sendPickupConfirmSMS(phone, client, recuNumber, today);
-
-  toast('✅ Récupération confirmée pour ' + client + ' — SMS envoyé', 'success');
-  renderRetraits();
-}
-
-function sendPickupConfirmSMS(phone, client, recuNumber, dateRetrait) {
-  const dateFr = new Date(dateRetrait + 'T12:00:00').toLocaleDateString('fr-FR');
-  const msg = `SAMASSA TECH - Bonjour ${client}, votre carte (Recu ${recuNumber}) a bien ete recuperee le ${dateFr}. Merci pour votre confiance! Tel: 77291931`;
-  const p = (phone || '').replace(/\s/g, '');
-  if (p) {
-    window.open('sms:' + p + '?body=' + encodeURIComponent(msg), '_blank');
-  } else {
-    window.open('sms:?body=' + encodeURIComponent(msg), '_blank');
-    toast('Téléphone non renseigné — SMS ouvert sans numéro.', 'info');
-  }
-}
-
-function sendRdvSMS(phone, client, recuNumber, datePaiement) {
-  const rdv = computeRdv(datePaiement);
-  const msg = `SAMASSA TECH - Bonjour ${client}, votre carte (Recu ${recuNumber}) est prete. Venez la recuperer d'ici le ${rdv}. Tel: 77291931 - Grand Marche de Kayes`;
-  const p = (phone || '').replace(/\s/g, '');
-  if (p) {
-    window.open('sms:' + p + '?body=' + encodeURIComponent(msg), '_blank');
-  } else {
-    window.open('sms:?body=' + encodeURIComponent(msg), '_blank');
-  }
-}
-
-function exportRetraits() {
-  const retraits = JSON.parse(localStorage.getItem('samassa_retraits') || '[]');
-  if (!retraits.length) { toast('Aucune récupération à exporter.', 'error'); return; }
-  const rows = [['Date Retrait','Heure','Client','Téléphone','NINA','N° Reçu']];
-  retraits.sort((a,b) => new Date(b.dateRetrait) - new Date(a.dateRetrait)).forEach(r => {
-    rows.push([r.dateRetrait, r.heureRetrait||'', r.client, r.phone||'', r.nina||'', r.recuNumber]);
-  });
-  const csv  = rows.map(r => r.join(';')).join('\n');
-  const blob = new Blob(['\uFEFF'+csv], { type:'text/csv;charset=utf-8' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'samassa-retraits-' + new Date().toISOString().split('T')[0] + '.csv';
-  a.click();
-  toast('Export CSV des récupérations ✓');
-}
-
-/* ============================================================
-   TOAST & INIT
-============================================================ */
-function toast(msg, type = 'success') {
-  const t = document.createElement('div');
-  t.className = 'toast ' + type;
-  t.textContent = msg;
+/* ══ TOAST ══ */
+function toast(msg,type='success'){
+  const t=document.createElement('div');t.className='toast '+type;t.textContent=msg;
   document.body.appendChild(t);
-  setTimeout(() => t.style.opacity = '0', 2700);
-  setTimeout(() => t.remove(), 3100);
+  setTimeout(()=>t.style.opacity='0',2700);setTimeout(()=>t.remove(),3100);
 }
 
-// Init
-document.getElementById('mv-date').value = new Date().toISOString().split('T')[0];
-loadStats();
-
-function logout() {
-  if (confirm('Voulez-vous vous déconnecter de la suite ?')) {
-    localStorage.removeItem('_samassa_session');
-    window.location.replace('login.html');
+/* ══ NOTIFICATIONS ══ */
+function requestNotif(){
+  if(!('Notification' in window)){toast('Non supporté','error');return;}
+  Notification.requestPermission().then(p=>{$('notif-bar')?.remove();if(p==='granted'){toast('Notifications activées ✓','success');checkRdvNotifs();}});
+}
+function checkRdvNotifs(){
+  const recus=getData('samassa_recus');
+  const retrieved=new Set(getData('samassa_retraits').map(r=>r.recuNumber));
+  const overdue=recus.filter(r=>!retrieved.has(r.number)&&(r.services||[]).some(s=>/nina|scan|carte|biom/i.test(s.desc))&&isOverdue(r.date));
+  if(overdue.length&&Notification.permission==='granted'){
+    new Notification('SAMASSA TECHNOLOGIE',{body:`⚠️ ${overdue.length} carte(s) en retard de récupération !`,icon:'icon-512x512.png'});
   }
 }
-
-/* ============================================================
-   PWA — Installation sur PC et téléphone
-============================================================ */
-let deferredPrompt = null;
-
-/* Intercepter l'événement beforeinstallprompt (Chrome/Edge PC + Android) */
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  const btn = document.getElementById('installBtn');
-  if (btn) btn.style.display = 'flex';
-});
-
-/* Cacher le bouton si déjà installé */
-window.addEventListener('appinstalled', () => {
-  deferredPrompt = null;
-  const btn = document.getElementById('installBtn');
-  if (btn) btn.style.display = 'none';
-  toast('Application installée avec succès ! ✓', 'success');
-});
-
-function installApp() {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(result => {
-      if (result.outcome === 'accepted') {
-        toast('Installation en cours... ✓', 'success');
-      }
-      deferredPrompt = null;
-    });
-  } else {
-    /* Guide manuel si le prompt n'est pas disponible */
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    if (isIOS && isSafari) {
-      alert('Pour installer sur iPhone/iPad :\n\n1. Appuyez sur le bouton Partager ⬆\n2. Sélectionnez "Sur l\'écran d\'accueil"\n3. Appuyez sur "Ajouter"');
-    } else {
-      alert('Pour installer l\'application :\n\nSur Chrome/Edge PC : cliquez l\'icône ⊕ dans la barre d\'adresse\nSur Android : Menu ⋮ → "Ajouter à l\'écran d\'accueil"');
-    }
-  }
+function checkNotifBanner(){
+  if(!('Notification' in window))return;
+  if(Notification.permission==='default')$('notif-bar').style.display='flex';
 }
 
-/* Enregistrement du Service Worker */
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(reg => console.log('SW Samassa Pro enregistré :', reg.scope))
-    .catch(err => console.error('SW erreur :', err));
-}
+/* ══ LOGOUT ══ */
+function logout(){if(confirm('Vous déconnecter ?')){localStorage.removeItem('_samassa_session');window.location.replace('login.html');}}
+
+/* ══ PWA ══ */
+let dp=null;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;const b=$('installBtn');if(b)b.style.display='flex';});
+window.addEventListener('appinstalled',()=>{dp=null;const b=$('installBtn');if(b)b.style.display='none';toast('Application installée ! ✓','success');});
+function installApp(){if(dp){dp.prompt();dp.userChoice.then(()=>dp=null);}else if(/iPad|iPhone|iPod/.test(navigator.userAgent))alert('Safari → Partager ⬆ → Sur l\'écran d\'accueil');else alert('Chrome → Menu ⋮ → Ajouter à l\'écran d\'accueil');}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');
+
+/* ══ INIT ══ */
+$('mv-date').value=today();
+loadDashboard();
+checkNotifBanner();
+setTimeout(checkRdvNotifs,3500);
+window.addEventListener('resize',()=>{if($('tab-dashboard').classList.contains('active'))setTimeout(buildChart,100);});
 </script>
 
-<!-- Synchronisation Firebase Cloud -->
-
-<!-- Rechargement de l'UI quand sync distante reçoit des données -->
 <script>
-document.addEventListener('samassa:sync', () => {
-  /* Recharger toutes les statistiques */
-  loadStats();
-  /* Recharger l'onglet actif */
-  const activeTab = document.querySelector('.page-section.active');
-  if (activeTab?.id === 'tab-mouvements') renderMouvements();
-  if (activeTab?.id === 'tab-historique') renderHistory();
+/* Sync Firebase */
+document.addEventListener('samassa:sync',()=>{
+  if($('tab-dashboard')?.classList.contains('active'))loadDashboard();
+  if($('tab-mouvements')?.classList.contains('active'))renderMouvements();
+  if($('tab-historique')?.classList.contains('active'))renderHistory();
+  if($('tab-retraits')?.classList.contains('active'))renderRetraits();
 });
-
-/* Au démarrage, recharger les stats après que la sync initiale soit faite */
-document.addEventListener('samassa:sync', loadStats, { once: true });
 </script>
 </body>
 </html>
