@@ -696,134 +696,573 @@ function selectDoc(type) {
 /* ════════════════════════════════════════════
    GÉNÉRATION IA
 ════════════════════════════════════════════ */
-async function generateDocument() {
+/* ════════════════════════════════════════════
+   GÉNÉRATION LOCALE — Modèles pré-rédigés
+   Aucune connexion internet requise
+════════════════════════════════════════════ */
+function generateDocument() {
   if (!currentDocType) { alert('Choisissez un type de document.'); return; }
   const nom = document.getElementById('f-nom')?.value?.trim();
   if (!nom) { alert('Le nom du demandeur est obligatoire.'); document.getElementById('f-nom').focus(); return; }
 
   /* Collecter tous les champs */
   const cfg = DOC_CONFIG[currentDocType];
-  const data = { nom, lieu: document.getElementById('f-lieu')?.value || 'Kayes', date: document.getElementById('f-date')?.value, tel: document.getElementById('f-tel')?.value || '', complement: document.getElementById('f-complement')?.value || '' };
-  cfg.fields.forEach(f => { const el = document.getElementById(f.id); if (el) data[f.id.replace('f-', '')] = el.value || ''; });
+  const data = {
+    nom,
+    lieu:       document.getElementById('f-lieu')?.value  || 'Kayes',
+    date:       document.getElementById('f-date')?.value  || new Date().toISOString().split('T')[0],
+    tel:        document.getElementById('f-tel')?.value   || '',
+    complement: document.getElementById('f-complement')?.value || ''
+  };
+  cfg.fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    if (el) data[f.id.replace('f-', '')] = el.value || '';
+  });
 
-  /* Afficher le loading */
+  /* Animation courte */
   document.getElementById('preview-placeholder').style.display = 'none';
   document.getElementById('doc-a4-content').style.display = 'none';
   document.getElementById('ai-loading').style.display = 'flex';
   document.getElementById('preview-actions').style.display = 'none';
-
-  const messages = [
-    { status: 'Analyse des informations...', delay: 0 },
-    { status: 'Rédaction du document administratif...', delay: 1200 },
-    { status: 'Mise en forme officielle...', delay: 2400 },
-  ];
-  let msgIdx = 0;
-  const msgInterval = setInterval(() => {
-    if (msgIdx < messages.length) {
-      document.getElementById('ai-loading-msg').textContent = messages[msgIdx].status;
-      msgIdx++;
-    }
-  }, 1200);
+  document.getElementById('ai-loading-msg').textContent = 'Rédaction du document en cours...';
 
   const btn = document.getElementById('btn-generer');
   btn.disabled = true;
-  btn.className = 'btn btn-gen loading';
-  btn.textContent = '⏳ Génération en cours...';
+  btn.textContent = '⏳ Génération...';
 
+  /* Génération locale (pseudo-async pour l'animation) */
+  setTimeout(() => {
+    try {
+      const docText = buildDocumentText(currentDocType, data);
+      docCounter++;
+      localStorage.setItem('samassa_docs_counter', String(docCounter));
+      const refNum = 'DA-' + String(docCounter).padStart(4, '0');
+
+      document.getElementById('d-title').textContent = cfg.title;
+      document.getElementById('d-ref-num').textContent = refNum;
+      document.getElementById('d-ref-date').textContent = fmtDateLong(data.date);
+      document.getElementById('d-body').textContent = docText;
+
+      generatedContent = { type: currentDocType, refNum, title: cfg.title, nom, data, text: docText, timestamp: new Date().toISOString() };
+
+      document.getElementById('ai-loading').style.display = 'none';
+      document.getElementById('doc-a4-content').style.display = 'block';
+      document.getElementById('preview-actions').style.display = 'flex';
+      document.getElementById('doc-a4-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+      document.getElementById('ai-loading').style.display = 'none';
+      document.getElementById('preview-placeholder').style.display = 'flex';
+      alert('Erreur : ' + err.message);
+    }
+    btn.disabled = false;
+    btn.innerHTML = '✨ Générer le document';
+  }, 900);
+}
+
+/* ── Formateur de date longue ── */
+function fmtDateLong(dateStr) {
   try {
-    const docText = await callAnthropicAPI(currentDocType, cfg, data);
-    clearInterval(msgInterval);
-
-    /* Numéro de document */
-    docCounter++;
-    localStorage.setItem('samassa_docs_counter', String(docCounter));
-    const refNum = 'DA-' + String(docCounter).padStart(4, '0');
-
-    /* Remplir le document */
-    document.getElementById('d-title').textContent = cfg.title;
-    document.getElementById('d-ref-num').textContent = refNum;
-    document.getElementById('d-ref-date').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    document.getElementById('d-body').textContent = docText;
-
-    generatedContent = { type: currentDocType, refNum, title: cfg.title, nom, data, text: docText, timestamp: new Date().toISOString() };
-
-    /* Afficher le document */
-    document.getElementById('ai-loading').style.display = 'none';
-    document.getElementById('doc-a4-content').style.display = 'block';
-    document.getElementById('preview-actions').style.display = 'flex';
-    document.getElementById('doc-a4-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  } catch (err) {
-    clearInterval(msgInterval);
-    document.getElementById('ai-loading').style.display = 'none';
-    document.getElementById('preview-placeholder').style.display = 'flex';
-    alert('Erreur lors de la génération : ' + err.message + '\n\nVérifiez votre connexion internet.');
-  }
-
-  btn.disabled = false;
-  btn.className = 'btn btn-generate btn-gen';
-  btn.innerHTML = '✨ Générer le document par IA';
+    return new Date(dateStr).toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  } catch { return dateStr || new Date().toLocaleDateString('fr-FR'); }
 }
+function fmtDateShort(dateStr) {
+  try { return new Date(dateStr).toLocaleDateString('fr-FR'); } catch { return dateStr || ''; }
+}
+function or(val, def) { return (val && val.trim()) ? val.trim() : (def || '—'); }
 
 /* ════════════════════════════════════════════
-   APPEL API ANTHROPIC
+   MODÈLES LOCAUX — 17 TEMPLATES COMPLETS
 ════════════════════════════════════════════ */
-async function callAnthropicAPI(type, cfg, data) {
-  const prompt = buildPrompt(type, cfg, data);
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
-      system: `Tu es un expert en rédaction de documents administratifs officiels au Mali. Tu rédiges des documents formels, professionnels et conformes aux normes administratives maliennes. Utilise un langage soutenu et officiel. Inclus les formules de politesse appropriées. Ne génère que le corps du texte du document, sans titre ni en-tête (ceux-ci sont déjà fournis). Rédige directement le contenu à partir de "Monsieur/Madame le..." ou de la formule d'introduction appropriée. Le texte doit être complet, cohérent et prêt à imprimer.`,
-      messages: [{ role: 'user', content: prompt }]
-    })
-  });
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `HTTP ${response.status}`);
-  }
-  const result = await response.json();
-  return result.content?.[0]?.text || 'Erreur : contenu vide reçu.';
-}
+function buildDocumentText(type, d) {
+  const LIEU = or(d.lieu, 'Kayes');
+  const DATE = fmtDateLong(d.date);
+  const NOM  = or(d.nom, 'Le/La soussigné(e)');
+  const TEL  = d.tel ? `\nTéléphone : ${d.tel}` : '';
+  const COMP = d.complement ? `\n\nInformations complémentaires :\n${d.complement}` : '';
 
-/* ════════════════════════════════════════════
-   CONSTRUCTION DU PROMPT
-════════════════════════════════════════════ */
-function buildPrompt(type, cfg, data) {
-  const today = new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
-  const fields = Object.entries(data).filter(([k,v]) => v && k !== 'complement').map(([k,v]) => `- ${k}: ${v}`).join('\n');
-  const prompts = {
-    acte_naissance:   `Rédige une demande d'acte de naissance officielle adressée à Monsieur le Chef du Centre d'État Civil de ${data.lieu || 'Kayes'}.`,
-    carte_id:         `Rédige une demande de Carte Nationale d'Identité adressée à Monsieur le Commissaire de Police / Chef du service d'état civil de ${data.lieu || 'Kayes'}.`,
-    declaration_perte:`Rédige une déclaration de perte de document adressée à Monsieur le Commissaire de Police de ${data.lieu || 'Kayes'}.`,
-    passeport:        `Rédige une demande de passeport adressée à Monsieur le Directeur des Services de Police chargé des passeports.`,
-    domicile:         `Rédige une attestation de domicile officielle certifiant que la personne réside à l'adresse indiquée.`,
-    bail:             `Rédige un contrat de bail locatif complet entre le bailleur et le locataire, incluant toutes les clauses légales habituelles au Mali.`,
-    connexion:        `Rédige une demande de connexion internet adressée à l'opérateur concerné.`,
-    reclamation:      `Rédige une lettre de réclamation formelle adressée au directeur du service concerné.`,
-    certificat_travail:`Rédige un certificat de travail officiel attestant de l'emploi de la personne.`,
-    bonne_vie:        `Rédige un certificat de bonne vie et mœurs basé sur les témoignages fournis, adressé à qui de droit.`,
-    demande_emploi:   `Rédige une lettre de demande d'emploi professionnelle adressée au Directeur des Ressources Humaines de l'entreprise.`,
-    cv:               `Rédige un CV professionnel complet et bien structuré en français, format malien standard.`,
-    vente:            `Rédige une attestation de vente officielle entre vendeur et acheteur, incluant les clauses légales habituelles.`,
-    procuration:      `Rédige une lettre de procuration officielle donnant les pouvoirs décrits au mandataire désigné.`,
-    retrait_plainte:  `Rédige une déclaration de retrait de plainte adressée au commissariat / tribunal indiqué.`,
-    lettre_motivation:`Rédige une lettre de motivation professionnelle et convaincante pour le poste visé.`,
-    aide_sociale:     `Rédige une demande d'aide sociale adressée au service social compétent.`,
-  };
-  return `${prompts[type] || 'Rédige ce document administratif officiel.'}
+  const templates = {
 
-Informations du demandeur :
-- Nom complet : ${data.nom}
-- Lieu : ${data.lieu || 'Kayes, Mali'}
-- Date : ${today}
-- Téléphone : ${data.tel || 'Non fourni'}
-${fields}
-${data.complement ? `\nInformations complémentaires : ${data.complement}` : ''}
+    /* 1. ACTE DE NAISSANCE */
+    acte_naissance: () => `Monsieur le Chef du Centre d'État Civil de ${LIEU},
 
-Rédige le document complet en français officiel malien. Corps du texte uniquement.`;
+Je soussigné(e) ${NOM}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'], LIEU)},
+demeurant à ${or(d.adresse, LIEU)}${TEL},
+
+ai l'honneur de solliciter auprès de votre service la délivrance d'un extrait d'acte de naissance me concernant.
+
+INFORMATIONS D'ÉTAT CIVIL :
+  - Nom et Prénom   : ${NOM}
+  - Date de naissance  : ${fmtDateShort(d['date-naiss'])}
+  - Lieu de naissance  : ${or(d['lieu-naiss'], LIEU)}
+  - Nom du père         : ${or(d.pere, '—')}
+  - Nom de la mère      : ${or(d.mere, '—')}
+  - Adresse actuelle    : ${or(d.adresse, LIEU)}
+
+MOTIF DE LA DEMANDE :
+  ${or(d.motif, 'Usage administratif et personnel')}
+${COMP}
+
+Dans l'espoir d'une suite favorable à ma requête, je vous prie d'agréer, Monsieur le Chef du Centre d'État Civil, l'expression de ma haute considération.
+
+Fait à ${LIEU}, le ${DATE}
+
+Le/La demandeur(se)`,
+
+    /* 2. CARTE D'IDENTITÉ */
+    carte_id: () => `Monsieur le Commissaire de Police,
+Chef du Service d'État Civil de ${LIEU},
+
+Je soussigné(e) ${NOM}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'], LIEU)},
+de nationalité malienne, demeurant à ${or(d.adresse, LIEU)},
+exerçant la profession de ${or(d.profession, '—')}${TEL},
+
+ai l'honneur de solliciter la délivrance d'une Carte Nationale d'Identité.
+
+ÉTAT CIVIL DU DEMANDEUR :
+  - Nom et Prénom      : ${NOM}
+  - Date de naissance  : ${fmtDateShort(d['date-naiss'])}
+  - Lieu de naissance  : ${or(d['lieu-naiss'], LIEU)}
+  - Père               : ${or(d.pere, '—')}
+  - Mère               : ${or(d.mere, '—')}
+  - Adresse            : ${or(d.adresse, LIEU)}
+  - Profession         : ${or(d.profession, '—')}
+  - Nationalité        : Malienne
+${COMP}
+
+Je m'engage à fournir tous les documents requis (extrait d'acte de naissance, certificat de résidence, photos d'identité) et à me présenter en personne pour les formalités biométriques.
+
+Veuillez agréer, Monsieur le Commissaire, l'expression de mes respectueuses salutations.
+
+Fait à ${LIEU}, le ${DATE}
+
+Le/La demandeur(se)`,
+
+    /* 3. DÉCLARATION DE PERTE */
+    declaration_perte: () => `Monsieur le Commissaire de Police de ${LIEU},
+
+Je soussigné(e) ${NOM}, demeurant à ${LIEU}${TEL},
+
+déclare solennellement avoir perdu le document suivant :
+
+DOCUMENT PERDU :
+  - Nature du document : ${or(d['doc-perdu'], '—')}
+  - Numéro / Référence : ${or(d['num-doc'], 'Non connu')}
+  - Date de la perte   : ${fmtDateShort(d['date-perte'])}
+  - Lieu de la perte   : ${or(d['lieu-perte'], LIEU)}
+
+CIRCONSTANCES DE LA PERTE :
+  ${or(d.circonstances, 'Le document a été perdu dans des circonstances indépendantes de ma volonté.')}
+${COMP}
+
+Je certifie sur l'honneur que les informations ci-dessus sont exactes et sincères. Je déclare n'avoir fait aucun usage frauduleux de ce document et m'engage à le restituer aux autorités compétentes s'il venait à être retrouvé.
+
+Je sollicite un procès-verbal de déclaration de perte aux fins de remplacement dudit document.
+
+Veuillez agréer, Monsieur le Commissaire, l'expression de mes respectueuses salutations.
+
+Fait à ${LIEU}, le ${DATE}
+
+Le/La déclarant(e)`,
+
+    /* 4. PASSEPORT */
+    passeport: () => `Monsieur le Directeur de la Direction Générale de la Police Nationale,
+Service des Passeports,
+
+Je soussigné(e) ${NOM}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'], LIEU)},
+de nationalité malienne, demeurant à ${or(d.adresse, LIEU)}${TEL},
+
+ai l'honneur de solliciter la délivrance d'un passeport ordinaire malien.
+
+INFORMATIONS PERSONNELLES :
+  - Nom et Prénom      : ${NOM}
+  - Date de naissance  : ${fmtDateShort(d['date-naiss'])}
+  - Lieu de naissance  : ${or(d['lieu-naiss'], LIEU)}
+  - Adresse            : ${or(d.adresse, LIEU)}
+  - Destination        : ${or(d.destination, '—')}
+  - Motif du voyage    : ${or(d.motif, '—')}
+  - Garant (si applicable) : ${or(d.garant, 'Sans objet')}
+${COMP}
+
+Je certifie l'exactitude des renseignements fournis et m'engage à respecter les lois et règlements en vigueur relatifs aux voyages à l'étranger.
+
+Veuillez agréer, Monsieur le Directeur, l'expression de ma haute considération.
+
+Fait à ${LIEU}, le ${DATE}
+
+Le/La demandeur(se)`,
+
+    /* 5. ATTESTATION DE DOMICILE */
+    domicile: () => `ATTESTATION DE DOMICILE
+
+Je soussigné(e) ${or(d.proprietaire, NOM)}, ${d.proprietaire && d.proprietaire !== d.nom ? 'propriétaire / chef de famille, ' : ''}demeurant à ${or(d.adresse, LIEU)}, Commune de ${or(d.commune, LIEU)},
+
+atteste par la présente que Monsieur / Madame ${NOM} réside effectivement à l'adresse suivante :
+
+  Adresse : ${or(d.adresse, LIEU)}
+  Commune : ${or(d.commune, LIEU)}
+  Durée de résidence : ${or(d.duree, '—')}
+  Téléphone : ${or(d.tel, '—')}
+
+Cette attestation est établie à la demande de l'intéressé(e) pour servir et valoir ce que de droit, notamment pour : ${or(d.motif, 'usage administratif')}.${COMP}
+
+Je certifie sur l'honneur l'exactitude des informations contenues dans la présente attestation et m'engage à en répondre devant les autorités compétentes.
+
+Fait à ${LIEU}, le ${DATE}
+
+Le/La soussigné(e)`,
+
+    /* 6. CONTRAT DE BAIL */
+    bail: () => `CONTRAT DE BAIL LOCATIF
+
+ENTRE LES SOUSSIGNÉS :
+
+BAILLEUR : ${or(d.bailleur, '—')}, ci-après désigné « le Bailleur »
+
+LOCATAIRE : ${or(d.locataire || NOM, '—')}, ci-après désigné « le Locataire »
+
+IL A ÉTÉ CONVENU CE QUI SUIT :
+
+ARTICLE 1 — OBJET DU BAIL
+Le Bailleur donne en location au Locataire le bien suivant :
+  Description : ${or(d.bien, '—')}
+  Adresse     : ${or(d.adresse, LIEU)}
+
+ARTICLE 2 — DURÉE
+Le présent bail est conclu pour une durée de ${or(d.duree, '—')}, prenant effet le ${fmtDateShort(d['date-debut'])}.
+
+ARTICLE 3 — LOYER
+Le loyer mensuel est fixé à ${or(d.loyer, '—')} FCFA, payable d'avance au plus tard le 5 de chaque mois.
+
+ARTICLE 4 — OBLIGATIONS DU LOCATAIRE
+Le Locataire s'engage à :
+  - Payer le loyer aux échéances convenues
+  - Entretenir les lieux en bon état
+  - Ne pas sous-louer sans l'accord écrit du Bailleur
+  - Respecter le voisinage et le règlement intérieur
+  - Restituer les lieux en bon état à la fin du bail
+
+ARTICLE 5 — RÉSILIATION
+Toute résiliation doit être notifiée par écrit avec un préavis d'un (1) mois.${COMP}
+
+Fait à ${LIEU}, le ${DATE}, en deux (2) exemplaires originaux.
+
+Le Bailleur                                    Le Locataire
+${or(d.bailleur, '—')}                         ${or(d.locataire || NOM, '—')}`,
+
+    /* 7. CONNEXION INTERNET */
+    connexion: () => `Monsieur le Directeur Commercial,
+${or(d.operateur, 'Opérateur de télécommunications')} — ${LIEU},
+
+Je soussigné(e) ${NOM}, demeurant à ${or(d.adresse, LIEU)}${TEL},
+
+ai l'honneur de solliciter auprès de votre service une connexion internet aux conditions suivantes :
+
+DÉTAILS DE LA DEMANDE :
+  - Type de connexion   : ${or(d['type-conn'], '—')}
+  - Adresse d'installation : ${or(d.adresse, LIEU)}
+  - Durée souhaitée     : ${or(d.duree, '—')}
+  - Usage principal     : ${or(d.usage, '—')}
+  - Opérateur visé      : ${or(d.operateur, '—')}
+${COMP}
+
+Je m'engage à respecter les conditions générales d'utilisation de vos services et à effectuer le paiement selon les modalités convenues.
+
+Dans l'attente d'une réponse favorable, je vous prie d'agréer, Monsieur le Directeur, l'expression de ma haute considération.
+
+Fait à ${LIEU}, le ${DATE}
+
+Le/La demandeur(se)`,
+
+    /* 8. RÉCLAMATION */
+    reclamation: () => `Monsieur le Directeur,
+${or(d.service, 'Service Public')} — ${LIEU},
+
+Je soussigné(e) ${NOM}, abonné(e) N° ${or(d['num-contrat'], '—')},
+demeurant à ${LIEU}${TEL},
+
+ai l'honneur de porter à votre connaissance les désagréments que je subis en rapport avec vos services.
+
+OBJET DE LA RÉCLAMATION :
+  Service concerné : ${or(d.service, '—')}
+  N° contrat/abonné : ${or(d['num-contrat'], '—')}
+  Problème constaté depuis : ${or(d.depuis, '—')}
+
+DESCRIPTION DU PROBLÈME :
+  ${or(d.probleme, '—')}
+
+CE QUE JE DEMANDE :
+  ${or(d.demande, 'Une intervention rapide pour résoudre le problème.')}
+${COMP}
+
+Je vous rappelle que cette situation me cause un préjudice important et j'espère une intervention rapide de votre part dans les meilleurs délais.
+
+Dans l'attente de votre diligence, veuillez agréer, Monsieur le Directeur, l'expression de ma considération distinguée.
+
+Fait à ${LIEU}, le ${DATE}
+
+Le/La réclamant(e)`,
+
+    /* 9. CERTIFICAT DE TRAVAIL */
+    certificat_travail: () => `CERTIFICAT DE TRAVAIL
+
+Je soussigné(e), représentant légal de ${or(d.employeur, '—')}, certifie par la présente que :
+
+Monsieur / Madame ${NOM} a été employé(e) dans notre structure aux conditions suivantes :
+
+  - Poste occupé          : ${or(d.poste, '—')}
+  - Date de début d'emploi : ${fmtDateShort(d['date-debut'])}
+  ${d['date-fin'] ? `- Date de fin d'emploi   : ${fmtDateShort(d['date-fin'])}` : `- Statut                : Employé(e) actuel(le)`}
+  - Salaire mensuel net   : ${or(d.salaire, '—')} FCFA
+
+Ce certificat est délivré à la demande de l'intéressé(e) pour servir et valoir ce que de droit, notamment pour : ${or(d.motif, 'usage administratif')}.${COMP}
+
+Nous attestons que l'intéressé(e) a accompli ses fonctions avec sérieux et professionnalisme pendant toute la durée de son emploi.
+
+Fait à ${LIEU}, le ${DATE}
+
+L'Employeur
+${or(d.employeur, '—')}`,
+
+    /* 10. BONNE VIE ET MŒURS */
+    bonne_vie: () => `CERTIFICAT DE BONNE VIE ET MŒURS
+
+Nous, soussignés :
+  - ${or(d.temoin1, 'Témoin 1')}
+  - ${or(d.temoin2, 'Témoin 2')}
+
+certifions par la présente que Monsieur / Madame ${NOM},
+né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'], LIEU)},
+exerçant la profession de ${or(d.profession, '—')},
+demeurant à ${or(d.adresse, LIEU)},
+
+est une personne de bonne vie et mœurs, de bonne moralité et de bonne conduite habituelle.
+
+À notre connaissance, l'intéressé(e) n'a jamais été impliqué(e) dans des affaires judiciaires ou des comportements contraires à l'ordre public et aux bonnes mœurs.
+
+Ce certificat est établi à la demande de l'intéressé(e) pour servir et valoir ce que de droit, notamment pour : ${or(d.motif, 'usage administratif')}.
+${COMP}
+
+Fait sous serment à ${LIEU}, le ${DATE}
+
+Les témoins
+${or(d.temoin1, '—')}                              ${or(d.temoin2, '—')}`,
+
+    /* 11. DEMANDE D'EMPLOI */
+    demande_emploi: () => `${LIEU}, le ${DATE}
+
+${NOM}
+${or(d.adresse, LIEU)}
+${TEL.trim()}
+
+À Monsieur le Directeur des Ressources Humaines,
+${or(d.entreprise, '—')}
+${LIEU}
+
+Objet : Candidature au poste de ${or(d.poste, '—')}
+
+Monsieur le Directeur,
+
+Permettez-moi de vous adresser ma candidature au poste de ${or(d.poste, '—')} au sein de votre estimable organisation.
+
+Fort(e) d'une expérience de ${or(d.experience, '—')}, j'ai acquis les compétences nécessaires pour contribuer efficacement à vos objectifs :
+
+${or(d.competences, '—')}
+
+Ma formation de ${or(d.formation, '—')} m'a permis de développer une expertise solide dans ce domaine.
+
+Motivé(e) et disponible immédiatement, je suis convaincu(e) de pouvoir apporter une contribution significative à votre équipe.
+${COMP}
+
+Dans l'espoir d'une réponse favorable, je vous prie d'agréer, Monsieur le Directeur, l'expression de mes respectueuses salutations.
+
+${NOM}`,
+
+    /* 12. CV */
+    cv: () => `════════════════════════════════════════
+CURRICULUM VITAE
+════════════════════════════════════════
+
+INFORMATIONS PERSONNELLES
+─────────────────────────
+Nom & Prénom    : ${NOM}
+Date naissance  : ${fmtDateShort(d['date-naiss'])}
+Adresse         : ${or(d.adresse, LIEU)}
+Téléphone       : ${or(d.tel, '—')}
+Email           : ${or(d.email, '—')}
+Nationalité     : Malienne
+
+FORMATIONS
+──────────
+${or(d.formation, '—')}
+
+EXPÉRIENCES PROFESSIONNELLES
+─────────────────────────────
+${or(d.experience, '—')}
+
+COMPÉTENCES
+───────────
+${or(d.competences, '—')}
+
+LANGUES
+───────
+${or(d.langues, 'Français, Bambara')}
+${COMP}
+
+════════════════════════════════════════
+Document établi à ${LIEU}, le ${DATE}`,
+
+    /* 13. ATTESTATION DE VENTE */
+    vente: () => `ATTESTATION DE VENTE
+
+Entre les soussignés :
+
+VENDEUR : ${or(d.vendeur, '—')}, ci-après désigné « le Vendeur »
+
+ACHETEUR : ${or(d.acheteur || NOM, '—')}, ci-après désigné « l'Acheteur »
+
+IL A ÉTÉ CONVENU CE QUI SUIT :
+
+ARTICLE 1 — OBJET DE LA VENTE
+Le Vendeur cède et transfère à l'Acheteur la pleine propriété de :
+  ${or(d.objet, '—')}
+
+Description détaillée : ${or(d['desc-objet'], '—')}
+
+ARTICLE 2 — PRIX
+La vente est consentie et acceptée moyennant la somme de ${or(d.prix, '—')} FCFA
+(${or(d.prix, 'montant en lettres')} Francs CFA), payée comptant ce jour dont quittance.
+
+ARTICLE 3 — GARANTIES
+Le Vendeur garantit être le seul et unique propriétaire du bien vendu, libre de tout engagement, dette ou hypothèque.
+
+ARTICLE 4 — TRANSFERT DE PROPRIÉTÉ
+Le transfert de propriété est effectif à compter de la date de signature du présent acte.
+${COMP}
+
+Fait à ${LIEU}, le ${DATE}, en deux (2) exemplaires originaux.
+
+Le Vendeur                                     L'Acheteur
+${or(d.vendeur, '—')}                          ${or(d.acheteur || NOM, '—')}`,
+
+    /* 14. PROCURATION */
+    procuration: () => `LETTRE DE PROCURATION
+
+Je soussigné(e) ${NOM}, demeurant à ${LIEU}${TEL},
+
+donne par la présente procuration à :
+
+MANDATAIRE : ${or(d.mandataire, '—')}
+Lien        : ${or(d.lien, '—')}
+
+les pouvoirs de me représenter valablement auprès de :
+  ${or(d.institution, '—')}
+
+à l'effet de :
+  ${or(d.pouvoirs, '—')}
+
+Cette procuration est consentie pour une durée de : ${or(d.duree, '—')}
+
+Le mandataire aura tous les pouvoirs nécessaires pour accomplir les actes sus-mentionnés et signer tout document y relatif en mon nom et pour mon compte.
+${COMP}
+
+Je certifie sur l'honneur que la présente procuration est établie librement et en toute connaissance de cause.
+
+Fait à ${LIEU}, le ${DATE}
+
+Le/La mandant(e)
+${NOM}`,
+
+    /* 15. RETRAIT DE PLAINTE */
+    retrait_plainte: () => `Monsieur le Commissaire / Monsieur le Président,
+${or(d.commissariat, '—')},
+
+Je soussigné(e) ${NOM}, demeurant à ${LIEU}${TEL},
+
+ai l'honneur de vous informer de ma décision de retirer la plainte que j'avais déposée contre :
+
+Personne mise en cause : ${or(d['mis-en-cause'], '—')}
+Référence de l'affaire : ${or(d['ref-affaire'], 'Non disponible')}
+
+MOTIF DU RETRAIT :
+${or(d.motif, 'Après réflexion et concertation entre les parties, nous sommes parvenus à un accord amiable satisfaisant pour toutes les parties concernées.')}
+${COMP}
+
+Je déclare agir librement et en toute connaissance de cause, sans contrainte ni pression d'aucune sorte. Je confirme que ce retrait de plainte est définitif et irrévocable.
+
+Je vous prie de bien vouloir classer sans suite cette affaire et d'en prendre bonne note.
+
+Veuillez agréer, Monsieur le Commissaire, l'expression de ma haute considération.
+
+Fait à ${LIEU}, le ${DATE}
+
+Le/La plaignant(e)`,
+
+    /* 16. LETTRE DE MOTIVATION */
+    lettre_motivation: () => `${LIEU}, le ${DATE}
+
+${NOM}
+${or(d.adresse, LIEU)}
+${TEL.trim()}
+
+À Monsieur le Directeur des Ressources Humaines,
+${or(d.entreprise, '—')}
+${LIEU}
+
+Objet : Lettre de motivation — Poste de ${or(d.poste, '—')}
+
+Monsieur le Directeur,
+
+C'est avec un vif intérêt que je vous soumets ma candidature pour le poste de ${or(d.poste, '—')} au sein de ${or(d.entreprise, 'votre estimable structure')}.
+
+MA MOTIVATION :
+${or(d.motivation, 'Votre organisation représente pour moi une opportunité exceptionnelle d\'évoluer dans un environnement dynamique et stimulant.')}
+
+MES POINTS FORTS :
+${or(d.competences, '—')}
+
+MON PARCOURS :
+${or(d.experience, '—')}
+${COMP}
+
+Convaincu(e) que mon profil correspond pleinement aux attentes de votre structure, je reste à votre entière disposition pour un entretien à votre convenance.
+
+Dans l'espoir que ma candidature retiendra votre bienveillante attention, veuillez agréer, Monsieur le Directeur, l'expression de mes respectueuses salutations.
+
+${NOM}`,
+
+    /* 17. AIDE SOCIALE */
+    aide_sociale: () => `Monsieur le Directeur,
+Service Social Compétent de ${LIEU},
+
+Je soussigné(e) ${NOM}, demeurant à ${LIEU}${TEL},
+
+ai l'honneur de solliciter votre bienveillante attention sur ma situation et de vous adresser la présente demande d'aide sociale.
+
+SITUATION PERSONNELLE :
+  - Situation familiale  : ${or(d.situation, '—')}
+  - Revenus mensuels     : ${or(d.revenus, '0')} FCFA
+  - Charges principales  : ${or(d.charges, '—')}
+
+TYPE D'AIDE SOLLICITÉE :
+  ${or(d['type-aide'], '—')}
+
+JUSTIFICATION :
+  ${or(d.justification, 'Ma situation financière précaire ne me permet pas de faire face à mes obligations essentielles sans une aide extérieure.')}
+${COMP}
+
+Je certifie sur l'honneur l'exactitude des informations fournies et m'engage à signaler tout changement de situation.
+
+Confiant(e) en votre compréhension et en votre soutien, je vous prie d'agréer, Monsieur le Directeur, l'expression de ma haute considération.
+
+Fait à ${LIEU}, le ${DATE}
+
+Le/La demandeur(se)`
+
+  }; /* fin templates */
+
+  const fn = templates[type];
+  if (!fn) throw new Error('Modèle de document introuvable pour : ' + type);
+  return fn();
 }
 
 /* ════════════════════════════════════════════
