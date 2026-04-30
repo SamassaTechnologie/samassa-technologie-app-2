@@ -11,6 +11,7 @@
 <link rel="icon" type="image/png" href="icon-512x512.png">
 <link rel="apple-touch-icon" href="icon-512x512.png">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
 <style>
 /* ═══════════════════════════════
    THÈME VIOLET (cohérent cyber)
@@ -196,6 +197,10 @@
   .doc-type-grid{grid-template-columns:1fr}
   .field-row{grid-template-columns:1fr}
 }
+
+.toast-doc{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:600;color:white;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .3s ease}
+.toast-doc.success{background:#16A34A}.toast-doc.error{background:#DC2626}.toast-doc.info{background:#0088CC}
+@keyframes toastIn{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
 </style>
 </head>
 <body>
@@ -310,7 +315,7 @@
 
           <!-- Bouton générer -->
           <button class="btn btn-generate btn-gen" id="btn-generer" onclick="generateDocument()" style="margin-top:8px">
-            ✨ Générer le document par IA
+            ✨ Générer le document
           </button>
         </div>
 
@@ -342,7 +347,7 @@
     <div class="preview-placeholder" id="preview-placeholder">
       <div class="ph-icon">📝</div>
       <p style="font-size:14px;font-weight:600;color:var(--text2)">Sélectionnez un type de document</p>
-      <p style="font-size:12px;text-align:center;max-width:260px">Remplissez le formulaire et cliquez sur<br><strong>✨ Générer le document par IA</strong></p>
+      <p style="font-size:12px;text-align:center;max-width:260px">Remplissez le formulaire et cliquez sur<br><strong>✨ Générer le document</strong></p>
     </div>
 
     <!-- Chargement IA -->
@@ -1282,7 +1287,7 @@ function saveToHistory() {
   renderHistorique();
   /* Toast */
   const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#16A34A;color:white;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2)';
+  t.className = 'toast-doc success';
   t.textContent = '💾 Document enregistré ✓';
   document.body.appendChild(t);
   setTimeout(() => t.remove(), 2800);

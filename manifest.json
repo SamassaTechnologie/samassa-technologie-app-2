@@ -5,15 +5,33 @@
   "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "any",
   "background_color": "#F0F5FA",
   "theme_color": "#0D1B2A",
   "lang": "fr",
-  "categories": ["business", "finance", "productivity"],
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
+  ],
   "icons": [
-    { "src": "icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
     {
@@ -21,28 +39,60 @@
       "short_name": "Facture",
       "description": "Créer une nouvelle facture",
       "url": "facture.html",
-      "icons": [{ "src": "icon-512x512.png", "sizes": "512x512" }]
+      "icons": [
+        {
+          "src": "icon-512x512.png",
+          "sizes": "512x512"
+        }
+      ]
     },
     {
       "name": "Nouveau Reçu",
       "short_name": "Reçu",
       "description": "Créer un reçu de paiement",
       "url": "recu.html",
-      "icons": [{ "src": "icon-512x512.png", "sizes": "512x512" }]
+      "icons": [
+        {
+          "src": "icon-512x512.png",
+          "sizes": "512x512"
+        }
+      ]
     },
     {
       "name": "Nouveau Devis",
       "short_name": "Devis",
       "description": "Créer un devis",
       "url": "devis.html",
-      "icons": [{ "src": "icon-512x512.png", "sizes": "512x512" }]
+      "icons": [
+        {
+          "src": "icon-512x512.png",
+          "sizes": "512x512"
+        }
+      ]
     },
     {
       "name": "Fiche d'Intervention",
       "short_name": "Intervention",
       "description": "Créer une fiche d'intervention",
       "url": "intervention.html",
-      "icons": [{ "src": "icon-512x512.png", "sizes": "512x512" }]
+      "icons": [
+        {
+          "src": "icon-512x512.png",
+          "sizes": "512x512"
+        }
+      ]
+    },
+    {
+      "name": "Documents Admin",
+      "short_name": "Doc Admin",
+      "description": "Générer des documents administratifs",
+      "url": "docs_admin.html",
+      "icons": [
+        {
+          "src": "icon-512x512.png",
+          "sizes": "512x512"
+        }
+      ]
     }
   ]
 }

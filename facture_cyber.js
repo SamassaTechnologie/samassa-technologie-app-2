@@ -100,14 +100,18 @@ function printDoc() {
 
 /* ── Enregistrer ── */
 function saveDoc() {
+  if (ST.el('docInner').style.display === 'none') generateInvoice();
   const ttcRaw = parseFloat(ST.v('totalTTC').replace(/\D/g, '')) || 0;
-  ST.save('samassa_factures_cyber', {
-    number: ST.v('invoiceNumber'),
-    client: ST.v('clientName'),
-    date:   ST.fmtDate(ST.v('invoiceDate')),
-    total:  ttcRaw,
-    statut: 'En attente',
-  });
+  if (!ttcRaw) { ST.toast('Générez d\'abord la facture.', 'error'); return; }
+  const num = ST.v('invoiceNumber');
+  const list = JSON.parse(localStorage.getItem('samassa_factures_cyber') || '[]');
+  if (list.find(f => f.number === num)) {
+    ST.toast('Facture ' + num + ' déjà enregistrée.', 'info'); return;
+  }
+  list.push({ number: num, client: ST.v('clientName'), date: ST.fmtDate(ST.v('invoiceDate')), total: ttcRaw, statut: 'En attente', timestamp: new Date().toISOString() });
+  localStorage.setItem('samassa_factures_cyber', JSON.stringify(list));
+  ST.toast('Facture Cyber ' + num + ' enregistrée ✓', 'success');
+  ST.el('invoiceNumber').value = ST.nextNumber('samassa_factures_cyber', 'FCY-');
 }
 
 /* ── WhatsApp ── */
