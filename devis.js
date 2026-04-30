@@ -74,15 +74,18 @@ function printDoc() {
 }
 
 function saveDoc() {
+  if (ST.el('docInner').style.display === 'none') generateQuote();
   const ttc = parseFloat(ST.v('totalTTC').replace(/\D/g, '')) || 0;
-  ST.save('samassa_devis', {
-    number:  ST.v('quoteNumber'),
-    client:  ST.v('clientName'),
-    date:    ST.fmtDate(ST.v('quoteDate')),
-    validite: ST.fmtDate(ST.v('validityDate')),
-    total:   ttc,
-    statut:  'En cours',
-  });
+  if (!ttc) { ST.toast('Générez d\'abord le devis.', 'error'); return; }
+  const num = ST.v('quoteNumber');
+  const list = JSON.parse(localStorage.getItem('samassa_devis') || '[]');
+  if (list.find(d => d.number === num)) {
+    ST.toast('Devis ' + num + ' déjà enregistré.', 'info'); return;
+  }
+  list.push({ number: num, client: ST.v('clientName'), date: ST.fmtDate(ST.v('quoteDate')), validite: ST.fmtDate(ST.v('validityDate')), total: ttc, statut: 'En cours', timestamp: new Date().toISOString() });
+  localStorage.setItem('samassa_devis', JSON.stringify(list));
+  ST.toast('Devis ' + num + ' enregistré ✓', 'success');
+  ST.el('quoteNumber').value = ST.nextNumber('samassa_devis', 'DEV-');
 }
 
 function shareWhatsApp() {
