@@ -368,9 +368,7 @@ function renderDailyHistory() {
   const list = JSON.parse(localStorage.getItem('samassa_recus') || '[]');
   /* Filtrer par date sélectionnée */
   const dayRecords = list.filter(r => {
-    // Support both timestamp (new) and date string (old records)
-    const d = r.timestamp ? r.timestamp.split('T')[0] :
-      r.date ? r.date.split('/').reverse().join('-') : null;
+    const d = r.timestamp ? r.timestamp.split('T')[0] : null;
     return d === selectedDate;
   });
 

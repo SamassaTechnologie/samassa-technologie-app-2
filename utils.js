@@ -99,18 +99,11 @@ const ST = {
     return new Date(str).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
   },
 
-  /* ---- Numéro auto (sans doublon même après suppression) ---- */
+  /* ---- Numéro auto ---- */
   nextNumber(key, prefix) {
     const list = JSON.parse(localStorage.getItem(key) || '[]');
-    // Extraire les numéros existants pour éviter les doublons
-    let maxN = 0;
-    list.forEach(item => {
-      const num = item.number || '';
-      const match = num.replace(prefix, '').replace(/\D/g,'');
-      const n = parseInt(match, 10);
-      if (!isNaN(n) && n > maxN) maxN = n;
-    });
-    return prefix + String(maxN + 1).padStart(3, '0');
+    const n = list.length + 1;
+    return prefix + String(n).padStart(3, '0');
   },
 
   /* ---- Sauvegarde localStorage ---- */

@@ -109,7 +109,7 @@ function saveDoc() {
   /* 2️⃣  Si statut = "Payé" → générer automatiquement un reçu + alimenter la caisse */
   if (statut === 'Payé' && total > 0) {
 
-    const modePaiement = ST.v('paymentMode') || 'Espèces';
+    /* Générer le numéro du reçu automatique lié à l'intervention */
     const recuNum = 'REC-INT-' + intNum.replace('INT-', '');
 
     /* Sauvegarder le reçu dans l'historique des reçus */
@@ -120,9 +120,9 @@ function saveDoc() {
       phone:     ST.v('clientPhone') || '',
       date:      dateFmt,
       total,
-      mode:      modePaiement,
+      mode:      'Espèces',          /* mode par défaut — modifiable */
       statut:    'Payé',
-      fromInt:   intNum,
+      fromInt:   intNum,             /* lien vers la fiche d'intervention */
       services:  [
         {
           desc:  'Intervention technique — ' + (ST.v('equipmentType') || 'Équipement'),
@@ -142,7 +142,7 @@ function saveDoc() {
       type:      'entree',
       desc:      'Reçu ' + recuNum + ' (Intervention ' + intNum + ') — ' + client,
       amount:    total,
-      pm:        modePaiement,
+      pm:        'Espèces',
       cat:       'Réparation',
       auto:      true,
       timestamp: new Date().toISOString()
@@ -150,7 +150,7 @@ function saveDoc() {
     localStorage.setItem('samassa_mouvements', JSON.stringify(mouvements));
 
     ST.toast(
-      '✓ Fiche enregistrée · Reçu ' + recuNum + ' · +' + ST.fmtNum(total) + ' FCFA en caisse 💰',
+      '✓ Fiche enregistrée · Reçu ' + recuNum + ' généré · +' + ST.fmtNum(total) + ' FCFA ajouté à la caisse 💰',
       'success'
     );
 

@@ -1045,7 +1045,7 @@ function showDocDetail(idx){
 
 function clearHistory(){
   if(!confirm('Effacer tout l\'historique ?'))return;
-  ['samassa_factures','samassa_recus','samassa_devis','samassa_interventions','samassa_recus_cyber','samassa_factures_cyber','samassa_docs_admin'].forEach(k=>localStorage.removeItem(k));
+  ['samassa_factures','samassa_recus','samassa_devis','samassa_interventions','samassa_recus_cyber','samassa_factures_cyber'].forEach(k=>localStorage.removeItem(k));
   renderHistory();loadStats();toast('Historique effacé.','info');
 }
 
