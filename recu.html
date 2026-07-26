@@ -107,6 +107,10 @@
       <div class="form-group"><label>Total (FCFA)</label><input type="text" id="totalAmount" readonly value="0 FCFA" style="font-weight:700;font-size:15px;background:#F0FDF4;border-color:var(--green)"></div>
 
       <div class="section-label green" style="margin-top:14px">Mode de paiement</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:11px;color:#7A94AF;font-weight:500">Sélectionnez puis cliquez sur <strong style="color:#0070C0">Payer maintenant</strong> pour Wave/Orange</span>
+        <button onclick="openMerchantSettings()" style="background:none;border:1px solid #C8D8EA;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:600;color:#3D5470;cursor:pointer;font-family:inherit;transition:all .2s" title="Configurer numéros marchands">⚙️ Config</button>
+      </div>
       <div class="payment-methods">
         <div class="pm-option" data-pm="Wave">
           <div class="pm-badge wave" style="background:white;border:1px solid #E2EAF0;overflow:hidden"><img src="logo-wave.png" alt="Wave" style="width:34px;height:34px;object-fit:contain;border-radius:6px"></div>
@@ -124,6 +128,14 @@
           <div class="pm-badge cash" style="background:#16A34A;font-size:18px;color:white">💵</div>
           <div><div class="pm-name">Espèces</div><div class="pm-sub">0% frais</div></div>
         </div>
+      </div>
+      <!-- Bouton Payer maintenant (Wave/Orange uniquement) -->
+      <div id="merchant-pay-bar" style="display:none;margin-top:10px">
+        <button id="merchant-pay-btn" onclick="openMerchantPayment(selectedPM)"
+          style="width:100%;padding:13px;border:none;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .22s;letter-spacing:-.01em">
+          <span id="mp-btn-icon">💳</span>
+          <span id="mp-btn-label">Générer demande de paiement</span>
+        </button>
       </div>
       <input type="hidden" id="paymentMethod" value="Wave">
 
@@ -265,6 +277,101 @@
         </thead>
         <tbody id="daily-tbody"></tbody>
       </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL PAIEMENT MARCHAND (Wave / Orange Money)
+═══════════════════════════════════════════════════════════ -->
+<div id="merchant-pay-modal" style="display:none;position:fixed;inset:0;background:rgba(10,22,40,.72);z-index:9100;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(5px)">
+  <div style="background:white;border-radius:22px;width:100%;max-width:440px;box-shadow:0 24px 64px rgba(0,0,0,.32);overflow:hidden">
+
+    <!-- En-tête coloré -->
+    <div id="mp-header" style="padding:20px 22px 18px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div id="mp-title" style="font-size:18px;font-weight:900;color:white;letter-spacing:-.02em"></div>
+        <div id="mp-subtitle" style="font-size:12px;color:rgba(255,255,255,.75);margin-top:3px;font-weight:500"></div>
+      </div>
+      <button onclick="closeMerchantPayment()" style="background:rgba(255,255,255,.2);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+
+    <!-- Montant -->
+    <div style="padding:14px 22px 16px;background:#F6F9FD;border-top:1px solid rgba(255,255,255,.15);text-align:center;border-bottom:1px solid #E2ECF5">
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#7A94AF;margin-bottom:4px">Montant à encaisser</div>
+      <div id="mp-amount" style="font-size:36px;font-weight:900;color:#0F2137;letter-spacing:-.03em;line-height:1"></div>
+      <div id="mp-ref" style="font-size:12px;color:#7A94AF;margin-top:5px;font-weight:500"></div>
+    </div>
+
+    <!-- QR Code -->
+    <div style="padding:20px 22px 14px;display:flex;flex-direction:column;align-items:center;border-bottom:1px solid #E2ECF5">
+      <div id="mp-qr" style="padding:10px;border:2px solid #E2ECF5;border-radius:14px;background:white;box-shadow:0 2px 12px rgba(10,22,40,.06)"></div>
+      <div style="font-size:11px;color:#7A94AF;margin-top:10px;text-align:center;font-weight:500">📷 Le client scanne ce QR code avec son application</div>
+    </div>
+
+    <!-- Instructions -->
+    <div id="mp-instructions" style="padding:16px 22px;border-bottom:1px solid #E2ECF5"></div>
+
+    <!-- Statut paiement -->
+    <div id="mp-status-row" style="padding:10px 22px 0;display:none">
+      <div style="background:#F0FDF4;border:1.5px solid #DCFCE7;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px">
+        <span style="font-size:18px">✅</span>
+        <span style="font-size:13px;font-weight:700;color:#059652">Paiement confirmé — En attente d'enregistrement</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="padding:16px 22px;display:flex;gap:10px">
+      <button onclick="closeMerchantPayment()" style="flex:1;padding:12px;border:1.5px solid #C8D8EA;border-radius:11px;background:white;color:#3D5470;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s">Annuler</button>
+      <button id="mp-confirm-btn" onclick="confirmMerchantPayment()" style="flex:2;padding:12px;border:none;border-radius:11px;background:#059652;color:white;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:-.01em">✅ Confirmer paiement reçu</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL PARAMÈTRES MARCHAND
+═══════════════════════════════════════════════════════════ -->
+<div id="merchant-settings-modal" style="display:none;position:fixed;inset:0;background:rgba(10,22,40,.72);z-index:9200;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(5px)">
+  <div style="background:white;border-radius:22px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.3);overflow:hidden">
+    <div style="padding:18px 22px;border-bottom:1px solid #E2ECF5;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:16px;font-weight:900;color:#0F2137">⚙️ Paramètres marchands</div>
+      <button onclick="closeMerchantSettings()" style="background:#F0F5FA;border:none;color:#3D5470;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+    <div style="padding:20px 22px;display:flex;flex-direction:column;gap:16px">
+      <!-- Wave -->
+      <div style="background:#F0FDFE;border:1.5px solid #BAE6FD;border-radius:12px;padding:14px 16px">
+        <div style="font-size:12px;font-weight:800;color:#0891B2;margin-bottom:10px;display:flex;align-items:center;gap:6px"><img src="logo-wave.png" style="width:20px;height:20px;border-radius:5px;object-fit:contain"> Wave Marchand</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#0891B2;display:block;margin-bottom:3px">Numéro Wave marchand</label>
+            <input id="cfg-wave-phone" type="tel" placeholder="Ex: 77291931" style="width:100%;padding:9px 12px;border:1.5px solid #BAE6FD;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:white">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#0891B2;display:block;margin-bottom:3px">ID marchand Wave <span style="font-weight:400;color:#7A94AF">(optionnel – depuis app Wave)</span></label>
+            <input id="cfg-wave-id" type="text" placeholder="Ex: MT_XXXXXXXX" style="width:100%;padding:9px 12px;border:1.5px solid #BAE6FD;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:white">
+          </div>
+        </div>
+      </div>
+      <!-- Orange Money -->
+      <div style="background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:12px;padding:14px 16px">
+        <div style="font-size:12px;font-weight:800;color:#EA580C;margin-bottom:10px;display:flex;align-items:center;gap:6px"><img src="logo-orange-money.jpg" style="width:20px;height:20px;border-radius:5px;object-fit:contain"> Orange Money Marchand</div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#EA580C;display:block;margin-bottom:3px">Numéro Orange Money marchand</label>
+            <input id="cfg-orange-phone" type="tel" placeholder="Ex: 77291931" style="width:100%;padding:9px 12px;border:1.5px solid #FED7AA;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:white">
+          </div>
+          <div>
+            <label style="font-size:11px;font-weight:700;color:#EA580C;display:block;margin-bottom:3px">Code marchand Orange <span style="font-weight:400;color:#7A94AF">(optionnel – fourni par Orange)</span></label>
+            <input id="cfg-orange-code" type="text" placeholder="Ex: 12345" style="width:100%;padding:9px 12px;border:1.5px solid #FED7AA;border-radius:8px;font-size:13px;font-family:inherit;outline:none;background:white">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 22px 20px;display:flex;gap:10px">
+      <button onclick="closeMerchantSettings()" style="flex:1;padding:12px;border:1.5px solid #C8D8EA;border-radius:11px;background:white;color:#3D5470;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Annuler</button>
+      <button onclick="saveMerchantSettings()" style="flex:2;padding:12px;border:none;border-radius:11px;background:#0F2137;color:white;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit">💾 Enregistrer</button>
     </div>
   </div>
 </div>

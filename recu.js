@@ -40,7 +40,262 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ══════════════════════════════════════════════════════════
-   SÉLECTEUR MODE DE PAIEMENT
+   CONFIGURATION MARCHANDS
+══════════════════════════════════════════════════════════ */
+function getMerchantConfig() {
+  return {
+    wave: {
+      phone: localStorage.getItem('_samassa_wave_phone') || '77291931',
+      merchantId: localStorage.getItem('_samassa_wave_id') || ''
+    },
+    orange: {
+      phone: localStorage.getItem('_samassa_orange_phone') || '77291931',
+      merchantCode: localStorage.getItem('_samassa_orange_code') || ''
+    }
+  };
+}
+
+function openMerchantSettings() {
+  const cfg = getMerchantConfig();
+  document.getElementById('cfg-wave-phone').value   = cfg.wave.phone;
+  document.getElementById('cfg-wave-id').value      = cfg.wave.merchantId;
+  document.getElementById('cfg-orange-phone').value = cfg.orange.phone;
+  document.getElementById('cfg-orange-code').value  = cfg.orange.merchantCode;
+  const m = document.getElementById('merchant-settings-modal');
+  m.style.display = 'flex';
+}
+
+function closeMerchantSettings() {
+  document.getElementById('merchant-settings-modal').style.display = 'none';
+}
+
+function saveMerchantSettings() {
+  localStorage.setItem('_samassa_wave_phone',   document.getElementById('cfg-wave-phone').value.trim());
+  localStorage.setItem('_samassa_wave_id',      document.getElementById('cfg-wave-id').value.trim());
+  localStorage.setItem('_samassa_orange_phone', document.getElementById('cfg-orange-phone').value.trim());
+  localStorage.setItem('_samassa_orange_code',  document.getElementById('cfg-orange-code').value.trim());
+  closeMerchantSettings();
+  ST.toast('Paramètres marchands enregistrés ✓', 'success');
+}
+
+/* ══════════════════════════════════════════════════════════
+   MODAL PAIEMENT MARCHAND — WAVE / ORANGE MONEY
+══════════════════════════════════════════════════════════ */
+function openMerchantPayment(pm) {
+  if (pm !== 'Wave' && pm !== 'Orange Money') {
+    ST.toast('Le paiement marchand est disponible pour Wave et Orange Money uniquement.', 'info');
+    return;
+  }
+
+  recalc();
+  const totalRaw = parseFloat((ST.v('totalAmount') || '').replace(/\D/g, '')) || 0;
+  if (!totalRaw) {
+    ST.toast('Veuillez saisir au moins un service avant de générer le paiement.', 'error');
+    return;
+  }
+
+  const num    = ST.v('receiptNumber') || 'REC';
+  const client = (ST.v('clientFirstName') + ' ' + ST.v('clientLastName')).trim() || 'Client';
+  const cfg    = getMerchantConfig();
+
+  // Remplir montant et référence
+  document.getElementById('mp-amount').textContent = ST.fmt(totalRaw);
+  document.getElementById('mp-ref').textContent    = 'Réf : ' + num + '  ·  ' + client;
+
+  // Vider le QR précédent
+  const qrContainer = document.getElementById('mp-qr');
+  qrContainer.innerHTML = '';
+
+  let qrData = '';
+
+  if (pm === 'Wave') {
+    const wPhone = cfg.wave.phone;
+    const wId    = cfg.wave.merchantId;
+
+    // Lien de paiement Wave (avec ID marchand si configuré)
+    const wavePayLink = wId
+      ? `https://pay.wave.com/m/${wId}?amount=${totalRaw}&note=${encodeURIComponent(num)}`
+      : `https://pay.wave.com/qr/?data=${encodeURIComponent(JSON.stringify({ phone: wPhone, amount: totalRaw, ref: num }))}`;
+
+    qrData = wId
+      ? wavePayLink
+      : `WAVEMALI;TEL:${wPhone};MONTANT:${totalRaw};REF:${num};MARCHAND:SAMASSA TECH`;
+
+    // Style en-tête Wave
+    document.getElementById('mp-header').style.background =
+      'linear-gradient(135deg,#0284C7 0%,#06B6D4 100%)';
+    document.getElementById('mp-title').textContent    = '🌊 Paiement Wave Marchand';
+    document.getElementById('mp-subtitle').textContent = 'Scan QR ou transfert direct — Sécurisé';
+
+    // Instructions Wave
+    document.getElementById('mp-instructions').innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:#F0FDFE;border:1.5px solid #BAE6FD;border-radius:11px;padding:13px 15px">
+          <div style="font-size:11px;font-weight:800;color:#0284C7;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">📱 Instructions pour le client</div>
+          <div style="font-size:12px;color:#0C4A6E;line-height:1.9">
+            <strong>Option 1 — QR Code :</strong><br>
+            &nbsp;→ Ouvrir <strong>Wave</strong> → <em>Scanner</em> → Payer<br>
+            <strong>Option 2 — Numéro marchand :</strong><br>
+            &nbsp;→ Wave → <em>Envoyer</em> → Marchand : <strong style="color:#0284C7;font-size:14px">${wPhone}</strong><br>
+            &nbsp;→ Montant : <strong style="color:#0F2137">${ST.fmt(totalRaw)}</strong><br>
+            &nbsp;→ Référence : <em>${num}</em>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <a href="wavemali://pay?to=${wPhone}&amount=${totalRaw}&note=${encodeURIComponent(num)}"
+             style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#0284C7;color:white;padding:11px 8px;border-radius:10px;font-size:12px;font-weight:800;text-decoration:none;transition:all .2s">
+            📲 Ouvrir Wave
+          </a>
+          <button onclick="(()=>{navigator.clipboard.writeText('${wPhone}');ST.toast('Numéro Wave copié !','success')})()"
+            style="flex:1;background:#EFF6FF;color:#0284C7;border:1.5px solid #BAE6FD;padding:11px 8px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit">
+            📋 Copier numéro
+          </button>
+        </div>
+      </div>`;
+
+    // Bouton confirmer
+    document.getElementById('mp-confirm-btn').style.background = '#0284C7';
+
+  } else if (pm === 'Orange Money') {
+    const oPhone = cfg.orange.phone;
+    const oCode  = cfg.orange.merchantCode;
+
+    // USSD Orange Money Mali : *144*2*CODE_MARCHAND*MONTANT# ou *144*1*NUMERO*MONTANT#
+    const ussd = oCode
+      ? `*144*2*${oCode}*${totalRaw}#`
+      : `*144*1*${oPhone}*${totalRaw}#`;
+
+    // QR code encode les données de paiement
+    qrData = `ORANGEMONEY;USSD:${ussd};TEL:${oPhone};MONTANT:${totalRaw};REF:${num};MARCHAND:SAMASSA TECH`;
+
+    // Style en-tête Orange
+    document.getElementById('mp-header').style.background =
+      'linear-gradient(135deg,#EA580C 0%,#F97316 100%)';
+    document.getElementById('mp-title').textContent    = '🟠 Orange Money Marchand';
+    document.getElementById('mp-subtitle').textContent = 'USSD automatique · Code marchand';
+
+    // Instructions Orange
+    document.getElementById('mp-instructions').innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:11px;padding:13px 15px">
+          <div style="font-size:11px;font-weight:800;color:#EA580C;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">📱 Code USSD à composer</div>
+          <div style="text-align:center;font-size:22px;font-weight:900;color:#EA580C;letter-spacing:1.5px;padding:10px 12px;background:white;border-radius:9px;margin-bottom:10px;border:2px solid #FED7AA;font-family:monospace">
+            ${ussd}
+          </div>
+          <div style="font-size:12px;color:#7C2D12;line-height:1.9">
+            <strong>Option 1 — USSD :</strong> Le client compose le code ci-dessus<br>
+            <strong>Option 2 — Scan :</strong> Ouvrir Orange Money → Scanner le QR<br>
+            <strong>Option 3 — Numéro :</strong> Orange Money → Paiement marchand → <strong style="color:#EA580C">${oPhone}</strong>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <a href="tel:${ussd.replace(/#$/, '%23')}"
+             style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#EA580C;color:white;padding:11px 8px;border-radius:10px;font-size:12px;font-weight:800;text-decoration:none">
+            📲 Composer USSD
+          </a>
+          <button onclick="(()=>{navigator.clipboard.writeText('${ussd}');ST.toast('Code USSD copié !','success')})()"
+            style="flex:1;background:#FFF7ED;color:#EA580C;border:1.5px solid #FED7AA;padding:11px 8px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;font-family:inherit">
+            📋 Copier code
+          </button>
+        </div>
+      </div>`;
+
+    // Bouton confirmer
+    document.getElementById('mp-confirm-btn').style.background = '#EA580C';
+  }
+
+  // Générer le QR code
+  try {
+    new QRCode(qrContainer, {
+      text: qrData,
+      width: 180,
+      height: 180,
+      colorDark: '#0F2137',
+      colorLight: '#FFFFFF',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } catch(e) {
+    qrContainer.innerHTML = `<div style="width:180px;height:180px;display:flex;align-items:center;justify-content:center;color:#7A94AF;font-size:12px;text-align:center">QR non disponible<br>en mode hors-ligne</div>`;
+  }
+
+  // Cacher le statut et réinitialiser
+  document.getElementById('mp-status-row').style.display = 'none';
+  document.getElementById('mp-confirm-btn').disabled = false;
+  document.getElementById('mp-confirm-btn').textContent = '✅ Confirmer paiement reçu';
+
+  // Stocker les données en attente
+  window._pendingPayment = { pm, total: totalRaw, num, client };
+
+  // Afficher le modal
+  const modal = document.getElementById('merchant-pay-modal');
+  modal.style.display = 'flex';
+}
+
+function closeMerchantPayment() {
+  document.getElementById('merchant-pay-modal').style.display = 'none';
+  window._pendingPayment = null;
+}
+
+function confirmMerchantPayment() {
+  if (!window._pendingPayment) return;
+  const { pm, total, num } = window._pendingPayment;
+
+  // Afficher le statut confirmé
+  document.getElementById('mp-status-row').style.display = 'block';
+  const btn = document.getElementById('mp-confirm-btn');
+  btn.disabled = true;
+  btn.textContent = '✓ Paiement confirmé';
+  btn.style.background = '#059652';
+
+  // Sélectionner automatiquement le mode de paiement dans le formulaire
+  selectedPM = pm;
+  const selClasses = { Wave:'selected', 'Orange Money':'sel-orange', 'Moov Money':'sel-moov', Espèces:'sel-cash' };
+  document.querySelectorAll('.pm-option').forEach(o =>
+    o.classList.remove('selected','sel-orange','sel-moov','sel-cash')
+  );
+  const pmEl = document.querySelector(`.pm-option[data-pm="${pm}"]`);
+  if (pmEl) pmEl.classList.add(selClasses[pm] || 'selected');
+
+  // Fermer le modal après 1.2s puis générer + sauvegarder automatiquement
+  setTimeout(() => {
+    closeMerchantPayment();
+    generateReceipt();
+    saveDoc();
+    ST.toast(`✅ Paiement ${pm} de ${ST.fmt(total)} confirmé et enregistré — Reçu ${num} 💰`, 'success');
+  }, 1200);
+}
+
+/* ══════════════════════════════════════════════════════════
+   BOUTON DYNAMIQUE "PAYER MAINTENANT" selon le mode choisi
+══════════════════════════════════════════════════════════ */
+function updateMerchantPayBtn(pm) {
+  const bar = document.getElementById('merchant-pay-bar');
+  const btn = document.getElementById('merchant-pay-btn');
+  const icon = document.getElementById('mp-btn-icon');
+  const lbl  = document.getElementById('mp-btn-label');
+  if (!bar || !btn) return;
+
+  if (pm === 'Wave') {
+    bar.style.display = 'block';
+    btn.style.background = 'linear-gradient(135deg,#0284C7,#06B6D4)';
+    btn.style.color = 'white';
+    btn.style.boxShadow = '0 4px 16px rgba(2,132,199,.3)';
+    icon.textContent = '🌊';
+    lbl.textContent  = 'Générer demande de paiement Wave';
+  } else if (pm === 'Orange Money') {
+    bar.style.display = 'block';
+    btn.style.background = 'linear-gradient(135deg,#EA580C,#F97316)';
+    btn.style.color = 'white';
+    btn.style.boxShadow = '0 4px 16px rgba(234,88,12,.3)';
+    icon.textContent = '🟠';
+    lbl.textContent  = 'Générer demande Orange Money';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   SÉLECTEUR MODE DE PAIEMENT (mis à jour)
 ══════════════════════════════════════════════════════════ */
 function initPMPicker() {
   const selClasses = {
@@ -56,8 +311,11 @@ function initPMPicker() {
       );
       selectedPM = opt.dataset.pm;
       opt.classList.add(selClasses[selectedPM] || 'selected');
+      updateMerchantPayBtn(selectedPM); // bouton marchand dynamique
     });
   });
+  // Activer le bouton pour le mode par défaut
+  updateMerchantPayBtn(selectedPM);
 }
 
 /* ══════════════════════════════════════════════════════════
