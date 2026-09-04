@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script>
+(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expiry){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facture Matériel — SAMASSA TECHNOLOGIE</title>
+<meta name="theme-color" content="#0A1628">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-512x512.png">
+<link rel="apple-touch-icon" href="icon-512x512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
+<style>
+/* ── Thème matériel informatique ── */
+:root{
+  --mat-blue:#0A1628; --mat-accent:#0070C0; --mat-green:#059652;
+  --mat-light:#EBF5FF; --mat-border:#C8D8EA;
+}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif}
+
+.panel-header{background:linear-gradient(135deg,#0A1628 0%,#0D2340 50%,#0070C0 100%)}
+.panel-header p{color:#7AB4D8}
+.add-item-btn{background:#EBF5FF;border:1.5px dashed #0070C0;color:#0070C0}
+.add-item-btn:hover{background:#D0E8F7}
+.btn-generate{background:linear-gradient(135deg,#0070C0,#0095E0);color:white}
+.btn-generate:hover{background:linear-gradient(135deg,#005499,#0070C0)}
+
+/* ── Catalogue produits ── */
+.catalogue-section{margin-bottom:16px}
+.catalogue-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#7A94AF;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.catalogue-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:4px}
+.cat-btn{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 6px;border:1.5px solid var(--mat-border);border-radius:10px;
+  background:white;cursor:pointer;transition:all .2s;font-family:inherit;
+  font-size:10px;font-weight:700;color:#3D5470;line-height:1.2;text-align:center;
+}
+.cat-btn:hover{border-color:#0070C0;background:#EBF5FF;color:#0070C0;transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,112,192,.15)}
+.cat-btn span.ico{font-size:22px;line-height:1}
+
+/* ── Ligne article enrichie (matériel) ── */
+.mat-item-row{
+  background:#F8FBFD;border:1px solid var(--mat-border);
+  border-radius:12px;padding:12px;margin-bottom:10px;
+  position:relative;transition:box-shadow .2s;
+}
+.mat-item-row:hover{box-shadow:0 4px 14px rgba(10,22,40,.09)}
+.mat-item-badge{
+  position:absolute;top:10px;left:10px;
+  background:linear-gradient(135deg,#0A1628,#0070C0);
+  color:white;font-size:9px;font-weight:800;width:22px;height:22px;
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+}
+.mat-item-header{display:flex;gap:8px;padding-left:30px;margin-bottom:8px}
+.mat-item-desc{flex:1}
+.mat-item-desc input{width:100%;font-size:13px;font-weight:600}
+.mat-row2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px}
+.mat-row3{display:grid;grid-template-columns:80px 100px 100px 100px;gap:8px}
+.mat-field-lbl{font-size:9px;font-weight:700;color:#7A94AF;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+.mat-state{display:flex;gap:6px}
+.mat-state label{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;color:#3D5470;cursor:pointer;padding:5px 9px;border:1.5px solid var(--mat-border);border-radius:7px;transition:all .18s}
+.mat-state input[type=radio]{display:none}
+.mat-state input:checked + span{color:#0070C0;font-weight:800}
+.mat-state label:has(input:checked){border-color:#0070C0;background:#EBF5FF}
+.mat-remove-btn{position:absolute;top:8px;right:8px;width:26px;height:26px;border:none;background:#FEF2F2;color:#DC2626;border-radius:7px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;font-weight:800}
+.mat-remove-btn:hover{background:#DC2626;color:white}
+
+/* ── Badge garantie ── */
+.garantie-badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;background:#F0FDF4;color:#059652;border:1px solid #D1FAE5}
+
+/* ── Conditions de garantie ── */
+.garantie-box{background:linear-gradient(135deg,#F0FDF4,#ECFDF5);border:1.5px solid #DCFCE7;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.garantie-box h4{font-size:11px;font-weight:800;color:#059652;margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em}
+.garantie-box ul{margin:0;padding-left:16px;font-size:11px;color:#064E3B;line-height:1.9}
+
+/* ── Document : badges état ── */
+.doc-badge-neuf{display:inline-block;background:#EBF5FF;color:#0070C0;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;border:1px solid #BAE6FD}
+.doc-badge-recon{display:inline-block;background:#FFF8EE;color:#B45309;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;border:1px solid #FDE68A}
+.doc-badge-usage{display:inline-block;background:#F8F9FA;color:#6B7280;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;border:1px solid #E5E7EB}
+
+/* ── En-tête document matériel ── */
+.dt-type.materiel{color:#0070C0;font-size:22px;font-weight:900;letter-spacing:-.02em}
+.doc-type-badge{display:inline-flex;align-items:center;gap:6px;background:#EBF5FF;border:1.5px solid #BAE6FD;border-radius:8px;padding:5px 12px;margin-bottom:8px;font-size:11px;font-weight:800;color:#0070C0}
+.mat-serial-tag{font-size:10px;color:#7A94AF;font-family:monospace}
+
+/* ── Table matériel dans le doc ── */
+.doc-table-mat thead tr{background:linear-gradient(135deg,#0A1628,#0070C0)}
+.doc-table-mat tbody td.sn-cell{font-family:monospace;font-size:10px;color:#7A94AF}
+
+/* ── Résumé des articles (encadré bas du doc) ── */
+.mat-summary-box{background:#F8FBFD;border:1px solid var(--mat-border);border-radius:10px;padding:12px 16px;margin-top:16px;margin-bottom:16px;font-size:11px}
+.mat-summary-box strong{display:block;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#7A94AF;margin-bottom:8px}
+.mat-summary-item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #EEF3F9;color:#3D5470}
+.mat-summary-item:last-child{border-bottom:none;font-weight:700;color:#0A1628}
+
+/* ── Responsive catalogue ── */
+@media(max-width:768px){
+  .catalogue-grid{grid-template-columns:repeat(3,1fr)}
+  .mat-row2{grid-template-columns:1fr 1fr}
+  .mat-row3{grid-template-columns:1fr 1fr;gap:7px}
+}
+@media(max-width:480px){
+  .catalogue-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">🖥️ Facture Matériel</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="layout">
+  <!-- ════════════════════════════════════════
+       FORMULAIRE
+  ════════════════════════════════════════ -->
+  <div class="form-panel">
+    <div class="panel-header">
+      <h2>🖥️ Vente de Matériels Informatiques</h2>
+      <p>Ordinateurs · Disques durs · Accessoires · Pièces</p>
+    </div>
+    <div class="form-body">
+
+      <!-- Référence -->
+      <div class="section-label">📋 Référence</div>
+      <div class="form-grid">
+        <div class="form-group"><label>N° de facture</label><input type="text" id="invoiceNumber" value="FAC-MAT-001"></div>
+        <div class="form-group"><label>Date</label><input type="date" id="invoiceDate"></div>
+        <div class="form-group span2"><label>Client / Entreprise</label><input type="text" id="clientName" placeholder="Nom complet du client ou entreprise"></div>
+        <div class="form-group"><label>Téléphone client</label><input type="tel" id="clientPhone" placeholder="Ex: 77000000"></div>
+        <div class="form-group"><label>Adresse client</label><input type="text" id="clientAddress" placeholder="Ville, quartier…"></div>
+      </div>
+
+      <!-- Entreprise -->
+      <div class="section-label">🏢 Notre Entreprise</div>
+      <div class="form-grid">
+        <div class="form-group span2"><label>Nom</label><input type="text" id="companyName" value="SAMASSA TECHNOLOGIE"></div>
+        <div class="form-group span2"><label>Slogan</label><input type="text" id="companyTagline" value="Tout pour l'informatique"></div>
+        <div class="form-group span2"><label>Adresse</label><textarea id="companyAddress" rows="2">Grand Marché de Kayes, près du 1er arrondissement de la police — Rue Soundiata Keita</textarea></div>
+        <div class="form-group"><label>Téléphone</label><input type="text" id="companyPhone" value="00223 77291931 / 62970630"></div>
+        <div class="form-group"><label>Email</label><input type="text" id="companyEmail" value="samassatechnologie10@gmail.com"></div>
+        <div class="form-group span2"><label>Gérant</label><input type="text" id="managerName" value="Boussé SAMASSA"></div>
+      </div>
+
+      <!-- Catalogue rapide -->
+      <div class="section-label">🛒 Catalogue — Ajout rapide</div>
+      <div class="catalogue-section">
+        <div class="catalogue-label">📦 Cliquez pour ajouter un article</div>
+        <div class="catalogue-grid">
+          <button class="cat-btn" onclick="addMatProduct('💻 Ordinateur Portable','',0)">
+            <span class="ico">💻</span>Ordi Portable
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('🖥️ Ordinateur de Bureau','',0)">
+            <span class="ico">🖥️</span>Ordi Bureau
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('💾 Disque Dur Interne','HDD/SSD',0)">
+            <span class="ico">💾</span>Disque Dur
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('📀 Disque Dur Externe','',0)">
+            <span class="ico">📀</span>DD Externe
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('🧠 Barrette RAM','',0)">
+            <span class="ico">🧠</span>Mémoire RAM
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('🖨️ Imprimante','',0)">
+            <span class="ico">🖨️</span>Imprimante
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('🖥️ Écran / Moniteur','',0)">
+            <span class="ico">🖥️</span>Moniteur
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('⌨️ Clavier','',0)">
+            <span class="ico">⌨️</span>Clavier
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('🖱️ Souris','',0)">
+            <span class="ico">🖱️</span>Souris
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('💿 Clé USB','',0)">
+            <span class="ico">💿</span>Clé USB
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('🔋 Batterie / Chargeur','',0)">
+            <span class="ico">🔋</span>Batterie
+          </button>
+          <button class="cat-btn" onclick="addMatProduct('🔧 Pièce détachée','',0)">
+            <span class="ico">🔧</span>Pièce
+          </button>
+        </div>
+      </div>
+
+      <!-- Articles -->
+      <div class="section-label">📦 Articles vendus</div>
+      <div id="matItemsContainer"></div>
+      <button class="add-item-btn btn" onclick="addMatProduct('🖥️ Article informatique','',0)">+ Ajouter un article manuellement</button>
+
+      <!-- Totaux -->
+      <div class="section-label" style="margin-top:16px">💰 Totaux</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Sous-total HT</label><input type="text" id="totalHT" readonly value="0 FCFA"></div>
+        <div class="form-group"><label>TVA 18%</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input type="text" id="totalTVA" readonly value="0 FCFA" style="flex:1">
+            <label style="display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#7A94AF;white-space:nowrap;cursor:pointer">
+              <input type="checkbox" id="applyTVA" checked onchange="recalcMat()"> TVA
+            </label>
+          </div>
+        </div>
+        <div class="form-group span2">
+          <label>Total TTC (FCFA)</label>
+          <input type="text" id="totalTTC" readonly value="0 FCFA" style="font-weight:800;font-size:16px;background:#EBF5FF;border-color:#0070C0;color:#0070C0">
+        </div>
+      </div>
+
+      <!-- Mode de paiement -->
+      <div class="section-label">💳 Mode de paiement</div>
+      <div class="payment-methods">
+        <div class="pm-option selected" data-pm="Wave">
+          <div class="pm-badge wave"><img src="logo-wave.png" alt="Wave" style="width:34px;height:34px;object-fit:contain;border-radius:6px"></div>
+          <div><div class="pm-name">Wave <span class="pm-rec">★ TOP</span></div><div class="pm-sub">~1% frais</div></div>
+        </div>
+        <div class="pm-option" data-pm="Orange Money">
+          <div class="pm-badge orange"><img src="logo-orange-money.jpg" alt="Orange Money" style="width:34px;height:34px;object-fit:contain"></div>
+          <div><div class="pm-name">Orange Money</div><div class="pm-sub">~1.5% frais</div></div>
+        </div>
+        <div class="pm-option" data-pm="Moov Money">
+          <div class="pm-badge moov"><img src="logo-moov-money.png" alt="Moov Money" style="width:34px;height:34px;object-fit:contain"></div>
+          <div><div class="pm-name">Moov Money</div><div class="pm-sub">~1.5% frais</div></div>
+        </div>
+        <div class="pm-option" data-pm="Espèces">
+          <div class="pm-badge cash" style="background:#059652;font-size:18px;color:white">💵</div>
+          <div><div class="pm-name">Espèces</div><div class="pm-sub">0% frais</div></div>
+        </div>
+      </div>
+      <input type="hidden" id="paymentMethod" value="Wave">
+
+      <!-- Notes -->
+      <div class="section-label" style="margin-top:12px">📝 Notes</div>
+      <textarea id="invoiceNotes" rows="2" placeholder="Notes supplémentaires (optionnel)…" style="width:100%;resize:vertical"></textarea>
+
+    </div><!-- /form-body -->
+
+    <div class="actions">
+      <button class="btn btn-generate" onclick="generateMatInvoice()">⚙️ Générer</button>
+      <button class="btn btn-print"    onclick="printDoc()">🖨️ Imprimer</button>
+      <button class="btn btn-save"     onclick="saveDoc()">💾 Enregistrer</button>
+      <button class="btn btn-wa"       onclick="shareWhatsApp()">💬 WhatsApp</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       APERÇU DU DOCUMENT
+  ════════════════════════════════════════ -->
+  <div class="doc-panel">
+    <div class="doc-placeholder" id="placeholder">
+      <div class="ph-icon">🖥️</div>
+      <p>Remplissez le formulaire<br>et cliquez sur <strong>Générer</strong></p>
+    </div>
+
+    <div class="doc-inner" id="docInner" style="display:none">
+      <div class="watermark"><img src="watermark.png" alt=""></div>
+      <div class="doc-z">
+
+        <!-- En-tête -->
+        <div class="doc-head">
+          <div>
+            <img src="logo.png" alt="Logo" class="co-logo">
+            <div class="co-name" id="d-coName">SAMASSA TECHNOLOGIE</div>
+            <div class="co-tag" id="d-coTag" style="color:#0070C0">Tout pour l'informatique</div>
+            <div class="co-detail">
+              <div id="d-coAddr"></div>
+              <div>Tél : <strong id="d-coPhone"></strong></div>
+              <div>Email : <span id="d-coEmail"></span></div>
+            </div>
+          </div>
+          <div class="dt-block">
+            <div class="doc-type-badge">🖥️ VENTE MATÉRIEL</div>
+            <div class="dt-type materiel">FACTURE</div>
+            <div class="dt-num">N° <strong id="d-num"></strong></div>
+            <div class="dt-date-lbl">Date :</div>
+            <div class="dt-date-val" id="d-date"></div>
+          </div>
+        </div>
+
+        <!-- Client -->
+        <div class="doc-client-box" style="background:#EBF5FF;border-left:4px solid #0070C0;border-radius:8px;padding:12px 16px;margin-bottom:16px">
+          <div style="font-size:10px;font-weight:700;color:#0070C0;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Vendu à</div>
+          <div style="font-size:15px;font-weight:800;color:#0A1628" id="d-client"></div>
+          <div style="font-size:12px;color:#3D5470;margin-top:3px" id="d-client-details"></div>
+        </div>
+
+        <!-- Table articles -->
+        <table class="doc-table doc-table-mat">
+          <thead>
+            <tr>
+              <th style="width:4%;text-align:center">#</th>
+              <th style="width:28%;text-align:left">Désignation</th>
+              <th style="width:12%">Marque / Modèle</th>
+              <th style="width:14%">N° Série</th>
+              <th style="width:8%">État</th>
+              <th style="width:8%">Garantie</th>
+              <th style="width:6%">Qté</th>
+              <th style="width:10%">Prix unit.</th>
+              <th style="width:10%">Total HT</th>
+            </tr>
+          </thead>
+          <tbody id="d-items"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="7" style="text-align:right;font-size:12px">TOTAL GÉNÉRAL</td>
+              <td colspan="2" id="d-ttc-foot" style="font-size:15px"></td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <!-- Totaux détaillés -->
+        <div class="totals-wrap">
+          <div class="totals-box">
+            <div class="t-row"><span class="t-lbl">Sous-total HT</span><span class="t-val" id="d-ht"></span></div>
+            <div class="t-row" id="d-tva-row"><span class="t-lbl">TVA 18%</span><span class="t-val" id="d-tva"></span></div>
+            <div class="t-row ttc"><span class="t-lbl">TOTAL TTC</span><span class="t-val" id="d-ttc"></span></div>
+          </div>
+        </div>
+
+        <!-- Résumé articles -->
+        <div class="mat-summary-box" id="d-summary"></div>
+
+        <!-- Conditions de garantie -->
+        <div class="garantie-box">
+          <h4>🛡️ Conditions de garantie SAMASSA TECHNOLOGIE</h4>
+          <ul>
+            <li>La garantie couvre les <strong>défauts de fabrication</strong> uniquement, hors dommages physiques ou logiciels</li>
+            <li>Tout matériel défectueux doit être <strong>retourné avec cette facture</strong> dans le délai de garantie indiqué</li>
+            <li>La garantie ne couvre pas les dommages causés par <strong>chutes, eau, surtension ou mauvaise utilisation</strong></li>
+            <li>Le remplacement ou la réparation sera effectué dans un délai de <strong>7 jours ouvrables</strong></li>
+            <li>Contact garantie : <strong>77 29 19 31</strong> — Grand Marché de Kayes</li>
+          </ul>
+        </div>
+
+        <!-- Paiement -->
+        <div class="payment-info-doc">
+          <strong>💳 Mode de paiement : </strong><span id="d-payment">—</span><br>
+          <strong>Modes acceptés : </strong>🌊 <strong>Wave ⭐</strong> &nbsp;|&nbsp; 🟠 <strong>Orange Money</strong> &nbsp;|&nbsp; 🔵 <strong>Moov Money</strong> &nbsp;|&nbsp; 💵 <strong>Espèces</strong>
+        </div>
+
+        <!-- Notes -->
+        <div id="d-notes-section" style="display:none;background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400E">
+          <strong>📝 Notes :</strong> <span id="d-notes"></span>
+        </div>
+
+        <!-- Pied de page -->
+        <div class="doc-footer">
+          <div style="font-size:12px;color:var(--text2)">
+            Grand Marché de Kayes<br>
+            Près du 1er arrondissement de la police<br>
+            Rue Soundiata Keita<br>
+            📞 77 29 19 31 / 62 97 06 30
+          </div>
+          <div class="sig-block">
+            <div class="sig-title">Le Gérant</div>
+            <img src="signature.png" alt="Signature" class="sig-img">
+            <img src="cachet.png" alt="Cachet" class="cachet-img">
+            <div class="sig-name" id="d-manager"></div>
+          </div>
+        </div>
+        <div class="thank-you">Merci pour votre confiance ! 🙏</div>
+
+      </div><!-- /doc-z -->
+    </div><!-- /docInner -->
+  </div><!-- /doc-panel -->
+</div><!-- /layout -->
+
+<script src="auth.js"></script>
+<script src="firebase-config.js"></script>
+<script src="sync.js"></script>
+<script src="utils.js"></script>
+<script src="facture_materiel.js"></script>
+<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
+<script src="capacitor-plugins.js"></script>
+</body>
+</html>

@@ -102,7 +102,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
 .sb-logout:hover{background:rgba(220,38,38,.2)}
 .sb-install{display:none;align-items:center;gap:8px;cursor:pointer;padding:8px 10px;border-radius:8px;background:var(--blue);color:white;font-size:12px;font-weight:700;margin-bottom:8px;border:none;width:100%;font-family:inherit;justify-content:center;animation:pulse 2.5s infinite}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(0,136,204,.4)}50%{box-shadow:0 0 0 6px rgba(0,136,204,0)}}
-@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 
 /* ═══════════════════════════════════════════
    TOPBAR (header de contenu)
@@ -161,37 +160,21 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
 .wb-date strong{display:block;font-size:14px;color:white;margin-top:2px}
 
 /* ═══════════════════════════════════════════
-   KPI CARDS — style référence (fond coloré + chiffres blancs)
+   KPI CARDS (style image référence)
 ═══════════════════════════════════════════ */
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
-.kpi{
-  border-radius:14px;padding:18px 20px;transition:all .22s;cursor:default;
-  position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(10,22,40,.13);
-}
-.kpi:nth-child(1){background:linear-gradient(135deg,#1565C0 0%,#0288D1 100%)}
-.kpi:nth-child(2){background:linear-gradient(135deg,#00695C 0%,#00897B 100%)}
-.kpi:nth-child(3){background:linear-gradient(135deg,#6A1B9A 0%,#8E24AA 100%)}
-.kpi:nth-child(4){background:linear-gradient(135deg,#B71C1C 0%,#E53935 100%)}
-.kpi::after{content:'';position:absolute;right:-20px;top:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.08)}
-.kpi:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(10,22,40,.22)}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+.kpi{background:white;border-radius:var(--r);border:1px solid var(--border);box-shadow:var(--sh-sm);padding:18px;transition:all .2s;cursor:default}
+.kpi:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
 .kpi-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
-.kpi-icon{width:46px;height:46px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.kpi-trend{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;background:rgba(255,255,255,.2);color:white}
-.tr-up  {background:rgba(255,255,255,.25)!important;color:white!important}
-.tr-down{background:rgba(255,255,255,.15)!important;color:rgba(255,255,255,.85)!important}
-.tr-neu {background:rgba(255,255,255,.15)!important;color:rgba(255,255,255,.85)!important}
-.kpi-val{font-size:30px;font-weight:900;color:white;line-height:1;margin-bottom:5px;letter-spacing:-.02em;position:relative;z-index:1}
-.kpi-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.08em;position:relative;z-index:1}
-.kpi-sub{font-size:11px;color:rgba(255,255,255,.65);margin-top:4px;position:relative;z-index:1}
-.spark{height:32px;margin-top:10px;opacity:.7}
-
-/* ── Indicateurs d'efficacité (référence bas) ── */
-.eff-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px}
-.eff-card{background:white;border:1px solid var(--border-l);border-radius:12px;padding:14px 10px;text-align:center;box-shadow:var(--sh-sm);transition:all .2s}
-.eff-card:hover{box-shadow:var(--sh-md);transform:translateY(-2px)}
-.eff-icon{width:42px;height:42px;border-radius:10px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:20px}
-.eff-num{font-size:24px;font-weight:900;color:var(--text);letter-spacing:-.02em;line-height:1}
-.eff-lbl{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+.kpi-icon{width:48px;height:48px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:22px}
+.kpi-trend{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:4px 9px;border-radius:20px}
+.tr-up  {background:#F0FDF4;color:var(--green)}
+.tr-down{background:#FEF2F2;color:var(--red)}
+.tr-neu {background:var(--bg);color:var(--text3)}
+.kpi-val{font-size:26px;font-weight:900;color:var(--text);line-height:1;margin-bottom:4px}
+.kpi-lbl{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
+.kpi-sub{font-size:11px;color:var(--text3);margin-top:4px}
+.spark{height:36px;margin-top:10px}
 
 /* ═══════════════════════════════════════════
    GRID LAYOUTS
@@ -393,7 +376,6 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
   .sb-footer{padding:10px;display:flex;justify-content:center}
   .sb-logout{padding:8px;border:none;background:rgba(220,38,38,.15)}
   .kpi-grid{grid-template-columns:repeat(2,1fr)}
-  .eff-grid{grid-template-columns:repeat(3,1fr)}
   .grid-3,.grid-3-1{grid-template-columns:1fr}
 }
 @media(max-width:768px){
@@ -416,8 +398,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
   .tb-search{display:none}
 }
 @media(max-width:400px){
-  .kpi-grid{grid-template-columns:1fr 1fr}
-  .eff-grid{grid-template-columns:repeat(3,1fr)}
+  .kpi-grid{grid-template-columns:1fr}
   .qa-grid{grid-template-columns:repeat(2,1fr)}
   .rt-stats{grid-template-columns:1fr}
 }
@@ -481,6 +462,10 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     <a href="facture.html" class="sb-item">
       <span class="sb-item-icon">📄</span>
       <span class="sb-item-label">Facture</span>
+    </a>
+    <a href="facture_materiel.html" class="sb-item">
+      <span class="sb-item-icon">🖥️</span>
+      <span class="sb-item-label">Facture Matériel</span>
     </a>
     <a href="intervention.html" class="sb-item">
       <span class="sb-item-icon">🔧</span>
@@ -553,99 +538,68 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
   <!-- Welcome banner -->
   <div class="welcome-banner">
     <div class="wb-text">
-      <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.14em;margin-bottom:6px">📊 TABLEAU DE BORD</div>
       <div class="wb-greeting" id="wb-greeting">Bonjour, Boussé ! 👋</div>
       <div class="wb-sub">Voici le résumé de votre activité aujourd'hui</div>
     </div>
     <div class="wb-right">
-      <div style="text-align:right">
-        <div style="font-size:10px;color:rgba(255,255,255,.5);font-weight:600;text-transform:uppercase;letter-spacing:.08em">Date</div>
-        <div style="font-size:14px;color:white;font-weight:700;margin-top:2px" id="wb-date">—</div>
-        <div id="wb-time" style="font-size:22px;font-weight:900;color:white;letter-spacing:-.02em;margin-top:2px">—</div>
+      <div class="wb-date">
+        <span>Aujourd'hui</span>
+        <strong id="wb-date">—</strong>
       </div>
     </div>
   </div>
 
-  <!-- ── Analytics Header ── -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-    <div>
-      <div style="font-size:16px;font-weight:900;color:var(--text);letter-spacing:-.02em">Indicateurs analytiques</div>
-      <div style="font-size:11px;color:var(--text3);margin-top:2px" id="kpi-date-label">Aujourd'hui</div>
-    </div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <span id="dash-live-dot" style="width:8px;height:8px;border-radius:50%;background:#059652;display:inline-block;animation:pulse-dot 2s infinite"></span>
-      <span style="font-size:11px;color:var(--text3);font-weight:600">Temps réel</span>
-    </div>
-  </div>
-
-  <!-- KPIs colorés style référence -->
+  <!-- KPIs -->
   <div class="kpi-grid">
     <div class="kpi">
       <div class="kpi-top">
-        <div class="kpi-icon">📄</div>
-        <span class="kpi-trend tr-neu" id="kpi-fac-trend">Documents</span>
+        <div class="kpi-icon" style="background:#EFF6FF">📄</div>
+        <span class="kpi-trend tr-neu" id="kpi-fac-trend">Factures</span>
       </div>
       <div class="kpi-val" id="kpi-factures">—</div>
-      <div class="kpi-lbl">Factures créées</div>
-      <div class="kpi-sub" id="kpi-docs-sub">Aujourd'hui</div>
+      <div class="kpi-lbl">Documents créés</div>
+      <div class="kpi-sub" id="kpi-docs-sub">—</div>
     </div>
     <div class="kpi">
       <div class="kpi-top">
-        <div class="kpi-icon">🧾</div>
+        <div class="kpi-icon" style="background:#F0FDF4">🧾</div>
         <span class="kpi-trend tr-neu" id="kpi-rec-trend">Reçus</span>
       </div>
       <div class="kpi-val" id="kpi-recus">—</div>
       <div class="kpi-lbl">Reçus de paiement</div>
-      <div class="kpi-sub" id="kpi-recus-sub">Aujourd'hui</div>
+      <div class="kpi-sub" id="kpi-recus-sub">—</div>
     </div>
     <div class="kpi">
       <div class="kpi-top">
-        <div class="kpi-icon">💰</div>
-        <span class="kpi-trend tr-neu" id="kpi-solde-trend">Caisse</span>
+        <div class="kpi-icon" style="background:#FFF7ED">💰</div>
+        <span class="kpi-trend tr-neu" id="kpi-solde-trend">Solde</span>
       </div>
-      <div class="kpi-val" id="kpi-solde" style="font-size:22px">—</div>
+      <div class="kpi-val" id="kpi-solde" style="font-size:20px">—</div>
       <div class="kpi-lbl">Solde de caisse (FCFA)</div>
       <div class="spark" id="spark-solde"></div>
     </div>
     <div class="kpi">
       <div class="kpi-top">
-        <div class="kpi-icon">🪪</div>
-        <span class="kpi-trend tr-neu">Attente</span>
+        <div class="kpi-icon" style="background:var(--amber-bg)">🪪</div>
+        <span class="kpi-trend tr-neu">RDV</span>
       </div>
       <div class="kpi-val" id="kpi-rdv">—</div>
       <div class="kpi-lbl">Cartes en attente</div>
-      <div class="kpi-sub">Récupérations NINA</div>
+      <div class="kpi-sub">Récupérations à faire</div>
     </div>
   </div>
 
-  <!-- ── Indicateurs d'efficacité (style référence) ── -->
-  <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:12px;letter-spacing:-.01em">⚡ Actions rapides & Indicateurs</div>
-  <div class="eff-grid" style="margin-bottom:20px">
-    <a href="recu.html" class="eff-card" style="text-decoration:none">
-      <div class="eff-icon" style="background:#EFF6FF">🧾</div>
-      <div class="eff-num" style="color:#1565C0" id="eff-recus">0</div>
-      <div class="eff-lbl" style="color:#1565C0">Reçus</div>
-    </a>
-    <a href="facture.html" class="eff-card" style="text-decoration:none">
-      <div class="eff-icon" style="background:#F0FDF4">📄</div>
-      <div class="eff-num" style="color:#00695C" id="eff-factures">0</div>
-      <div class="eff-lbl" style="color:#00695C">Factures</div>
-    </a>
-    <a href="intervention.html" class="eff-card" style="text-decoration:none">
-      <div class="eff-icon" style="background:#F5F0FF">🔧</div>
-      <div class="eff-num" style="color:#6A1B9A" id="eff-interventions">0</div>
-      <div class="eff-lbl" style="color:#6A1B9A">Interventions</div>
-    </a>
-    <a href="devis.html" class="eff-card" style="text-decoration:none">
-      <div class="eff-icon" style="background:#FFF8EE">📋</div>
-      <div class="eff-num" style="color:#B45309" id="eff-devis">0</div>
-      <div class="eff-lbl" style="color:#B45309">Devis</div>
-    </a>
-    <a href="docs_admin.html" class="eff-card" style="text-decoration:none">
-      <div class="eff-icon" style="background:#FFF0F0">📝</div>
-      <div class="eff-num" style="color:#B71C1C" id="eff-admin">0</div>
-      <div class="eff-lbl" style="color:#B71C1C">Docs Admin</div>
-    </a>
+  <!-- Actions rapides -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <span style="font-size:12px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em">⚡ Actions rapides</span>
+  </div>
+  <div class="qa-grid" style="margin-bottom:20px">
+    <a href="recu.html"          class="qa"><div class="qa-icon" style="background:var(--green-bg)">🧾</div><div class="qa-label">Nouveau reçu</div></a>
+    <a href="facture.html"       class="qa"><div class="qa-icon" style="background:var(--blue-l)">📄</div><div class="qa-label">Nouvelle facture</div></a>
+    <a href="recu_cyber.html"    class="qa"><div class="qa-icon" style="background:#EEF2FF">🖥️</div><div class="qa-label">Reçu Cyber</div></a>
+    <a href="intervention.html"  class="qa"><div class="qa-icon" style="background:var(--purple-bg)">🔧</div><div class="qa-label">Intervention</div></a>
+    <a href="devis.html"         class="qa"><div class="qa-icon" style="background:var(--amber-bg)">📋</div><div class="qa-label">Devis</div></a>
+    <a href="docs_admin.html"    class="qa"><div class="qa-icon" style="background:#EDE9FE">📝</div><div class="qa-label">Doc. Administratif</div></a>
   </div>
 
   <!-- Graphique + Top services + PM -->
@@ -878,38 +832,6 @@ function setWelcome() {
   const g = h<12?'Bonjour':'Bonsoir';
   if($('wb-greeting')) $('wb-greeting').textContent = g+', Boussé ! 👋';
   if($('wb-date')) $('wb-date').textContent = new Date().toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-
-  /* Horloge temps réel */
-  function updateClock(){
-    var t=new Date();
-    var hh=String(t.getHours()).padStart(2,'0');
-    var mm=String(t.getMinutes()).padStart(2,'0');
-    var el=$('wb-time');
-    if(el) el.textContent=hh+':'+mm;
-  }
-  updateClock();
-  setInterval(updateClock, 30000);
-
-  /* Compteurs indicateurs d'efficacité */
-  function updateEffCounters(){
-    var docs=JSON.parse(localStorage.getItem('_samassa_docs')||'[]');
-    var today=new Date().toISOString().slice(0,10);
-    var todayDocs=docs.filter(function(d){return(d.date||'').startsWith(today);});
-    var counts={recus:0,factures:0,interventions:0,devis:0,admin:0};
-    todayDocs.forEach(function(d){
-      var t=(d.type||'').toLowerCase();
-      if(t.includes('recu')||t.includes('reçu')) counts.recus++;
-      else if(t.includes('facture')) counts.factures++;
-      else if(t.includes('intervention')) counts.interventions++;
-      else if(t.includes('devis')) counts.devis++;
-      else counts.admin++;
-    });
-    ['recus','factures','interventions','devis','admin'].forEach(function(k){
-      var el=$('eff-'+k);
-      if(el) el.textContent=counts[k];
-    });
-  }
-  updateEffCounters();
 }
 
 /* ══ SPARKLINE ══ */
