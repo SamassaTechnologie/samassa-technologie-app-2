@@ -192,6 +192,11 @@ window.generateMatInvoice = function () {
     ST.el('d-notes-section').style.display = 'none';
   }
 
+  /* Conditions de garantie — affichées seulement si case cochée */
+  var showGarantie = ST.el('showGarantie') && ST.el('showGarantie').checked;
+  var garantieBox  = ST.el('d-garantie-box');
+  if (garantieBox) garantieBox.style.display = showGarantie ? 'block' : 'none';
+
   /* ── Lignes articles ── */
   var tbody = ST.el('d-items');
   tbody.innerHTML = '';

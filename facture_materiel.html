@@ -109,6 +109,111 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif}
 @media(max-width:480px){
   .catalogue-grid{grid-template-columns:repeat(2,1fr)}
 }
+
+/* ════════════════════════════════════════════
+   IMPRESSION A4 — Facture pleine page
+════════════════════════════════════════════ */
+@page {
+  size: A4 portrait;
+  margin: 12mm 14mm 14mm 14mm;
+}
+
+@media print {
+  /* Masquer tout sauf le document */
+  .topbar, .form-panel, .doc-placeholder,
+  .watermark, #placeholder { display: none !important; }
+
+  /* Mise en page pleine page */
+  html, body {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    font-size: 11px !important;
+  }
+
+  .layout {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .doc-panel {
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: static !important;
+  }
+
+  .doc-inner {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .doc-z {
+    padding: 0 !important;
+  }
+
+  /* En-tête compact */
+  .doc-head {
+    padding-bottom: 10px !important;
+    margin-bottom: 10px !important;
+  }
+  .co-logo { width: 52px !important; height: 52px !important; }
+  .co-name { font-size: 15px !important; }
+  .dt-type.materiel { font-size: 18px !important; }
+
+  /* Client box compact */
+  .doc-client-box { padding: 8px 12px !important; margin-bottom: 10px !important; }
+
+  /* Table sans ombre */
+  .doc-table, .doc-table-mat {
+    width: 100% !important;
+    font-size: 10px !important;
+    margin-bottom: 8px !important;
+    page-break-inside: avoid;
+  }
+  .doc-table th, .doc-table-mat th { padding: 6px 8px !important; font-size: 9px !important; }
+  .doc-table td, .doc-table-mat td { padding: 5px 8px !important; }
+
+  /* Totaux */
+  .totals-wrap { margin-bottom: 8px !important; }
+  .totals-box  { padding: 8px 12px !important; }
+  .t-row       { padding: 4px 0 !important; font-size: 11px !important; }
+  .ttc .t-val  { font-size: 14px !important; }
+
+  /* Résumé articles */
+  .mat-summary-box { padding: 8px 12px !important; margin-top: 8px !important; margin-bottom: 8px !important; font-size: 10px !important; }
+
+  /* Garantie */
+  .garantie-box { padding: 8px 12px !important; margin-bottom: 8px !important; }
+  .garantie-box h4 { font-size: 9px !important; margin-bottom: 5px !important; }
+  .garantie-box ul { font-size: 9px !important; line-height: 1.6 !important; }
+
+  /* Paiement */
+  .payment-info-doc { font-size: 10px !important; padding: 7px 10px !important; margin-bottom: 8px !important; }
+
+  /* Pied de page */
+  .doc-footer { margin-top: 10px !important; padding-top: 8px !important; font-size: 10px !important; }
+  .sig-img    { height: 36px !important; }
+  .cachet-img { height: 38px !important; }
+  .thank-you  { font-size: 11px !important; margin-top: 8px !important; padding: 6px !important; }
+
+  /* Couleurs pour l'impression */
+  .doc-table-mat thead tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .garantie-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .doc-client-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .doc-type-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .doc-badge-neuf, .doc-badge-recon, .doc-badge-usage { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .garantie-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
 </style>
 </head>
 <body>
@@ -241,8 +346,17 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif}
       <input type="hidden" id="paymentMethod" value="Wave">
 
       <!-- Notes -->
-      <div class="section-label" style="margin-top:12px">📝 Notes</div>
+      <div class="section-label" style="margin-top:12px">📝 Notes & Options</div>
       <textarea id="invoiceNotes" rows="2" placeholder="Notes supplémentaires (optionnel)…" style="width:100%;resize:vertical"></textarea>
+
+      <!-- Case à cocher garantie -->
+      <div style="margin-top:10px;padding:12px 14px;background:#F0FDF4;border:1.5px solid #DCFCE7;border-radius:10px;display:flex;align-items:flex-start;gap:10px">
+        <input type="checkbox" id="showGarantie" style="width:18px;height:18px;margin-top:1px;accent-color:#059652;cursor:pointer;flex-shrink:0">
+        <label for="showGarantie" style="cursor:pointer;font-size:13px;font-weight:700;color:#064E3B;line-height:1.4">
+          🛡️ Afficher les <strong>conditions de garantie</strong> sur la facture
+          <div style="font-size:11px;color:#059652;font-weight:500;margin-top:2px">Cochez si au moins un article a une garantie active</div>
+        </label>
+      </div>
 
     </div><!-- /form-body -->
 
@@ -331,8 +445,8 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif}
         <!-- Résumé articles -->
         <div class="mat-summary-box" id="d-summary"></div>
 
-        <!-- Conditions de garantie -->
-        <div class="garantie-box">
+        <!-- Conditions de garantie (affichée seulement si coché) -->
+        <div class="garantie-box" id="d-garantie-box" style="display:none">
           <h4>🛡️ Conditions de garantie SAMASSA TECHNOLOGIE</h4>
           <ul>
             <li>La garantie couvre les <strong>défauts de fabrication</strong> uniquement, hors dommages physiques ou logiciels</li>
