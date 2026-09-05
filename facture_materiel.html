@@ -111,26 +111,29 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif}
 }
 
 /* ════════════════════════════════════════════
-   IMPRESSION A4 — Facture pleine page
+   IMPRESSION A4 — Facture fidèle à l'image
 ════════════════════════════════════════════ */
 @page {
   size: A4 portrait;
-  margin: 12mm 14mm 14mm 14mm;
+  margin: 14mm 16mm 14mm 16mm;
 }
 
 @media print {
-  /* Masquer tout sauf le document */
+  /* ── Masquer tout sauf le document ── */
   .topbar, .form-panel, .doc-placeholder,
-  .watermark, #placeholder { display: none !important; }
+  .watermark, #placeholder,
+  .actions, .back-link { display: none !important; }
 
-  /* Mise en page pleine page */
+  /* ── Page blanche pleine ── */
   html, body {
-    width: 210mm;
-    height: 297mm;
+    width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     background: white !important;
     font-size: 11px !important;
+    color: #0A1628 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 
   .layout {
@@ -145,7 +148,6 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif}
     border: none !important;
     margin: 0 !important;
     padding: 0 !important;
-    position: static !important;
   }
 
   .doc-inner {
@@ -157,62 +159,75 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif}
     border: none !important;
   }
 
-  .doc-z {
-    padding: 0 !important;
-  }
-
-  /* En-tête compact */
-  .doc-head {
-    padding-bottom: 10px !important;
-    margin-bottom: 10px !important;
-  }
+  /* ── En-tête : logo + société ── */
   .co-logo { width: 52px !important; height: 52px !important; }
-  .co-name { font-size: 15px !important; }
-  .dt-type.materiel { font-size: 18px !important; }
+  .co-name  { font-size: 16px !important; }
+  .co-tag   { font-size: 12px !important; }
+  .co-detail{ font-size: 11px !important; }
 
-  /* Client box compact */
-  .doc-client-box { padding: 8px 12px !important; margin-bottom: 10px !important; }
+  /* ── Titre FACTURE ── */
+  div[style*="font-size:28px"] { font-size: 26px !important; }
 
-  /* Table sans ombre */
-  .doc-table, .doc-table-mat {
-    width: 100% !important;
-    font-size: 10px !important;
-    margin-bottom: 8px !important;
-    page-break-inside: avoid;
+  /* ── Client box ── */
+  div[style*="background:#EBF5FF"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    padding: 9px 14px !important;
+    margin-bottom: 12px !important;
   }
-  .doc-table th, .doc-table-mat th { padding: 6px 8px !important; font-size: 9px !important; }
-  .doc-table td, .doc-table-mat td { padding: 5px 8px !important; }
 
-  /* Totaux */
-  .totals-wrap { margin-bottom: 8px !important; }
-  .totals-box  { padding: 8px 12px !important; }
-  .t-row       { padding: 4px 0 !important; font-size: 11px !important; }
-  .ttc .t-val  { font-size: 14px !important; }
+  /* ── Table ── */
+  table { width: 100% !important; font-size: 10px !important; margin-bottom: 0 !important; }
+  thead tr, tfoot tr {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  th { padding: 7px 5px !important; font-size: 9px !important; }
+  td { padding: 7px 5px !important; font-size: 10px !important; }
+  tfoot td { padding: 8px 10px !important; font-size: 12px !important; }
 
-  /* Résumé articles */
-  .mat-summary-box { padding: 8px 12px !important; margin-top: 8px !important; margin-bottom: 8px !important; font-size: 10px !important; }
+  /* ── Totaux sous table ── */
+  .t-row { padding: 7px 14px !important; font-size: 11px !important; }
+  div[style*="background:#0A1628"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    padding: 9px 14px !important;
+    font-size: 13px !important;
+  }
 
-  /* Garantie */
-  .garantie-box { padding: 8px 12px !important; margin-bottom: 8px !important; }
-  .garantie-box h4 { font-size: 9px !important; margin-bottom: 5px !important; }
+  /* ── Récapitulatif ── */
+  .mat-summary-box {
+    padding: 8px 12px !important;
+    margin: 8px 0 !important;
+    font-size: 10px !important;
+  }
+  .mat-summary-item { padding: 3px 0 !important; font-size: 10px !important; }
+
+  /* ── Garantie ── */
+  .garantie-box {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    padding: 8px 12px !important;
+    margin-bottom: 8px !important;
+  }
+  .garantie-box h4 { font-size: 9px !important; }
   .garantie-box ul { font-size: 9px !important; line-height: 1.6 !important; }
 
-  /* Paiement */
+  /* ── Mode de paiement ── */
   .payment-info-doc { font-size: 10px !important; padding: 7px 10px !important; margin-bottom: 8px !important; }
 
-  /* Pied de page */
-  .doc-footer { margin-top: 10px !important; padding-top: 8px !important; font-size: 10px !important; }
-  .sig-img    { height: 36px !important; }
-  .cachet-img { height: 38px !important; }
-  .thank-you  { font-size: 11px !important; margin-top: 8px !important; padding: 6px !important; }
+  /* ── Pied de page ── */
+  .doc-footer { margin-top: 10px !important; font-size: 10px !important; }
+  .sig-img    { height: 34px !important; }
+  .cachet-img { height: 36px !important; }
+  .thank-you  { font-size: 11px !important; padding: 7px !important; margin-top: 8px !important; }
 
-  /* Couleurs pour l'impression */
-  .doc-table-mat thead tr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .garantie-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .doc-client-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .doc-type-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .doc-badge-neuf, .doc-badge-recon, .doc-badge-usage { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .garantie-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* ── Badges et couleurs ── */
+  .doc-badge-neuf, .doc-badge-recon, .doc-badge-usage,
+  .garantie-badge, .doc-type-badge {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }
 </style>
 </head>
@@ -381,64 +396,72 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif}
       <div class="watermark"><img src="watermark.png" alt=""></div>
       <div class="doc-z">
 
-        <!-- En-tête -->
-        <div class="doc-head">
-          <div>
-            <img src="logo.png" alt="Logo" class="co-logo">
-            <div class="co-name" id="d-coName">SAMASSA TECHNOLOGIE</div>
-            <div class="co-tag" id="d-coTag" style="color:#0070C0">Tout pour l'informatique</div>
-            <div class="co-detail">
-              <div id="d-coAddr"></div>
-              <div>Tél : <strong id="d-coPhone"></strong></div>
-              <div>Email : <span id="d-coEmail"></span></div>
+        <!-- En-tête — structure correspondant à l'image -->
+        <div style="margin-bottom:0">
+          <!-- Ligne société : logo + infos -->
+          <div style="display:flex;align-items:flex-start;gap:14px;margin-bottom:14px">
+            <img src="logo.png" alt="Logo" class="co-logo" style="width:56px;height:56px;border-radius:10px;object-fit:contain;flex-shrink:0">
+            <div>
+              <div class="co-name" id="d-coName" style="font-size:17px;font-weight:900;color:#0A1628;margin-bottom:2px">SAMASSA TECHNOLOGIE</div>
+              <div class="co-tag"  id="d-coTag"  style="font-style:italic;color:#0070C0;font-size:13px;margin-bottom:6px">Tout pour l'informatique</div>
+              <div class="co-detail" style="font-size:12px;color:#3D5470;line-height:1.7">
+                <div id="d-coAddr"></div>
+                <div>Tél : <strong id="d-coPhone"></strong></div>
+                <div>Email : <span id="d-coEmail"></span></div>
+              </div>
             </div>
           </div>
-          <div class="dt-block">
-            <div class="doc-type-badge">🖥️ VENTE MATÉRIEL</div>
-            <div class="dt-type materiel">FACTURE</div>
-            <div class="dt-num">N° <strong id="d-num"></strong></div>
-            <div class="dt-date-lbl">Date :</div>
-            <div class="dt-date-val" id="d-date"></div>
+
+          <!-- Badge + Type + N° + Date -->
+          <div style="margin-bottom:14px">
+            <div class="doc-type-badge" style="display:inline-flex;align-items:center;gap:6px;background:#EBF5FF;border:1.5px solid #BAE6FD;border-radius:8px;padding:5px 14px;margin-bottom:8px;font-size:11px;font-weight:800;color:#0070C0">🖥️ VENTE MATÉRIEL</div>
+            <div style="font-size:28px;font-weight:900;color:#0A1628;letter-spacing:-.02em;line-height:1;margin-bottom:6px">FACTURE</div>
+            <div style="font-size:14px;font-weight:700;color:#0070C0;margin-bottom:4px">N° <span id="d-num"></span></div>
+            <div style="font-size:11px;color:#7A94AF;font-weight:600">Date :</div>
+            <div style="font-size:14px;font-weight:800;color:#0A1628;margin-top:1px" id="d-date"></div>
           </div>
+
+          <!-- Ligne de séparation -->
+          <hr style="border:none;border-top:1.5px solid #D0DDE8;margin:0 0 16px 0">
         </div>
 
         <!-- Client -->
-        <div class="doc-client-box" style="background:#EBF5FF;border-left:4px solid #0070C0;border-radius:8px;padding:12px 16px;margin-bottom:16px">
-          <div style="font-size:10px;font-weight:700;color:#0070C0;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Vendu à</div>
-          <div style="font-size:15px;font-weight:800;color:#0A1628" id="d-client"></div>
-          <div style="font-size:12px;color:#3D5470;margin-top:3px" id="d-client-details"></div>
+        <div style="background:#EBF5FF;border-left:4px solid #0070C0;border-radius:8px;padding:12px 16px;margin-bottom:14px">
+          <div style="font-size:9px;font-weight:800;color:#0070C0;text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px">Vendu à</div>
+          <div style="font-size:16px;font-weight:900;color:#0A1628;margin-bottom:4px" id="d-client"></div>
+          <div style="font-size:12px;color:#3D5470;font-weight:500" id="d-client-details"></div>
         </div>
 
         <!-- Table articles -->
-        <table class="doc-table doc-table-mat">
+        <table class="doc-table doc-table-mat" style="width:100%;border-collapse:collapse;margin-bottom:0">
           <thead>
-            <tr>
-              <th style="width:4%;text-align:center">#</th>
-              <th style="width:28%;text-align:left">Désignation</th>
-              <th style="width:12%">Marque / Modèle</th>
-              <th style="width:14%">N° Série</th>
-              <th style="width:8%">État</th>
-              <th style="width:8%">Garantie</th>
-              <th style="width:6%">Qté</th>
-              <th style="width:10%">Prix unit.</th>
-              <th style="width:10%">Total HT</th>
+            <tr style="background:linear-gradient(135deg,#0A1628,#0D2340)">
+              <th style="width:4%;text-align:center;color:white;padding:9px 6px;font-size:10px;font-weight:700">#</th>
+              <th style="width:26%;text-align:left;color:white;padding:9px 8px;font-size:10px;font-weight:700">Désignation</th>
+              <th style="width:13%;text-align:center;color:white;padding:9px 6px;font-size:10px;font-weight:700">Marque / Modèle</th>
+              <th style="width:12%;text-align:center;color:white;padding:9px 6px;font-size:10px;font-weight:700">N° Série</th>
+              <th style="width:9%;text-align:center;color:white;padding:9px 6px;font-size:10px;font-weight:700">État</th>
+              <th style="width:9%;text-align:center;color:white;padding:9px 6px;font-size:10px;font-weight:700">Garantie</th>
+              <th style="width:5%;text-align:center;color:white;padding:9px 6px;font-size:10px;font-weight:700">Qté</th>
+              <th style="width:11%;text-align:center;color:white;padding:9px 6px;font-size:10px;font-weight:700">Prix unit.</th>
+              <th style="width:11%;text-align:center;color:white;padding:9px 6px;font-size:10px;font-weight:700">Total HT</th>
             </tr>
           </thead>
           <tbody id="d-items"></tbody>
           <tfoot>
-            <tr>
-              <td colspan="7" style="text-align:right;font-size:12px">TOTAL GÉNÉRAL</td>
-              <td colspan="2" id="d-ttc-foot" style="font-size:15px"></td>
+            <tr style="background:#0A1628">
+              <td colspan="7" style="text-align:right;color:white;font-size:11px;font-weight:700;padding:10px 12px;letter-spacing:.04em">TOTAL GÉNÉRAL</td>
+              <td colspan="2" id="d-ttc-foot" style="font-size:14px;font-weight:900;color:white;padding:10px 12px;text-align:center"></td>
             </tr>
           </tfoot>
         </table>
 
         <!-- Totaux détaillés -->
-        <div class="totals-wrap">
-          <div class="totals-box">
-            <div class="t-row"><span class="t-lbl">Sous-total HT</span><span class="t-val" id="d-ht"></span></div>
-            <div class="t-row" id="d-tva-row"><span class="t-lbl">TVA 18%</span><span class="t-val" id="d-tva"></span></div>
-            <div class="t-row ttc"><span class="t-lbl">TOTAL TTC</span><span class="t-val" id="d-ttc"></span></div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px;margin-top:0">
+          <div style="width:100%;border:1px solid #E2ECF5;border-top:none;border-radius:0 0 10px 10px;overflow:hidden">
+            <div class="t-row" style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid #EEF3F9;font-size:12px"><span style="color:#3D5470;font-weight:600">Sous-total HT</span><span id="d-ht" style="font-weight:700;color:#0A1628"></span></div>
+            <div class="t-row" id="d-tva-row" style="display:flex;justify-content:space-between;padding:9px 16px;border-bottom:1px solid #EEF3F9;font-size:12px"><span style="color:#3D5470;font-weight:600">TVA 18%</span><span id="d-tva" style="font-weight:700;color:#0A1628"></span></div>
+            <div style="display:flex;justify-content:space-between;padding:11px 16px;background:#0A1628;font-size:14px;font-weight:900"><span style="color:white">TOTAL TTC</span><span id="d-ttc" style="color:white"></span></div>
           </div>
         </div>
 

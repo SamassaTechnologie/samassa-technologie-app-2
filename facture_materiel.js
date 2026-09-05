@@ -230,18 +230,18 @@ window.generateMatInvoice = function () {
     var marqueModele = [marque, modele].filter(Boolean).join(' ');
 
     tbody.innerHTML += [
-      '<tr>',
-        '<td style="text-align:center;font-weight:700;color:#0070C0">' + (idx + 1) + '</td>',
-        '<td>',
+      '<tr style="border-bottom:1px solid #EEF3F9">',
+        '<td style="text-align:center;font-weight:800;color:#0070C0;padding:9px 6px;font-size:13px">' + (idx + 1) + '</td>',
+        '<td style="padding:9px 8px">',
           '<div style="font-weight:700;color:#0A1628;font-size:13px">' + desc + '</div>',
         '</td>',
-        '<td style="font-size:11px;color:#3D5470;text-align:center">' + (marqueModele || '—') + '</td>',
-        '<td class="sn-cell" style="text-align:center">' + serial + '</td>',
-        '<td style="text-align:center">' + etatBadge + '</td>',
-        '<td style="text-align:center">' + garantieBadge + '</td>',
-        '<td style="text-align:center;font-weight:700">' + qty + '</td>',
-        '<td style="text-align:center">' + ST.fmtNum(price) + ' F</td>',
-        '<td style="text-align:center;font-weight:800;color:#0A1628">' + ST.fmtNum(total) + ' F</td>',
+        '<td style="font-size:11px;color:#3D5470;text-align:center;padding:9px 6px">' + (marqueModele || '—') + '</td>',
+        '<td style="text-align:center;font-family:monospace;font-size:10px;color:#7A94AF;padding:9px 6px">' + serial + '</td>',
+        '<td style="text-align:center;padding:9px 6px">' + etatBadge + '</td>',
+        '<td style="text-align:center;padding:9px 6px">' + garantieBadge + '</td>',
+        '<td style="text-align:center;font-weight:700;padding:9px 6px">' + qty + '</td>',
+        '<td style="text-align:center;font-size:12px;padding:9px 6px">' + ST.fmtNum(price) + ' F</td>',
+        '<td style="text-align:center;font-weight:900;color:#0A1628;font-size:13px;padding:9px 6px">' + ST.fmtNum(total) + ' F</td>',
       '</tr>'
     ].join('');
 
@@ -256,7 +256,8 @@ window.generateMatInvoice = function () {
   ST.el('d-ht').textContent   = ST.fmt(ht);
   ST.el('d-tva').textContent  = ST.fmt(tva);
   ST.el('d-ttc').textContent  = ST.fmt(ttc);
-  ST.el('d-ttc-foot').textContent = ST.fmt(ttc) + ' FCFA';
+  /* ← Fix : ST.fmt() inclut déjà "FCFA", pas besoin d'en ajouter */
+  ST.el('d-ttc-foot').textContent = ST.fmt(ttc);
 
   /* TVA row visible ? */
   var tvaRow = ST.el('d-tva-row');
@@ -274,11 +275,13 @@ window.generateMatInvoice = function () {
           s.etat === 'Neuf' ? '<span class="doc-badge-neuf" style="font-size:8px">Neuf</span>' : '',
           s.garantie !== 'Sans garantie' ? ' <span class="garantie-badge" style="font-size:8px;padding:1px 5px">🛡️ ' + s.garantie + '</span>' : '',
         '</span>',
-        '<span style="font-weight:700;color:#0A1628">' + (s.qty > 1 ? s.qty + '×  ' : '') + ST.fmtNum(s.total) + ' FCFA</span>',
+        /* ← Fix : ST.fmt() inclut déjà "FCFA" */
+        '<span style="font-weight:700;color:#0A1628">' + (s.qty > 1 ? s.qty + '×  ' : '') + ST.fmt(s.total) + '</span>',
       '</div>'
     ].join('');
   });
-  summaryHtml += '<div class="mat-summary-item"><span>TOTAL</span><span>' + ST.fmt(ttc) + ' FCFA</span></div>';
+  /* ← Fix : pas de " FCFA" supplémentaire */
+  summaryHtml += '<div class="mat-summary-item"><span style="font-weight:800">TOTAL</span><span style="font-weight:900;color:#0A1628">' + ST.fmt(ttc) + '</span></div>';
   ST.el('d-summary').innerHTML = summaryHtml;
 
   ST.showDoc();
