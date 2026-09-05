@@ -594,12 +594,13 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     <span style="font-size:12px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em">⚡ Actions rapides</span>
   </div>
   <div class="qa-grid" style="margin-bottom:20px">
-    <a href="recu.html"          class="qa"><div class="qa-icon" style="background:var(--green-bg)">🧾</div><div class="qa-label">Nouveau reçu</div></a>
-    <a href="facture.html"       class="qa"><div class="qa-icon" style="background:var(--blue-l)">📄</div><div class="qa-label">Nouvelle facture</div></a>
-    <a href="recu_cyber.html"    class="qa"><div class="qa-icon" style="background:#EEF2FF">🖥️</div><div class="qa-label">Reçu Cyber</div></a>
-    <a href="intervention.html"  class="qa"><div class="qa-icon" style="background:var(--purple-bg)">🔧</div><div class="qa-label">Intervention</div></a>
-    <a href="devis.html"         class="qa"><div class="qa-icon" style="background:var(--amber-bg)">📋</div><div class="qa-label">Devis</div></a>
-    <a href="docs_admin.html"    class="qa"><div class="qa-icon" style="background:#EDE9FE">📝</div><div class="qa-label">Doc. Administratif</div></a>
+    <a href="recu.html"              class="qa"><div class="qa-icon" style="background:var(--green-bg)">🧾</div><div class="qa-label">Nouveau reçu</div></a>
+    <a href="facture.html"           class="qa"><div class="qa-icon" style="background:var(--blue-l)">📄</div><div class="qa-label">Facture service</div></a>
+    <a href="facture_materiel.html"  class="qa"><div class="qa-icon" style="background:#EBF5FF">🖥️</div><div class="qa-label">Facture Matériel</div></a>
+    <a href="recu_cyber.html"        class="qa"><div class="qa-icon" style="background:#EEF2FF">☕</div><div class="qa-label">Reçu Cyber</div></a>
+    <a href="intervention.html"      class="qa"><div class="qa-icon" style="background:var(--purple-bg)">🔧</div><div class="qa-label">Intervention</div></a>
+    <a href="devis.html"             class="qa"><div class="qa-icon" style="background:var(--amber-bg)">📋</div><div class="qa-label">Devis</div></a>
+    <a href="docs_admin.html"        class="qa"><div class="qa-icon" style="background:#EDE9FE">📝</div><div class="qa-label">Doc. Admin</div></a>
   </div>
 
   <!-- Graphique + Top services + PM -->
@@ -751,6 +752,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
         <select id="h-type" onchange="renderHistory()" style="padding:7px 9px;font-size:12px;width:auto">
           <option value="">Tous les types</option>
           <option value="samassa_factures">Factures</option>
+          <option value="samassa_factures_mat">Factures Matériel</option>
           <option value="samassa_recus">Reçus</option>
           <option value="samassa_devis">Devis</option>
           <option value="samassa_interventions">Interventions</option>
@@ -955,6 +957,7 @@ function buildActivity() {
   const types=[
     {k:'samassa_recus',i:'🧾',l:'Reçu',c:'#16A34A'},
     {k:'samassa_factures',i:'📄',l:'Facture',c:'#0088CC'},
+    {k:'samassa_factures_mat',i:'🖥️',l:'Facture Matériel',c:'#0070C0'},
     {k:'samassa_interventions',i:'🔧',l:'Intervention',c:'#7C3AED'},
     {k:'samassa_devis',i:'📋',l:'Devis',c:'#D97706'},
     {k:'samassa_recus_cyber',i:'🖥️',l:'Reçu Cyber',c:'#16A34A'},
@@ -997,6 +1000,7 @@ function buildRdv() {
 /* ══ KPIs ══ */
 function loadStats() {
   const factures=getData('samassa_factures');
+  const facturesMat=getData('samassa_factures_mat');
   const facturesCyber=getData('samassa_factures_cyber');
   const recus=getData('samassa_recus');
   const recusCyber=getData('samassa_recus_cyber');
@@ -1006,9 +1010,9 @@ function loadStats() {
   const retraits=getData('samassa_retraits');
 
   /* Documents */
-  const totalDocs=factures.length+facturesCyber.length+devis.length+interventions.length;
+  const totalDocs=factures.length+facturesMat.length+facturesCyber.length+devis.length+interventions.length;
   if($('kpi-factures'))$('kpi-factures').textContent=totalDocs;
-  if($('kpi-docs-sub'))$('kpi-docs-sub').textContent=`Factures: ${factures.length+facturesCyber.length} · Devis: ${devis.length}`;
+  if($('kpi-docs-sub'))$('kpi-docs-sub').textContent=`Factures: ${factures.length+facturesMat.length+facturesCyber.length} · Devis: ${devis.length}`;
 
   /* Reçus */
   const totalRec=recus.length+recusCyber.length;
@@ -1129,7 +1133,7 @@ function exportRetraits(){const list=getData('samassa_retraits');if(!list.length
 /* ══ HISTORIQUE ══ */
 function renderHistory(){
   const typeFilter=$('h-type')?.value||'',search=($('h-search')?.value||'').toLowerCase();
-  const types=[{key:'samassa_factures',cls:'di-f',icon:'📄',label:'Facture',url:'facture.html'},{key:'samassa_recus',cls:'di-r',icon:'🧾',label:'Reçu',url:'recu.html'},{key:'samassa_devis',cls:'di-d',icon:'📋',label:'Devis',url:'devis.html'},{key:'samassa_interventions',cls:'di-i',icon:'🔧',label:'Intervention',url:'intervention.html'},{key:'samassa_recus_cyber',cls:'di-r',icon:'🖥️',label:'Reçu Cyber',url:'recu_cyber.html'},{key:'samassa_factures_cyber',cls:'di-f',icon:'🖥️',label:'Facture Cyber',url:'facture_cyber.html'}];
+  const types=[{key:'samassa_factures',cls:'di-f',icon:'📄',label:'Facture',url:'facture.html'},{key:'samassa_factures_mat',cls:'di-f',icon:'🖥️',label:'Facture Matériel',url:'facture_materiel.html'},{key:'samassa_recus',cls:'di-r',icon:'🧾',label:'Reçu',url:'recu.html'},{key:'samassa_devis',cls:'di-d',icon:'📋',label:'Devis',url:'devis.html'},{key:'samassa_interventions',cls:'di-i',icon:'🔧',label:'Intervention',url:'intervention.html'},{key:'samassa_recus_cyber',cls:'di-r',icon:'🖥️',label:'Reçu Cyber',url:'recu_cyber.html'},{key:'samassa_factures_cyber',cls:'di-f',icon:'🖥️',label:'Facture Cyber',url:'facture_cyber.html'}];
   let all=[];
   (typeFilter?types.filter(t=>t.key===typeFilter):types).forEach(t=>getData(t.key).forEach(d=>all.push({...d,_t:t})));
   if(search)all=all.filter(d=>(d.client||'').toLowerCase().includes(search)||(d.number||'').toLowerCase().includes(search));
