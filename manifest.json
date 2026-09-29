@@ -1,16 +1,24 @@
 {
   "name": "SAMASSA TECHNOLOGIE — Suite Pro",
   "short_name": "Samassa Pro",
-  "description": "Suite de gestion documentaire : Factures, Reçus, Devis, Interventions et Caisse",
+  "description": "Factures · Reçus · Devis · Réparations · Stock · Interventions",
   "start_url": "index.html",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
   "orientation": "any",
   "background_color": "#0A1628",
   "theme_color": "#0A1628",
   "lang": "fr",
-  "categories": ["business", "finance", "productivity"],
+  "categories": [
+    "business",
+    "finance",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "icon-192x192.png",
@@ -39,34 +47,92 @@
   ],
   "shortcuts": [
     {
-      "name": "Nouvelle Facture",
-      "short_name": "Facture",
-      "url": "facture.html",
-      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Nouveau Reçu",
+      "name": "Reçu NINA",
       "short_name": "Reçu",
       "url": "recu.html",
-      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
-      "name": "Nouveau Devis",
+      "name": "Facture Service",
+      "short_name": "Facture",
+      "url": "facture.html",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Facture Matériel",
+      "short_name": "Matériel",
+      "url": "facture_materiel.html",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Bon de Réparation",
+      "short_name": "Réparation",
+      "url": "bon_reparation.html",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Reçu de Vente",
+      "short_name": "Vente",
+      "url": "recu_vente.html",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Stock",
+      "short_name": "Stock",
+      "url": "stock.html",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Devis",
       "short_name": "Devis",
       "url": "devis.html",
-      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     },
     {
-      "name": "Fiche Intervention",
+      "name": "Intervention",
       "short_name": "Intervention",
       "url": "intervention.html",
-      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Documents Admin",
-      "short_name": "Doc Admin",
-      "url": "docs_admin.html",
-      "icons": [{ "src": "icon-192x192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ],
   "related_applications": [],
