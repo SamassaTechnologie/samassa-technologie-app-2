@@ -347,7 +347,7 @@ window.saveDoc = function () {
     caisse.push({
       id:        'MAT-' + Date.now(),
       type:      'entree',
-      montant:   ttcRaw,
+      amount:    ttcRaw,
       motif:     'Vente matériel · ' + num,
       date:      new Date().toISOString().slice(0, 10),
       timestamp: new Date().toISOString()
