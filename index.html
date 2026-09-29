@@ -794,6 +794,8 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
           <option value="samassa_recus">Reçus</option>
           <option value="samassa_devis">Devis</option>
           <option value="samassa_interventions">Interventions</option>
+          <option value="samassa_recus_vente">Reçus Vente 🛒</option>
+          <option value="samassa_bons_reparation">Bons Réparation 🔧</option>
           <option value="samassa_recus_cyber">Reçus Cyber</option>
           <option value="samassa_factures_cyber">Factures Cyber</option>
         </select>
@@ -897,7 +899,7 @@ function buildChart() {
       if(md!==ds)return false;
       return filter==='entrees'?m.type==='entree':true;
     });
-    values.push(items.reduce((s,m)=>s+m.amount,0));
+    values.push(items.reduce((s,m)=>s+(m.amount||m.montant||0),0));
   }
   const hasData=values.some(v=>v>0);
   $('chart-empty').style.display=hasData?'none':'flex';
@@ -970,7 +972,7 @@ function buildTopServices() {
 /* ══ PM BREAKDOWN ══ */
 function buildPM() {
   const mvs=getData('samassa_mouvements').filter(m=>m.type==='entree');
-  const tot=mvs.reduce((s,m)=>s+m.amount,0)||1;
+  const tot=mvs.reduce((s,m)=>s+(m.amount||m.montant||0),0)||1;
   const modes=[
     {name:'Wave',        src:'logo-wave.png',          color:'#0891B2'},
     {name:'Orange Money',src:'logo-orange-money.jpg',  color:'#EA580C'},
@@ -1069,14 +1071,14 @@ function loadStats() {
   if(trEl){trEl.textContent=todayR.length>0?`+${todayR.length} aujourd'hui`:'Reçus';trEl.className=`kpi-trend ${todayR.length>0?'tr-up':'tr-neu'}`;}
 
   /* Solde */
-  const entrees=mouvements.filter(m=>m.type==='entree').reduce((s,m)=>s+m.amount,0);
-  const sorties=mouvements.filter(m=>m.type==='sortie').reduce((s,m)=>s+m.amount,0);
+  const entrees=mouvements.filter(m=>m.type==='entree').reduce((s,m)=>s+(m.amount||m.montant||0),0);
+  const sorties=mouvements.filter(m=>m.type==='sortie').reduce((s,m)=>s+(m.amount||m.montant||0),0);
   const solde=entrees-sorties;
   const se=$('kpi-solde');
   if(se){se.textContent=fmtK(Math.abs(solde))+' F';se.style.color=solde>=0?'var(--green)':'var(--red)';}
   const stel=$('kpi-solde-trend');
   if(stel){stel.textContent=solde>=0?'✓ Positif':'⚠ Négatif';stel.className=`kpi-trend ${solde>=0?'tr-up':'tr-down'}`;}
-  setTimeout(()=>drawSpark('spark-solde',[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));const ds=d.toISOString().split('T')[0];return mouvements.filter(m=>m.type==='entree'&&(m.timestamp||'').startsWith(ds)).reduce((s,m)=>s+m.amount,0);}), '#16A34A'),50);
+  setTimeout(()=>drawSpark('spark-solde',[...Array(7)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));const ds=d.toISOString().split('T')[0];return mouvements.filter(m=>m.type==='entree'&&(m.timestamp||'').startsWith(ds)).reduce((s,m)=>s+(m.amount||m.montant||0),0);}), '#16A34A'),50);
 
   /* RDV */
   const retrieved=new Set(retraits.map(r=>r.recuNumber));
@@ -1129,8 +1131,8 @@ function renderMouvements(){
   if(ft)list=list.filter(m=>m.type===ft);if(fp)list=list.filter(m=>m.pm===fp);
   if(fs)list=list.filter(m=>m.desc.toLowerCase().includes(fs)||m.cat.toLowerCase().includes(fs));
   list.sort((a,b)=>new Date(b.date)-new Date(a.date));
-  const e=list.filter(m=>m.type==='entree').reduce((s,m)=>s+m.amount,0);
-  const s=list.filter(m=>m.type==='sortie').reduce((s,m)=>s+m.amount,0);
+  const e=list.filter(m=>m.type==='entree').reduce((s,m)=>s+(m.amount||m.montant||0),0);
+  const s=list.filter(m=>m.type==='sortie').reduce((s,m)=>s+(m.amount||m.montant||0),0);
   const n=e-s;
   const sc=$('sc-row');
   if(sc)sc.innerHTML=`<div class="sc sc-in"><div class="sc-lbl">📈 Entrées</div><div class="sc-val">+${fmtNum(e)} F</div></div><div class="sc sc-out"><div class="sc-lbl">📉 Sorties</div><div class="sc-val">-${fmtNum(s)} F</div></div><div class="sc sc-net"><div class="sc-lbl">💼 Net</div><div class="sc-val">${n>=0?'+':''}${fmtNum(n)} F</div></div>`;
@@ -1223,7 +1225,7 @@ function renderHistory(){
   }).join('');
 }
 function showDocDetail(idx){const d=window._histAll[idx];if(!d)return;const pmI={Wave:'🌊','Orange Money':'🟠','Moov Money':'🔵',Espèces:'💵'};const svc=(d.services||[]).map(s=>`<tr><td style="padding:7px 12px;border-bottom:1px solid #F0F5FA;font-size:13px">${s.desc}</td><td style="padding:7px;text-align:center;border-bottom:1px solid #F0F5FA;font-size:13px">${s.qty}</td><td style="padding:7px 12px;text-align:right;border-bottom:1px solid #F0F5FA;font-size:13px;font-weight:600">${fmtNum(s.price)} F</td></tr>`).join('')||`<tr><td colspan="3" style="padding:12px;text-align:center;color:#8099B0">—</td></tr>`;const m=document.createElement('div');m.id='hist-modal';m.style.cssText='position:fixed;inset:0;background:rgba(13,27,42,.65);z-index:9001;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)';m.innerHTML=`<div class="modal-sh"><div class="m-head"><div class="m-title">${d._t.icon} ${d._t.label} N° ${d.number||'—'}</div><button class="m-close" onclick="document.getElementById('hist-modal').remove()">✕</button></div><div class="m-body"><div style="background:#F0F5FA;border-radius:10px;padding:13px;margin-bottom:13px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#8099B0;margin-bottom:7px">Client</div><div style="font-size:15px;font-weight:800;color:#1A2D44">${d.client||'—'}</div>${d.phone?`<div style="font-size:13px;color:#0088CC;margin-top:3px">📞 ${d.phone}</div>`:''} ${d.nina?`<div style="font-size:12px;color:#4A6080;margin-top:2px">NINA : ${d.nina}</div>`:''}<div style="font-size:12px;color:#4A6080;margin-top:3px">📅 ${d.date||'—'}</div></div><table style="width:100%;border-collapse:collapse;margin-bottom:13px;border-radius:8px;overflow:hidden"><thead><tr style="background:#0D1B2A"><th style="padding:8px 12px;color:white;font-size:11px;text-align:left">Service</th><th style="padding:8px;color:white;font-size:11px;text-align:center">Qté</th><th style="padding:8px 12px;color:white;font-size:11px;text-align:right">Montant</th></tr></thead><tbody>${svc}</tbody></table><div style="background:#0D1B2A;border-radius:10px;padding:11px 15px;display:flex;justify-content:space-between;align-items:center;margin-bottom:11px"><span style="color:#93B8D4;font-size:13px;font-weight:700">TOTAL</span><span style="color:white;font-size:17px;font-weight:800">${fmtNum(d.total||0)} FCFA</span></div>${d.mode?`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#F0FDF4;border:1.5px solid #DCFCE7;border-radius:10px"><span style="font-size:20px">${pmI[d.mode]||'💵'}</span><div><div style="font-size:13px;font-weight:700">${d.mode}</div><div style="font-size:11px;color:#4A6080">Paiement confirmé ✅</div></div></div>`:''}</div></div>`;document.body.appendChild(m);m.addEventListener('click',e=>{if(e.target===m)m.remove();});}
-function clearHistory(){if(!confirm('Effacer tout l\'historique ?'))return;['samassa_factures','samassa_recus','samassa_devis','samassa_interventions','samassa_recus_cyber','samassa_factures_cyber','samassa_docs_admin'].forEach(k=>localStorage.removeItem(k));renderHistory();loadStats();toast('Historique effacé.','info');}
+function clearHistory(){if(!confirm('Effacer tout l\'historique ?'))return;['samassa_factures','samassa_factures_mat','samassa_recus','samassa_recus_vente','samassa_bons_reparation','samassa_devis','samassa_interventions','samassa_recus_cyber','samassa_factures_cyber','samassa_docs_admin'].forEach(k=>localStorage.removeItem(k));renderHistory();loadStats();toast('Historique effacé.','info');}
 
 /* ══ SEARCH ══ */
 function searchDocs(){
