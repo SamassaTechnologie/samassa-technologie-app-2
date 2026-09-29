@@ -55,6 +55,41 @@
 .pm-display-name { font-size: 16px; font-weight: 800; color: var(--text); }
 .pm-display-sub  { font-size: 12px; color: var(--text2); }
 .pm-display-amount { margin-left: auto; font-size: 18px; font-weight: 800; color: var(--text); }
+
+/* Rendu d’impression inspiré du modèle reçu fourni */
+@media print {
+  .doc-z { background:#fff; color:#10182B; font-family:'Segoe UI',Arial,sans-serif; }
+  .recu-doc-header { background:#10182B; border-radius:0; padding:25px 25px 20px; margin:-16px -22px 25px; min-height:180px; }
+  .rdh-logo { width:65px; height:65px; }
+  .rdh-brand h2 { font-size:20px; line-height:1.25; letter-spacing:.01em; }
+  .rdh-brand p { font-size:13px; margin:4px 0 8px; }
+  .rdh-brand .contacts { font-size:12.5px; line-height:1.5; }
+  .recu-badge { background:#4CAF6D; font-size:22px; padding:10px 22px; border-radius:8px; }
+  .recu-num { font-size:13px; margin-top:8px; }
+  .recu-date { font-size:13px; margin-top:3px; }
+  .client-info-grid { gap:15px; margin-bottom:25px; }
+  .ci-box { background:#F1F3F7; border-color:#D8DEE8; border-radius:8px; padding:15px 18px; }
+  .ci-box-title { font-size:11px; letter-spacing:.08em; margin-bottom:10px; }
+  .ci-row { padding:6px 0; }
+  .ci-lbl,.ci-val { font-size:14.5px; }
+  .print-section-title { padding:12px 18px !important; border-radius:6px !important; font-size:15px !important; margin:20px 0 0 !important; letter-spacing:.04em !important; }
+  .doc-table { margin-top:0; font-size:14px; }
+  .doc-table thead th { padding:12px 15px; font-size:13px; }
+  .doc-table tbody td { padding:12px 15px; }
+  .doc-table tfoot td { padding:14px 18px !important; font-size:15px; }
+  .pm-display-box { border:2px solid #2AA9BE; background:#E8F7FA; border-radius:8px; padding:16px 18px; margin-top:12px; }
+  .pm-display-icon { width:42px; height:42px; border-radius:10px; background:#4EC0E0; justify-content:center; }
+  .pm-display-name { font-size:16px; }
+  .pm-display-sub { font-size:13px; }
+  .pm-display-amount { font-size:18px; }
+  .doc-footer { display:block !important; text-align:center; border-top:1px dashed #ccc; padding-top:20px; margin-top:25px; }
+  .doc-footer > div:first-child { font-size:13px !important; line-height:1.6; color:#6B7280 !important; }
+  .sig-block { margin-top:20px; text-align:center; }
+  .sig-title { font-size:14px !important; text-decoration:underline; margin-bottom:12px !important; }
+  .sig-img { width:130px !important; }
+  .cachet-img { width:130px !important; margin-top:-18px !important; }
+  .thank-you { font-size:13px; margin-top:18px; }
+}
 </style>
 </head>
 <body>
@@ -213,14 +248,14 @@
           </div>
         </div>
 
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--navy);color:white;padding:7px 14px;border-radius:6px;margin-bottom:10px">Détails de la transaction</div>
+        <div class="print-section-title" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--navy);color:white;padding:7px 14px;border-radius:6px;margin-bottom:10px">Détails de la transaction</div>
         <table class="doc-table">
           <thead><tr><th style="width:45%;text-align:left">Description</th><th>Qté</th><th>Prix unitaire</th><th>Total</th></tr></thead>
           <tbody id="d-items"></tbody>
           <tfoot><tr><td style="text-align:right">MONTANT TOTAL</td><td id="d-total" colspan="3" style="text-align:center"></td></tr></tfoot>
         </table>
 
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--navy);color:white;padding:7px 14px;border-radius:6px;margin-bottom:10px">Mode de paiement</div>
+        <div class="print-section-title" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--navy);color:white;padding:7px 14px;border-radius:6px;margin-bottom:10px">Mode de paiement</div>
         <div id="d-pmBox" class="pm-display-box pm-box-wave">
           <div class="pm-display-icon" id="d-pmIcon"><img src="logo-wave.png" alt="Wave" style="width:36px;height:36px;object-fit:contain;border-radius:8px"></div>
           <div><div class="pm-display-name" id="d-pmName">Wave</div><div class="pm-display-sub">Paiement reçu et confirmé ✅</div></div>
@@ -232,7 +267,7 @@
           <div class="sig-block">
             <div class="sig-title">Signature &amp; Cachet</div>
             <img src="signature.png" alt="Signature" class="sig-img">
-            <img src="cachet.png" alt="Cachet" class="cachet-img">
+            <img src="cachet-signature-blue.png" alt="Cachet" class="cachet-img">
           </div>
         </div>
         <div class="thank-you">Merci pour votre confiance — Ce reçu est votre preuve de paiement 🙏</div>
@@ -244,7 +279,7 @@
 <!-- ═══════════════════════════════════════════════════════════
      SECTION CARTES EN ATTENTE + HISTORIQUE JOURNALIER
 ═══════════════════════════════════════════════════════════ -->
-<div style="max-width:1340px;margin:24px auto;padding:0 24px">
+<div id="receipt-management" style="max-width:1340px;margin:24px auto;padding:0 24px">
 
   <!-- Cartes en attente -->
   <div style="background:white;border-radius:14px;border:1px solid #D0DDE8;box-shadow:0 2px 12px rgba(13,27,42,.08);margin-bottom:22px">

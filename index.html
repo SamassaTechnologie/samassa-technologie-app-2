@@ -402,6 +402,20 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
   .qa-grid{grid-template-columns:repeat(2,1fr)}
   .rt-stats{grid-template-columns:1fr}
 }
+.dashboard-section-label{display:flex;align-items:center;gap:8px;margin:26px 0 12px;color:var(--text2);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}
+.dashboard-section-label::after{content:'';height:1px;background:var(--border);flex:1}
+.command-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:14px;margin-bottom:20px}
+.command-card{background:linear-gradient(145deg,#fff,#F8FBFD);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sh-sm);position:relative;overflow:hidden}
+.command-card::after{content:'';position:absolute;right:-22px;bottom:-28px;width:90px;height:90px;border-radius:50%;background:rgba(0,136,204,.06)}
+.command-card-title{font-size:11px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.07em}
+.command-card-value{font-size:24px;font-weight:900;color:var(--text);margin-top:7px}.command-card-sub{font-size:11px;color:var(--text2);margin-top:4px}
+.command-accent{border-top:3px solid var(--blue)}.command-accent.green{border-top-color:var(--green)}.command-accent.amber{border-top-color:var(--amber)}
+.rdv-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 18px;background:#F8FBFD;border-bottom:1px solid var(--border)}
+.rdv-toolbar small{color:var(--text3);font-size:11px;margin-right:auto}.bulk-btn{border:0;border-radius:8px;padding:8px 11px;font:inherit;font-size:11px;font-weight:800;cursor:pointer}.bulk-btn.primary{background:var(--blue);color:white}.bulk-btn.secondary{background:white;color:var(--text2);border:1px solid var(--border)}.bulk-btn:disabled{opacity:.45;cursor:not-allowed}
+.pending-check{width:17px;height:17px;accent-color:var(--blue);cursor:pointer;flex-shrink:0}
+.rdv-due{animation:duePulse 1.8s infinite}.rdv-alert{background:#FFF7ED;border:1px solid #FED7AA;color:#9A3412;border-radius:9px;padding:10px 13px;font-size:12px;font-weight:700;margin:0 18px 12px}.rdv-alert strong{color:#7C2D12}@keyframes duePulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.18)}50%{box-shadow:0 0 0 5px rgba(220,38,38,0)}}
+@media(max-width:900px){.command-grid{grid-template-columns:1fr 1fr}.command-grid .command-card:first-child{grid-column:1/-1}}
+@media(max-width:600px){.command-grid{grid-template-columns:1fr}.command-grid .command-card:first-child{grid-column:auto}.rdv-toolbar{align-items:flex-start}.rdv-toolbar small{width:100%;margin-bottom:2px}}
 </style>
 </head>
 <body>
@@ -466,6 +480,18 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     <a href="facture_materiel.html" class="sb-item">
       <span class="sb-item-icon">🖥️</span>
       <span class="sb-item-label">Facture Matériel</span>
+    </a>
+    <a href="recu_vente.html" class="sb-item">
+      <span class="sb-item-icon">🧾</span>
+      <span class="sb-item-label">Reçu Vente / Encaissement</span>
+    </a>
+    <a href="stock.html" class="sb-item">
+      <span class="sb-item-icon">📦</span>
+      <span class="sb-item-label">Gestion de stock</span>
+    </a>
+    <a href="bon_reparation.html" class="sb-item">
+      <span class="sb-item-icon">🔧</span>
+      <span class="sb-item-label">Bon de réparation</span>
     </a>
     <a href="intervention.html" class="sb-item">
       <span class="sb-item-icon">🔧</span>
@@ -589,6 +615,13 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     </div>
   </div>
 
+  <div class="dashboard-section-label">Pilotage de l’activité</div>
+  <div class="command-grid">
+    <div class="command-card command-accent"><div class="command-card-title">📈 Encaissements du jour</div><div class="command-card-value" id="cmd-today-total">0 F</div><div class="command-card-sub" id="cmd-today-sub">Toutes opérations enregistrées aujourd’hui</div></div>
+    <div class="command-card command-accent green"><div class="command-card-title">✅ RDV arrivés</div><div class="command-card-value" id="cmd-due-rdv">0</div><div class="command-card-sub">Clients à prévenir ou servir</div></div>
+    <div class="command-card command-accent amber"><div class="command-card-title">⏳ Prochains RDV</div><div class="command-card-value" id="cmd-next-rdv">—</div><div class="command-card-sub" id="cmd-next-rdv-sub">Aucun rendez-vous programmé</div></div>
+  </div>
+
   <!-- Actions rapides -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
     <span style="font-size:12px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em">⚡ Actions rapides</span>
@@ -597,6 +630,9 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     <a href="recu.html"              class="qa"><div class="qa-icon" style="background:var(--green-bg)">🧾</div><div class="qa-label">Nouveau reçu</div></a>
     <a href="facture.html"           class="qa"><div class="qa-icon" style="background:var(--blue-l)">📄</div><div class="qa-label">Facture service</div></a>
     <a href="facture_materiel.html"  class="qa"><div class="qa-icon" style="background:#EBF5FF">🖥️</div><div class="qa-label">Facture Matériel</div></a>
+    <a href="recu_vente.html"         class="qa"><div class="qa-icon" style="background:#F0FDFA">🧾</div><div class="qa-label">Reçu Vente</div></a>
+    <a href="stock.html"               class="qa"><div class="qa-icon" style="background:#FFF7ED">📦</div><div class="qa-label">Stock</div></a>
+    <a href="bon_reparation.html"      class="qa"><div class="qa-icon" style="background:#F5F3FF">🔧</div><div class="qa-label">Bon Réparation</div></a>
     <a href="recu_cyber.html"        class="qa"><div class="qa-icon" style="background:#EEF2FF">☕</div><div class="qa-label">Reçu Cyber</div></a>
     <a href="intervention.html"      class="qa"><div class="qa-icon" style="background:var(--purple-bg)">🔧</div><div class="qa-label">Intervention</div></a>
     <a href="devis.html"             class="qa"><div class="qa-icon" style="background:var(--amber-bg)">📋</div><div class="qa-label">Devis</div></a>
@@ -655,6 +691,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
         <span class="card-title">🪪 Cartes à récupérer</span>
         <button class="card-link" onclick="showTab('retraits')">Tout voir →</button>
       </div>
+      <div id="dash-rdv-alert"></div>
       <div id="dash-rdv-wrap">
         <div style="text-align:center;padding:24px;color:var(--text3);font-size:13px"><div style="font-size:26px;opacity:.25;margin-bottom:6px">✅</div>Aucune carte en attente</div>
       </div>
@@ -728,6 +765,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
       <span class="card-title">🪪 Cartes en attente</span>
       <input type="text" id="rt-search" placeholder="🔍 Client..." oninput="renderRetraits()" style="padding:7px 10px;font-size:12px;width:auto;max-width:170px">
     </div>
+    <div class="rdv-toolbar"><small><span id="selected-rdv-count">0</span> sélectionné(s)</small><button class="bulk-btn secondary" onclick="toggleAllRdv(true)">Tout sélectionner</button><button class="bulk-btn secondary" onclick="toggleAllRdv(false)">Désélectionner</button><button class="bulk-btn primary" id="bulk-retrieve-btn" onclick="confirmBulkRetraits()" disabled>✅ Confirmer les récupérations</button><button class="bulk-btn secondary" id="bulk-sms-btn" onclick="sendBulkRdvSMS()" disabled>📱 Préparer les SMS</button></div>
     <div style="overflow-x:auto"><div id="rt-pending"></div></div>
   </div>
   <div class="card">
@@ -958,6 +996,7 @@ function buildActivity() {
     {k:'samassa_recus',i:'🧾',l:'Reçu',c:'#16A34A'},
     {k:'samassa_factures',i:'📄',l:'Facture',c:'#0088CC'},
     {k:'samassa_factures_mat',i:'🖥️',l:'Facture Matériel',c:'#0070C0'},
+    {k:'samassa_bons_reparation',i:'🔧',l:'Bon Réparation',c:'#7C3AED'},
     {k:'samassa_interventions',i:'🔧',l:'Intervention',c:'#7C3AED'},
     {k:'samassa_devis',i:'📋',l:'Devis',c:'#D97706'},
     {k:'samassa_recus_cyber',i:'🖥️',l:'Reçu Cyber',c:'#16A34A'},
@@ -984,14 +1023,19 @@ function buildRdv() {
   const retrieved=new Set(getData('samassa_retraits').map(r=>r.recuNumber));
   const pending=recus.filter(r=>!retrieved.has(r.number)&&(r.services||[]).some(s=>/nina|scan|carte|biom/i.test(s.desc)));
   const wrap=$('dash-rdv-wrap'); if(!wrap)return;
+  const due=pending.filter(r=>r.rdvDate&&new Date(r.rdvDate)<=new Date());
+  const alert=$('dash-rdv-alert');
+  if(alert) alert.innerHTML=due.length?`<div class="rdv-alert rdv-due">🔔 <strong>${due.length} rendez-vous arrivé(s)</strong> — vérifiez les clients prêts à récupérer.</div>`:'';
   if(!pending.length){wrap.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px"><div style="font-size:26px;opacity:.25;margin-bottom:6px">✅</div>Aucune carte en attente</div>';return;}
   wrap.innerHTML=pending.slice(0,5).map(r=>{
     const init=r.client.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
-    const od=isOverdue(r.date);
-    return `<div class="rdv-item">
+    const rdvTime=r.rdvDate?new Date(r.rdvDate):null;
+    const od=rdvTime?rdvTime<=new Date():isOverdue(r.date);
+    const rdvLabel=rdvTime?rdvTime.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}):computeRdv(r.date);
+    return `<div class="rdv-item ${od?'rdv-due':''}">
       <div class="rdv-av">${init}</div>
       <div class="rdv-info"><div class="rdv-name">${r.client}</div><div class="rdv-sub">📞 ${r.phone||'—'} · ${r.number}</div></div>
-      <span class="rdv-st ${od?'rdv-late':'rdv-wait'}">${od?'⚠️ Dépassé':'⏳ '+computeRdv(r.date)}</span>
+      <span class="rdv-st ${od?'rdv-late':'rdv-wait'}">${od?'🔔 Arrivé':'⏳ '+rdvLabel}</span>
       <button class="rdv-btn" onclick="confirmRetrait('${r.number}','${r.client}','${r.phone||''}','${r.nina||''}')">✓</button>
     </div>`;
   }).join('');
@@ -1004,20 +1048,22 @@ function loadStats() {
   const facturesCyber=getData('samassa_factures_cyber');
   const recus=getData('samassa_recus');
   const recusCyber=getData('samassa_recus_cyber');
+  const recusVente=getData('samassa_recus_vente');
   const devis=getData('samassa_devis');
   const interventions=getData('samassa_interventions');
+  const bonsReparation=getData('samassa_bons_reparation');
   const mouvements=getData('samassa_mouvements');
   const retraits=getData('samassa_retraits');
 
   /* Documents */
-  const totalDocs=factures.length+facturesMat.length+facturesCyber.length+devis.length+interventions.length;
+  const totalDocs=factures.length+facturesMat.length+facturesCyber.length+devis.length+interventions.length+bonsReparation.length;
   if($('kpi-factures'))$('kpi-factures').textContent=totalDocs;
-  if($('kpi-docs-sub'))$('kpi-docs-sub').textContent=`Factures: ${factures.length+facturesMat.length+facturesCyber.length} · Devis: ${devis.length}`;
+  if($('kpi-docs-sub'))$('kpi-docs-sub').textContent=`Factures: ${factures.length+facturesMat.length+facturesCyber.length} · Devis: ${devis.length} · Réparations: ${bonsReparation.length}`;
 
   /* Reçus */
-  const totalRec=recus.length+recusCyber.length;
+  const totalRec=recus.length+recusCyber.length+recusVente.length;
   if($('kpi-recus'))$('kpi-recus').textContent=totalRec;
-  const todayR=recus.filter(r=>(r.timestamp||'').startsWith(today()));
+  const todayR=[...recus,...recusVente].filter(r=>(r.timestamp||'').startsWith(today()));
   if($('kpi-recus-sub'))$('kpi-recus-sub').textContent=`Aujourd'hui: ${todayR.length}`;
   const trEl=$('kpi-rec-trend');
   if(trEl){trEl.textContent=todayR.length>0?`+${todayR.length} aujourd'hui`:'Reçus';trEl.className=`kpi-trend ${todayR.length>0?'tr-up':'tr-neu'}`;}
@@ -1038,6 +1084,15 @@ function loadStats() {
   if($('kpi-rdv'))$('kpi-rdv').textContent=pending.length;
   const n=pending.length;
   [$('sb-badge-rdv'),$('bn-badge-rdv')].forEach(b=>b&&(b.textContent=n,b.style.display=n?'flex':'none'));
+  const todayMoves=mouvements.filter(m=>(m.timestamp||'').startsWith(today())&&m.type==='entree');
+  const todayTotal=todayMoves.reduce((s,m)=>s+(Number(m.amount)||0),0);
+  const dueRdv=pending.filter(r=>r.rdvDate&&new Date(r.rdvDate)<=new Date());
+  const upcoming=pending.filter(r=>r.rdvDate&&new Date(r.rdvDate)>new Date()).sort((a,b)=>new Date(a.rdvDate)-new Date(b.rdvDate))[0];
+  if($('cmd-today-total'))$('cmd-today-total').textContent=fmtNum(todayTotal)+' F';
+  if($('cmd-today-sub'))$('cmd-today-sub').textContent=todayMoves.length+' encaissement(s) · caisse';
+  if($('cmd-due-rdv'))$('cmd-due-rdv').textContent=dueRdv.length;
+  if($('cmd-next-rdv'))$('cmd-next-rdv').textContent=upcoming?new Date(upcoming.rdvDate).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}):'—';
+  if($('cmd-next-rdv-sub'))$('cmd-next-rdv-sub').textContent=upcoming?`${upcoming.client} · ${new Date(upcoming.rdvDate).toLocaleDateString('fr-FR',{day:'2-digit',month:'short'})}`:'Aucun rendez-vous programmé';
 
   /* RT stats */
   if($('rt-att'))$('rt-att').textContent=pending.length;
@@ -1107,14 +1162,33 @@ function renderRetraits(){
   if($('rt-tot'))$('rt-tot').textContent=retraits.length;
   const pEl=$('rt-pending');if(!pEl)return;
   if(!pending.length){pEl.innerHTML=`<div style="text-align:center;padding:28px;color:var(--text3)"><div style="font-size:28px;opacity:.3;margin-bottom:7px">✅</div><p style="font-size:13px">Aucune carte en attente</p></div>`;}
-  else{pEl.innerHTML=`<table class="mv-table"><thead><tr><th>N° Reçu</th><th>Client</th><th>Tél.</th><th>NINA</th><th>Date</th><th>RDV estimé</th><th>Actions</th></tr></thead><tbody>${pending.map(r=>{const od=isOverdue(r.date);return`<tr><td class="td-d">${r.number}</td><td class="td-d">${r.client}</td><td style="color:var(--blue)">${r.phone||'—'}</td><td style="font-size:11px;color:var(--text3)">${r.nina||'—'}</td><td>${r.date}</td><td><span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;${od?'background:#FEF2F2;color:var(--red)':'background:#FEF3C7;color:var(--amber)'}">${od?'⚠️ Dépassé':'📅 '+computeRdv(r.date)}</span></td><td><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="hb" style="background:var(--green-bg);color:var(--green);border-color:#DCFCE7" onclick="confirmRetrait('${r.number}','${r.client}','${r.phone||''}','${r.nina||''}')">✅ Récupérée</button><button class="hb hb-d" onclick="sendRdvSMS('${r.phone||''}','${r.client}','${r.number}','${r.date}')">📱 SMS</button></div></td></tr>`;}).join('')}</tbody></table>`;}
+  else{pEl.innerHTML=`<table class="mv-table"><thead><tr><th></th><th>N° Reçu</th><th>Client</th><th>Tél.</th><th>NINA</th><th>Date</th><th>RDV estimé</th><th>Actions</th></tr></thead><tbody>${pending.map(r=>{const od=isOverdue(r.date);return`<tr><td><input class="pending-check" type="checkbox" data-rdv-number="${r.number}" onchange="updateBulkRdvSelection()" aria-label="Sélectionner ${r.client}"></td><td class="td-d">${r.number}</td><td class="td-d">${r.client}</td><td style="color:var(--blue)">${r.phone||'—'}</td><td style="font-size:11px;color:var(--text3)">${r.nina||'—'}</td><td>${r.date}</td><td><span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;${od?'background:#FEF2F2;color:var(--red)':'background:#FEF3C7;color:var(--amber)'}">${od?'⚠️ Dépassé':'📅 '+computeRdv(r.date)}</span></td><td><div style="display:flex;gap:5px;flex-wrap:wrap"><button class="hb" style="background:var(--green-bg);color:var(--green);border-color:#DCFCE7" onclick="confirmRetrait('${r.number}','${r.client}','${r.phone||''}','${r.nina||''}')">✅ Récupérée</button><button class="hb hb-d" onclick="sendRdvSMS('${r.phone||''}','${r.client}','${r.number}','${r.date}')">📱 SMS</button></div></td></tr>`;}).join('')}</tbody></table>`;}
   let filtered=[...retraits].sort((a,b)=>new Date(b.dateRetrait)-new Date(a.dateRetrait));
   if(dateFlt)filtered=filtered.filter(r=>r.dateRetrait===dateFlt);
   const hEl=$('rt-hist');if(!hEl)return;
   if(!filtered.length){hEl.innerHTML=`<div style="text-align:center;padding:26px;color:var(--text3);font-size:13px">Aucune récupération${dateFlt?' pour cette date':''}</div>`;return;}
   const byDate={};filtered.forEach(r=>{if(!byDate[r.dateRetrait])byDate[r.dateRetrait]=[];byDate[r.dateRetrait].push(r);});
   hEl.innerHTML=Object.entries(byDate).map(([date,items])=>`<div style="padding:9px 18px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px"><span style="font-size:12px;font-weight:700;color:var(--navy)">📅 ${new Date(date+'T12:00:00').toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</span><span style="background:var(--green);color:white;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px">${items.length} retrait(s)</span></div>${items.map(r=>`<div class="doc-item"><div class="doc-ico di-r">🪪</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:13px;color:var(--text)">${r.client}</div><div style="font-size:12px;color:var(--text2)">Reçu ${r.recuNumber} · NINA: ${r.nina||'—'} · ${r.phone||'—'}</div></div><div style="text-align:right;flex-shrink:0"><div style="font-size:11px;color:var(--text3)">${r.heureRetrait||''}</div><span class="sb sb-p">✅ Récupéré</span></div></div>`).join('')}`).join('');
+  }
+  updateBulkRdvSelection();
+function updateBulkRdvSelection(){const n=document.querySelectorAll('.pending-check:checked').length;if($('selected-rdv-count'))$('selected-rdv-count').textContent=n;if($('bulk-sms-btn'))$('bulk-sms-btn').disabled=!n;if($('bulk-retrieve-btn'))$('bulk-retrieve-btn').disabled=!n;}
+function toggleAllRdv(value){document.querySelectorAll('.pending-check').forEach(c=>c.checked=value);updateBulkRdvSelection();}
+function confirmBulkRetraits(){
+  const nums=[...document.querySelectorAll('.pending-check:checked')].map(c=>c.dataset.rdvNumber);
+  if(!nums.length){toast('Sélectionnez au moins une personne.','error');return;}
+  const recus=getData('samassa_recus'),retrieved=getData('samassa_retraits');
+  const already=new Set(retrieved.map(r=>r.recuNumber));
+  const selected=recus.filter(r=>nums.includes(r.number)&&!already.has(r.number));
+  if(!selected.length){toast('Ces récupérations sont déjà enregistrées.','info');renderRetraits();return;}
+  if(!confirm(`Confirmer la récupération de ${selected.length} personne(s) ?`))return;
+  const now=new Date(),heure=now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),dateRetrait=today();
+  selected.forEach(r=>retrieved.push({recuNumber:r.number,client:r.client,phone:r.phone||'',nina:r.nina||'',dateRetrait,heureRetrait:heure,timestamp:now.toISOString()}));
+  localStorage.setItem('samassa_retraits',JSON.stringify(retrieved));
+  selected.forEach((r,i)=>{if(r.phone)setTimeout(()=>sendPickupConfirmSMS(r.phone,r.client,r.number,dateRetrait),i*350);});
+  toast(`✅ ${selected.length} récupération(s) confirmée(s).`,'success');
+  renderRetraits();loadStats();loadDashboard();
 }
+function sendBulkRdvSMS(){const nums=[...document.querySelectorAll('.pending-check:checked')].map(c=>c.dataset.rdvNumber);if(!nums.length){toast('Sélectionnez au moins un client.','error');return;}const records=getData('samassa_recus').filter(r=>nums.includes(r.number)&&r.phone);if(!records.length){toast('Aucun téléphone valide dans la sélection.','error');return;}records.forEach((r,i)=>setTimeout(()=>{const p=r.phone.replace(/\s/g,'');const msg=`SAMASSA TECHNOLOGIE - Bonjour ${r.client}, votre carte/document (Reçu ${r.number}) est prêt(e) à récupérer. Tel: 77291931 / 62970630`;window.open('sms:'+p+'?body='+encodeURIComponent(msg),'_blank');},i*350));toast(`${records.length} SMS préparé(s) dans votre messagerie.`,'success');}
 function confirmRetrait(num,client,phone,nina){
   if(!confirm('Confirmer la récupération de la carte de '+client+' ?'))return;
   const h=new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
@@ -1133,7 +1207,7 @@ function exportRetraits(){const list=getData('samassa_retraits');if(!list.length
 /* ══ HISTORIQUE ══ */
 function renderHistory(){
   const typeFilter=$('h-type')?.value||'',search=($('h-search')?.value||'').toLowerCase();
-  const types=[{key:'samassa_factures',cls:'di-f',icon:'📄',label:'Facture',url:'facture.html'},{key:'samassa_factures_mat',cls:'di-f',icon:'🖥️',label:'Facture Matériel',url:'facture_materiel.html'},{key:'samassa_recus',cls:'di-r',icon:'🧾',label:'Reçu',url:'recu.html'},{key:'samassa_devis',cls:'di-d',icon:'📋',label:'Devis',url:'devis.html'},{key:'samassa_interventions',cls:'di-i',icon:'🔧',label:'Intervention',url:'intervention.html'},{key:'samassa_recus_cyber',cls:'di-r',icon:'🖥️',label:'Reçu Cyber',url:'recu_cyber.html'},{key:'samassa_factures_cyber',cls:'di-f',icon:'🖥️',label:'Facture Cyber',url:'facture_cyber.html'}];
+  const types=[{key:'samassa_factures',cls:'di-f',icon:'📄',label:'Facture',url:'facture.html'},{key:'samassa_factures_mat',cls:'di-f',icon:'🖥️',label:'Facture Matériel',url:'facture_materiel.html'},{key:'samassa_recus',cls:'di-r',icon:'🧾',label:'Reçu NINA',url:'recu.html'},{key:'samassa_recus_vente',cls:'di-r',icon:'🧾',label:'Reçu Vente',url:'recu_vente.html'},{key:'samassa_bons_reparation',cls:'di-i',icon:'🔧',label:'Bon Réparation',url:'bon_reparation.html'},{key:'samassa_devis',cls:'di-d',icon:'📋',label:'Devis',url:'devis.html'},{key:'samassa_interventions',cls:'di-i',icon:'🔧',label:'Intervention',url:'intervention.html'},{key:'samassa_recus_cyber',cls:'di-r',icon:'🖥️',label:'Reçu Cyber',url:'recu_cyber.html'},{key:'samassa_factures_cyber',cls:'di-f',icon:'🖥️',label:'Facture Cyber',url:'facture_cyber.html'}];
   let all=[];
   (typeFilter?types.filter(t=>t.key===typeFilter):types).forEach(t=>getData(t.key).forEach(d=>all.push({...d,_t:t})));
   if(search)all=all.filter(d=>(d.client||'').toLowerCase().includes(search)||(d.number||'').toLowerCase().includes(search));
@@ -1156,7 +1230,7 @@ function searchDocs(){
   const q=($('search-input')?.value||'').toLowerCase().trim();
   const sr=$('search-results');
   if(!q){sr.style.display='none';return;}
-  const types=[{k:'samassa_recus',i:'🧾',l:'Reçu'},{k:'samassa_factures',i:'📄',l:'Facture'},{k:'samassa_recus_cyber',i:'🖥️',l:'Reçu Cyber'},{k:'samassa_factures_cyber',i:'🖥️',l:'Facture Cyber'},{k:'samassa_interventions',i:'🔧',l:'Intervention'},{k:'samassa_devis',i:'📋',l:'Devis'}];
+  const types=[{k:'samassa_recus',i:'🧾',l:'Reçu'},{k:'samassa_recus_vente',i:'🧾',l:'Reçu Vente'},{k:'samassa_factures',i:'📄',l:'Facture'},{k:'samassa_recus_cyber',i:'🖥️',l:'Reçu Cyber'},{k:'samassa_factures_cyber',i:'🖥️',l:'Facture Cyber'},{k:'samassa_bons_reparation',i:'🔧',l:'Bon Réparation'},{k:'samassa_interventions',i:'🔧',l:'Intervention'},{k:'samassa_devis',i:'📋',l:'Devis'}];
   let all=[];types.forEach(t=>getData(t.k).forEach(d=>all.push({...d,_t:t})));
   const results=all.filter(d=>(d.client||'').toLowerCase().includes(q)||(d.number||'').toLowerCase().includes(q)||(d.phone||'').toLowerCase().includes(q)).slice(0,8);
   if(!results.length){sr.style.display='none';return;}
@@ -1169,8 +1243,9 @@ document.addEventListener('click',e=>{if(!e.target.closest('#search-results')&&!
 function toast(msg,type='success'){const t=document.createElement('div');t.className='toast '+type;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.style.opacity='0',2700);setTimeout(()=>t.remove(),3100);}
 
 /* ══ NOTIFS ══ */
-function requestNotif(){if(!('Notification' in window)){toast('Non supporté','error');return;}Notification.requestPermission().then(p=>{if(p==='granted'){toast('Notifications activées ✓','success');checkRdvNotifs();}});}
-function checkRdvNotifs(){const recus=getData('samassa_recus');const retrieved=new Set(getData('samassa_retraits').map(r=>r.recuNumber));const overdue=recus.filter(r=>!retrieved.has(r.number)&&(r.services||[]).some(s=>/nina|scan|carte|biom/i.test(s.desc))&&isOverdue(r.date));if(overdue.length&&Notification.permission==='granted')new Notification('SAMASSA TECHNOLOGIE',{body:`⚠️ ${overdue.length} carte(s) en retard !`,icon:'icon-512x512.png'});}
+function requestNotif(){if(!('Notification' in window)){toast('Les notifications ne sont pas supportées par ce navigateur.','error');return;}Notification.requestPermission().then(p=>{if(p==='granted'){localStorage.setItem('samassa_notif_enabled','1');toast('Notifications de rendez-vous activées ✓','success');checkRdvNotifs();}else toast('Permission de notification refusée.','warning');});}
+function getDueRdv(){const recus=getData('samassa_recus'),retrieved=new Set(getData('samassa_retraits').map(r=>r.recuNumber));return recus.filter(r=>!retrieved.has(r.number)&&(r.services||[]).some(s=>/nina|scan|carte|biom/i.test(s.desc))&&r.rdvDate&&new Date(r.rdvDate)<=new Date());}
+function checkRdvNotifs(){const due=getDueRdv();if($('notif-dot'))$('notif-dot').style.display=due.length?'block':'none';if($('cmd-due-rdv'))$('cmd-due-rdv').textContent=due.length;if(!due.length||!('Notification' in window)||Notification.permission!=='granted')return;const sent=JSON.parse(localStorage.getItem('samassa_rdv_notified')||'{}');const fresh=due.filter(r=>!sent[r.number]||Date.now()-sent[r.number]>6*60*60*1000);if(fresh.length){fresh.forEach(r=>sent[r.number]=Date.now());localStorage.setItem('samassa_rdv_notified',JSON.stringify(sent));new Notification('SAMASSA TECHNOLOGIE — Rendez-vous arrivé',{body:`🔔 ${fresh.length===1?fresh[0].client:fresh.length+' clients'} peut/peuvent récupérer ${fresh.length===1?'sa carte ou son document':'leur carte ou document'}.`,icon:'icon-512x512.png'});toast(`🔔 ${fresh.length} rendez-vous arrivé(s).`,'warning');}}
 
 /* ══ LOGOUT ══ */
 function logout(){if(confirm('Vous déconnecter ?')){localStorage.removeItem('_samassa_session');window.location.replace('login.html');}}
@@ -1187,6 +1262,8 @@ $('mv-date').value=today();
 setWelcome();
 loadDashboard();
 setTimeout(checkRdvNotifs,4000);
+setInterval(()=>{checkRdvNotifs();if($('tab-dashboard')?.classList.contains('active'))loadDashboard();},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){checkRdvNotifs();loadDashboard();}});
 window.addEventListener('resize',()=>{if($('tab-dashboard').classList.contains('active'))setTimeout(buildChart,100);});
 </script>
 <script>

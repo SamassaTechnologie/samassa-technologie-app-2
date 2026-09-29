@@ -609,15 +609,18 @@ textarea { resize: vertical; min-height: 56px; }
 
 /* ── PRINT ── */
 @media print {
-  .topbar, .form-panel { display: none !important; }
-  .layout { display: block; padding: 0; max-width: none; }
+  @page { size: A4 portrait; margin: 0; }
+  html, body { margin: 0 !important; padding: 0 !important; background: white !important; }
+  .topbar, .form-panel, #receipt-management { display: none !important; }
+  .layout { display: block; padding: 0; margin: 0; max-width: none; }
   .doc-panel {
     border: none; box-shadow: none; border-radius: 0;
     display: block !important;
+    width: 100%; margin: 0; padding: 0;
   }
-  .doc-inner { padding: 16px; }
+  .doc-inner { display: block !important; padding: 16px 22px 12px; margin: 0; }
+  .doc-z { page-break-inside: avoid; break-inside: avoid; }
   .doc-placeholder { display: none !important; }
-  body { background: white; }
   .watermark { opacity: .03; }
   .doc-table { display: table !important; white-space: normal; overflow: visible; }
   .item-inputs input:nth-child(4) { display: block !important; }

@@ -595,6 +595,7 @@ function renderPendingCards() {
     const statusLabel = isPast ? '⚠️ En retard' : isReady ? '✅ Prête' : '⏳ En attente';
     return `
     <div style="display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid #F0F5FA;transition:background .15s" onmouseover="this.style.background='#F8FBFD'" onmouseout="this.style.background='white'">
+      <input class="pending-check" type="checkbox" data-rdv-number="${r.number}" onchange="updateBulkRdvSelection()" aria-label="Sélectionner ${r.client}">
       <div style="width:40px;height:40px;border-radius:10px;background:#EDE9FE;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🪪</div>
       <div style="flex:1;min-width:0">
         <div style="font-weight:700;font-size:13px;color:#1A2D44">${r.client}</div>
@@ -613,6 +614,27 @@ function renderPendingCards() {
       </div>
     </div>`;
   }).join('');
+  updateBulkRdvSelection();
+}
+
+function updateBulkRdvSelection(){
+  const selected=document.querySelectorAll('.pending-check:checked').length;
+  const count=document.getElementById('selected-rdv-count');
+  const btn=document.getElementById('bulk-sms-btn');
+  if(count) count.textContent=selected;
+  if(btn) btn.disabled=!selected;
+}
+function toggleAllRdv(value){document.querySelectorAll('.pending-check').forEach(c=>c.checked=value);updateBulkRdvSelection();}
+function sendBulkRdvSMS(){
+  const nums=[...document.querySelectorAll('.pending-check:checked')].map(c=>c.dataset.rdvNumber);
+  if(!nums.length){ST.toast('Sélectionnez au moins un client.','error');return;}
+  const list=JSON.parse(localStorage.getItem('samassa_recus')||'[]');
+  const records=list.filter(r=>nums.includes(r.number)&&r.phone);
+  if(!records.length){ST.toast('Aucun téléphone valide dans la sélection.','error');return;}
+  const openMessage=(rec)=>{const phone=rec.phone.replace(/\s/g,'');const msg=`SAMASSA TECHNOLOGIE - Bonjour ${rec.client}, votre carte/document (Reçu ${rec.number}) est prêt(e) à récupérer. Tel: 77291931 / 62970630`;window.open('sms:'+phone+'?body='+encodeURIComponent(msg),'_blank');};
+  records.forEach((rec,i)=>setTimeout(()=>openMessage(rec),i*350));
+  const missing=nums.length-records.length;
+  ST.toast(`${records.length} SMS préparé(s)${missing?' · '+missing+' sans téléphone':''}.`,'success');
 }
 
 /* ══════════════════════════════════════════════════════════

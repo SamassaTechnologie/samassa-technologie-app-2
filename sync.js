@@ -13,13 +13,18 @@
 
 const SYNC_KEYS = [
   'samassa_recus',
+  'samassa_recus_vente',
   'samassa_factures',
+  'samassa_factures_mat',
   'samassa_devis',
   'samassa_interventions',
+  'samassa_bons_reparation',
   'samassa_mouvements',
+  'samassa_stock',
   'samassa_recus_cyber',
   'samassa_factures_cyber',
-  'samassa_retraits'
+  'samassa_retraits',
+  'samassa_docs_admin'
 ];
 
 const SyncEngine = {
