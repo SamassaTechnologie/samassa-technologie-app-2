@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+<script>
+(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expires){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Documents Administratifs — SAMASSA TECHNOLOGIE</title>
@@ -10,138 +13,111 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" href="icon-512x512.png">
 <link rel="apple-touch-icon" href="icon-512x512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="mobile.css">
 <style>
-/* ═══════════════════════════════
-   THÈME VIOLET (cohérent cyber)
-═══════════════════════════════ */
 :root{
-  --indigo:#4338CA;--indigo-dark:#3730A3;--indigo-light:#EEF2FF;
-  --indigo-mid:#6366F1;
+  --indigo:#3730A3;--indigo-dark:#312E81;--indigo-light:#EEF2FF;--indigo-mid:#6366F1;
+  --mali-green:#009A44;--mali-red:#CE1126;--mali-gold:#FCD116;
 }
-
-.panel-header{background:linear-gradient(135deg,#1E1B4B,#3730A3)}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+.panel-header{background:linear-gradient(135deg,#1E1B4B 0%,#3730A3 60%,#4338CA 100%)}
 .panel-header p{color:#A5B4FC}
 
-/* ═══════════════════════════════
-   SÉLECTEUR DE DOCUMENT
-═══════════════════════════════ */
-.doc-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px}
+/* Sélecteur */
+.doc-type-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
 .doc-type-btn{
   padding:9px 8px;border:1.5px solid var(--border);
-  border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;
+  border-radius:9px;cursor:pointer;font-size:11px;font-weight:600;
   color:var(--text2);background:white;text-align:left;
-  font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:7px;
-  line-height:1.2;
+  font-family:'Inter',inherit;transition:all .18s;display:flex;align-items:center;gap:7px;line-height:1.3;
 }
 .doc-type-btn:hover{border-color:var(--indigo);background:var(--indigo-light);color:var(--indigo)}
-.doc-type-btn.selected{border-color:var(--indigo);background:var(--indigo-light);color:var(--indigo);border-width:2px}
+.doc-type-btn.selected{border-color:var(--indigo);background:var(--indigo-light);color:var(--indigo);border-width:2px;font-weight:700}
 .doc-type-icon{font-size:16px;flex-shrink:0}
 .doc-cat-label{
   font-size:10px;font-weight:800;color:var(--indigo);
-  text-transform:uppercase;letter-spacing:.08em;
-  margin:14px 0 7px;padding-bottom:5px;
-  border-bottom:2px solid var(--indigo-light);
+  text-transform:uppercase;letter-spacing:.1em;
+  margin:14px 0 7px;padding:6px 10px;
+  background:var(--indigo-light);border-radius:7px;
+  border-left:3px solid var(--indigo);
 }
 
-/* ═══════════════════════════════
-   FORMULAIRE
-═══════════════════════════════ */
-.form-section{display:none}
-.form-section.active{display:block}
+/* Formulaire */
+.form-section{display:none}.form-section.active{display:block}
 .field-group{margin-bottom:11px}
 .field-group label{display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px}
 .field-group input,.field-group select,.field-group textarea{
   width:100%;padding:9px 12px;border:1.5px solid var(--border);
-  border-radius:8px;font-size:13px;font-family:inherit;
+  border-radius:9px;font-size:13px;font-family:'Inter',inherit;
   color:var(--text);background:white;outline:none;transition:border-color .2s;
 }
-.field-group input:focus,.field-group select:focus,.field-group textarea:focus{border-color:var(--indigo)}
+.field-group input:focus,.field-group select:focus,.field-group textarea:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(55,48,163,.08)}
 .field-group textarea{resize:vertical;min-height:62px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .field-row .field-group{margin-bottom:0}
 
-/* Boutons actions */
-.btn-gen{background:var(--indigo);color:white;border:none;padding:11px 18px;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:8px;width:100%;justify-content:center}
-.btn-gen:hover{background:var(--indigo-dark);transform:translateY(-1px)}
-.btn-gen:disabled{background:#A5B4FC;cursor:not-allowed;transform:none}
-.btn-gen.loading{animation:btnPulse 1s infinite}
-@keyframes btnPulse{0%,100%{opacity:1}50%{opacity:.7}}
+/* Boutons */
+.btn-gen{background:linear-gradient(135deg,var(--indigo),var(--indigo-mid));color:white;border:none;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',inherit;transition:all .2s;display:flex;align-items:center;gap:8px;width:100%;justify-content:center}
+.btn-gen:hover{background:linear-gradient(135deg,var(--indigo-dark),var(--indigo));transform:translateY(-1px);box-shadow:0 4px 16px rgba(55,48,163,.3)}
+.btn-gen:disabled{background:#A5B4FC;cursor:not-allowed;transform:none;box-shadow:none}
 .btn-print{background:var(--navy);color:white}
-.btn-print:hover{background:#0A2030}
 .btn-save{background:var(--green);color:white}
-.btn-save:hover{background:#15803D}
 .btn-pdf{background:#DC2626;color:white}
-.btn-pdf:hover{background:#B91C1C}
 
-/* ═══════════════════════════════
-   APERÇU DOCUMENT
-═══════════════════════════════ */
+/* Document A4 */
 .doc-preview{background:white;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);min-height:500px}
 .preview-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:500px;color:var(--text3);gap:12px}
 .preview-placeholder .ph-icon{font-size:60px;opacity:.2}
 
-/* Document A4 simulé */
-.doc-a4{
-  background:white;
-  font-family:Arial,Helvetica,sans-serif;
-  font-size:12px;
-  line-height:1.6;
-  color:#1a1a1a;
-  padding:32px 36px;
-  position:relative;
-}
-.doc-a4-header{
-  display:flex;align-items:flex-start;justify-content:space-between;
-  padding-bottom:16px;margin-bottom:20px;
-  border-bottom:3px solid #0D1B2A;
-}
-.doc-logo-wrap{display:flex;align-items:center;gap:12px}
-.doc-logo{width:60px;height:60px;object-fit:contain;border-radius:50%;background:#F0F5FA;padding:4px}
-.doc-co-name{font-size:16px;font-weight:900;color:#0D1B2A;letter-spacing:.3px}
-.doc-co-sub{font-size:10px;color:#0088CC;font-style:italic;margin-bottom:4px}
+.doc-a4{background:white;font-family:'Times New Roman',serif;font-size:12px;line-height:1.7;color:#1a1a1a;padding:32px 36px;position:relative}
+
+/* Entête officielle Mali */
+.mali-header{text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:3px solid #0D1B2A}
+.mali-republic{font-size:11px;font-weight:800;color:#0D1B2A;text-transform:uppercase;letter-spacing:.1em}
+.mali-devise{font-size:10px;color:#4A6080;margin:3px 0;font-style:italic}
+.mali-flag-bar{display:flex;justify-content:center;gap:0;margin:6px auto;width:36px;height:12px;border-radius:2px;overflow:hidden}
+.mali-flag-bar .g{width:12px;height:12px;background:#009A44}
+.mali-flag-bar .y{width:12px;height:12px;background:#FCD116}
+.mali-flag-bar .r{width:12px;height:12px;background:#CE1126}
+.doc-co-block{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.doc-logo{width:52px;height:52px;object-fit:contain;border-radius:8px;flex-shrink:0}
+.doc-co-name{font-size:14px;font-weight:900;color:#0D1B2A}
+.doc-co-sub{font-size:10px;color:#0070C0;font-style:italic;margin-bottom:3px}
 .doc-co-detail{font-size:10px;color:#4A6080;line-height:1.5}
-.doc-ref-block{text-align:right}
-.doc-ref-num{font-size:11px;color:#8099B0}
-.doc-ref-num strong{color:#4338CA}
-.doc-ref-date{font-size:10px;color:#8099B0;margin-top:2px}
-.doc-title{
-  text-align:center;margin-bottom:22px;
-}
-.doc-title h2{
-  font-size:16px;font-weight:900;color:#0D1B2A;
-  text-transform:uppercase;letter-spacing:2px;
-  padding:10px 20px;display:inline-block;
-  border-top:2px solid #0D1B2A;border-bottom:2px solid #0D1B2A;
-}
-.doc-body{
-  font-size:12px;line-height:1.8;color:#1a1a1a;
-  margin-bottom:24px;white-space:pre-wrap;
-}
-.doc-sig-area{
-  display:flex;justify-content:space-between;align-items:flex-end;
-  margin-top:36px;padding-top:16px;border-top:1px dashed #D0DDE8;
-}
+.doc-ref-block{text-align:right;font-size:10px;color:#4A6080}
+.doc-ref-block strong{color:var(--indigo);font-size:11px}
+
+.doc-title{text-align:center;margin-bottom:20px}
+.doc-title h2{font-size:14px;font-weight:900;color:#0D1B2A;text-transform:uppercase;letter-spacing:2px;padding:8px 20px;display:inline-block;border-top:2px solid #0D1B2A;border-bottom:2px solid #0D1B2A}
+
+.doc-body{font-size:12px;line-height:1.9;color:#1a1a1a;margin-bottom:24px;white-space:pre-wrap;font-family:'Times New Roman',serif}
+.doc-sig-area{display:flex;justify-content:space-between;align-items:flex-end;margin-top:30px;padding-top:14px;border-top:1px dashed #D0DDE8}
 .sig-block{text-align:center}
 .sig-title{font-size:11px;font-weight:700;color:#4A6080;text-decoration:underline;margin-bottom:8px}
-.sig-img{width:120px;height:auto;display:block;margin:0 auto 4px}
-.cachet-img{width:80px;height:auto;opacity:.90;transform:rotate(-12deg);display:block;margin:0 auto 4px;filter:brightness(0) saturate(100%) invert(27%) sepia(84%) saturate(1220%) hue-rotate(172deg) brightness(98%) contrast(103%)}
+.sig-img{width:110px;height:auto;display:block;margin:0 auto 4px}
+.cachet-img{width:78px;height:auto;opacity:.9;transform:rotate(-12deg);display:block;margin:0 auto 4px;filter:brightness(0) saturate(100%) invert(27%) sepia(84%) saturate(1220%) hue-rotate(172deg) brightness(98%) contrast(103%)}
 .sig-name{font-size:11px;font-weight:700;font-style:italic;color:#1a1a1a}
-.client-sig-box{border:1px dashed #D0DDE8;border-radius:6px;padding:12px;min-width:180px;min-height:70px;text-align:center}
+.client-sig-box{border:1px dashed #D0DDE8;border-radius:6px;padding:12px;min-width:170px;min-height:65px;text-align:center}
 .client-sig-label{font-size:10px;color:#8099B0;font-weight:700}
-.doc-footer-line{
-  margin-top:22px;padding-top:10px;border-top:1px solid #E2EAF0;
-  text-align:center;font-size:10px;color:#8099B0;line-height:1.5;
-}
+.doc-footer-line{margin-top:20px;padding-top:10px;border-top:1px solid #E2EAF0;text-align:center;font-size:10px;color:#8099B0;line-height:1.5}
 
-/* ═══════════════════════════════
-   HISTORIQUE
-═══════════════════════════════ */
-.hist-item{
-  display:flex;align-items:center;gap:12px;padding:11px 18px;
-  border-bottom:1px solid #F4F8FB;transition:background .15s;cursor:pointer;
-}
+/* Stats bar */
+.stats-bar{display:flex;gap:16px;padding:12px 16px;background:var(--indigo-light);border-radius:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.stat-item{text-align:center}
+.stat-n{font-size:22px;font-weight:900;color:var(--indigo);line-height:1}
+.stat-l{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px;font-weight:700}
+
+/* Tabs */
+.tab-bar{display:flex;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.tab-btn{flex:1;padding:9px;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);font-family:'Inter',inherit;transition:all .2s}
+.tab-btn.active{background:var(--indigo);color:white}
+.tab-content{display:none}.tab-content.active{display:block}
+
+/* Historique */
+.hist-item{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid #F4F8FB;transition:background .15s;cursor:pointer}
 .hist-item:last-child{border-bottom:none}
 .hist-item:hover{background:var(--bg2)}
 .hist-ico{width:36px;height:36px;border-radius:9px;background:var(--indigo-light);color:var(--indigo);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
@@ -154,53 +130,35 @@
 .hist-reprint{font-size:11px;background:var(--indigo-light);color:var(--indigo);border:1px solid #C7D2FE;border-radius:6px;padding:3px 9px;cursor:pointer;font-family:inherit;font-weight:600;margin-top:4px;transition:all .15s}
 .hist-reprint:hover{background:var(--indigo);color:white}
 
-/* ═══════════════════════════════
-   LOADING SPINNER
-═══════════════════════════════ */
-.ai-loading{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:400px;gap:16px;color:var(--text2);
-}
+/* Loading */
+.ai-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;gap:16px;color:var(--text2)}
 .spinner{width:44px;height:44px;border:4px solid #E0E7FF;border-top-color:var(--indigo);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .ai-loading p{font-size:14px;font-weight:600;color:var(--indigo)}
 .ai-loading small{font-size:12px;color:var(--text3)}
 
-/* Stats bar */
-.stats-bar{display:flex;gap:16px;padding:12px 18px;background:var(--indigo-light);border-radius:10px;margin-bottom:16px;flex-wrap:wrap}
-.stat-item{text-align:center}
-.stat-n{font-size:20px;font-weight:800;color:var(--indigo);line-height:1}
-.stat-l{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+/* Toast */
+.toast-doc{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:600;color:white;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .3s ease}
+.toast-doc.success{background:#16A34A}.toast-doc.error{background:#DC2626}.toast-doc.info{background:#0088CC}
+@keyframes toastIn{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
 
-/* ═══════════════════════════════
-   TABS
-═══════════════════════════════ */
-.tab-bar{display:flex;gap:0;border:1.5px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:16px}
-.tab-btn{flex:1;padding:9px;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);font-family:inherit;transition:all .2s}
-.tab-btn.active{background:var(--indigo);color:white}
-.tab-content{display:none}
-.tab-content.active{display:block}
+/* Recherche de document */
+.doc-search{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:'Inter',inherit;outline:none;margin-bottom:12px;transition:border-color .2s}
+.doc-search:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(55,48,163,.08)}
 
-/* ═══════════════════════════════
-   PRINT
-═══════════════════════════════ */
 @media print{
-  .topbar,.form-panel,.preview-actions,
-  .tab-bar,.stats-bar,
-  .doc-preview > .preview-placeholder{display:none!important}
+  .topbar,.form-panel,.preview-actions,.tab-bar,.stats-bar,.doc-preview>.preview-placeholder{display:none!important}
   .layout{display:block;padding:0;max-width:none}
   .doc-preview{border:none;box-shadow:none;border-radius:0}
   .doc-a4{padding:10mm 15mm}
   body{background:white}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  @page{size:A4 portrait;margin:14mm 16mm}
 }
 @media(max-width:600px){
   .doc-type-grid{grid-template-columns:1fr}
   .field-row{grid-template-columns:1fr}
 }
-
-.toast-doc{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:10px;font-size:14px;font-weight:600;color:white;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:toastIn .3s ease}
-.toast-doc.success{background:#16A34A}.toast-doc.error{background:#DC2626}.toast-doc.info{background:#0088CC}
-@keyframes toastIn{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
 </style>
 </head>
 <body>
@@ -213,83 +171,123 @@
 
 <div class="layout">
 
-  <!-- ════════════════════════════════════
-       PANNEAU GAUCHE : Formulaire
-  ════════════════════════════════════ -->
+  <!-- FORMULAIRE -->
   <div class="form-panel">
     <div class="panel-header">
       <h2>📝 Générateur de Documents</h2>
-      <p>Documents administratifs conformes aux normes maliennes</p>
+      <p>38 modèles conformes aux normes maliennes</p>
     </div>
     <div class="form-body">
 
-      <!-- ONGLETS -->
       <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('creer')">✏️ Créer</button>
         <button class="tab-btn" onclick="switchTab('historique')">🕐 Historique</button>
       </div>
 
-      <!-- ════ ONGLET CRÉER ════ -->
+      <!-- ONGLET CRÉER -->
       <div class="tab-content active" id="tab-creer">
 
-        <!-- Stats rapides -->
         <div class="stats-bar">
           <div class="stat-item"><div class="stat-n" id="stat-total">0</div><div class="stat-l">Générés</div></div>
           <div class="stat-item"><div class="stat-n" id="stat-today">0</div><div class="stat-l">Aujourd'hui</div></div>
-          <div class="stat-item"><div class="stat-n">17</div><div class="stat-l">Modèles</div></div>
+          <div class="stat-item"><div class="stat-n">38</div><div class="stat-l">Modèles</div></div>
         </div>
 
-        <!-- Sélection type -->
-        <div class="section-label" style="color:var(--indigo);border-bottom-color:var(--indigo-light)">Type de document</div>
+        <!-- Recherche -->
+        <input type="text" class="doc-search" id="doc-search" placeholder="🔍 Rechercher un modèle..." oninput="filterDocs(this.value)">
 
-        <div class="doc-cat-label">📋 État Civil & Identité</div>
-        <div class="doc-type-grid">
-          <button class="doc-type-btn" onclick="selectDoc('acte_naissance')" id="btn-acte_naissance"><span class="doc-type-icon">🏛️</span>Demande Acte de Naissance</button>
-          <button class="doc-type-btn" onclick="selectDoc('carte_id')" id="btn-carte_id"><span class="doc-type-icon">🪪</span>Demande Carte d'Identité</button>
-          <button class="doc-type-btn" onclick="selectDoc('declaration_perte')" id="btn-declaration_perte"><span class="doc-type-icon">🔍</span>Déclaration de Perte</button>
-          <button class="doc-type-btn" onclick="selectDoc('passeport')" id="btn-passeport"><span class="doc-type-icon">✈️</span>Demande Passeport</button>
-        </div>
+        <div id="docs-list">
+          <div class="doc-cat-label">🏛️ État Civil & Identité</div>
+          <div class="doc-type-grid">
+            <button class="doc-type-btn" onclick="selectDoc('acte_naissance')" id="btn-acte_naissance"><span class="doc-type-icon">📋</span>Acte de Naissance</button>
+            <button class="doc-type-btn" onclick="selectDoc('carte_id')" id="btn-carte_id"><span class="doc-type-icon">🪪</span>Carte d'Identité NINA</button>
+            <button class="doc-type-btn" onclick="selectDoc('passeport')" id="btn-passeport"><span class="doc-type-icon">✈️</span>Demande Passeport</button>
+            <button class="doc-type-btn" onclick="selectDoc('acte_mariage')" id="btn-acte_mariage"><span class="doc-type-icon">💍</span>Acte de Mariage</button>
+            <button class="doc-type-btn" onclick="selectDoc('casier_judiciaire')" id="btn-casier_judiciaire"><span class="doc-type-icon">⚖️</span>Extrait Casier Judiciaire</button>
+            <button class="doc-type-btn" onclick="selectDoc('declaration_perte')" id="btn-declaration_perte"><span class="doc-type-icon">🔍</span>Déclaration de Perte</button>
+            <button class="doc-type-btn" onclick="selectDoc('legalisation')" id="btn-legalisation"><span class="doc-type-icon">🔏</span>Légalisation Signature</button>
+            <button class="doc-type-btn" onclick="selectDoc('autorisation_mariage')" id="btn-autorisation_mariage"><span class="doc-type-icon">🏛️</span>Autorisation Mariage Civil</button>
+          </div>
 
-        <div class="doc-cat-label">🏠 Domicile & Résidence</div>
-        <div class="doc-type-grid">
-          <button class="doc-type-btn" onclick="selectDoc('domicile')" id="btn-domicile"><span class="doc-type-icon">🏘️</span>Attestation de Domicile</button>
-          <button class="doc-type-btn" onclick="selectDoc('bail')" id="btn-bail"><span class="doc-type-icon">🔑</span>Contrat de Bail</button>
-          <button class="doc-type-btn" onclick="selectDoc('connexion')" id="btn-connexion"><span class="doc-type-icon">📶</span>Demande Connexion Internet</button>
-          <button class="doc-type-btn" onclick="selectDoc('reclamation')" id="btn-reclamation"><span class="doc-type-icon">⚡</span>Réclamation Service Public</button>
-        </div>
+          <div class="doc-cat-label">🏠 Domicile & Résidence</div>
+          <div class="doc-type-grid">
+            <button class="doc-type-btn" onclick="selectDoc('domicile')" id="btn-domicile"><span class="doc-type-icon">🏘️</span>Attestation de Domicile</button>
+            <button class="doc-type-btn" onclick="selectDoc('bail')" id="btn-bail"><span class="doc-type-icon">🔑</span>Contrat de Bail</button>
+            <button class="doc-type-btn" onclick="selectDoc('connexion')" id="btn-connexion"><span class="doc-type-icon">📶</span>Demande Connexion Internet</button>
+            <button class="doc-type-btn" onclick="selectDoc('reclamation')" id="btn-reclamation"><span class="doc-type-icon">⚡</span>Réclamation Service Public</button>
+          </div>
 
-        <div class="doc-cat-label">💼 Emploi & Travail</div>
-        <div class="doc-type-grid">
-          <button class="doc-type-btn" onclick="selectDoc('certificat_travail')" id="btn-certificat_travail"><span class="doc-type-icon">📋</span>Certificat de Travail</button>
-          <button class="doc-type-btn" onclick="selectDoc('bonne_vie')" id="btn-bonne_vie"><span class="doc-type-icon">⚖️</span>Certificat Bonne Vie & Mœurs</button>
-          <button class="doc-type-btn" onclick="selectDoc('demande_emploi')" id="btn-demande_emploi"><span class="doc-type-icon">💼</span>Demande d'Emploi</button>
-          <button class="doc-type-btn" onclick="selectDoc('cv')" id="btn-cv"><span class="doc-type-icon">📄</span>CV Professionnel</button>
-        </div>
+          <div class="doc-cat-label">🏪 Commerce & Entreprise</div>
+          <div class="doc-type-grid">
+            <button class="doc-type-btn" onclick="selectDoc('declaration_commerce')" id="btn-declaration_commerce"><span class="doc-type-icon">📦</span>Déclaration Activité Commerciale</button>
+            <button class="doc-type-btn" onclick="selectDoc('autorisation_ouverture')" id="btn-autorisation_ouverture"><span class="doc-type-icon">🏪</span>Autorisation Ouverture Commerce</button>
+            <button class="doc-type-btn" onclick="selectDoc('attestation_commerce')" id="btn-attestation_commerce"><span class="doc-type-icon">📜</span>Attestation Exercice Commerce</button>
+            <button class="doc-type-btn" onclick="selectDoc('patente')" id="btn-patente"><span class="doc-type-icon">📑</span>Demande de Patente</button>
+          </div>
 
-        <div class="doc-cat-label">📜 Actes & Juridique</div>
-        <div class="doc-type-grid">
-          <button class="doc-type-btn" onclick="selectDoc('vente')" id="btn-vente"><span class="doc-type-icon">🤝</span>Attestation de Vente</button>
-          <button class="doc-type-btn" onclick="selectDoc('procuration')" id="btn-procuration"><span class="doc-type-icon">📑</span>Demande de Procuration</button>
-          <button class="doc-type-btn" onclick="selectDoc('retrait_plainte')" id="btn-retrait_plainte"><span class="doc-type-icon">🏛️</span>Retrait de Plainte</button>
-          <button class="doc-type-btn" onclick="selectDoc('lettre_motivation')" id="btn-lettre_motivation"><span class="doc-type-icon">✉️</span>Lettre de Motivation</button>
-        </div>
+          <div class="doc-cat-label">💼 Emploi & Travail</div>
+          <div class="doc-type-grid">
+            <button class="doc-type-btn" onclick="selectDoc('certificat_travail')" id="btn-certificat_travail"><span class="doc-type-icon">📋</span>Certificat de Travail</button>
+            <button class="doc-type-btn" onclick="selectDoc('bonne_vie')" id="btn-bonne_vie"><span class="doc-type-icon">✅</span>Certificat Bonne Vie & Mœurs</button>
+            <button class="doc-type-btn" onclick="selectDoc('demande_emploi')" id="btn-demande_emploi"><span class="doc-type-icon">💼</span>Demande d'Emploi</button>
+            <button class="doc-type-btn" onclick="selectDoc('cv')" id="btn-cv"><span class="doc-type-icon">📄</span>CV Professionnel</button>
+            <button class="doc-type-btn" onclick="selectDoc('lettre_motivation')" id="btn-lettre_motivation"><span class="doc-type-icon">✉️</span>Lettre de Motivation</button>
+            <button class="doc-type-btn" onclick="selectDoc('recommandation')" id="btn-recommandation"><span class="doc-type-icon">🏅</span>Lettre de Recommandation</button>
+          </div>
 
-        <div class="doc-cat-label">🤲 Social & Aide</div>
-        <div class="doc-type-grid">
-          <button class="doc-type-btn" onclick="selectDoc('aide_sociale')" id="btn-aide_sociale"><span class="doc-type-icon">🤲</span>Demande d'Aide Sociale</button>
-        </div>
+          <div class="doc-cat-label">🎓 Éducation & Formation</div>
+          <div class="doc-type-grid">
+            <button class="doc-type-btn" onclick="selectDoc('bourse')" id="btn-bourse"><span class="doc-type-icon">🎓</span>Demande de Bourse d'Études</button>
+            <button class="doc-type-btn" onclick="selectDoc('absence_scolaire')" id="btn-absence_scolaire"><span class="doc-type-icon">📚</span>Autorisation d'Absence Scolaire</button>
+            <button class="doc-type-btn" onclick="selectDoc('inscription')" id="btn-inscription"><span class="doc-type-icon">✏️</span>Demande d'Inscription</button>
+          </div>
 
-        <!-- ════ FORMULAIRES DYNAMIQUES ════ -->
-        <div id="form-container" style="display:none">
-          <div class="section-label" style="margin-top:16px;color:var(--indigo);border-bottom-color:var(--indigo-light)" id="form-title">Informations du document</div>
+          <div class="doc-cat-label">🏥 Santé & Social</div>
+          <div class="doc-type-grid">
+            <button class="doc-type-btn" onclick="selectDoc('indigence')" id="btn-indigence"><span class="doc-type-icon">🤝</span>Certificat d'Indigence</button>
+            <button class="doc-type-btn" onclick="selectDoc('evacuation')" id="btn-evacuation"><span class="doc-type-icon">🚑</span>Demande Évacuation Sanitaire</button>
+            <button class="doc-type-btn" onclick="selectDoc('aide_sociale')" id="btn-aide_sociale"><span class="doc-type-icon">🤲</span>Demande d'Aide Sociale</button>
+          </div>
 
-          <!-- Champs communs -->
+          <div class="doc-cat-label">🏗️ Foncier & Propriété</div>
+          <div class="doc-type-grid">
+            <button class="doc-type-btn" onclick="selectDoc('permis_construire')" id="btn-permis_construire"><span class="doc-type-icon">🏗️</span>Demande Permis de Construire</button>
+            <button class="doc-type-btn" onclick="selectDoc('possession_fonciere')" id="btn-possession_fonciere"><span class="doc-type-icon">🌍</span>Attestation Possession Foncière</button>
+          </div>
+
+          <div class="doc-cat-label">🚗 Transport & Circulation</div>
+          <div class="doc-type-grid">
+            <button class="doc-type-btn" onclick="selectDoc('permis_conduire')" id="btn-permis_conduire"><span class="doc-type-icon">🚗</span>Demande Permis de Conduire</button>
+            <button class="doc-type-btn" onclick="selectDoc('accident')" id="btn-accident"><span class="doc-type-icon">🚨</span>Déclaration Accident Circulation</button>
+          </div>
+
+          <div class="doc-cat-label">💰 Finance & Engagements</div>
+          <div class="doc-type-grid">
+            <button class="doc-type-btn" onclick="selectDoc('remboursement')" id="btn-remboursement"><span class="doc-type-icon">💳</span>Engagement de Remboursement</button>
+            <button class="doc-type-btn" onclick="selectDoc('caution')" id="btn-caution"><span class="doc-type-icon">🤝</span>Caution Solidaire</button>
+            <button class="doc-type-btn" onclick="selectDoc('demande_credit')" id="btn-demande_credit"><span class="doc-type-icon">🏦</span>Demande de Crédit</button>
+          </div>
+
+          <div class="doc-cat-label">📜 Actes & Juridique</div>
+          <div class="doc-type-grid">
+            <button class="doc-type-btn" onclick="selectDoc('vente')" id="btn-vente"><span class="doc-type-icon">🤝</span>Attestation de Vente</button>
+            <button class="doc-type-btn" onclick="selectDoc('procuration')" id="btn-procuration"><span class="doc-type-icon">📑</span>Procuration</button>
+            <button class="doc-type-btn" onclick="selectDoc('retrait_plainte')" id="btn-retrait_plainte"><span class="doc-type-icon">🏛️</span>Retrait de Plainte</button>
+            <button class="doc-type-btn" onclick="selectDoc('plainte')" id="btn-plainte"><span class="doc-type-icon">📢</span>Dépôt de Plainte</button>
+            <button class="doc-type-btn" onclick="selectDoc('honneur')" id="btn-honneur"><span class="doc-type-icon">🫡</span>Engagement sur l'Honneur</button>
+          </div>
+        </div><!-- /docs-list -->
+
+        <!-- FORMULAIRE DYNAMIQUE -->
+        <div id="form-container" style="display:none;margin-top:16px">
+          <div style="height:1px;background:var(--indigo-light);margin-bottom:14px"></div>
+          <div class="section-label" style="color:var(--indigo);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px" id="form-title">Informations</div>
+
           <div class="field-group">
             <label>Nom complet du demandeur *</label>
             <input type="text" id="f-nom" placeholder="Ex: Moussa COULIBALY" autocomplete="name">
           </div>
 
-          <!-- Sections spécifiques par document -->
           <div id="fields-specific"></div>
 
           <div class="field-row" style="margin-bottom:11px">
@@ -313,7 +311,6 @@
             <textarea id="f-complement" placeholder="Précisions supplémentaires (optionnel)..." rows="2"></textarea>
           </div>
 
-          <!-- Bouton générer -->
           <button class="btn btn-generate btn-gen" id="btn-generer" onclick="generateDocument()" style="margin-top:8px">
             ✨ Générer le document
           </button>
@@ -321,7 +318,7 @@
 
       </div><!-- /tab-creer -->
 
-      <!-- ════ ONGLET HISTORIQUE ════ -->
+      <!-- ONGLET HISTORIQUE -->
       <div class="tab-content" id="tab-historique-content">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
           <span style="font-size:13px;font-weight:700;color:var(--text)">Documents générés</span>
@@ -337,65 +334,83 @@
       <button class="btn btn-save" onclick="saveToHistory()">💾 Enregistrer</button>
       <button class="btn btn-wa" onclick="shareWhatsApp()">💬 WhatsApp</button>
     </div>
-
   </div><!-- /form-panel -->
 
-  <!-- ════════════════════════════════════
-       PANNEAU DROIT : Aperçu document
-  ════════════════════════════════════ -->
+  <!-- APERÇU DOCUMENT -->
   <div class="doc-preview" id="doc-preview">
     <div class="preview-placeholder" id="preview-placeholder">
       <div class="ph-icon">📝</div>
       <p style="font-size:14px;font-weight:600;color:var(--text2)">Sélectionnez un type de document</p>
-      <p style="font-size:12px;text-align:center;max-width:260px">Remplissez le formulaire et cliquez sur<br><strong>✨ Générer le document</strong></p>
+      <p style="font-size:12px;text-align:center;max-width:260px">38 modèles conformes aux normes maliennes</p>
     </div>
 
-    <!-- Chargement IA -->
     <div class="ai-loading" id="ai-loading" style="display:none">
       <div class="spinner"></div>
       <p>Génération en cours...</p>
-      <small id="ai-loading-msg">L'IA rédige votre document administratif</small>
+      <small id="ai-loading-msg">Rédaction du document administratif</small>
     </div>
 
-    <!-- Contenu A4 généré -->
     <div class="doc-a4" id="doc-a4-content" style="display:none">
+      <!-- En-tête officielle République du Mali -->
+      <div class="mali-header">
+        <div class="mali-republic">République du Mali</div>
+        <div class="mali-flag-bar"><div class="g"></div><div class="y"></div><div class="r"></div></div>
+        <div class="mali-devise">Un Peuple — Un But — Une Foi</div>
+      </div>
 
-      <!-- EN-TÊTE : numéro de référence et date uniquement -->
-      <div class="doc-a4-header" style="justify-content:flex-end;border-bottom:2px solid #0D1B2A;margin-bottom:20px">
+      <!-- Logo + infos entreprise + ref -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px">
+        <div class="doc-co-block" style="margin-bottom:0">
+          <img src="logo.png" alt="Logo" class="doc-logo">
+          <div>
+            <div class="doc-co-name">SAMASSA TECHNOLOGIE</div>
+            <div class="doc-co-sub">Tout pour l'informatique</div>
+            <div class="doc-co-detail">
+              Grand Marché de Kayes — Rue Soundiata Keita<br>
+              Tél : <strong>77 29 19 31 / 62 97 06 30</strong><br>
+              Email : samassatechnologie10@gmail.com
+            </div>
+          </div>
+        </div>
         <div class="doc-ref-block">
-          <div class="doc-ref-num">Réf : <strong id="d-ref-num">DA-001</strong></div>
-          <div class="doc-ref-date">📅 <span id="d-ref-date"></span></div>
-          <div class="doc-ref-date" style="margin-top:3px">📍 Kayes, Mali</div>
+          <div>Réf : <strong id="d-ref-num">DA-0001</strong></div>
+          <div style="margin-top:3px">📅 <span id="d-ref-date"></span></div>
+          <div style="margin-top:2px">📍 <span id="d-ref-lieu">Kayes, Mali</span></div>
         </div>
       </div>
 
-      <!-- TITRE -->
+      <div style="height:2px;background:#0D1B2A;margin-bottom:18px"></div>
+
+      <!-- Titre -->
       <div class="doc-title">
         <h2 id="d-title">DOCUMENT ADMINISTRATIF</h2>
       </div>
 
-      <!-- CORPS DU DOCUMENT (généré par IA) -->
-      <div class="doc-body" id="d-body">
-        <!-- Texte généré ici -->
-      </div>
+      <!-- Corps -->
+      <div class="doc-body" id="d-body"></div>
 
-      <!-- SIGNATURES -->
+      <!-- Signatures -->
       <div class="doc-sig-area">
         <div class="client-sig-box">
           <div class="client-sig-label">Signature du demandeur</div>
-          <div style="font-size:11px;color:var(--text3);margin-top:8px;font-style:italic">Lu et approuvé</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:8px;font-style:italic">Lu et approuvé</div>
         </div>
         <div class="sig-block">
           <div class="sig-title">L'Autorité compétente</div>
-          <div style="width:120px;height:50px;border-bottom:1px solid #D0DDE8;margin:8px auto 4px"></div>
-          <div class="sig-name">Signature et Cachet</div>
+          <img src="signature.png" alt="Signature" class="sig-img">
+          <img src="cachet.png" alt="Cachet" class="cachet-img">
+          <div class="sig-name">SAMASSA TECHNOLOGIE</div>
         </div>
       </div>
 
-    </div><!-- /doc-a4 -->
-  </div><!-- /doc-preview -->
+      <div class="doc-footer-line">
+        SAMASSA TECHNOLOGIE — Grand Marché de Kayes — Tél : 77 29 19 31 / 62 97 06 30<br>
+        samassatechnologie10@gmail.com — Document généré par SAMASSA TECHNOLOGIE Suite Pro
+      </div>
+    </div>
+  </div>
 
-</div><!-- /layout -->
+</div>
 
 <script src="auth.js"></script>
 <script src="firebase-config.js"></script>
@@ -403,887 +418,282 @@
 <script src="utils.js"></script>
 <script>
 /* ════════════════════════════════════════════
-   CONFIG DOCUMENTS : champs spécifiques
+   CONFIG 38 MODÈLES
 ════════════════════════════════════════════ */
 const DOC_CONFIG = {
-  acte_naissance: {
-    title: "DEMANDE D'ACTE DE NAISSANCE",
-    icon: "🏛️",
-    fields: [
-      {id:'f-date-naiss',  label:'Date de naissance',   type:'date'},
-      {id:'f-lieu-naiss',  label:'Lieu de naissance',   type:'text', placeholder:'Ex: Kayes'},
-      {id:'f-pere',        label:'Nom du père',          type:'text', placeholder:'Prénom et nom'},
-      {id:'f-mere',        label:'Nom de la mère',       type:'text', placeholder:'Prénom et nom de jeune fille'},
-      {id:'f-adresse',     label:'Adresse actuelle',     type:'text', placeholder:'Quartier, Ville'},
-      {id:'f-motif',       label:'Motif de la demande',  type:'text', placeholder:'Ex: Scolarisation, visa...'},
-    ]
-  },
-  carte_id: {
-    title: "DEMANDE DE CARTE NATIONALE D'IDENTITÉ",
-    icon: "🪪",
-    fields: [
-      {id:'f-date-naiss',  label:'Date de naissance',   type:'date'},
-      {id:'f-lieu-naiss',  label:'Lieu de naissance',   type:'text', placeholder:'Commune'},
-      {id:'f-pere',        label:'Nom du père',          type:'text', placeholder:'Prénom et nom'},
-      {id:'f-mere',        label:'Nom de la mère',       type:'text', placeholder:'Prénom et nom'},
-      {id:'f-adresse',     label:'Adresse complète',     type:'text', placeholder:'Quartier, commune'},
-      {id:'f-profession',  label:'Profession',           type:'text', placeholder:'Ex: Commerçant'},
-    ]
-  },
-  declaration_perte: {
-    title: "DÉCLARATION DE PERTE DE DOCUMENT",
-    icon: "🔍",
-    fields: [
-      {id:'f-doc-perdu',   label:'Document perdu',       type:'text', placeholder:'Ex: Carte NINA, Passeport...'},
-      {id:'f-num-doc',     label:'Numéro du document (si connu)', type:'text', placeholder:'N° du document'},
-      {id:'f-date-perte',  label:'Date approximative de la perte', type:'date'},
-      {id:'f-lieu-perte',  label:'Lieu de la perte',     type:'text', placeholder:'Endroit où la perte a été constatée'},
-      {id:'f-circonstances', label:'Circonstances',      type:'textarea', placeholder:'Décrivez comment le document a été perdu...'},
-    ]
-  },
-  passeport: {
-    title: "DEMANDE DE PASSEPORT",
-    icon: "✈️",
-    fields: [
-      {id:'f-date-naiss',  label:'Date de naissance',   type:'date'},
-      {id:'f-lieu-naiss',  label:'Lieu de naissance',   type:'text', placeholder:'Commune'},
-      {id:'f-destination', label:'Pays de destination', type:'text', placeholder:'Ex: France, Sénégal...'},
-      {id:'f-motif',       label:'Motif du voyage',      type:'text', placeholder:'Ex: Études, Médical, Commerce'},
-      {id:'f-garant',      label:'Nom du garant (si applicable)', type:'text', placeholder:'Prénom et nom'},
-      {id:'f-adresse',     label:'Adresse complète',     type:'text', placeholder:'Quartier, commune'},
-    ]
-  },
-  domicile: {
-    title: "ATTESTATION DE DOMICILE",
-    icon: "🏘️",
-    fields: [
-      {id:'f-adresse',     label:'Adresse complète',     type:'text', placeholder:'Quartier, rue, numéro'},
-      {id:'f-commune',     label:'Commune',              type:'text', placeholder:'Ex: Commune I de Kayes'},
-      {id:'f-duree',       label:'Durée de résidence',   type:'text', placeholder:'Ex: 3 ans, depuis 2020'},
-      {id:'f-proprietaire',label:'Nom du propriétaire/Chef de famille', type:'text', placeholder:'Si différent du demandeur'},
-      {id:'f-motif',       label:'Motif de l\'attestation', type:'text', placeholder:'Ex: Ouverture de compte bancaire'},
-    ]
-  },
-  bail: {
-    title: "CONTRAT DE BAIL",
-    icon: "🔑",
-    fields: [
-      {id:'f-bailleur',    label:'Nom du bailleur (propriétaire)', type:'text', placeholder:'Prénom et nom complet'},
-      {id:'f-locataire',   label:'Nom du locataire',     type:'text', placeholder:'Prénom et nom complet'},
-      {id:'f-bien',        label:'Description du bien loué', type:'text', placeholder:'Ex: Maison de 3 pièces, Appartement...'},
-      {id:'f-adresse',     label:'Adresse du bien',      type:'text', placeholder:'Quartier, rue, commune'},
-      {id:'f-loyer',       label:'Montant du loyer mensuel (FCFA)', type:'number', placeholder:'Ex: 50000'},
-      {id:'f-duree',       label:'Durée du bail',        type:'text', placeholder:'Ex: 1 an, 2 ans, indéterminée'},
-      {id:'f-date-debut',  label:'Date de début',        type:'date'},
-    ]
-  },
-  connexion: {
-    title: "DEMANDE DE CONNEXION INTERNET",
-    icon: "📶",
-    fields: [
-      {id:'f-adresse',     label:'Adresse d\'installation', type:'text', placeholder:'Quartier, rue'},
-      {id:'f-type-conn',   label:'Type de connexion demandée', type:'select', options:['Fibre optique','4G/LTE','ADSL','Autre']},
-      {id:'f-duree',       label:'Durée souhaitée',      type:'select', options:['1 mois','3 mois','6 mois','1 an','Sans durée déterminée']},
-      {id:'f-operateur',   label:'Opérateur visé',       type:'select', options:['Orange Mali','Moov Africa','Malitel','Autre']},
-      {id:'f-usage',       label:'Utilisation principale', type:'text', placeholder:'Ex: Domicile, Commerce, Bureau'},
-    ]
-  },
-  reclamation: {
-    title: "LETTRE DE RÉCLAMATION",
-    icon: "⚡",
-    fields: [
-      {id:'f-service',     label:'Service concerné',     type:'select', options:['EDM (Électricité)','SOMAGEP (Eau)','Orange Mali','Moov Africa','La Poste','Autre']},
-      {id:'f-num-contrat', label:'Numéro de contrat/abonné', type:'text', placeholder:'N° figurant sur votre facture'},
-      {id:'f-probleme',    label:'Nature du problème',   type:'textarea', placeholder:'Décrivez le problème rencontré...'},
-      {id:'f-depuis',      label:'Depuis quand ?',       type:'text', placeholder:'Ex: Depuis le 01/01/2025'},
-      {id:'f-demande',     label:'Ce que vous demandez', type:'textarea', placeholder:'Votre demande précise...'},
-    ]
-  },
-  certificat_travail: {
-    title: "CERTIFICAT DE TRAVAIL",
-    icon: "📋",
-    fields: [
-      {id:'f-employeur',   label:'Nom de l\'employeur/entreprise', type:'text', placeholder:'Raison sociale'},
-      {id:'f-poste',       label:'Poste occupé',          type:'text', placeholder:'Ex: Caissier, Technicien...'},
-      {id:'f-date-debut',  label:'Date de début d\'emploi', type:'date'},
-      {id:'f-date-fin',    label:'Date de fin (si applicable)', type:'date'},
-      {id:'f-salaire',     label:'Salaire mensuel (FCFA)', type:'number', placeholder:'Montant net'},
-      {id:'f-motif',       label:'Motif du certificat',   type:'text', placeholder:'Ex: Demande de prêt, Visa...'},
-    ]
-  },
-  bonne_vie: {
-    title: "CERTIFICAT DE BONNE VIE ET MŒURS",
-    icon: "⚖️",
-    fields: [
-      {id:'f-date-naiss',  label:'Date de naissance',   type:'date'},
-      {id:'f-lieu-naiss',  label:'Lieu de naissance',   type:'text', placeholder:'Commune'},
-      {id:'f-profession',  label:'Profession',           type:'text', placeholder:'Ex: Commerçant, Agent...'},
-      {id:'f-adresse',     label:'Adresse actuelle',     type:'text', placeholder:'Quartier, commune'},
-      {id:'f-temoin1',     label:'Témoin 1 (Nom complet)', type:'text', placeholder:'Prénom et nom'},
-      {id:'f-temoin2',     label:'Témoin 2 (Nom complet)', type:'text', placeholder:'Prénom et nom'},
-      {id:'f-motif',       label:'Motif de la demande',  type:'text', placeholder:'Ex: Emploi public, Concours...'},
-    ]
-  },
-  demande_emploi: {
-    title: "DEMANDE D'EMPLOI",
-    icon: "💼",
-    fields: [
-      {id:'f-poste',       label:'Poste visé',           type:'text', placeholder:'Titre du poste'},
-      {id:'f-entreprise',  label:'Nom de l\'entreprise', type:'text', placeholder:'Raison sociale'},
-      {id:'f-competences', label:'Compétences principales', type:'textarea', placeholder:'Vos 3 compétences clés...'},
-      {id:'f-experience',  label:'Expérience (années)',  type:'text', placeholder:'Ex: 5 ans en vente'},
-      {id:'f-formation',   label:'Diplôme / Formation',  type:'text', placeholder:'Ex: BTS Commerce, BAC+2...'},
-    ]
-  },
-  cv: {
-    title: "CURRICULUM VITAE PROFESSIONNEL",
-    icon: "📄",
-    fields: [
-      {id:'f-date-naiss',  label:'Date de naissance',   type:'date'},
-      {id:'f-adresse',     label:'Adresse',              type:'text', placeholder:'Ville, Quartier'},
-      {id:'f-email',       label:'Email',                type:'email', placeholder:'votre@email.com'},
-      {id:'f-formation',   label:'Formations (du plus récent)', type:'textarea', placeholder:'Ex: 2020 - BTS Informatique, IFM Kayes'},
-      {id:'f-experience',  label:'Expériences professionnelles', type:'textarea', placeholder:'Ex: 2021-2023 : Technicien chez...'},
-      {id:'f-competences', label:'Compétences',          type:'textarea', placeholder:'Ex: Word, Excel, Réparation PC...'},
-      {id:'f-langues',     label:'Langues parlées',      type:'text', placeholder:'Ex: Français, Bambara, Anglais'},
-    ]
-  },
-  vente: {
-    title: "ATTESTATION DE VENTE",
-    icon: "🤝",
-    fields: [
-      {id:'f-vendeur',     label:'Nom du vendeur',       type:'text', placeholder:'Prénom et nom complet'},
-      {id:'f-acheteur',    label:'Nom de l\'acheteur',   type:'text', placeholder:'Prénom et nom complet'},
-      {id:'f-objet',       label:'Objet vendu',          type:'text', placeholder:'Ex: Moto Honda 125, Terrain de 200m²...'},
-      {id:'f-prix',        label:'Prix de vente (FCFA)', type:'number', placeholder:'Montant en chiffres'},
-      {id:'f-desc-objet',  label:'Description détaillée', type:'textarea', placeholder:'Caractéristiques, numéro de série...'},
-    ]
-  },
-  procuration: {
-    title: "LETTRE DE PROCURATION",
-    icon: "📑",
-    fields: [
-      {id:'f-mandataire',  label:'Nom du mandataire (celui qui reçoit les pouvoirs)', type:'text', placeholder:'Prénom et nom'},
-      {id:'f-lien',        label:'Lien avec le mandataire', type:'text', placeholder:'Ex: Mon fils, Mon frère...'},
-      {id:'f-pouvoirs',    label:'Pouvoirs accordés',    type:'textarea', placeholder:'Ex: Retirer mes fonds à la banque, Représenter...'},
-      {id:'f-duree',       label:'Durée de validité',    type:'text', placeholder:'Ex: 30 jours, 3 mois, jusqu\'au 31/12/2025'},
-      {id:'f-institution', label:'Institution concernée', type:'text', placeholder:'Ex: Banque BDM, Tribunal, Mairie...'},
-    ]
-  },
-  retrait_plainte: {
-    title: "DÉCLARATION DE RETRAIT DE PLAINTE",
-    icon: "🏛️",
-    fields: [
-      {id:'f-commissariat', label:'Commissariat / Tribunal', type:'text', placeholder:'Ex: Commissariat de Police de Kayes'},
-      {id:'f-mis-en-cause', label:'Nom de la personne mise en cause', type:'text', placeholder:'Prénom et nom'},
-      {id:'f-ref-affaire',  label:'Référence de l\'affaire (si connue)', type:'text', placeholder:'N° PV ou dossier'},
-      {id:'f-motif',        label:'Motif du retrait',     type:'textarea', placeholder:'Expliquez pourquoi vous retirez la plainte...'},
-    ]
-  },
-  lettre_motivation: {
-    title: "LETTRE DE MOTIVATION",
-    icon: "✉️",
-    fields: [
-      {id:'f-poste',       label:'Poste visé',           type:'text', placeholder:'Titre exact du poste'},
-      {id:'f-entreprise',  label:'Entreprise / Structure', type:'text', placeholder:'Nom de l\'organisation'},
-      {id:'f-competences', label:'Vos points forts',     type:'textarea', placeholder:'Compétences et qualités pertinentes...'},
-      {id:'f-experience',  label:'Expérience pertinente', type:'text', placeholder:'Bref résumé de votre parcours'},
-      {id:'f-motivation',  label:'Votre motivation',     type:'textarea', placeholder:'Pourquoi vous voulez ce poste...'},
-    ]
-  },
-  aide_sociale: {
-    title: "DEMANDE D'AIDE SOCIALE",
-    icon: "🤲",
-    fields: [
-      {id:'f-situation',   label:'Situation familiale',  type:'text', placeholder:'Ex: Marié(e), 4 enfants'},
-      {id:'f-revenus',     label:'Revenus mensuels (FCFA)', type:'number', placeholder:'0 si sans emploi'},
-      {id:'f-charges',     label:'Charges principales', type:'textarea', placeholder:'Loyer, soins médicaux, scolarité...'},
-      {id:'f-type-aide',   label:'Type d\'aide demandée', type:'text', placeholder:'Ex: Bourse, Aide médicale, Allocations...'},
-      {id:'f-justification', label:'Justification de la demande', type:'textarea', placeholder:'Expliquez votre situation...'},
-    ]
-  },
+  acte_naissance:{title:"DEMANDE D'ACTE DE NAISSANCE",icon:"📋",fields:[{id:'f-date-naiss',label:'Date de naissance',type:'date'},{id:'f-lieu-naiss',label:'Lieu de naissance',type:'text',placeholder:'Ex: Kayes, Commune I'},{id:'f-pere',label:'Nom du père',type:'text',placeholder:'Prénom et nom complet'},{id:'f-mere',label:'Nom de la mère',type:'text',placeholder:'Prénom et nom de jeune fille'},{id:'f-adresse',label:'Adresse actuelle',type:'text',placeholder:'Quartier, Ville'},{id:'f-motif',label:'Motif de la demande',type:'text',placeholder:'Ex: Inscription scolaire, Visa, Emploi...'}]},
+  carte_id:{title:"DEMANDE DE CARTE NATIONALE D'IDENTITÉ (NINA)",icon:"🪪",fields:[{id:'f-date-naiss',label:'Date de naissance',type:'date'},{id:'f-lieu-naiss',label:'Lieu de naissance',type:'text',placeholder:'Commune de naissance'},{id:'f-pere',label:'Nom du père',type:'text',placeholder:'Prénom et nom'},{id:'f-mere',label:'Nom de la mère',type:'text',placeholder:'Prénom et nom'},{id:'f-adresse',label:'Adresse complète',type:'text',placeholder:'Quartier, commune, ville'},{id:'f-profession',label:'Profession',type:'text',placeholder:'Ex: Commerçant, Agent, Étudiant'},{id:'f-motif',label:'Motif / Première demande ou renouvellement',type:'select',options:['Première demande','Renouvellement','Perte','Vol']}]},
+  passeport:{title:"DEMANDE DE PASSEPORT",icon:"✈️",fields:[{id:'f-date-naiss',label:'Date de naissance',type:'date'},{id:'f-lieu-naiss',label:'Lieu de naissance',type:'text',placeholder:'Commune'},{id:'f-adresse',label:'Adresse complète',type:'text',placeholder:'Quartier, commune'},{id:'f-destination',label:'Pays de destination',type:'text',placeholder:'Ex: France, Côte d\'Ivoire, Maroc...'},{id:'f-motif',label:'Motif du voyage',type:'text',placeholder:'Ex: Études, Médical, Commerce, Famille'},{id:'f-type-pp',label:'Type de passeport',type:'select',options:['Passeport ordinaire','Passeport diplomatique','Passeport de service']},{id:'f-garant',label:'Nom du garant (si applicable)',type:'text',placeholder:'Prénom et nom'}]},
+  acte_mariage:{title:"DEMANDE D'ACTE DE MARIAGE",icon:"💍",fields:[{id:'f-epoux',label:'Nom complet de l\'époux',type:'text',placeholder:'Prénom et nom'},{id:'f-epouse',label:'Nom complet de l\'épouse',type:'text',placeholder:'Prénom et nom de jeune fille'},{id:'f-date-mariage',label:'Date du mariage',type:'date'},{id:'f-lieu-mariage',label:'Lieu du mariage',type:'text',placeholder:'Mairie, Commune...'},{id:'f-temoin1',label:'Témoin 1',type:'text',placeholder:'Prénom et nom'},{id:'f-temoin2',label:'Témoin 2',type:'text',placeholder:'Prénom et nom'},{id:'f-motif',label:'Motif de la demande d\'acte',type:'text',placeholder:'Ex: Visa, Regroupement familial, Succession...'}]},
+  casier_judiciaire:{title:"DEMANDE D'EXTRAIT DE CASIER JUDICIAIRE",icon:"⚖️",fields:[{id:'f-date-naiss',label:'Date de naissance',type:'date'},{id:'f-lieu-naiss',label:'Lieu de naissance',type:'text',placeholder:'Commune de naissance'},{id:'f-pere',label:'Nom du père',type:'text',placeholder:'Prénom et nom'},{id:'f-mere',label:'Nom de la mère',type:'text',placeholder:'Prénom et nom'},{id:'f-adresse',label:'Adresse actuelle',type:'text',placeholder:'Quartier, ville'},{id:'f-motif',label:'Motif de la demande',type:'text',placeholder:'Ex: Concours, Emploi public, Visa, Étude à l\'étranger'}]},
+  declaration_perte:{title:"DÉCLARATION DE PERTE DE DOCUMENT",icon:"🔍",fields:[{id:'f-doc-perdu',label:'Document perdu',type:'text',placeholder:'Ex: Carte NINA, Passeport, Permis de conduire...'},{id:'f-num-doc',label:'Numéro du document (si connu)',type:'text',placeholder:'N° du document'},{id:'f-date-perte',label:'Date approximative de la perte',type:'date'},{id:'f-lieu-perte',label:'Lieu de la perte',type:'text',placeholder:'Endroit où la perte a été constatée'},{id:'f-circonstances',label:'Circonstances',type:'textarea',placeholder:'Décrivez comment le document a été perdu...'}]},
+  legalisation:{title:"DEMANDE DE LÉGALISATION DE SIGNATURE",icon:"🔏",fields:[{id:'f-nature-doc',label:'Nature du document à légaliser',type:'text',placeholder:'Ex: Procuration, Contrat, Attestation...'},{id:'f-destination',label:'Administration destinataire',type:'text',placeholder:'Ex: Banque BDM, Tribunal, Ambassade...'},{id:'f-motif',label:'Motif de légalisation',type:'text',placeholder:'Ex: Dépôt de dossier, Acte juridique...'}]},
+  autorisation_mariage:{title:"DEMANDE D'AUTORISATION DE MARIAGE CIVIL",icon:"🏛️",fields:[{id:'f-epoux',label:'Nom complet du futur époux',type:'text',placeholder:'Prénom et nom'},{id:'f-epouse',label:'Nom complet de la future épouse',type:'text',placeholder:'Prénom et nom'},{id:'f-date-nais-epoux',label:'Date de naissance époux',type:'date'},{id:'f-date-nais-epouse',label:'Date de naissance épouse',type:'date'},{id:'f-date-ceremonie',label:'Date prévue de la cérémonie',type:'date'},{id:'f-temoin1',label:'Témoin 1',type:'text',placeholder:'Prénom, nom et profession'},{id:'f-temoin2',label:'Témoin 2',type:'text',placeholder:'Prénom, nom et profession'}]},
+  domicile:{title:"ATTESTATION DE DOMICILE",icon:"🏘️",fields:[{id:'f-adresse',label:'Adresse complète',type:'text',placeholder:'Quartier, rue, numéro'},{id:'f-commune',label:'Commune / Arrondissement',type:'text',placeholder:'Ex: Commune I de Kayes, Arrondissement central'},{id:'f-duree',label:'Durée de résidence',type:'text',placeholder:'Ex: 3 ans, depuis janvier 2020'},{id:'f-proprietaire',label:'Nom du propriétaire/Chef de famille',type:'text',placeholder:'Si différent du demandeur'},{id:'f-motif',label:'Motif de l\'attestation',type:'text',placeholder:'Ex: Ouverture compte, Dossier scolaire, Emploi...'}]},
+  bail:{title:"CONTRAT DE BAIL LOCATIF",icon:"🔑",fields:[{id:'f-bailleur',label:'Nom du bailleur (propriétaire)',type:'text',placeholder:'Prénom et nom complet'},{id:'f-locataire',label:'Nom du locataire',type:'text',placeholder:'Prénom et nom complet'},{id:'f-bien',label:'Description du bien loué',type:'text',placeholder:'Ex: Maison de 3 pièces, Boutique...'},{id:'f-adresse',label:'Adresse du bien',type:'text',placeholder:'Quartier, rue, commune'},{id:'f-loyer',label:'Montant du loyer mensuel (FCFA)',type:'number',placeholder:'Ex: 50000'},{id:'f-duree',label:'Durée du bail',type:'text',placeholder:'Ex: 1 an, indéterminée'},{id:'f-date-debut',label:'Date de début',type:'date'}]},
+  connexion:{title:"DEMANDE DE CONNEXION INTERNET",icon:"📶",fields:[{id:'f-adresse',label:'Adresse d\'installation',type:'text',placeholder:'Quartier, rue'},{id:'f-type-conn',label:'Type de connexion',type:'select',options:['Fibre optique','4G/LTE fixe','ADSL','Satellite','Autre']},{id:'f-operateur',label:'Opérateur visé',type:'select',options:['Orange Mali','Moov Africa','Malitel','SOTELMA','Autre']},{id:'f-duree',label:'Durée souhaitée',type:'select',options:['1 mois','3 mois','6 mois','1 an','Sans durée déterminée']},{id:'f-usage',label:'Utilisation principale',type:'text',placeholder:'Ex: Domicile, Commerce, Cyber café'}]},
+  reclamation:{title:"LETTRE DE RÉCLAMATION",icon:"⚡",fields:[{id:'f-service',label:'Service concerné',type:'select',options:['EDM-SA (Électricité)','SOMAGEP-SA (Eau)','Orange Mali','Moov Africa Mali','SOTELMA/Malitel','La Poste Mali','Mairie','Autre']},{id:'f-num-contrat',label:'Numéro de contrat/abonné',type:'text',placeholder:'N° figurant sur votre facture'},{id:'f-probleme',label:'Nature du problème',type:'textarea',placeholder:'Décrivez le problème...'},{id:'f-depuis',label:'Depuis quand ?',type:'text',placeholder:'Date de début du problème'},{id:'f-demande',label:'Ce que vous demandez',type:'textarea',placeholder:'Votre demande précise...'}]},
+  declaration_commerce:{title:"DÉCLARATION D'ACTIVITÉ COMMERCIALE",icon:"📦",fields:[{id:'f-raison-sociale',label:'Raison sociale / Nom commercial',type:'text',placeholder:'Nom de l\'entreprise ou du commerce'},{id:'f-nature',label:'Nature de l\'activité',type:'text',placeholder:'Ex: Commerce de matériels informatiques, Vente...'},{id:'f-adresse',label:'Adresse du commerce',type:'text',placeholder:'Quartier, rue, ville'},{id:'f-capital',label:'Capital de départ (FCFA)',type:'number',placeholder:'Ex: 500000'},{id:'f-date-debut',label:'Date de début d\'activité',type:'date'},{id:'f-ninea',label:'N° NINEA (si disponible)',type:'text',placeholder:'Numéro d\'identification fiscale'}]},
+  autorisation_ouverture:{title:"DEMANDE D'AUTORISATION D'OUVERTURE DE COMMERCE",icon:"🏪",fields:[{id:'f-raison-sociale',label:'Raison sociale / Nom commercial',type:'text',placeholder:'Nom de l\'établissement'},{id:'f-nature',label:'Nature de l\'activité',type:'text',placeholder:'Ex: Informatique, Alimentation, Pharmacie...'},{id:'f-adresse',label:'Adresse d\'implantation',type:'text',placeholder:'Quartier, rue, commune'},{id:'f-superficie',label:'Superficie du local (m²)',type:'text',placeholder:'Ex: 20 m²'},{id:'f-effectif',label:'Effectif prévu',type:'text',placeholder:'Ex: 3 employés'},{id:'f-horaires',label:'Horaires d\'ouverture',type:'text',placeholder:'Ex: 8h-18h, du lundi au samedi'}]},
+  attestation_commerce:{title:"ATTESTATION D'EXERCICE DE COMMERCE",icon:"📜",fields:[{id:'f-raison-sociale',label:'Raison sociale / Nom commercial',type:'text',placeholder:'Nom du commerce'},{id:'f-nature',label:'Nature de l\'activité',type:'text',placeholder:'Description de l\'activité'},{id:'f-adresse',label:'Adresse du commerce',type:'text',placeholder:'Quartier, ville'},{id:'f-date-debut',label:'Exercice depuis',type:'date'},{id:'f-motif',label:'Motif de l\'attestation',type:'text',placeholder:'Ex: Demande de crédit, Appel d\'offres...'}]},
+  patente:{title:"DEMANDE DE PATENTE COMMERCIALE",icon:"📑",fields:[{id:'f-raison-sociale',label:'Raison sociale',type:'text',placeholder:'Nom du commerce'},{id:'f-nature',label:'Nature de l\'activité',type:'text',placeholder:'Type d\'activité commerciale'},{id:'f-adresse',label:'Adresse du commerce',type:'text',placeholder:'Quartier, rue, commune'},{id:'f-chiffre-affaires',label:'Chiffre d\'affaires estimé (FCFA/an)',type:'number',placeholder:'Estimation annuelle'},{id:'f-date-debut',label:'Date de début d\'activité',type:'date'}]},
+  certificat_travail:{title:"CERTIFICAT DE TRAVAIL",icon:"📋",fields:[{id:'f-employeur',label:'Nom de l\'employeur / entreprise',type:'text',placeholder:'Raison sociale'},{id:'f-poste',label:'Poste occupé',type:'text',placeholder:'Ex: Technicien, Caissier, Agent...'},{id:'f-date-debut',label:'Date de début d\'emploi',type:'date'},{id:'f-date-fin',label:'Date de fin (si applicable)',type:'date'},{id:'f-salaire',label:'Salaire mensuel net (FCFA)',type:'number',placeholder:'Montant net'},{id:'f-motif',label:'Motif du certificat',type:'text',placeholder:'Ex: Prêt bancaire, Visa, Étude...'}]},
+  bonne_vie:{title:"CERTIFICAT DE BONNE VIE ET MŒURS",icon:"✅",fields:[{id:'f-date-naiss',label:'Date de naissance',type:'date'},{id:'f-lieu-naiss',label:'Lieu de naissance',type:'text',placeholder:'Commune'},{id:'f-profession',label:'Profession',type:'text',placeholder:'Ex: Commerçant, Fonctionnaire...'},{id:'f-adresse',label:'Adresse actuelle',type:'text',placeholder:'Quartier, commune'},{id:'f-temoin1',label:'Témoin 1 (Nom complet + profession)',type:'text',placeholder:'Ex: Mamadou DIALLO, Enseignant'},{id:'f-temoin2',label:'Témoin 2 (Nom complet + profession)',type:'text',placeholder:'Ex: Fatoumata KEITA, Commerçante'},{id:'f-motif',label:'Motif de la demande',type:'text',placeholder:'Ex: Concours, Emploi public, Visa...'}]},
+  demande_emploi:{title:"DEMANDE D'EMPLOI",icon:"💼",fields:[{id:'f-poste',label:'Poste visé',type:'text',placeholder:'Titre du poste'},{id:'f-entreprise',label:'Nom de l\'entreprise',type:'text',placeholder:'Raison sociale'},{id:'f-formation',label:'Diplôme / Formation',type:'text',placeholder:'Ex: BTS Informatique, Licence, BAC...'},{id:'f-experience',label:'Expérience (années et domaine)',type:'text',placeholder:'Ex: 5 ans en réparation informatique'},{id:'f-competences',label:'Compétences principales',type:'textarea',placeholder:'Listez vos compétences clés...'}]},
+  cv:{title:"CURRICULUM VITAE PROFESSIONNEL",icon:"📄",fields:[{id:'f-date-naiss',label:'Date de naissance',type:'date'},{id:'f-adresse',label:'Adresse',type:'text',placeholder:'Ville, Quartier'},{id:'f-email',label:'Email',type:'email',placeholder:'votre@email.com'},{id:'f-formation',label:'Formations (du plus récent)',type:'textarea',placeholder:'Ex: 2022 - BTS Informatique, IFM Kayes\n2019 - BAC série Sciences...'},{id:'f-experience',label:'Expériences professionnelles',type:'textarea',placeholder:'Ex: 2021-2024 : Technicien chez SAMASSA...'},{id:'f-competences',label:'Compétences',type:'textarea',placeholder:'Ex: Maintenance PC, Pack Office, Réseaux...'},{id:'f-langues',label:'Langues parlées',type:'text',placeholder:'Ex: Français (courant), Bambara (maternel), Anglais (notions)'}]},
+  lettre_motivation:{title:"LETTRE DE MOTIVATION",icon:"✉️",fields:[{id:'f-poste',label:'Poste visé',type:'text',placeholder:'Titre exact du poste'},{id:'f-entreprise',label:'Entreprise / Structure',type:'text',placeholder:'Nom de l\'organisation'},{id:'f-competences',label:'Vos points forts',type:'textarea',placeholder:'Compétences et qualités pertinentes...'},{id:'f-experience',label:'Expérience pertinente',type:'text',placeholder:'Bref résumé de votre parcours'},{id:'f-motivation',label:'Votre motivation',type:'textarea',placeholder:'Pourquoi vous voulez ce poste...'}]},
+  recommandation:{title:"LETTRE DE RECOMMANDATION",icon:"🏅",fields:[{id:'f-recommande',label:'Nom de la personne recommandée',type:'text',placeholder:'Prénom et nom'},{id:'f-qualite',label:'Votre qualité (auteur de la recommandation)',type:'text',placeholder:'Ex: Directeur, Supérieur hiérarchique, Enseignant...'},{id:'f-duree-connue',label:'Durée de collaboration',type:'text',placeholder:'Ex: 3 ans'},{id:'f-poste-rec',label:'Poste exercé par la personne recommandée',type:'text',placeholder:'Ex: Technicien, Stagiaire...'},{id:'f-qualites',label:'Qualités observées',type:'textarea',placeholder:'Ponctualité, sérieux, compétences...'},{id:'f-motif',label:'Objet de la recommandation',type:'text',placeholder:'Ex: Recherche d\'emploi, Admission à l\'université...'}]},
+  bourse:{title:"DEMANDE DE BOURSE D'ÉTUDES",icon:"🎓",fields:[{id:'f-etablissement',label:'Établissement ciblé',type:'text',placeholder:'Ex: USSGB, IFM, Université de Bamako...'},{id:'f-filiere',label:'Filière / Spécialité',type:'text',placeholder:'Ex: Informatique, Médecine, Droit...'},{id:'f-niveau',label:'Niveau d\'études actuel',type:'text',placeholder:'Ex: Terminale, BAC, Licence 1...'},{id:'f-date-naiss',label:'Date de naissance',type:'date'},{id:'f-situation',label:'Situation familiale des parents',type:'text',placeholder:'Ex: Sans emploi, Agriculteur, Retraité...'},{id:'f-revenu-parents',label:'Revenus mensuels des parents (FCFA)',type:'number',placeholder:'0 si sans ressources'},{id:'f-motif',label:'Justification de la demande',type:'textarea',placeholder:'Décrivez votre situation et vos objectifs...'}]},
+  absence_scolaire:{title:"AUTORISATION D'ABSENCE SCOLAIRE",icon:"📚",fields:[{id:'f-etablissement',label:'Établissement scolaire',type:'text',placeholder:'Nom de l\'école ou lycée'},{id:'f-classe',label:'Classe / Niveau',type:'text',placeholder:'Ex: 5ème, Terminale, Licence 2...'},{id:'f-enfant',label:'Nom de l\'élève (si différent du demandeur)',type:'text',placeholder:'Prénom et nom de l\'élève'},{id:'f-date-debut-abs',label:'Date de début d\'absence',type:'date'},{id:'f-date-fin-abs',label:'Date de fin d\'absence',type:'date'},{id:'f-motif',label:'Motif de l\'absence',type:'textarea',placeholder:'Ex: Maladie, Cérémonie familiale, Voyage médical...'}]},
+  inscription:{title:"DEMANDE D'INSCRIPTION SCOLAIRE / UNIVERSITAIRE",icon:"✏️",fields:[{id:'f-etablissement',label:'Établissement ciblé',type:'text',placeholder:'Nom de l\'école ou université'},{id:'f-filiere',label:'Filière / Classe demandée',type:'text',placeholder:'Ex: 6ème, BAC Sciences, BTS Informatique...'},{id:'f-date-naiss',label:'Date de naissance',type:'date'},{id:'f-lieu-naiss',label:'Lieu de naissance',type:'text',placeholder:'Commune'},{id:'f-dernier-etab',label:'Dernier établissement fréquenté',type:'text',placeholder:'Nom de l\'école précédente'},{id:'f-derniere-classe',label:'Dernière classe / Diplôme obtenu',type:'text',placeholder:'Ex: CM2, 3ème, BAC...'},{id:'f-motif',label:'Motif de la demande',type:'text',placeholder:'Ex: Première inscription, Transfert, Réinscription...'}]},
+  indigence:{title:"CERTIFICAT D'INDIGENCE",icon:"🤝",fields:[{id:'f-date-naiss',label:'Date de naissance',type:'date'},{id:'f-adresse',label:'Adresse actuelle',type:'text',placeholder:'Quartier, commune'},{id:'f-situation',label:'Situation familiale',type:'text',placeholder:'Ex: Marié(e), 5 enfants'},{id:'f-revenus',label:'Revenus mensuels (FCFA)',type:'number',placeholder:'0 si sans revenus'},{id:'f-charges',label:'Charges principales',type:'textarea',placeholder:'Loyer, soins, scolarité des enfants...'},{id:'f-temoin1',label:'Témoin 1 (Chef de quartier ou voisin)',type:'text',placeholder:'Prénom, nom et qualité'},{id:'f-motif',label:'Motif du certificat (soins à prendre en charge)',type:'text',placeholder:'Ex: Hospitalisation, Médicaments, Intervention chirurgicale...'}]},
+  evacuation:{title:"DEMANDE D'ÉVACUATION SANITAIRE",icon:"🚑",fields:[{id:'f-patient',label:'Nom du patient',type:'text',placeholder:'Prénom et nom'},{id:'f-date-naiss',label:'Date de naissance du patient',type:'date'},{id:'f-diagnostic',label:'Diagnostic / Pathologie',type:'text',placeholder:'Description de la maladie'},{id:'f-hopital-origine',label:'Hôpital d\'origine',type:'text',placeholder:'Ex: Hôpital de Kayes, CSREF...'},{id:'f-hopital-dest',label:'Hôpital de destination',type:'text',placeholder:'Ex: CHU Gabriel Touré, Bamako...'},{id:'f-medecin',label:'Médecin référent',type:'text',placeholder:'Dr Prénom NOM'},{id:'f-urgence',label:'Degré d\'urgence',type:'select',options:['Urgent — Immédiat','Semi-urgent — Dans 48h','Programmé']}]},
+  aide_sociale:{title:"DEMANDE D'AIDE SOCIALE",icon:"🤲",fields:[{id:'f-situation',label:'Situation familiale',type:'text',placeholder:'Ex: Veuve, 4 enfants à charge...'},{id:'f-revenus',label:'Revenus mensuels (FCFA)',type:'number',placeholder:'0 si sans emploi'},{id:'f-charges',label:'Charges principales',type:'textarea',placeholder:'Loyer, soins médicaux, scolarité...'},{id:'f-type-aide',label:'Type d\'aide demandée',type:'text',placeholder:'Ex: Bourse, Aide médicale, Allocations familiales...'},{id:'f-justification',label:'Justification de la demande',type:'textarea',placeholder:'Expliquez votre situation...'}]},
+  permis_construire:{title:"DEMANDE DE PERMIS DE CONSTRUIRE",icon:"🏗️",fields:[{id:'f-nature-travaux',label:'Nature des travaux',type:'select',options:['Construction neuve','Extension','Réhabilitation','Clôture','Autre']},{id:'f-adresse',label:'Adresse du terrain',type:'text',placeholder:'Quartier, ilot, lot, ville'},{id:'f-superficie',label:'Superficie du terrain (m²)',type:'number',placeholder:'Ex: 200'},{id:'f-superficie-bat',label:'Superficie à bâtir (m²)',type:'number',placeholder:'Ex: 80'},{id:'f-num-titre',label:'Numéro du titre foncier',type:'text',placeholder:'TF N° ...'},{id:'f-architecte',label:'Architecte chargé (si applicable)',type:'text',placeholder:'Prénom et nom'}]},
+  possession_fonciere:{title:"ATTESTATION DE POSSESSION FONCIÈRE COUTUMIÈRE",icon:"🌍",fields:[{id:'f-adresse',label:'Localisation du terrain',type:'text',placeholder:'Quartier, ilot, lot ou village'},{id:'f-superficie',label:'Superficie approximative',type:'text',placeholder:'Ex: 300 m², 1 hectare'},{id:'f-duree',label:'Durée de possession',type:'text',placeholder:'Ex: depuis 1990, 30 ans'},{id:'f-origine',label:'Origine de la possession',type:'select',options:['Héritage familial','Achat','Don','Attribution communautaire','Autre']},{id:'f-temoin1',label:'Témoin 1 (Chef de quartier ou notable)',type:'text',placeholder:'Prénom, nom et titre'},{id:'f-temoin2',label:'Témoin 2',type:'text',placeholder:'Prénom et nom'}]},
+  permis_conduire:{title:"DEMANDE DE PERMIS DE CONDUIRE",icon:"🚗",fields:[{id:'f-date-naiss',label:'Date de naissance',type:'date'},{id:'f-lieu-naiss',label:'Lieu de naissance',type:'text',placeholder:'Commune'},{id:'f-adresse',label:'Adresse actuelle',type:'text',placeholder:'Quartier, ville'},{id:'f-profession',label:'Profession',type:'text',placeholder:'Ex: Commerçant, Chauffeur...'},{id:'f-categorie',label:'Catégorie demandée',type:'select',options:['A (Moto)','B (Voiture)','C (Camion)','D (Bus)','E (Remorque)','A et B']},{id:'f-auto-ecole',label:'Auto-école (si applicable)',type:'text',placeholder:'Nom de l\'auto-école'}]},
+  accident:{title:"DÉCLARATION D'ACCIDENT DE CIRCULATION",icon:"🚨",fields:[{id:'f-date-accident',label:'Date et heure de l\'accident',type:'datetime-local'},{id:'f-lieu-accident',label:'Lieu de l\'accident',type:'text',placeholder:'Route, quartier, commune'},{id:'f-vehicule',label:'Votre véhicule (marque, modèle, immat.)',type:'text',placeholder:'Ex: Toyota Corolla, AA 1234 KY'},{id:'f-adverse',label:'Véhicule adverse (si connu)',type:'text',placeholder:'Marque, modèle, plaque'},{id:'f-circonstances',label:'Circonstances de l\'accident',type:'textarea',placeholder:'Décrivez ce qui s\'est passé...'},{id:'f-degats',label:'Dégâts et blessés',type:'textarea',placeholder:'Dégâts matériels, blessures...'},{id:'f-temoins',label:'Témoins (si présents)',type:'text',placeholder:'Prénom et nom des témoins'}]},
+  remboursement:{title:"ENGAGEMENT DE REMBOURSEMENT",icon:"💳",fields:[{id:'f-creancier',label:'Nom du créancier (prêteur)',type:'text',placeholder:'Prénom et nom complet'},{id:'f-montant',label:'Montant emprunté (FCFA)',type:'number',placeholder:'Ex: 200000'},{id:'f-date-pret',label:'Date de l\'emprunt',type:'date'},{id:'f-echeance',label:'Date de remboursement prévue',type:'date'},{id:'f-modalites',label:'Modalités de remboursement',type:'text',placeholder:'Ex: En une fois, en 3 mensualités...'},{id:'f-garantie',label:'Garantie offerte (si applicable)',type:'text',placeholder:'Ex: Téléphone, Moto, Rien'}]},
+  caution:{title:"ACTE DE CAUTION SOLIDAIRE",icon:"🤝",fields:[{id:'f-debiteur',label:'Nom du débiteur principal',type:'text',placeholder:'Prénom et nom'},{id:'f-creancier',label:'Nom du créancier',type:'text',placeholder:'Banque, individu...'},{id:'f-montant',label:'Montant cautionné (FCFA)',type:'number',placeholder:'Montant de la dette'},{id:'f-motif-dette',label:'Nature de l\'obligation cautionnée',type:'text',placeholder:'Ex: Prêt bancaire, Loyer, Contrat...'},{id:'f-adresse-caution',label:'Adresse du garant',type:'text',placeholder:'Quartier, ville'},{id:'f-biens',label:'Biens du garant (si applicable)',type:'text',placeholder:'Ex: Maison, Moto, Boutique...'}]},
+  demande_credit:{title:"DEMANDE DE CRÉDIT",icon:"🏦",fields:[{id:'f-banque',label:'Établissement financier',type:'text',placeholder:'Ex: BDM-SA, Banque Malienne de Solidarité, Kafo Jiginew...'},{id:'f-montant',label:'Montant demandé (FCFA)',type:'number',placeholder:'Ex: 1000000'},{id:'f-duree-credit',label:'Durée de remboursement',type:'text',placeholder:'Ex: 12 mois, 24 mois, 5 ans'},{id:'f-objet',label:'Objet du crédit',type:'text',placeholder:'Ex: Achat de matériels, Fonds de commerce, Construction...'},{id:'f-garantie',label:'Garantie proposée',type:'text',placeholder:'Ex: Titre foncier, Nantissement, Caution...'},{id:'f-revenus',label:'Revenus mensuels (FCFA)',type:'number',placeholder:'Revenus justifiables'}]},
+  vente:{title:"ATTESTATION DE VENTE",icon:"🤝",fields:[{id:'f-vendeur',label:'Nom du vendeur',type:'text',placeholder:'Prénom et nom'},{id:'f-acheteur',label:'Nom de l\'acheteur',type:'text',placeholder:'Prénom et nom'},{id:'f-objet',label:'Objet vendu',type:'text',placeholder:'Ex: Moto, Terrain, Ordinateur...'},{id:'f-prix',label:'Prix de vente (FCFA)',type:'number',placeholder:'Montant'},{id:'f-desc-objet',label:'Description détaillée',type:'textarea',placeholder:'Caractéristiques, N° série si applicable...'}]},
+  procuration:{title:"LETTRE DE PROCURATION",icon:"📑",fields:[{id:'f-mandataire',label:'Nom du mandataire',type:'text',placeholder:'Prénom et nom'},{id:'f-lien',label:'Lien avec le mandataire',type:'text',placeholder:'Ex: Mon fils, Mon épouse, Mon frère...'},{id:'f-pouvoirs',label:'Pouvoirs accordés',type:'textarea',placeholder:'Ex: Retirer mes fonds, Me représenter...'},{id:'f-duree',label:'Durée de validité',type:'text',placeholder:'Ex: 30 jours, jusqu\'au 31/12/2025'},{id:'f-institution',label:'Institution concernée',type:'text',placeholder:'Ex: BDM-SA, Mairie, Tribunal...'}]},
+  retrait_plainte:{title:"DÉCLARATION DE RETRAIT DE PLAINTE",icon:"🏛️",fields:[{id:'f-commissariat',label:'Commissariat / Tribunal',type:'text',placeholder:'Ex: Commissariat de Police de Kayes'},{id:'f-mis-en-cause',label:'Nom de la personne mise en cause',type:'text',placeholder:'Prénom et nom'},{id:'f-ref-affaire',label:'Référence de l\'affaire',type:'text',placeholder:'N° PV ou dossier'},{id:'f-motif',label:'Motif du retrait',type:'textarea',placeholder:'Accord amiable, conciliation...'}]},
+  plainte:{title:"DÉPÔT DE PLAINTE",icon:"📢",fields:[{id:'f-mis-en-cause',label:'Nom de la personne mise en cause',type:'text',placeholder:'Prénom et nom (si connu)'},{id:'f-adresse-mec',label:'Adresse / Localisation de la personne',type:'text',placeholder:'Quartier, ville (si connu)'},{id:'f-faits',label:'Description des faits',type:'textarea',placeholder:'Décrivez précisément ce qui s\'est passé, dates, lieux...'},{id:'f-date-faits',label:'Date des faits',type:'date'},{id:'f-lieu-faits',label:'Lieu des faits',type:'text',placeholder:'Endroit exact'},{id:'f-prejudi',label:'Préjudice subi',type:'textarea',placeholder:'Dommages matériels, physiques ou moraux...'},{id:'f-temoins',label:'Témoins éventuels',type:'text',placeholder:'Noms des témoins si disponibles'}]},
+  honneur:{title:"ENGAGEMENT SUR L'HONNEUR",icon:"🫡",fields:[{id:'f-objet-eng',label:'Objet de l\'engagement',type:'text',placeholder:'Ex: Je m\'engage à ne plus..., Je certifie que...'},{id:'f-contenu',label:'Contenu détaillé de l\'engagement',type:'textarea',placeholder:'Rédigez votre engagement...'},{id:'f-penalite',label:'Sanctions acceptées en cas de manquement',type:'text',placeholder:'Ex: Poursuites judiciaires, Remboursement...'},{id:'f-institution',label:'Devant qui est pris cet engagement',type:'text',placeholder:'Ex: Commissariat, Mairie, Employeur...'}]}
 };
 
-/* ════════════════════════════════════════════
-   ÉTAT GLOBAL
-════════════════════════════════════════════ */
-let currentDocType = null;
-let generatedContent = null;
+/* ÉTAT */
+let currentDocType = null, generatedContent = null;
 let docCounter = parseInt(localStorage.getItem('samassa_docs_counter') || '0');
 
-/* ════════════════════════════════════════════
-   INIT
-════════════════════════════════════════════ */
+/* INIT */
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
   loadStats();
   renderHistorique();
 });
 
-/* ════════════════════════════════════════════
-   ONGLETS
-════════════════════════════════════════════ */
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active', ['creer','historique'][i]===tab));
-  document.getElementById('tab-creer').classList.toggle('active', tab==='creer');
-  document.getElementById('tab-historique-content').classList.toggle('active', tab==='historique');
-  if (tab==='historique') renderHistorique();
+/* RECHERCHE */
+function filterDocs(query) {
+  const q = query.toLowerCase().trim();
+  document.querySelectorAll('.doc-type-btn').forEach(btn => {
+    const txt = btn.textContent.toLowerCase();
+    btn.closest('.doc-type-grid').style.display = '';
+    btn.style.display = (!q || txt.includes(q)) ? '' : 'none';
+  });
+  document.querySelectorAll('.doc-type-grid').forEach(grid => {
+    const visible = [...grid.querySelectorAll('.doc-type-btn')].some(b => b.style.display !== 'none');
+    grid.style.display = visible ? '' : 'none';
+    const label = grid.previousElementSibling;
+    if (label && label.classList.contains('doc-cat-label')) label.style.display = visible ? '' : 'none';
+  });
 }
 
-/* ════════════════════════════════════════════
-   STATS
-════════════════════════════════════════════ */
+/* TABS */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', ['creer','historique'][i] === tab));
+  document.getElementById('tab-creer').classList.toggle('active', tab === 'creer');
+  document.getElementById('tab-historique-content').classList.toggle('active', tab === 'historique');
+  if (tab === 'historique') renderHistorique();
+}
+
+/* STATS */
 function loadStats() {
   const hist = JSON.parse(localStorage.getItem('samassa_docs_admin') || '[]');
   document.getElementById('stat-total').textContent = hist.length;
   const today = new Date().toISOString().split('T')[0];
-  const todayCount = hist.filter(d => (d.timestamp||'').startsWith(today)).length;
-  document.getElementById('stat-today').textContent = todayCount;
+  document.getElementById('stat-today').textContent = hist.filter(d => (d.timestamp||'').startsWith(today)).length;
 }
 
-/* ════════════════════════════════════════════
-   SÉLECTION TYPE DE DOCUMENT
-════════════════════════════════════════════ */
+/* SÉLECTION */
 function selectDoc(type) {
   currentDocType = type;
-  const cfg = DOC_CONFIG[type];
-  if (!cfg) return;
-
-  /* Mettre en évidence le bouton sélectionné */
+  const cfg = DOC_CONFIG[type]; if (!cfg) return;
   document.querySelectorAll('.doc-type-btn').forEach(b => b.classList.remove('selected'));
   document.getElementById('btn-' + type)?.classList.add('selected');
-
-  /* Titre du formulaire */
   document.getElementById('form-title').textContent = cfg.icon + ' ' + cfg.title;
-
-  /* Générer les champs spécifiques */
   const container = document.getElementById('fields-specific');
   container.innerHTML = '';
   cfg.fields.forEach(f => {
     const div = document.createElement('div');
     div.className = 'field-group';
     let input = '';
-    if (f.type === 'textarea') {
-      input = `<textarea id="${f.id}" placeholder="${f.placeholder||''}" rows="2"></textarea>`;
-    } else if (f.type === 'select' && f.options) {
-      input = `<select id="${f.id}"><option value="">— Choisir —</option>${f.options.map(o=>`<option>${o}</option>`).join('')}</select>`;
-    } else {
-      input = `<input type="${f.type||'text'}" id="${f.id}" placeholder="${f.placeholder||''}" ${f.type==='date'?'':''}>`;
-    }
-    div.innerHTML = `<label>${f.label}${f.label.endsWith('*')?'':''}</label>${input}`;
+    if (f.type === 'textarea') input = `<textarea id="${f.id}" placeholder="${f.placeholder||''}" rows="2"></textarea>`;
+    else if (f.type === 'select') input = `<select id="${f.id}"><option value="">— Choisir —</option>${(f.options||[]).map(o=>`<option>${o}</option>`).join('')}</select>`;
+    else input = `<input type="${f.type||'text'}" id="${f.id}" placeholder="${f.placeholder||''}">`;
+    div.innerHTML = `<label>${f.label}</label>${input}`;
     container.appendChild(div);
   });
-
   document.getElementById('form-container').style.display = 'block';
-
-  /* Scroll vers le formulaire sur mobile */
-  setTimeout(() => document.getElementById('form-container').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  setTimeout(() => document.getElementById('form-container').scrollIntoView({ behavior:'smooth', block:'start' }), 100);
 }
 
-/* ════════════════════════════════════════════
-   GÉNÉRATION IA
-════════════════════════════════════════════ */
-/* ════════════════════════════════════════════
-   GÉNÉRATION LOCALE — Modèles pré-rédigés
-   Aucune connexion internet requise
-════════════════════════════════════════════ */
+/* GÉNÉRATION */
 function generateDocument() {
   if (!currentDocType) { alert('Choisissez un type de document.'); return; }
   const nom = document.getElementById('f-nom')?.value?.trim();
   if (!nom) { alert('Le nom du demandeur est obligatoire.'); document.getElementById('f-nom').focus(); return; }
-
-  /* Collecter tous les champs */
   const cfg = DOC_CONFIG[currentDocType];
-  const data = {
-    nom,
-    lieu:       document.getElementById('f-lieu')?.value  || 'Kayes',
-    date:       document.getElementById('f-date')?.value  || new Date().toISOString().split('T')[0],
-    tel:        document.getElementById('f-tel')?.value   || '',
-    complement: document.getElementById('f-complement')?.value || ''
-  };
-  cfg.fields.forEach(f => {
-    const el = document.getElementById(f.id);
-    if (el) data[f.id.replace('f-', '')] = el.value || '';
-  });
+  const data = { nom, lieu: document.getElementById('f-lieu')?.value||'Kayes', date: document.getElementById('f-date')?.value||new Date().toISOString().split('T')[0], tel: document.getElementById('f-tel')?.value||'', complement: document.getElementById('f-complement')?.value||'' };
+  cfg.fields.forEach(f => { const el = document.getElementById(f.id); if (el) data[f.id.replace('f-','')] = el.value||''; });
 
-  /* Animation courte */
   document.getElementById('preview-placeholder').style.display = 'none';
   document.getElementById('doc-a4-content').style.display = 'none';
   document.getElementById('ai-loading').style.display = 'flex';
   document.getElementById('preview-actions').style.display = 'none';
-  document.getElementById('ai-loading-msg').textContent = 'Rédaction du document en cours...';
-
   const btn = document.getElementById('btn-generer');
-  btn.disabled = true;
-  btn.textContent = '⏳ Génération...';
+  btn.disabled = true; btn.textContent = '⏳ Génération...';
 
-  /* Génération locale (pseudo-async pour l'animation) */
   setTimeout(() => {
     try {
       const docText = buildDocumentText(currentDocType, data);
       docCounter++;
       localStorage.setItem('samassa_docs_counter', String(docCounter));
-      const refNum = 'DA-' + String(docCounter).padStart(4, '0');
-
+      const refNum = 'DA-' + String(docCounter).padStart(4,'0');
       document.getElementById('d-title').textContent = cfg.title;
       document.getElementById('d-ref-num').textContent = refNum;
       document.getElementById('d-ref-date').textContent = fmtDateLong(data.date);
+      document.getElementById('d-ref-lieu').textContent = (data.lieu||'Kayes') + ', Mali';
       document.getElementById('d-body').textContent = docText;
-
       generatedContent = { type: currentDocType, refNum, title: cfg.title, nom, data, text: docText, timestamp: new Date().toISOString() };
-
       document.getElementById('ai-loading').style.display = 'none';
       document.getElementById('doc-a4-content').style.display = 'block';
       document.getElementById('preview-actions').style.display = 'flex';
-      document.getElementById('doc-a4-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } catch (err) {
+      document.getElementById('doc-a4-content').scrollIntoView({ behavior:'smooth', block:'start' });
+    } catch(err) {
       document.getElementById('ai-loading').style.display = 'none';
       document.getElementById('preview-placeholder').style.display = 'flex';
       alert('Erreur : ' + err.message);
     }
-    btn.disabled = false;
-    btn.innerHTML = '✨ Générer le document';
-  }, 900);
+    btn.disabled = false; btn.innerHTML = '✨ Générer le document';
+  }, 700);
 }
 
-/* ── Formateur de date longue ── */
-function fmtDateLong(dateStr) {
-  try {
-    return new Date(dateStr).toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-  } catch { return dateStr || new Date().toLocaleDateString('fr-FR'); }
-}
-function fmtDateShort(dateStr) {
-  try { return new Date(dateStr).toLocaleDateString('fr-FR'); } catch { return dateStr || ''; }
-}
-function or(val, def) { return (val && val.trim()) ? val.trim() : (def || '—'); }
+/* UTILITAIRES */
+function fmtDateLong(s) { try { return new Date(s).toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'}); } catch { return s||''; } }
+function fmtDateShort(s) { try { return new Date(s).toLocaleDateString('fr-FR'); } catch { return s||''; } }
+function or(v, d) { return (v && v.trim()) ? v.trim() : (d||'—'); }
+function fmtFCFA(n) { return n ? parseInt(n).toLocaleString('fr-FR') + ' FCFA' : '—'; }
 
 /* ════════════════════════════════════════════
-   MODÈLES LOCAUX — 17 TEMPLATES COMPLETS
+   38 MODÈLES — TEXTES COMPLETS
 ════════════════════════════════════════════ */
 function buildDocumentText(type, d) {
-  const LIEU = or(d.lieu, 'Kayes');
-  const DATE = fmtDateLong(d.date);
-  const NOM  = or(d.nom, 'Le/La soussigné(e)');
-  const TEL  = d.tel ? `\nTéléphone : ${d.tel}` : '';
-  const COMP = d.complement ? `\n\nInformations complémentaires :\n${d.complement}` : '';
+  const L = or(d.lieu,'Kayes'), D = fmtDateLong(d.date), N = or(d.nom,'Le/La soussigné(e)');
+  const T = d.tel ? `\nTéléphone : ${d.tel}` : '';
+  const C = d.complement ? `\n\nInformations complémentaires :\n${d.complement}` : '';
 
-  const templates = {
+  const t = {
 
-    /* 1. ACTE DE NAISSANCE */
-    acte_naissance: () => `Monsieur le Chef du Centre d'État Civil de ${LIEU},
+    acte_naissance: ()=>`Monsieur le Chef du Centre d'État Civil de ${L},\n\nJe soussigné(e) ${N}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'],L)}, de nationalité malienne, demeurant à ${or(d.adresse,L)}${T},\n\nai l'honneur de solliciter auprès de votre bienveillance la délivrance d'un extrait d'acte de naissance me concernant.\n\nÉTAT CIVIL :\n  Nom et Prénom         : ${N}\n  Date de naissance     : ${fmtDateShort(d['date-naiss'])}\n  Lieu de naissance     : ${or(d['lieu-naiss'],L)}\n  Nom du père           : ${or(d.pere,'—')}\n  Nom de la mère        : ${or(d.mere,'—')}\n  Adresse actuelle      : ${or(d.adresse,L)}\n\nMOTIF : ${or(d.motif,'Usage administratif et personnel')}${C}\n\nDans l'espoir d'une suite favorable, je vous prie d'agréer, Monsieur le Chef du Centre d'État Civil, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-Je soussigné(e) ${NOM}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'], LIEU)},
-demeurant à ${or(d.adresse, LIEU)}${TEL},
+    carte_id: ()=>`Monsieur le Directeur de l'État Civil et des Réfugiés,\nDirection Nationale de l'État Civil et des Réfugiés (DNECR) — ${L},\n\nJe soussigné(e) ${N}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'],L)}, de nationalité malienne, demeurant à ${or(d.adresse,L)}, exerçant la profession de ${or(d.profession,'—')}${T},\n\nai l'honneur de solliciter la délivrance d'une Carte Nationale d'Identité Biométrique (NINA).\n\nMOTIF : ${or(d.motif,'Première demande')}\n\nÉTAT CIVIL :\n  Nom et Prénom         : ${N}\n  Date de naissance     : ${fmtDateShort(d['date-naiss'])}\n  Lieu de naissance     : ${or(d['lieu-naiss'],L)}\n  Père                  : ${or(d.pere,'—')}\n  Mère                  : ${or(d.mere,'—')}\n  Adresse               : ${or(d.adresse,L)}\n  Profession            : ${or(d.profession,'—')}\n  Nationalité           : Malienne${C}\n\nJe m'engage à fournir tous les documents requis (extrait d'acte de naissance, justificatif de résidence, photos biométriques) et à me présenter en personne pour les formalités biométriques.\n\nVeuillez agréer, Monsieur le Directeur, l'expression de mes respectueuses salutations.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-ai l'honneur de solliciter auprès de votre service la délivrance d'un extrait d'acte de naissance me concernant.
+    passeport: ()=>`Monsieur le Directeur Général de la Police Nationale,\nService Central des Passeports et Visas — Bamako,\n\nJe soussigné(e) ${N}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'],L)}, de nationalité malienne, demeurant à ${or(d.adresse,L)}${T},\n\nai l'honneur de solliciter la délivrance d'un ${or(d['type-pp'],'passeport ordinaire')} malien.\n\nINFORMATIONS PERSONNELLES :\n  Nom et Prénom         : ${N}\n  Date de naissance     : ${fmtDateShort(d['date-naiss'])}\n  Lieu de naissance     : ${or(d['lieu-naiss'],L)}\n  Adresse               : ${or(d.adresse,L)}\n  Pays de destination   : ${or(d.destination,'—')}\n  Motif du voyage       : ${or(d.motif,'—')}\n  Garant (si requis)    : ${or(d.garant,'Sans objet')}${C}\n\nJe certifie l'exactitude des renseignements fournis et m'engage à respecter la législation malienne relative aux voyages à l'étranger.\n\nVeuillez agréer, Monsieur le Directeur Général, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-INFORMATIONS D'ÉTAT CIVIL :
-  - Nom et Prénom   : ${NOM}
-  - Date de naissance  : ${fmtDateShort(d['date-naiss'])}
-  - Lieu de naissance  : ${or(d['lieu-naiss'], LIEU)}
-  - Nom du père         : ${or(d.pere, '—')}
-  - Nom de la mère      : ${or(d.mere, '—')}
-  - Adresse actuelle    : ${or(d.adresse, LIEU)}
+    acte_mariage: ()=>`Monsieur le Maire de la Commune de ${L},\nService d'État Civil,\n\nNous soussignés :\n  Époux   : ${or(d.epoux,N)}\n  Épouse  : ${or(d.epouse,'—')}\n\ndemeurant à ${L}${T},\n\navons l'honneur de solliciter auprès de votre Service d'État Civil la délivrance d'un extrait d'acte de mariage nous concernant.\n\nINFORMATIONS SUR LE MARIAGE :\n  Date du mariage       : ${fmtDateShort(d['date-mariage'])}\n  Lieu du mariage       : ${or(d['lieu-mariage'],L)}\n  Témoin 1              : ${or(d.temoin1,'—')}\n  Témoin 2              : ${or(d.temoin2,'—')}\n\nMOTIF DE LA DEMANDE : ${or(d.motif,'Usage administratif')}${C}\n\nVeuillez agréer, Monsieur le Maire, l'expression de notre haute considération.\n\nFait à ${L}, le ${D}\n\nL'Époux                              L'Épouse\n${or(d.epoux,N)}                     ${or(d.epouse,'—')}`,
 
-MOTIF DE LA DEMANDE :
-  ${or(d.motif, 'Usage administratif et personnel')}
-${COMP}
+    casier_judiciaire: ()=>`Monsieur le Procureur de la République,\nTribunal de Première Instance de ${L},\n\nJe soussigné(e) ${N}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'],L)}, fils/fille de ${or(d.pere,'—')} et de ${or(d.mere,'—')}, de nationalité malienne, demeurant à ${or(d.adresse,L)}${T},\n\nai l'honneur de solliciter auprès de votre parquet la délivrance d'un extrait de mon casier judiciaire (Bulletin N°3).\n\nINFORMATIONS PERSONNELLES :\n  Nom et Prénom         : ${N}\n  Date de naissance     : ${fmtDateShort(d['date-naiss'])}\n  Lieu de naissance     : ${or(d['lieu-naiss'],L)}\n  Père                  : ${or(d.pere,'—')}\n  Mère                  : ${or(d.mere,'—')}\n  Adresse               : ${or(d.adresse,L)}\n  Nationalité           : Malienne\n\nMOTIF : ${or(d.motif,'Dossier administratif / Emploi')}${C}\n\nDans l'espoir d'une suite diligente, je vous prie d'agréer, Monsieur le Procureur, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-Dans l'espoir d'une suite favorable à ma requête, je vous prie d'agréer, Monsieur le Chef du Centre d'État Civil, l'expression de ma haute considération.
+    declaration_perte: ()=>`Monsieur le Commissaire de Police de ${L},\n\nJe soussigné(e) ${N}, demeurant à ${L}${T},\n\ndéclare solennellement avoir perdu le(s) document(s) suivant(s) :\n\nDOCUMENT PERDU :\n  Nature               : ${or(d['doc-perdu'],'—')}\n  Numéro / Référence   : ${or(d['num-doc'],'Non disponible')}\n  Date de perte        : ${fmtDateShort(d['date-perte'])}\n  Lieu de perte        : ${or(d['lieu-perte'],L)}\n\nCIRCONSTANCES :\n  ${or(d.circonstances,'Perte constatée dans des circonstances indépendantes de ma volonté.')}${C}\n\nJe certifie sur l'honneur que ces informations sont exactes. Je déclare n'avoir fait aucun usage frauduleux de ce document et m'engage à le restituer si retrouvé.\n\nJe sollicite un procès-verbal de déclaration de perte pour remplacement.\n\nVeuillez agréer, Monsieur le Commissaire, l'expression de mes respectueuses salutations.\n\nFait à ${L}, le ${D}\n\nLe/La déclarant(e)\n${N}`,
 
-Fait à ${LIEU}, le ${DATE}
+    legalisation: ()=>`Monsieur le Chef d'Arrondissement / Monsieur le Maire,\nCommune de ${L},\n\nJe soussigné(e) ${N}, demeurant à ${L}${T},\n\nai l'honneur de solliciter auprès de votre autorité la légalisation de ma signature apposée sur le document ci-joint.\n\nNATURE DU DOCUMENT À LÉGALISER :\n  Type de document      : ${or(d['nature-doc'],'—')}\n  Destination           : ${or(d.destination,'—')}\n  Motif                 : ${or(d.motif,'Formalité administrative')}${C}\n\nJe me présenterai en personne pour apposer ma signature devant votre autorité.\n\nVeuillez agréer, Monsieur le Chef d'Arrondissement, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-Le/La demandeur(se)`,
+    autorisation_mariage: ()=>`Monsieur le Maire de la Commune de ${L},\nOfficier d'État Civil,\n\nNous soussignés :\n  Futur époux   : ${or(d.epoux,N)}, né(e) le ${fmtDateShort(d['date-nais-epoux'])}\n  Future épouse : ${or(d.epouse,'—')}, née le ${fmtDateShort(d['date-nais-epouse'])}\n\ndemeurant tous deux à ${L}${T},\n\navons l'honneur de solliciter auprès de votre autorité l'autorisation de célébrer notre mariage civil.\n\nDATES ET TÉMOINS :\n  Date prévue de la cérémonie : ${fmtDateShort(d['date-ceremonie'])}\n  Témoin 1   : ${or(d.temoin1,'—')}\n  Témoin 2   : ${or(d.temoin2,'—')}${C}\n\nNous déclarons être libres de tout lien matrimonial antérieur et remplir toutes les conditions légales requises par le Code des Personnes et de la Famille du Mali.\n\nVeuillez agréer, Monsieur le Maire, l'expression de notre haute considération.\n\nFait à ${L}, le ${D}\n\nLe futur époux                     La future épouse\n${or(d.epoux,N)}                   ${or(d.epouse,'—')}`,
 
-    /* 2. CARTE D'IDENTITÉ */
-    carte_id: () => `Monsieur le Commissaire de Police,
-Chef du Service d'État Civil de ${LIEU},
+    domicile: ()=>`ATTESTATION DE DOMICILE\n\nJe soussigné(e) ${or(d.proprietaire,N)}, ${d.proprietaire ? 'propriétaire / chef de famille,' : ''} demeurant à ${or(d.adresse,L)}, Commune de ${or(d.commune,L)},\n\ncertifie par la présente que Monsieur / Madame ${N} réside effectivement et de façon habituelle à l'adresse suivante :\n\n  Adresse complète     : ${or(d.adresse,L)}\n  Commune              : ${or(d.commune,L)}\n  Durée de résidence   : ${or(d.duree,'—')}\n  Téléphone            : ${or(d.tel,'—')}\n\nCette attestation est établie à la demande de l'intéressé(e) pour servir et valoir ce que de droit, notamment pour : ${or(d.motif,'usage administratif')}.${C}\n\nJe certifie sur l'honneur l'exactitude des informations ci-dessus.\n\nFait à ${L}, le ${D}\n\nLe/La soussigné(e)`,
 
-Je soussigné(e) ${NOM}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'], LIEU)},
-de nationalité malienne, demeurant à ${or(d.adresse, LIEU)},
-exerçant la profession de ${or(d.profession, '—')}${TEL},
+    bail: ()=>`CONTRAT DE BAIL LOCATIF\n\nENTRE LES SOUSSIGNÉS :\n\nBAILLEUR : ${or(d.bailleur,'—')}, ci-après désigné « le Bailleur »\nLOCATAIRE : ${or(d.locataire||N,'—')}, ci-après désigné « le Locataire »\n\nIL A ÉTÉ CONVENU CE QUI SUIT :\n\nARTICLE 1 — OBJET DU BAIL\nLe Bailleur donne en location au Locataire :\n  Description : ${or(d.bien,'—')}\n  Adresse     : ${or(d.adresse,L)}\n\nARTICLE 2 — DURÉE\nBail conclu pour : ${or(d.duree,'—')}, prenant effet le ${fmtDateShort(d['date-debut'])}.\n\nARTICLE 3 — LOYER\nLoyer mensuel fixé à ${fmtFCFA(d.loyer)}, payable le 5 de chaque mois.\n\nARTICLE 4 — OBLIGATIONS DU LOCATAIRE\nLe Locataire s'engage à :\n  - Payer le loyer aux échéances convenues\n  - Entretenir le bien en bon état de propreté\n  - Ne pas sous-louer sans accord écrit du Bailleur\n  - Restituer les lieux en bon état en fin de bail\n\nARTICLE 5 — RÉSILIATION\nPréavis d'un (1) mois minimum par écrit.${C}\n\nFait à ${L}, le ${D}, en deux (2) exemplaires.\n\nLe Bailleur                              Le Locataire\n${or(d.bailleur,'—')}                    ${or(d.locataire||N,'—')}`,
 
-ai l'honneur de solliciter la délivrance d'une Carte Nationale d'Identité.
+    connexion: ()=>`Monsieur le Directeur Commercial,\n${or(d.operateur,'Opérateur de télécommunication')} — ${L},\n\nJe soussigné(e) ${N}, demeurant à ${or(d.adresse,L)}${T},\n\nai l'honneur de solliciter une connexion internet aux conditions suivantes :\n\nDÉTAILS DE LA DEMANDE :\n  Type de connexion     : ${or(d['type-conn'],'—')}\n  Adresse d'installation: ${or(d.adresse,L)}\n  Durée souhaitée       : ${or(d.duree,'—')}\n  Opérateur visé        : ${or(d.operateur,'—')}\n  Usage principal       : ${or(d.usage,'—')}${C}\n\nJe m'engage à respecter vos conditions générales d'utilisation et à honorer les paiements selon les modalités convenues.\n\nVeuillez agréer, Monsieur le Directeur, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-ÉTAT CIVIL DU DEMANDEUR :
-  - Nom et Prénom      : ${NOM}
-  - Date de naissance  : ${fmtDateShort(d['date-naiss'])}
-  - Lieu de naissance  : ${or(d['lieu-naiss'], LIEU)}
-  - Père               : ${or(d.pere, '—')}
-  - Mère               : ${or(d.mere, '—')}
-  - Adresse            : ${or(d.adresse, LIEU)}
-  - Profession         : ${or(d.profession, '—')}
-  - Nationalité        : Malienne
-${COMP}
+    reclamation: ()=>`Monsieur le Directeur,\n${or(d.service,'Service Public Concerné')} — ${L},\n\nJe soussigné(e) ${N}, abonné(e) N° ${or(d['num-contrat'],'—')}, demeurant à ${L}${T},\n\nai l'honneur de porter à votre connaissance les désagréments que je subis.\n\nOBJET DE LA RÉCLAMATION :\n  Service concerné      : ${or(d.service,'—')}\n  N° contrat/abonné     : ${or(d['num-contrat'],'—')}\n  Problème depuis       : ${or(d.depuis,'—')}\n\nDESCRIPTION DU PROBLÈME :\n  ${or(d.probleme,'—')}\n\nDEMANDE FORMULÉE :\n  ${or(d.demande,'Intervention rapide pour résoudre ce problème.')}${C}\n\nJe vous rappelle que cette situation me cause un préjudice important. J'espère votre intervention dans les meilleurs délais.\n\nVeuillez agréer, Monsieur le Directeur, l'expression de ma considération distinguée.\n\nFait à ${L}, le ${D}\n\nLe/La réclamant(e)\n${N}`,
 
-Je m'engage à fournir tous les documents requis (extrait d'acte de naissance, certificat de résidence, photos d'identité) et à me présenter en personne pour les formalités biométriques.
+    declaration_commerce: ()=>`Monsieur le Chef du Service du Commerce,\nDirection Régionale du Commerce et de la Concurrence de ${L},\n\nJe soussigné(e) ${N}, demeurant à ${or(d.adresse,L)}${T},\n\nai l'honneur de déclarer l'exercice d'une activité commerciale aux conditions suivantes :\n\nDÉCLARATION D'ACTIVITÉ :\n  Raison sociale        : ${or(d['raison-sociale'],'—')}\n  Nature de l'activité  : ${or(d.nature,'—')}\n  Adresse du commerce   : ${or(d.adresse,L)}\n  Capital de départ     : ${fmtFCFA(d.capital)}\n  Date de début         : ${fmtDateShort(d['date-debut'])}\n  N° NINEA              : ${or(d.ninea,'En cours d\'attribution')}\n\nJe certifie l'exactitude des informations ci-dessus et m'engage à respecter la réglementation commerciale en vigueur au Mali, notamment le Code de Commerce et les textes fiscaux applicables.${C}\n\nVeuillez agréer, Monsieur le Chef du Service, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La déclarant(e)\n${N}`,
 
-Veuillez agréer, Monsieur le Commissaire, l'expression de mes respectueuses salutations.
+    autorisation_ouverture: ()=>`Monsieur le Maire de la Commune de ${L},\n\nJe soussigné(e) ${N}, demeurant à ${or(d.adresse,L)}${T},\n\nai l'honneur de solliciter l'autorisation d'ouvrir un établissement commercial dans votre commune.\n\nINFORMATIONS SUR L'ÉTABLISSEMENT :\n  Raison sociale / Enseigne : ${or(d['raison-sociale'],'—')}\n  Nature de l'activité      : ${or(d.nature,'—')}\n  Adresse d'implantation    : ${or(d.adresse,L)}\n  Superficie du local       : ${or(d.superficie,'—')} m²\n  Effectif prévu            : ${or(d.effectif,'—')}\n  Horaires d'ouverture      : ${or(d.horaires,'—')}${C}\n\nJe m'engage à respecter les normes sanitaires, sécuritaires et réglementaires en vigueur et à acquitter toutes taxes et impôts dus.\n\nVeuillez agréer, Monsieur le Maire, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-Fait à ${LIEU}, le ${DATE}
+    attestation_commerce: ()=>`ATTESTATION D'EXERCICE DE COMMERCE\n\nJe soussigné(e) ${N}, propriétaire/gérant(e) de l'établissement dénommé ${or(d['raison-sociale'],'—')}, sis à ${or(d.adresse,L)},\n\ncertifie par la présente exercer l'activité commerciale suivante :\n\n  Dénomination          : ${or(d['raison-sociale'],'—')}\n  Nature de l'activité  : ${or(d.nature,'—')}\n  Adresse               : ${or(d.adresse,L)}\n  Exercice depuis       : ${fmtDateShort(d['date-debut'])}\n  Téléphone             : ${or(d.tel,'—')}\n\nCette attestation est délivrée à la demande de l'intéressé(e) pour servir et valoir ce que de droit, notamment pour : ${or(d.motif,'usage commercial et administratif')}.${C}\n\nFait à ${L}, le ${D}\n\nLe/La soussigné(e)\n${N}`,
 
-Le/La demandeur(se)`,
+    patente: ()=>`Monsieur le Directeur des Impôts,\nDirection des Grandes Entreprises / Centre des Impôts de ${L},\n\nJe soussigné(e) ${N}, demeurant à ${or(d.adresse,L)}${T},\n\nai l'honneur de solliciter l'émission d'une patente commerciale pour l'exercice de mon activité.\n\nINFORMATIONS SUR L'ACTIVITÉ :\n  Raison sociale        : ${or(d['raison-sociale'],'—')}\n  Nature de l'activité  : ${or(d.nature,'—')}\n  Adresse du commerce   : ${or(d.adresse,L)}\n  Chiffre d'affaires estimé : ${fmtFCFA(d['chiffre-affaires'])} / an\n  Date de début         : ${fmtDateShort(d['date-debut'])}${C}\n\nJe m'engage à acquitter la patente due et à respecter toutes obligations fiscales en vigueur au Mali.\n\nVeuillez agréer, Monsieur le Directeur, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-    /* 3. DÉCLARATION DE PERTE */
-    declaration_perte: () => `Monsieur le Commissaire de Police de ${LIEU},
+    certificat_travail: ()=>`CERTIFICAT DE TRAVAIL\n\nJe soussigné(e), représentant légal de ${or(d.employeur,'—')}, certifie par la présente que :\n\nMonsieur / Madame ${N} a été employé(e) dans notre structure aux conditions ci-après :\n\n  Poste occupé              : ${or(d.poste,'—')}\n  Date de début d'emploi    : ${fmtDateShort(d['date-debut'])}\n  ${d['date-fin'] ? `Date de fin d'emploi      : ${fmtDateShort(d['date-fin'])}` : `Statut actuel             : Employé(e) en activité`}\n  Salaire mensuel net       : ${fmtFCFA(d.salaire)}\n\nCe certificat est délivré à la demande de l'intéressé(e) pour servir et valoir ce que de droit, notamment pour : ${or(d.motif,'usage administratif')}.${C}\n\nNous attestons que l'intéressé(e) a exercé ses fonctions avec sérieux, ponctualité et professionnalisme.\n\nFait à ${L}, le ${D}\n\nL'Employeur\n${or(d.employeur,'—')}`,
 
-Je soussigné(e) ${NOM}, demeurant à ${LIEU}${TEL},
+    bonne_vie: ()=>`CERTIFICAT DE BONNE VIE ET MŒURS\n\nNous soussignés :\n  ▸ ${or(d.temoin1,'Témoin 1')}\n  ▸ ${or(d.temoin2,'Témoin 2')}\n\ncertifions par la présente que Monsieur / Madame ${N},\nné(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'],L)},\nexerçant la profession de ${or(d.profession,'—')},\ndemeurant à ${or(d.adresse,L)},\n\nest une personne de bonne vie et mœurs, de bonne réputation et de conduite irréprochable dans notre communauté.\n\nÀ notre connaissance, l'intéressé(e) n'a jamais été impliqué(e) dans une affaire judiciaire contraire à l'ordre public et aux bonnes mœurs.\n\nCe certificat est établi à la demande de l'intéressé(e) pour servir et valoir ce que de droit, notamment pour : ${or(d.motif,'usage administratif')}.${C}\n\nFait sous serment à ${L}, le ${D}\n\n${or(d.temoin1,'—')}                              ${or(d.temoin2,'—')}`,
 
-déclare solennellement avoir perdu le document suivant :
+    demande_emploi: ()=>`${L}, le ${D}\n\n${N}\n${or(d.adresse,L)}\n${T.trim()}\n\nÀ Monsieur / Madame le/la Directeur(trice) des Ressources Humaines,\n${or(d.entreprise,'—')}\n${L}\n\nObjet : Candidature au poste de ${or(d.poste,'—')}\n\nMonsieur / Madame le Directeur,\n\nC'est avec un vif intérêt et beaucoup de motivation que je me permets de vous soumettre ma candidature au poste de ${or(d.poste,'—')} au sein de votre estimable structure.\n\nTitulaire d'un ${or(d.formation,'diplôme professionnel')}, et fort(e) d'une expérience de ${or(d.experience,'—')}, j'ai acquis les compétences suivantes :\n${or(d.competences,'—')}\n\nMotivé(e) et disponible immédiatement, je suis convaincu(e) de pouvoir apporter une contribution sérieuse et durable à votre équipe.${C}\n\nVeuillez trouver ci-joint mon curriculum vitae. Je reste disponible pour tout entretien à votre convenance.\n\nDans l'espoir d'une réponse favorable, je vous prie d'agréer, Monsieur / Madame le Directeur, l'expression de mes respectueuses salutations.\n\n${N}`,
 
-DOCUMENT PERDU :
-  - Nature du document : ${or(d['doc-perdu'], '—')}
-  - Numéro / Référence : ${or(d['num-doc'], 'Non connu')}
-  - Date de la perte   : ${fmtDateShort(d['date-perte'])}
-  - Lieu de la perte   : ${or(d['lieu-perte'], LIEU)}
+    cv: ()=>`══════════════════════════════════════\nCURRICULUM VITAE\n══════════════════════════════════════\n\n▌ INFORMATIONS PERSONNELLES\n─────────────────────────────────────\nNom & Prénom       : ${N}\nDate de naissance  : ${fmtDateShort(d['date-naiss'])}\nAdresse            : ${or(d.adresse,L)}\nTéléphone          : ${or(d.tel,'—')}\nEmail              : ${or(d.email,'—')}\nNationalité        : Malienne\n\n▌ FORMATIONS\n─────────────────────────────────────\n${or(d.formation,'—')}\n\n▌ EXPÉRIENCES PROFESSIONNELLES\n─────────────────────────────────────\n${or(d.experience,'—')}\n\n▌ COMPÉTENCES\n─────────────────────────────────────\n${or(d.competences,'—')}\n\n▌ LANGUES\n─────────────────────────────────────\n${or(d.langues,'Français (courant), Bambara (maternel)')}${C}\n\n══════════════════════════════════════\nFait à ${L}, le ${D}`,
 
-CIRCONSTANCES DE LA PERTE :
-  ${or(d.circonstances, 'Le document a été perdu dans des circonstances indépendantes de ma volonté.')}
-${COMP}
+    lettre_motivation: ()=>`${L}, le ${D}\n\n${N}\n${or(d.adresse,L)}\n${T.trim()}\n\nÀ Monsieur / Madame le Directeur,\n${or(d.entreprise,'—')}\n${L}\n\nObjet : Lettre de motivation — Poste de ${or(d.poste,'—')}\n\nMonsieur / Madame le Directeur,\n\nC'est avec un grand enthousiasme que je postule au poste de ${or(d.poste,'—')} au sein de ${or(d.entreprise,'votre estimable structure')}.\n\nMA MOTIVATION :\n${or(d.motivation,'Votre organisation représente pour moi une opportunité précieuse d\'évoluer dans un environnement dynamique.')}\n\nMES ATOUTS :\n${or(d.competences,'—')}\n\nMON EXPÉRIENCE :\n${or(d.experience,'—')}${C}\n\nConvaincu(e) que mon profil correspond à vos attentes, je me tiens à votre disposition pour un entretien.\n\nVeuillez agréer, Monsieur / Madame le Directeur, l'expression de mes respectueuses salutations.\n\n${N}`,
 
-Je certifie sur l'honneur que les informations ci-dessus sont exactes et sincères. Je déclare n'avoir fait aucun usage frauduleux de ce document et m'engage à le restituer aux autorités compétentes s'il venait à être retrouvé.
+    recommandation: ()=>`${L}, le ${D}\n\n${N}\n${or(d['qualite'],'Signataire')}\n${T.trim()}\n\nÀ Qui de Droit,\n\nObjet : Lettre de recommandation en faveur de ${or(d.recommande,'—')}\n\nJ'ai l'honneur et le plaisir de recommander chaleureusement ${or(d.recommande,'—')}, avec qui j'ai collaboré pendant ${or(d['duree-connue'],'—')} en qualité de ${or(d['poste-rec'],'—')}.\n\nAu cours de notre collaboration, j'ai pu observer les qualités suivantes chez cette personne :\n${or(d.qualites,'Sérieux, ponctualité, sens des responsabilités, compétences professionnelles avérées.')}\n\nCette lettre de recommandation est établie pour servir dans le cadre de : ${or(d.motif,'recherche d\'emploi / admission universitaire')}.${C}\n\nJe la/le recommande sans réserve et suis disponible pour tout complément d'information.\n\nFait à ${L}, le ${D}\n\n${N}\n${or(d.qualite,'—')}`,
 
-Je sollicite un procès-verbal de déclaration de perte aux fins de remplacement dudit document.
+    bourse: ()=>`Monsieur le Directeur,\n${or(d.etablissement,'Direction des Bourses')} — ${L},\n\nJe soussigné(e) ${N}, né(e) le ${fmtDateShort(d['date-naiss'])}, de nationalité malienne, demeurant à ${L}${T},\n\nai l'honneur de solliciter l'attribution d'une bourse d'études pour l'année académique en cours.\n\nINFORMATIONS ACADÉMIQUES :\n  Établissement ciblé   : ${or(d.etablissement,'—')}\n  Filière / Spécialité  : ${or(d.filiere,'—')}\n  Niveau actuel         : ${or(d.niveau,'—')}\n\nSITUATION FAMILIALE :\n  Situation des parents : ${or(d['situation'],'—')}\n  Revenus mensuels      : ${fmtFCFA(d['revenu-parents'])}\n\nJUSTIFICATION :\n${or(d.motif,'Ma situation familiale précaire ne me permet pas d\'assurer le financement de mes études sans aide extérieure.')}${C}\n\nDans l'espoir d'une suite favorable, je vous prie d'agréer, Monsieur le Directeur, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-Veuillez agréer, Monsieur le Commissaire, l'expression de mes respectueuses salutations.
+    absence_scolaire: ()=>`${L}, le ${D}\n\n${N}\n${T.trim()}\n\nÀ Monsieur / Madame le Directeur,\n${or(d.etablissement,'Établissement scolaire')} — ${L}\n\nObjet : Autorisation d'absence pour ${or(d.enfant,N)}\n\nMonsieur / Madame le Directeur,\n\nJe soussigné(e) ${N}, parent/tuteur de ${or(d.enfant,N)}, élève en classe de ${or(d.classe,'—')},\n\nvous informe que l'intéressé(e) sera absent(e) du ${fmtDateShort(d['date-debut-abs'])} au ${fmtDateShort(d['date-fin-abs'])} pour le motif suivant :\n\n  ${or(d.motif,'Motif familial')}\n${C}\n\nJe vous assure que l'élève rattrapera les cours manqués dans les meilleurs délais.\n\nVeuillez agréer, Monsieur / Madame le Directeur, l'expression de ma haute considération.\n\n${N}`,
 
-Fait à ${LIEU}, le ${DATE}
+    inscription: ()=>`Monsieur / Madame le Directeur des Études,\n${or(d.etablissement,'Établissement scolaire / universitaire')} — ${L},\n\nJe soussigné(e) ${N}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'],L)}, de nationalité malienne, demeurant à ${L}${T},\n\nai l'honneur de solliciter mon inscription / réinscription dans votre établissement.\n\nINFORMATIONS ACADÉMIQUES :\n  Filière / Classe demandée  : ${or(d.filiere,'—')}\n  Dernier établissement      : ${or(d['dernier-etab'],'—')}\n  Dernière classe / Diplôme  : ${or(d['derniere-classe'],'—')}\n  Motif de la demande        : ${or(d.motif,'Nouvelle inscription')}${C}\n\nJe m'engage à respecter le règlement intérieur de votre établissement et à être assidu(e) dans mes études.\n\nVeuillez agréer, Monsieur / Madame le Directeur, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-Le/La déclarant(e)`,
+    indigence: ()=>`CERTIFICAT D'INDIGENCE\n\nNous soussigné(e), Chef de quartier / Autorité compétente de ${L},\n\ncertifions par la présente que Monsieur / Madame ${N},\nné(e) le ${fmtDateShort(d['date-naiss'])}, demeurant à ${or(d.adresse,L)},\n\nest une personne dans une situation d'indigence avérée.\n\nSITUATION DE L'INTÉRESSÉ(E) :\n  Situation familiale   : ${or(d.situation,'—')}\n  Revenus mensuels      : ${fmtFCFA(d.revenus)} (déclarés)\n  Charges principales   : ${or(d.charges,'—')}\n\nTÉMOINS ATTESTANT LA SITUATION :\n  ▸ ${or(d.temoin1,'—')}\n\nCe certificat est établi à la demande de l'intéressé(e) pour lui permettre de bénéficier d'une prise en charge médicale / sociale concernant : ${or(d.motif,'soins médicaux')}.${C}\n\nFait à ${L}, le ${D}\n\nL'Autorité compétente\n(Signature et cachet)`,
 
-    /* 4. PASSEPORT */
-    passeport: () => `Monsieur le Directeur de la Direction Générale de la Police Nationale,
-Service des Passeports,
+    evacuation: ()=>`Monsieur le Directeur,\nService de Santé / Direction Régionale de la Santé de ${L},\n\nJe soussigné(e) ${N}, demeurant à ${L}${T}, agissant en qualité de (tuteur/parent/patient) de ${or(d.patient,N)},\n\nai l'honneur de solliciter une évacuation sanitaire dans les meilleurs délais.\n\nINFORMATIONS MÉDICALES :\n  Nom du patient        : ${or(d.patient,N)}\n  Date de naissance     : ${fmtDateShort(d['date-naiss'])}\n  Diagnostic            : ${or(d.diagnostic,'—')}\n  Hôpital d'origine     : ${or(d['hopital-origine'],'—')}\n  Médecin référent      : ${or(d.medecin,'—')}\n  Hôpital de destination: ${or(d['hopital-dest'],'CHU Gabriel Touré, Bamako')}\n  Degré d'urgence       : ${or(d.urgence,'Urgent')}${C}\n\nL'état de santé du patient ne permet pas d'assurer une prise en charge adéquate dans notre localité. Une évacuation d'urgence est nécessaire.\n\nVeuillez agréer, Monsieur le Directeur, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-Je soussigné(e) ${NOM}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'], LIEU)},
-de nationalité malienne, demeurant à ${or(d.adresse, LIEU)}${TEL},
+    aide_sociale: ()=>`Monsieur le Directeur,\nService Social de ${L},\n\nJe soussigné(e) ${N}, demeurant à ${L}${T},\n\nai l'honneur de solliciter votre bienveillante assistance dans le cadre d'une aide sociale.\n\nSITUATION PERSONNELLE :\n  Situation familiale   : ${or(d.situation,'—')}\n  Revenus mensuels      : ${fmtFCFA(d.revenus)}\n  Charges principales   : ${or(d.charges,'—')}\n\nTYPE D'AIDE SOLLICITÉE : ${or(d['type-aide'],'—')}\n\nJUSTIFICATION :\n${or(d.justification,'Ma situation précaire ne me permet pas de subvenir à mes besoins essentiels sans soutien extérieur.')}${C}\n\nJe certifie sur l'honneur l'exactitude des informations fournies.\n\nVeuillez agréer, Monsieur le Directeur, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-ai l'honneur de solliciter la délivrance d'un passeport ordinaire malien.
+    permis_construire: ()=>`Monsieur le Maire de la Commune de ${L},\nService Technique / Urbanisme,\n\nJe soussigné(e) ${N}, demeurant à ${or(d.adresse,L)}${T},\n\nai l'honneur de solliciter la délivrance d'un permis de construire pour les travaux suivants :\n\nNATURE DES TRAVAUX :\n  Type de travaux       : ${or(d['nature-travaux'],'Construction neuve')}\n  Adresse du terrain    : ${or(d.adresse,L)}\n  Superficie du terrain : ${or(d.superficie,'—')} m²\n  Superficie à bâtir    : ${or(d['superficie-bat'],'—')} m²\n  Titre foncier N°      : ${or(d['num-titre'],'En cours')}\n  Architecte chargé     : ${or(d.architecte,'Non applicable')}${C}\n\nJe m'engage à réaliser les travaux conformément aux plans approuvés et aux normes d'urbanisme et de construction en vigueur.\n\nVeuillez agréer, Monsieur le Maire, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-INFORMATIONS PERSONNELLES :
-  - Nom et Prénom      : ${NOM}
-  - Date de naissance  : ${fmtDateShort(d['date-naiss'])}
-  - Lieu de naissance  : ${or(d['lieu-naiss'], LIEU)}
-  - Adresse            : ${or(d.adresse, LIEU)}
-  - Destination        : ${or(d.destination, '—')}
-  - Motif du voyage    : ${or(d.motif, '—')}
-  - Garant (si applicable) : ${or(d.garant, 'Sans objet')}
-${COMP}
+    possession_fonciere: ()=>`ATTESTATION DE POSSESSION FONCIÈRE COUTUMIÈRE\n\nNous soussignés :\n  ▸ ${or(d.temoin1,'Chef de quartier / Notable 1')}\n  ▸ ${or(d.temoin2,'Notable 2')}\n\ncertifions par la présente que Monsieur / Madame ${N} est en possession effective et paisible du terrain sis à :\n\nLOCALISATION DU TERRAIN :\n  Situation géographique : ${or(d.adresse,L)}\n  Superficie approximative: ${or(d.superficie,'—')}\n  Durée de possession    : ${or(d.duree,'—')}\n  Origine de la possession: ${or(d.origine,'—')}\n\nCette possession s'exerce de manière continue, publique et non équivoque, à la connaissance de tous les membres de la communauté.${C}\n\nNous attestons n'avoir connaissance d'aucun litige ni d'aucune contestation concernant ce terrain.\n\nFait à ${L}, le ${D}\n\n${or(d.temoin1,'—')}                              ${or(d.temoin2,'—')}`,
 
-Je certifie l'exactitude des renseignements fournis et m'engage à respecter les lois et règlements en vigueur relatifs aux voyages à l'étranger.
+    permis_conduire: ()=>`Monsieur le Directeur,\nService des Transports — ${L},\n\nJe soussigné(e) ${N}, né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'],L)}, de nationalité malienne, demeurant à ${or(d.adresse,L)}, exerçant la profession de ${or(d.profession,'—')}${T},\n\nai l'honneur de solliciter la délivrance d'un permis de conduire de catégorie ${or(d.categorie,'B')}.\n\nINFORMATIONS :\n  Nom et Prénom         : ${N}\n  Date de naissance     : ${fmtDateShort(d['date-naiss'])}\n  Adresse               : ${or(d.adresse,L)}\n  Catégorie demandée    : ${or(d.categorie,'B')}\n  Auto-école            : ${or(d['auto-ecole'],'Sans auto-école')}\n${C}\n\nJe m'engage à me soumettre aux épreuves théoriques et pratiques requises et à respecter le code de la route malien.\n\nVeuillez agréer, Monsieur le Directeur, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-Veuillez agréer, Monsieur le Directeur, l'expression de ma haute considération.
+    accident: ()=>`Monsieur le Commissaire de Police de ${L},\n\nJe soussigné(e) ${N}, demeurant à ${L}${T},\n\nai l'honneur de vous déclarer un accident de la circulation survenu dans les circonstances suivantes :\n\nFAITS DE L'ACCIDENT :\n  Date et heure         : ${or(d['date-accident'],'—')}\n  Lieu de l'accident    : ${or(d['lieu-accident'],L)}\n  Mon véhicule          : ${or(d.vehicule,'—')}\n  Véhicule adverse      : ${or(d.adverse,'—')}\n\nCIRCONSTANCES :\n${or(d.circonstances,'—')}\n\nDÉGÂTS ET BLESSÉS :\n${or(d.degats,'—')}\n\nTÉMOINS :\n  ${or(d.temoins,'Aucun témoin identifié')}${C}\n\nJe sollicite l'établissement d'un procès-verbal de constat d'accident pour mes démarches d'assurance.\n\nVeuillez agréer, Monsieur le Commissaire, l'expression de mes respectueuses salutations.\n\nFait à ${L}, le ${D}\n\nLe/La déclarant(e)\n${N}`,
 
-Fait à ${LIEU}, le ${DATE}
+    remboursement: ()=>`ENGAGEMENT DE REMBOURSEMENT\n\nJe soussigné(e) ${N}, demeurant à ${L}${T},\n\mconfesse par la présente avoir reçu en prêt de ${or(d.creancier,'—')} (ci-après le Créancier), la somme de ${fmtFCFA(d.montant)}, en date du ${fmtDateShort(d['date-pret'])}.\n\nCONDITIONS DE REMBOURSEMENT :\n  Montant emprunté      : ${fmtFCFA(d.montant)}\n  Date de remboursement : ${fmtDateShort(d.echeance)}\n  Modalités             : ${or(d.modalites,'En une seule fois')}\n  Garantie offerte      : ${or(d.garantie,'Sur l\'honneur')}\n\nJe m'engage formellement à rembourser intégralement cette somme selon les modalités ci-dessus. En cas de défaillance, je consens à toutes poursuites judiciaires nécessaires.${C}\n\nFait à ${L}, le ${D}, en deux (2) exemplaires.\n\nLe/La débiteur(trice)          Le/La créancier(ière)\n${N}                           ${or(d.creancier,'—')}`,
 
-Le/La demandeur(se)`,
+    caution: ()=>`ACTE DE CAUTION SOLIDAIRE\n\nJe soussigné(e) ${N}, demeurant à ${or(d['adresse-caution'],L)}${T},\n\nme porte caution solidaire de ${or(d.debiteur,'—')} envers ${or(d.creancier,'—')},\n\npour garantir le paiement et l'exécution de :\n  Nature de l'obligation : ${or(d['motif-dette'],'—')}\n  Montant cautionné      : ${fmtFCFA(d.montant)}\n\nEn ma qualité de caution solidaire, je m'engage à payer immédiatement la somme due au Créancier en cas de défaillance du débiteur principal, sans qu'il soit nécessaire de le poursuivre préalablement.\n\nBIENS DU GARANT :\n  ${or(d.biens,'À déclarer lors de la signature')}\n${C}\n\nFait à ${L}, le ${D}\n\nLe/La Caution\n${N}`,
 
-    /* 5. ATTESTATION DE DOMICILE */
-    domicile: () => `ATTESTATION DE DOMICILE
+    demande_credit: ()=>`Monsieur le Directeur,\n${or(d.banque,'Établissement Financier')} — ${L},\n\nJe soussigné(e) ${N}, demeurant à ${L}${T},\n\nai l'honneur de solliciter auprès de votre institution l'octroi d'un crédit.\n\nDÉTAILS DE LA DEMANDE :\n  Montant demandé        : ${fmtFCFA(d.montant)}\n  Durée de remboursement : ${or(d['duree-credit'],'—')}\n  Objet du crédit        : ${or(d.objet,'—')}\n  Garantie proposée      : ${or(d.garantie,'—')}\n  Revenus mensuels nets  : ${fmtFCFA(d.revenus)}\n${C}\n\nJe m'engage à fournir toutes pièces justificatives requises et à honorer scrupuleusement les échéances de remboursement.\n\nDans l'espoir d'une réponse favorable, veuillez agréer, Monsieur le Directeur, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La demandeur(se)\n${N}`,
 
-Je soussigné(e) ${or(d.proprietaire, NOM)}, ${d.proprietaire && d.proprietaire !== d.nom ? 'propriétaire / chef de famille, ' : ''}demeurant à ${or(d.adresse, LIEU)}, Commune de ${or(d.commune, LIEU)},
+    vente: ()=>`ATTESTATION DE VENTE\n\nENTRE LES SOUSSIGNÉS :\nVENDEUR   : ${or(d.vendeur,'—')}\nACHETEUR  : ${or(d.acheteur||N,'—')}\n\nIL A ÉTÉ CONVENU CE QUI SUIT :\n\nARTICLE 1 — OBJET\nLe Vendeur cède à l'Acheteur : ${or(d.objet,'—')}\nDescription : ${or(d['desc-objet'],'—')}\n\nARTICLE 2 — PRIX\nPrix de vente : ${fmtFCFA(d.prix)}, payé comptant ce jour dont quittance.\n\nARTICLE 3 — GARANTIES\nLe Vendeur garantit être le seul propriétaire du bien, libre de tout engagement.\n\nARTICLE 4 — TRANSFERT DE PROPRIÉTÉ\nEffectif à compter de la signature du présent acte.${C}\n\nFait à ${L}, le ${D}, en deux (2) exemplaires.\n\nLe Vendeur                               L'Acheteur\n${or(d.vendeur,'—')}                     ${or(d.acheteur||N,'—')}`,
 
-atteste par la présente que Monsieur / Madame ${NOM} réside effectivement à l'adresse suivante :
+    procuration: ()=>`LETTRE DE PROCURATION\n\nJe soussigné(e) ${N}, demeurant à ${L}${T},\n\ndonne par la présente procuration à :\n  MANDATAIRE : ${or(d.mandataire,'—')}\n  Lien        : ${or(d.lien,'—')}\n\npouvoir de me représenter valablement auprès de :\n  ${or(d.institution,'—')}\n\nà l'effet de :\n  ${or(d.pouvoirs,'—')}\n\nDurée de validité : ${or(d.duree,'—')}\n\nLe mandataire aura tous les pouvoirs nécessaires pour accomplir les actes sus-mentionnés et signer tout document y relatif en mon nom.${C}\n\nJe certifie sur l'honneur agir librement et en toute connaissance de cause.\n\nFait à ${L}, le ${D}\n\nLe/La mandant(e)\n${N}`,
 
-  Adresse : ${or(d.adresse, LIEU)}
-  Commune : ${or(d.commune, LIEU)}
-  Durée de résidence : ${or(d.duree, '—')}
-  Téléphone : ${or(d.tel, '—')}
+    retrait_plainte: ()=>`Monsieur le Commissaire / Monsieur le Président,\n${or(d.commissariat,'—')} — ${L},\n\nJe soussigné(e) ${N}, demeurant à ${L}${T},\n\nai l'honneur de vous informer de mon désistement de la plainte déposée contre :\n  Personne mise en cause : ${or(d['mis-en-cause'],'—')}\n  Référence de l'affaire : ${or(d['ref-affaire'],'—')}\n\nMOTIF DU RETRAIT :\n${or(d.motif,'À la suite d\'un accord amiable entre les parties, je retire définitivement ma plainte.')}${C}\n\nJe déclare agir librement, sans contrainte. Ce retrait est définitif et irrévocable.\n\nJe vous prie de classer cette affaire sans suite.\n\nVeuillez agréer, Monsieur le Commissaire, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La plaignant(e)\n${N}`,
 
-Cette attestation est établie à la demande de l'intéressé(e) pour servir et valoir ce que de droit, notamment pour : ${or(d.motif, 'usage administratif')}.${COMP}
+    plainte: ()=>`Monsieur le Commissaire de Police de ${L},\n\nJe soussigné(e) ${N}, demeurant à ${L}${T},\n\nai l'honneur de porter à votre connaissance les faits suivants pour lesquels je sollicite l'ouverture d'une enquête.\n\nFAITS SIGNALÉS :\n  Personne mise en cause : ${or(d['mis-en-cause'],'Inconnu')}\n  Adresse / Localisation : ${or(d['adresse-mec'],'—')}\n  Date des faits         : ${fmtDateShort(d['date-faits'])}\n  Lieu des faits         : ${or(d['lieu-faits'],L)}\n\nDESCRIPTION DES FAITS :\n${or(d.faits,'—')}\n\nPRÉJUDICE SUBI :\n${or(d.prejudi,'—')}\n\nTÉMOINS :\n  ${or(d.temoins,'Aucun témoin identifié à ce stade')}${C}\n\nJe certifie sur l'honneur la véracité des faits exposés ci-dessus et sollicite l'établissement d'un procès-verbal et toutes mesures conservatoires utiles.\n\nVeuillez agréer, Monsieur le Commissaire, l'expression de ma haute considération.\n\nFait à ${L}, le ${D}\n\nLe/La plaignant(e)\n${N}`,
 
-Je certifie sur l'honneur l'exactitude des informations contenues dans la présente attestation et m'engage à en répondre devant les autorités compétentes.
+    honneur: ()=>`ENGAGEMENT SUR L'HONNEUR\n\nJe soussigné(e) ${N}, demeurant à ${L}${T},\n\ndéclare sur l'honneur, librement et sans contrainte, prendre l'engagement suivant :\n\nOBJET DE L'ENGAGEMENT :\n  ${or(d['objet-eng'],'—')}\n\nCONTENU DE L'ENGAGEMENT :\n${or(d.contenu,'—')}\n\nSANCTIONS EN CAS DE MANQUEMENT :\n  ${or(d.penalite,'Je consens à toutes poursuites judiciaires qu\'il conviendra d\'engager.')}\n\nCet engagement est pris devant : ${or(d.institution,'les autorités compétentes')}.${C}\n\nJe certifie que les informations ci-dessus sont exactes et sincères. Toute fausse déclaration m'expose aux sanctions prévues par la loi malienne.\n\nFait à ${L}, le ${D}\n\nLe/La soussigné(e)\n${N}`
 
-Fait à ${LIEU}, le ${DATE}
+  };
 
-Le/La soussigné(e)`,
-
-    /* 6. CONTRAT DE BAIL */
-    bail: () => `CONTRAT DE BAIL LOCATIF
-
-ENTRE LES SOUSSIGNÉS :
-
-BAILLEUR : ${or(d.bailleur, '—')}, ci-après désigné « le Bailleur »
-
-LOCATAIRE : ${or(d.locataire || NOM, '—')}, ci-après désigné « le Locataire »
-
-IL A ÉTÉ CONVENU CE QUI SUIT :
-
-ARTICLE 1 — OBJET DU BAIL
-Le Bailleur donne en location au Locataire le bien suivant :
-  Description : ${or(d.bien, '—')}
-  Adresse     : ${or(d.adresse, LIEU)}
-
-ARTICLE 2 — DURÉE
-Le présent bail est conclu pour une durée de ${or(d.duree, '—')}, prenant effet le ${fmtDateShort(d['date-debut'])}.
-
-ARTICLE 3 — LOYER
-Le loyer mensuel est fixé à ${or(d.loyer, '—')} FCFA, payable d'avance au plus tard le 5 de chaque mois.
-
-ARTICLE 4 — OBLIGATIONS DU LOCATAIRE
-Le Locataire s'engage à :
-  - Payer le loyer aux échéances convenues
-  - Entretenir les lieux en bon état
-  - Ne pas sous-louer sans l'accord écrit du Bailleur
-  - Respecter le voisinage et le règlement intérieur
-  - Restituer les lieux en bon état à la fin du bail
-
-ARTICLE 5 — RÉSILIATION
-Toute résiliation doit être notifiée par écrit avec un préavis d'un (1) mois.${COMP}
-
-Fait à ${LIEU}, le ${DATE}, en deux (2) exemplaires originaux.
-
-Le Bailleur                                    Le Locataire
-${or(d.bailleur, '—')}                         ${or(d.locataire || NOM, '—')}`,
-
-    /* 7. CONNEXION INTERNET */
-    connexion: () => `Monsieur le Directeur Commercial,
-${or(d.operateur, 'Opérateur de télécommunications')} — ${LIEU},
-
-Je soussigné(e) ${NOM}, demeurant à ${or(d.adresse, LIEU)}${TEL},
-
-ai l'honneur de solliciter auprès de votre service une connexion internet aux conditions suivantes :
-
-DÉTAILS DE LA DEMANDE :
-  - Type de connexion   : ${or(d['type-conn'], '—')}
-  - Adresse d'installation : ${or(d.adresse, LIEU)}
-  - Durée souhaitée     : ${or(d.duree, '—')}
-  - Usage principal     : ${or(d.usage, '—')}
-  - Opérateur visé      : ${or(d.operateur, '—')}
-${COMP}
-
-Je m'engage à respecter les conditions générales d'utilisation de vos services et à effectuer le paiement selon les modalités convenues.
-
-Dans l'attente d'une réponse favorable, je vous prie d'agréer, Monsieur le Directeur, l'expression de ma haute considération.
-
-Fait à ${LIEU}, le ${DATE}
-
-Le/La demandeur(se)`,
-
-    /* 8. RÉCLAMATION */
-    reclamation: () => `Monsieur le Directeur,
-${or(d.service, 'Service Public')} — ${LIEU},
-
-Je soussigné(e) ${NOM}, abonné(e) N° ${or(d['num-contrat'], '—')},
-demeurant à ${LIEU}${TEL},
-
-ai l'honneur de porter à votre connaissance les désagréments que je subis en rapport avec vos services.
-
-OBJET DE LA RÉCLAMATION :
-  Service concerné : ${or(d.service, '—')}
-  N° contrat/abonné : ${or(d['num-contrat'], '—')}
-  Problème constaté depuis : ${or(d.depuis, '—')}
-
-DESCRIPTION DU PROBLÈME :
-  ${or(d.probleme, '—')}
-
-CE QUE JE DEMANDE :
-  ${or(d.demande, 'Une intervention rapide pour résoudre le problème.')}
-${COMP}
-
-Je vous rappelle que cette situation me cause un préjudice important et j'espère une intervention rapide de votre part dans les meilleurs délais.
-
-Dans l'attente de votre diligence, veuillez agréer, Monsieur le Directeur, l'expression de ma considération distinguée.
-
-Fait à ${LIEU}, le ${DATE}
-
-Le/La réclamant(e)`,
-
-    /* 9. CERTIFICAT DE TRAVAIL */
-    certificat_travail: () => `CERTIFICAT DE TRAVAIL
-
-Je soussigné(e), représentant légal de ${or(d.employeur, '—')}, certifie par la présente que :
-
-Monsieur / Madame ${NOM} a été employé(e) dans notre structure aux conditions suivantes :
-
-  - Poste occupé          : ${or(d.poste, '—')}
-  - Date de début d'emploi : ${fmtDateShort(d['date-debut'])}
-  ${d['date-fin'] ? `- Date de fin d'emploi   : ${fmtDateShort(d['date-fin'])}` : `- Statut                : Employé(e) actuel(le)`}
-  - Salaire mensuel net   : ${or(d.salaire, '—')} FCFA
-
-Ce certificat est délivré à la demande de l'intéressé(e) pour servir et valoir ce que de droit, notamment pour : ${or(d.motif, 'usage administratif')}.${COMP}
-
-Nous attestons que l'intéressé(e) a accompli ses fonctions avec sérieux et professionnalisme pendant toute la durée de son emploi.
-
-Fait à ${LIEU}, le ${DATE}
-
-L'Employeur
-${or(d.employeur, '—')}`,
-
-    /* 10. BONNE VIE ET MŒURS */
-    bonne_vie: () => `CERTIFICAT DE BONNE VIE ET MŒURS
-
-Nous, soussignés :
-  - ${or(d.temoin1, 'Témoin 1')}
-  - ${or(d.temoin2, 'Témoin 2')}
-
-certifions par la présente que Monsieur / Madame ${NOM},
-né(e) le ${fmtDateShort(d['date-naiss'])} à ${or(d['lieu-naiss'], LIEU)},
-exerçant la profession de ${or(d.profession, '—')},
-demeurant à ${or(d.adresse, LIEU)},
-
-est une personne de bonne vie et mœurs, de bonne moralité et de bonne conduite habituelle.
-
-À notre connaissance, l'intéressé(e) n'a jamais été impliqué(e) dans des affaires judiciaires ou des comportements contraires à l'ordre public et aux bonnes mœurs.
-
-Ce certificat est établi à la demande de l'intéressé(e) pour servir et valoir ce que de droit, notamment pour : ${or(d.motif, 'usage administratif')}.
-${COMP}
-
-Fait sous serment à ${LIEU}, le ${DATE}
-
-Les témoins
-${or(d.temoin1, '—')}                              ${or(d.temoin2, '—')}`,
-
-    /* 11. DEMANDE D'EMPLOI */
-    demande_emploi: () => `${LIEU}, le ${DATE}
-
-${NOM}
-${or(d.adresse, LIEU)}
-${TEL.trim()}
-
-À Monsieur le Directeur des Ressources Humaines,
-${or(d.entreprise, '—')}
-${LIEU}
-
-Objet : Candidature au poste de ${or(d.poste, '—')}
-
-Monsieur le Directeur,
-
-Permettez-moi de vous adresser ma candidature au poste de ${or(d.poste, '—')} au sein de votre estimable organisation.
-
-Fort(e) d'une expérience de ${or(d.experience, '—')}, j'ai acquis les compétences nécessaires pour contribuer efficacement à vos objectifs :
-
-${or(d.competences, '—')}
-
-Ma formation de ${or(d.formation, '—')} m'a permis de développer une expertise solide dans ce domaine.
-
-Motivé(e) et disponible immédiatement, je suis convaincu(e) de pouvoir apporter une contribution significative à votre équipe.
-${COMP}
-
-Dans l'espoir d'une réponse favorable, je vous prie d'agréer, Monsieur le Directeur, l'expression de mes respectueuses salutations.
-
-${NOM}`,
-
-    /* 12. CV */
-    cv: () => `════════════════════════════════════════
-CURRICULUM VITAE
-════════════════════════════════════════
-
-INFORMATIONS PERSONNELLES
-─────────────────────────
-Nom & Prénom    : ${NOM}
-Date naissance  : ${fmtDateShort(d['date-naiss'])}
-Adresse         : ${or(d.adresse, LIEU)}
-Téléphone       : ${or(d.tel, '—')}
-Email           : ${or(d.email, '—')}
-Nationalité     : Malienne
-
-FORMATIONS
-──────────
-${or(d.formation, '—')}
-
-EXPÉRIENCES PROFESSIONNELLES
-─────────────────────────────
-${or(d.experience, '—')}
-
-COMPÉTENCES
-───────────
-${or(d.competences, '—')}
-
-LANGUES
-───────
-${or(d.langues, 'Français, Bambara')}
-${COMP}
-
-════════════════════════════════════════
-Document établi à ${LIEU}, le ${DATE}`,
-
-    /* 13. ATTESTATION DE VENTE */
-    vente: () => `ATTESTATION DE VENTE
-
-Entre les soussignés :
-
-VENDEUR : ${or(d.vendeur, '—')}, ci-après désigné « le Vendeur »
-
-ACHETEUR : ${or(d.acheteur || NOM, '—')}, ci-après désigné « l'Acheteur »
-
-IL A ÉTÉ CONVENU CE QUI SUIT :
-
-ARTICLE 1 — OBJET DE LA VENTE
-Le Vendeur cède et transfère à l'Acheteur la pleine propriété de :
-  ${or(d.objet, '—')}
-
-Description détaillée : ${or(d['desc-objet'], '—')}
-
-ARTICLE 2 — PRIX
-La vente est consentie et acceptée moyennant la somme de ${or(d.prix, '—')} FCFA
-(${or(d.prix, 'montant en lettres')} Francs CFA), payée comptant ce jour dont quittance.
-
-ARTICLE 3 — GARANTIES
-Le Vendeur garantit être le seul et unique propriétaire du bien vendu, libre de tout engagement, dette ou hypothèque.
-
-ARTICLE 4 — TRANSFERT DE PROPRIÉTÉ
-Le transfert de propriété est effectif à compter de la date de signature du présent acte.
-${COMP}
-
-Fait à ${LIEU}, le ${DATE}, en deux (2) exemplaires originaux.
-
-Le Vendeur                                     L'Acheteur
-${or(d.vendeur, '—')}                          ${or(d.acheteur || NOM, '—')}`,
-
-    /* 14. PROCURATION */
-    procuration: () => `LETTRE DE PROCURATION
-
-Je soussigné(e) ${NOM}, demeurant à ${LIEU}${TEL},
-
-donne par la présente procuration à :
-
-MANDATAIRE : ${or(d.mandataire, '—')}
-Lien        : ${or(d.lien, '—')}
-
-les pouvoirs de me représenter valablement auprès de :
-  ${or(d.institution, '—')}
-
-à l'effet de :
-  ${or(d.pouvoirs, '—')}
-
-Cette procuration est consentie pour une durée de : ${or(d.duree, '—')}
-
-Le mandataire aura tous les pouvoirs nécessaires pour accomplir les actes sus-mentionnés et signer tout document y relatif en mon nom et pour mon compte.
-${COMP}
-
-Je certifie sur l'honneur que la présente procuration est établie librement et en toute connaissance de cause.
-
-Fait à ${LIEU}, le ${DATE}
-
-Le/La mandant(e)
-${NOM}`,
-
-    /* 15. RETRAIT DE PLAINTE */
-    retrait_plainte: () => `Monsieur le Commissaire / Monsieur le Président,
-${or(d.commissariat, '—')},
-
-Je soussigné(e) ${NOM}, demeurant à ${LIEU}${TEL},
-
-ai l'honneur de vous informer de ma décision de retirer la plainte que j'avais déposée contre :
-
-Personne mise en cause : ${or(d['mis-en-cause'], '—')}
-Référence de l'affaire : ${or(d['ref-affaire'], 'Non disponible')}
-
-MOTIF DU RETRAIT :
-${or(d.motif, 'Après réflexion et concertation entre les parties, nous sommes parvenus à un accord amiable satisfaisant pour toutes les parties concernées.')}
-${COMP}
-
-Je déclare agir librement et en toute connaissance de cause, sans contrainte ni pression d'aucune sorte. Je confirme que ce retrait de plainte est définitif et irrévocable.
-
-Je vous prie de bien vouloir classer sans suite cette affaire et d'en prendre bonne note.
-
-Veuillez agréer, Monsieur le Commissaire, l'expression de ma haute considération.
-
-Fait à ${LIEU}, le ${DATE}
-
-Le/La plaignant(e)`,
-
-    /* 16. LETTRE DE MOTIVATION */
-    lettre_motivation: () => `${LIEU}, le ${DATE}
-
-${NOM}
-${or(d.adresse, LIEU)}
-${TEL.trim()}
-
-À Monsieur le Directeur des Ressources Humaines,
-${or(d.entreprise, '—')}
-${LIEU}
-
-Objet : Lettre de motivation — Poste de ${or(d.poste, '—')}
-
-Monsieur le Directeur,
-
-C'est avec un vif intérêt que je vous soumets ma candidature pour le poste de ${or(d.poste, '—')} au sein de ${or(d.entreprise, 'votre estimable structure')}.
-
-MA MOTIVATION :
-${or(d.motivation, 'Votre organisation représente pour moi une opportunité exceptionnelle d\'évoluer dans un environnement dynamique et stimulant.')}
-
-MES POINTS FORTS :
-${or(d.competences, '—')}
-
-MON PARCOURS :
-${or(d.experience, '—')}
-${COMP}
-
-Convaincu(e) que mon profil correspond pleinement aux attentes de votre structure, je reste à votre entière disposition pour un entretien à votre convenance.
-
-Dans l'espoir que ma candidature retiendra votre bienveillante attention, veuillez agréer, Monsieur le Directeur, l'expression de mes respectueuses salutations.
-
-${NOM}`,
-
-    /* 17. AIDE SOCIALE */
-    aide_sociale: () => `Monsieur le Directeur,
-Service Social Compétent de ${LIEU},
-
-Je soussigné(e) ${NOM}, demeurant à ${LIEU}${TEL},
-
-ai l'honneur de solliciter votre bienveillante attention sur ma situation et de vous adresser la présente demande d'aide sociale.
-
-SITUATION PERSONNELLE :
-  - Situation familiale  : ${or(d.situation, '—')}
-  - Revenus mensuels     : ${or(d.revenus, '0')} FCFA
-  - Charges principales  : ${or(d.charges, '—')}
-
-TYPE D'AIDE SOLLICITÉE :
-  ${or(d['type-aide'], '—')}
-
-JUSTIFICATION :
-  ${or(d.justification, 'Ma situation financière précaire ne me permet pas de faire face à mes obligations essentielles sans une aide extérieure.')}
-${COMP}
-
-Je certifie sur l'honneur l'exactitude des informations fournies et m'engage à signaler tout changement de situation.
-
-Confiant(e) en votre compréhension et en votre soutien, je vous prie d'agréer, Monsieur le Directeur, l'expression de ma haute considération.
-
-Fait à ${LIEU}, le ${DATE}
-
-Le/La demandeur(se)`
-
-  }; /* fin templates */
-
-  const fn = templates[type];
-  if (!fn) throw new Error('Modèle de document introuvable pour : ' + type);
+  const fn = t[type];
+  if (!fn) throw new Error('Modèle introuvable : ' + type);
   return fn();
 }
 
-/* ════════════════════════════════════════════
-   ACTIONS : Imprimer, Sauvegarder, WhatsApp
-════════════════════════════════════════════ */
-function printDoc() {
-  if (!generatedContent) return;
-  window.print();
-}
+/* ACTIONS */
+function printDoc() { if (generatedContent) window.print(); }
 
 function saveToHistory() {
   if (!generatedContent) return;
   const hist = JSON.parse(localStorage.getItem('samassa_docs_admin') || '[]');
   hist.push(generatedContent);
   localStorage.setItem('samassa_docs_admin', JSON.stringify(hist));
-  loadStats();
-  renderHistorique();
-  /* Toast */
+  loadStats(); renderHistorique();
   const t = document.createElement('div');
-  t.className = 'toast-doc success';
-  t.textContent = '💾 Document enregistré ✓';
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2800);
+  t.className = 'toast-doc success'; t.textContent = '💾 Document enregistré ✓';
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2800);
 }
 
 function shareWhatsApp() {
   if (!generatedContent) return;
-  const msg = `*SAMASSA TECHNOLOGIE*\n_Cyber Café — Grand Marché de Kayes_\n\n📝 *Document généré : ${generatedContent.title}*\nRéférence : ${generatedContent.refNum}\nClient : ${generatedContent.nom}\nDate : ${new Date(generatedContent.timestamp).toLocaleDateString('fr-FR')}\n\nDocument disponible à imprimer chez SAMASSA TECHNOLOGIE.\n📞 77 29 19 31`;
+  const msg = `*SAMASSA TECHNOLOGIE*\n_Cyber Café — Grand Marché de Kayes_\n\n📝 *Document : ${generatedContent.title}*\nRéférence : ${generatedContent.refNum}\nClient : ${generatedContent.nom}\nDate : ${new Date(generatedContent.timestamp).toLocaleDateString('fr-FR')}\n\nDocument disponible à imprimer.\n📞 77 29 19 31`;
   window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 }
 
-/* ════════════════════════════════════════════
-   HISTORIQUE
-════════════════════════════════════════════ */
+/* HISTORIQUE */
 function renderHistorique() {
   const hist = JSON.parse(localStorage.getItem('samassa_docs_admin') || '[]');
   const container = document.getElementById('hist-list');
@@ -1294,9 +704,9 @@ function renderHistorique() {
   container.innerHTML = [...hist].reverse().map((d, idx) => {
     const realIdx = hist.length - 1 - idx;
     const cfg = DOC_CONFIG[d.type];
-    const date = d.timestamp ? new Date(d.timestamp).toLocaleDateString('fr-FR', { day:'2-digit', month:'short', year:'numeric' }) : '—';
+    const date = d.timestamp ? new Date(d.timestamp).toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'}) : '—';
     return `<div class="hist-item">
-      <div class="hist-ico">${cfg?.icon || '📝'}</div>
+      <div class="hist-ico">${cfg?.icon||'📝'}</div>
       <div class="hist-info">
         <div class="hist-type">${d.title}</div>
         <div class="hist-client">👤 ${d.nom}</div>
@@ -1312,31 +722,27 @@ function renderHistorique() {
 
 function reprintDoc(idx) {
   const hist = JSON.parse(localStorage.getItem('samassa_docs_admin') || '[]');
-  const d = hist[idx];
-  if (!d) return;
-  const cfg = DOC_CONFIG[d.type];
+  const d = hist[idx]; if (!d) return;
   document.getElementById('d-title').textContent = d.title;
   document.getElementById('d-ref-num').textContent = d.refNum;
-  document.getElementById('d-ref-date').textContent = new Date(d.timestamp).toLocaleDateString('fr-FR', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+  document.getElementById('d-ref-date').textContent = new Date(d.timestamp).toLocaleDateString('fr-FR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('d-ref-lieu').textContent = (d.data?.lieu||'Kayes') + ', Mali';
   document.getElementById('d-body').textContent = d.text;
   document.getElementById('preview-placeholder').style.display = 'none';
   document.getElementById('doc-a4-content').style.display = 'block';
   document.getElementById('preview-actions').style.display = 'flex';
   generatedContent = d;
   switchTab('creer');
-  setTimeout(() => document.getElementById('doc-a4-content').scrollIntoView({ behavior:'smooth', block:'start' }), 200);
+  setTimeout(() => document.getElementById('doc-a4-content').scrollIntoView({behavior:'smooth',block:'start'}), 200);
 }
 
 function clearDocHistory() {
   if (!confirm('Effacer tout l\'historique des documents générés ?')) return;
   localStorage.removeItem('samassa_docs_admin');
   localStorage.removeItem('samassa_docs_counter');
-  docCounter = 0;
-  loadStats();
-  renderHistorique();
+  docCounter = 0; loadStats(); renderHistorique();
 }
 </script>
-
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
 </body>
 </html>
