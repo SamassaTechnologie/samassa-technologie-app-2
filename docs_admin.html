@@ -146,6 +146,84 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothi
 .doc-search{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:'Inter',inherit;outline:none;margin-bottom:12px;transition:border-color .2s}
 .doc-search:focus{border-color:var(--indigo);box-shadow:0 0 0 3px rgba(55,48,163,.08)}
 
+
+/* ════════════════════════════════════════
+   ONGLET IA RÉDACTEUR
+════════════════════════════════════════ */
+.ai-hero{background:linear-gradient(135deg,#1E1B4B 0%,#3730A3 60%,#6366F1 100%);border-radius:14px;padding:18px 20px;margin-bottom:16px;position:relative;overflow:hidden}
+.ai-hero::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06);top:-60px;right:-40px}
+.ai-hero-title{font-size:18px;font-weight:900;color:white;letter-spacing:-.02em;margin-bottom:4px;position:relative}
+.ai-hero-sub{font-size:12px;color:rgba(255,255,255,.65);position:relative;font-weight:500}
+.ai-hero-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:rgba(255,255,255,.9);margin-top:8px;position:relative}
+
+/* Suggestions */
+.sugg-label{font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.sugg-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.sugg-chip{background:var(--indigo-light);border:1.5px solid #C7D2FE;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;color:var(--indigo);cursor:pointer;transition:all .18s;font-family:'Inter',inherit}
+.sugg-chip:hover{background:var(--indigo);color:white;border-color:var(--indigo)}
+
+/* Zone de saisie IA */
+.ai-input-wrap{position:relative;margin-bottom:12px}
+.ai-textarea{
+  width:100%;min-height:130px;padding:14px 16px;
+  border:2px solid var(--border);border-radius:14px;
+  font-size:13px;font-family:'Inter',inherit;color:var(--text);
+  background:#F8FBFD;outline:none;resize:vertical;
+  transition:border-color .2s,box-shadow .2s;line-height:1.7;
+}
+.ai-textarea:focus{border-color:var(--indigo);background:white;box-shadow:0 0 0 3px rgba(55,48,163,.1)}
+.ai-textarea::placeholder{color:#A0B4C8;font-style:italic}
+.ai-char-count{position:absolute;bottom:10px;right:14px;font-size:10px;color:var(--text3);font-weight:600;pointer-events:none}
+
+/* Bouton générer IA */
+.btn-ai{
+  width:100%;padding:14px;background:linear-gradient(135deg,#3730A3,#6366F1);
+  color:white;border:none;border-radius:12px;font-size:14px;font-weight:800;
+  font-family:'Inter',inherit;cursor:pointer;transition:all .22s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 4px 20px rgba(55,48,163,.35);letter-spacing:-.01em;
+}
+.btn-ai:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 28px rgba(55,48,163,.45)}
+.btn-ai:disabled{background:#A5B4FC;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-ai-spinner{width:18px;height:18px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+
+/* Résultat IA */
+.ai-result-wrap{background:#F8FBFD;border:1.5px solid #C7D2FE;border-radius:14px;overflow:hidden;margin-top:14px}
+.ai-result-header{background:var(--indigo-light);padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+.ai-result-label{font-size:12px;font-weight:800;color:var(--indigo);display:flex;align-items:center;gap:6px}
+.ai-copy-btn{background:var(--indigo);color:white;border:none;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',inherit;transition:all .18s}
+.ai-copy-btn:hover{background:var(--indigo-dark)}
+.ai-result-text{padding:16px 18px;font-family:'Times New Roman',serif;font-size:12.5px;line-height:1.9;color:#1a1a1a;white-space:pre-wrap;max-height:500px;overflow-y:auto}
+
+/* Actions export */
+.ai-export-bar{display:flex;gap:8px;padding:12px 16px;border-top:1px solid #E0E7FF;flex-wrap:wrap}
+.btn-word{background:#2B5797;color:white;border:none;border-radius:9px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',inherit;display:flex;align-items:center;gap:6px;transition:all .2s}
+.btn-word:hover{background:#1e3f6f;transform:translateY(-1px)}
+.btn-pdf-print{background:#DC2626;color:white;border:none;border-radius:9px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',inherit;display:flex;align-items:center;gap:6px;transition:all .2s}
+.btn-pdf-print:hover{background:#b91c1c;transform:translateY(-1px)}
+.btn-save-ai{background:var(--green);color:white;border:none;border-radius:9px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',inherit;display:flex;align-items:center;gap:6px;transition:all .2s}
+.btn-save-ai:hover{background:#047857;transform:translateY(-1px)}
+.btn-refine{background:var(--indigo-light);color:var(--indigo);border:1.5px solid #C7D2FE;border-radius:9px;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Inter',inherit;display:flex;align-items:center;gap:6px;transition:all .2s}
+.btn-refine:hover{background:var(--indigo);color:white}
+
+/* Config modale */
+.ai-config-modal{display:none;position:fixed;inset:0;background:rgba(10,22,40,.75);z-index:9500;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.ai-config-card{background:white;border-radius:18px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3);overflow:hidden}
+.ai-config-header{background:linear-gradient(135deg,#1E1B4B,#3730A3);padding:18px 20px;display:flex;align-items:center;justify-content:space-between}
+.ai-config-body{padding:20px}
+
+/* Indicateur statut IA */
+.ai-status{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;padding:8px 14px;border-radius:9px;margin-bottom:14px}
+.ai-status.ok{background:#F0FDF4;color:#059652;border:1.5px solid #D1FAE5}
+.ai-status.nok{background:#FFF7ED;color:#B45309;border:1.5px solid #FDE68A}
+.ai-status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ai-status.ok .ai-status-dot{background:#059652;animation:pulse-dot 2s infinite}
+.ai-status.nok .ai-status-dot{background:#F59E0B}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Tokens usage */
+.tokens-badge{display:inline-flex;align-items:center;gap:4px;background:#EEF2FF;color:#4338CA;border-radius:8px;padding:3px 9px;font-size:10px;font-weight:700;margin-left:8px}
+
 @media print{
   .topbar,.form-panel,.preview-actions,.tab-bar,.stats-bar,.doc-preview>.preview-placeholder{display:none!important}
   .layout{display:block;padding:0;max-width:none}
@@ -182,6 +260,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothi
       <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('creer')">✏️ Créer</button>
         <button class="tab-btn" onclick="switchTab('historique')">🕐 Historique</button>
+        <button class="tab-btn" id="tab-btn-ia" onclick="switchTab('ia')">🤖 IA</button>
       </div>
 
       <!-- ONGLET CRÉER -->
@@ -492,10 +571,14 @@ function filterDocs(query) {
 
 /* TABS */
 function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', ['creer','historique'][i] === tab));
+  const tabs = ['creer','historique','ia'];
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', tabs[i] === tab));
   document.getElementById('tab-creer').classList.toggle('active', tab === 'creer');
   document.getElementById('tab-historique-content').classList.toggle('active', tab === 'historique');
+  const iaTab = document.getElementById('tab-ia-content');
+  if (iaTab) iaTab.classList.toggle('active', tab === 'ia');
   if (tab === 'historique') renderHistorique();
+  if (tab === 'ia') checkAIStatus();
 }
 
 /* STATS */
@@ -743,6 +826,425 @@ function clearDocHistory() {
   docCounter = 0; loadStats(); renderHistorique();
 }
 </script>
-<script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
+<script>
+/* ════════════════════════════════════════════
+   JAVASCRIPT — RÉDACTEUR IA
+════════════════════════════════════════════ */
+
+/* État IA */
+let aiResult = null;
+let aiTitle  = 'Document';
+
+/* Vérifier statut IA au chargement */
+function checkAIStatus() {
+  const key = localStorage.getItem('_samassa_ai_key');
+  const bar  = document.getElementById('ai-status-bar');
+  const txt  = document.getElementById('ai-status-text');
+  if (!bar) return;
+  if (key && key.startsWith('sk-ant-')) {
+    bar.className = 'ai-status ok';
+    txt.textContent = '✅ IA active — Clé API configurée';
+    bar.querySelector('button').textContent = '⚙️ Modifier';
+  } else {
+    bar.className = 'ai-status nok';
+    txt.textContent = 'IA non configurée — Cliquez sur ⚙️ pour configurer';
+  }
+}
+
+/* Suggestions rapides */
+function fillSugg(el) {
+  const map = {
+    'Demande d'acte de naissance':  'Rédige une demande d'acte de naissance pour [NOM PRÉNOM], né(e) le [DATE] à Kayes, fils/fille de [PÈRE] et [MÈRE], demeurant à [QUARTIER], Kayes. Motif : [usage administratif].',
+    'Bourse d'études':              'Rédige une demande de bourse d'études pour [NOM PRÉNOM], né(e) le [DATE], qui souhaite s'inscrire en [FILIÈRE] à [ÉTABLISSEMENT]. Son père [PROFESSION] gagne [REVENUS] FCFA par mois. Il/Elle a obtenu [DIPLÔME] avec la mention [MENTION].',
+    'Attestation de domicile':       'Rédige une attestation de domicile pour [NOM PRÉNOM], demeurant au quartier [QUARTIER] de Kayes depuis [DURÉE]. Cette attestation est nécessaire pour [MOTIF].',
+    'Acte de mariage':               'Rédige une demande d'acte de mariage pour [NOM ÉPOUX] et [NOM ÉPOUSE], mariés le [DATE] à la mairie de Kayes. Témoins : [TÉMOIN 1] et [TÉMOIN 2]. Motif : [MOTIF].',
+    'Casier judiciaire':             'Rédige une demande d'extrait de casier judiciaire pour [NOM PRÉNOM], né(e) le [DATE] à Kayes, fils/fille de [PÈRE] et [MÈRE], demeurant à [QUARTIER]. Motif : [concours/emploi/visa].',
+    'Engagement de remboursement':   'Rédige un engagement de remboursement. Le débiteur [NOM] a emprunté [MONTANT] FCFA à [CRÉANCIER] le [DATE]. Il s'engage à rembourser en [MODALITÉS] avant le [DATE ÉCHÉANCE].',
+    'Autorisation commerce':         'Rédige une demande d'autorisation d'ouverture de commerce pour [NOM], qui souhaite ouvrir [TYPE DE COMMERCE] au quartier [QUARTIER] de Kayes. Superficie : [M²]. Horaires : [HORAIRES].',
+    'Déclaration d'accident':       'Rédige une déclaration d'accident de circulation survenu le [DATE] à [HEURE] à [LIEU DE KAYES]. Mon véhicule [MARQUE IMMAT] est entré en collision avec [AUTRE VÉHICULE]. Dégâts : [DESCRIPTION].'
+  };
+  const txt = el.textContent.trim();
+  const found = Object.keys(map).find(k => txt.includes(k));
+  if (found) {
+    document.getElementById('ai-prompt').value = map[found];
+    updateCharCount(document.getElementById('ai-prompt'));
+  }
+}
+
+/* Compteur caractères */
+function updateCharCount(el) {
+  const n = el.value.length;
+  const el2 = document.getElementById('ai-char-count');
+  if (el2) { el2.textContent = n + ' / 1000'; el2.style.color = n > 900 ? '#DC2626' : ''; }
+}
+
+/* ── GÉNÉRATION IA ── */
+async function generateWithAI() {
+  const prompt = (document.getElementById('ai-prompt')?.value || '').trim();
+  const dest   = (document.getElementById('ai-dest')?.value  || '').trim();
+  const nom    = (document.getElementById('ai-nom')?.value   || '').trim();
+
+  if (!prompt) {
+    alert('Décrivez le document que vous souhaitez générer.');
+    document.getElementById('ai-prompt').focus();
+    return;
+  }
+
+  const apiKey = localStorage.getItem('_samassa_ai_key') || '';
+  if (!apiKey) {
+    openAIConfig();
+    showToast('Configurez d'abord votre clé API IA', 'info');
+    return;
+  }
+
+  const btn  = document.getElementById('btn-ai-gen');
+  const btxt = document.getElementById('btn-ai-txt');
+  btn.disabled = true;
+  btxt.innerHTML = '<div class="btn-ai-spinner"></div> Rédaction en cours...';
+
+  // Contexte enrichi
+  let fullPrompt = prompt;
+  if (dest) fullPrompt += `
+Destinataire : ${dest}`;
+  if (nom)  fullPrompt += `
+Demandeur : ${nom}`;
+  fullPrompt += '
+Ville : Kayes, Mali. Date du jour : ' + new Date().toLocaleDateString('fr-FR', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  try {
+    const res = await fetch('/api/generate-doc', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: fullPrompt, apiKey })
+    });
+
+    const data = await res.json();
+
+    if (data.success && data.text) {
+      aiResult = data.text;
+      aiTitle  = extractDocTitle(data.text, prompt);
+
+      document.getElementById('ai-result-text').textContent = data.text;
+      document.getElementById('ai-result-wrap').style.display = 'block';
+
+      if (data.tokens) {
+        const tot = (data.tokens.input_tokens||0) + (data.tokens.output_tokens||0);
+        document.getElementById('tokens-used').textContent = tot + ' tokens';
+      }
+
+      document.getElementById('ai-result-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+      showToast('✅ Document rédigé par l'IA !', 'success');
+    } else {
+      const msg = data.error || 'Erreur inconnue';
+      if (msg.includes('API key') || msg.includes('authentication')) {
+        showToast('Clé API invalide — Vérifiez la configuration', 'error');
+        openAIConfig();
+      } else {
+        showToast('Erreur IA : ' + msg, 'error');
+      }
+    }
+  } catch (err) {
+    showToast('Erreur réseau : ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btxt.textContent = '✨ Rédiger le document avec l'IA';
+  }
+}
+
+/* Extraire un titre du document généré */
+function extractDocTitle(text, prompt) {
+  const firstLine = text.split('
+').find(l => l.trim().length > 4) || '';
+  if (firstLine.length < 60) return firstLine.trim();
+  const keywords = ['DEMANDE','ATTESTATION','CERTIFICAT','CONTRAT','DÉCLARATION','LETTRE','ENGAGEMENT','AUTORISATION','PROCURATION'];
+  for (const kw of keywords) {
+    if (text.toUpperCase().includes(kw)) return kw + ' — ' + new Date().toLocaleDateString('fr-FR');
+  }
+  return prompt.substring(0, 40).trim() + '...';
+}
+
+/* Copier le résultat */
+function copyAIResult() {
+  if (!aiResult) return;
+  navigator.clipboard.writeText(aiResult)
+    .then(() => showToast('📋 Document copié !', 'success'))
+    .catch(() => showToast('Erreur de copie', 'error'));
+}
+
+/* ── EXPORT WORD ── */
+function exportToWord() {
+  if (!aiResult) return;
+
+  const docTitle = aiTitle || 'Document_Administratif';
+  const safeTitle = docTitle.replace(/[^a-zA-ZÀ-ÿ0-9\s_-]/g,'').trim();
+
+  // Construire le document Word HTML
+  const wordHTML = `<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta charset="UTF-8">
+  <title>${safeTitle}</title>
+  <!--[if gte mso 9]><xml>
+  <w:WordDocument>
+    <w:View>Print</w:View>
+    <w:Zoom>100</w:Zoom>
+    <w:DoNotOptimizeForBrowser/>
+  </w:WordDocument>
+  </xml><![endif]-->
+  <style>
+    @page Section1 {
+      size: 21cm 29.7cm;
+      margin: 2.5cm 2cm 2cm 2.5cm;
+      mso-header-margin: 1.27cm;
+      mso-footer-margin: 1.27cm;
+    }
+    div.Section1 { page: Section1; }
+    body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 12pt;
+      line-height: 1.6;
+      color: #000000;
+      margin: 0;
+      padding: 0;
+    }
+    .entete-mali {
+      text-align: center;
+      margin-bottom: 16pt;
+      padding-bottom: 10pt;
+      border-bottom: 2pt solid #000;
+    }
+    .republique {
+      font-size: 11pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1pt;
+    }
+    .devise {
+      font-size: 10pt;
+      font-style: italic;
+      margin-top: 4pt;
+    }
+    .drapeau {
+      display: inline-block;
+      margin: 6pt 0;
+      font-size: 10pt;
+    }
+    .co-header {
+      margin-bottom: 14pt;
+      border-bottom: 1pt solid #ddd;
+      padding-bottom: 10pt;
+    }
+    .co-name {
+      font-size: 14pt;
+      font-weight: bold;
+      color: #0A1628;
+    }
+    .co-slogan {
+      font-size: 10pt;
+      font-style: italic;
+      color: #0070C0;
+    }
+    .co-info {
+      font-size: 10pt;
+      color: #444;
+      margin-top: 4pt;
+      line-height: 1.6;
+    }
+    .doc-body {
+      font-family: "Times New Roman", Times, serif;
+      font-size: 12pt;
+      line-height: 1.8;
+      white-space: pre-wrap;
+      margin: 14pt 0;
+    }
+    .doc-footer {
+      margin-top: 30pt;
+      padding-top: 10pt;
+      border-top: 1pt solid #ddd;
+      font-size: 9pt;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="Section1">
+
+  <div class="entete-mali">
+    <div class="republique">République du Mali</div>
+    <div class="drapeau">🟩🟨🟥 &nbsp; Un Peuple — Un But — Une Foi</div>
+  </div>
+
+  <div class="co-header">
+    <div class="co-name">SAMASSA TECHNOLOGIE</div>
+    <div class="co-slogan">Tout pour l'informatique — Kayes, Mali</div>
+    <div class="co-info">
+      Grand Marché de Kayes — Rue Soundiata Keita, près du 1er arrondissement<br>
+      Tél : 77 29 19 31 / 62 97 06 30 &nbsp;|&nbsp; samassatechnologie10@gmail.com
+    </div>
+  </div>
+
+  <div class="doc-body">${aiResult.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+
+  <div class="doc-footer">
+    Document généré par SAMASSA TECHNOLOGIE Suite Pro — ${new Date().toLocaleDateString('fr-FR')}
+  </div>
+
+</div>
+</body>
+</html>`;
+
+  const blob = new Blob(['﻿' + wordHTML], {
+    type: 'application/vnd.ms-word;charset=utf-8'
+  });
+
+  const url = URL.createObjectURL(blob);
+  const a   = document.createElement('a');
+  a.href     = url;
+  a.download = safeTitle.replace(/\s+/g,'_') + '.doc';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  showToast('📄 Document Word téléchargé !', 'success');
+}
+
+/* Imprimer le doc IA */
+function printAIDoc() {
+  if (!aiResult) return;
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<title>${aiTitle}</title>
+<style>
+  @page { size: A4; margin: 2.5cm 2cm; }
+  body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 1.8; color: #000; }
+  .header { text-align:center; border-bottom:2pt solid #000; padding-bottom:10pt; margin-bottom:16pt; }
+  .republic { font-weight:bold; font-size:11pt; text-transform:uppercase; letter-spacing:1pt; }
+  .devise { font-style:italic; font-size:10pt; margin-top:4pt; }
+  .co { border-bottom:1pt solid #ddd; padding-bottom:10pt; margin-bottom:14pt; }
+  .co-name { font-size:14pt; font-weight:bold; }
+  .co-info { font-size:10pt; color:#444; margin-top:4pt; }
+  pre { font-family:'Times New Roman',serif; font-size:12pt; white-space:pre-wrap; line-height:1.8; }
+  .footer { margin-top:30pt; border-top:1pt solid #ddd; padding-top:8pt; font-size:9pt; color:#666; text-align:center; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="republic">République du Mali</div>
+  <div class="devise">Un Peuple — Un But — Une Foi</div>
+</div>
+<div class="co">
+  <div class="co-name">SAMASSA TECHNOLOGIE</div>
+  <div class="co-info">Grand Marché de Kayes — Tél: 77 29 19 31 / 62 97 06 30</div>
+</div>
+<pre>${aiResult.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+<div class="footer">Document généré par SAMASSA TECHNOLOGIE Suite Pro — ${new Date().toLocaleDateString('fr-FR')}</div>
+</body></html>`);
+  w.document.close();
+  setTimeout(() => { w.print(); }, 400);
+}
+
+/* Affiner le document */
+function refineDoc() {
+  if (!aiResult) return;
+  const prompt = document.getElementById('ai-prompt');
+  const current = prompt.value.trim();
+  prompt.value = 'Améliore et complète ce document en ajoutant les détails manquants, en vérifiant les formules administratives et en le rendant plus professionnel :
+
+' + aiResult;
+  updateCharCount(prompt);
+  prompt.scrollIntoView({ behavior:'smooth', block:'start' });
+  prompt.focus();
+}
+
+/* Enregistrer en historique */
+function saveAIToHistory() {
+  if (!aiResult) return;
+  const hist = JSON.parse(localStorage.getItem('samassa_docs_admin') || '[]');
+  docCounter++;
+  localStorage.setItem('samassa_docs_counter', String(docCounter));
+  const refNum = 'DA-AI-' + String(docCounter).padStart(4,'0');
+  hist.push({
+    type:      'ai_generated',
+    refNum,
+    title:     aiTitle,
+    nom:       document.getElementById('ai-nom')?.value || 'IA',
+    data:      { prompt: document.getElementById('ai-prompt')?.value || '' },
+    text:      aiResult,
+    timestamp: new Date().toISOString()
+  });
+  localStorage.setItem('samassa_docs_admin', JSON.stringify(hist));
+  loadStats();
+  showToast('💾 Document enregistré dans l'historique (' + refNum + ')', 'success');
+}
+
+/* ── CONFIG IA ── */
+function openAIConfig() {
+  const key = localStorage.getItem('_samassa_ai_key') || '';
+  document.getElementById('ai-api-key-input').value = key;
+  document.getElementById('ai-config-modal').style.display = 'flex';
+}
+function closeAIConfig() {
+  document.getElementById('ai-config-modal').style.display = 'none';
+}
+function toggleApiKeyVis() {
+  const inp = document.getElementById('ai-api-key-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+function saveAIConfig() {
+  const key = document.getElementById('ai-api-key-input').value.trim();
+  if (!key) { alert('Entrez une clé API valide.'); return; }
+  localStorage.setItem('_samassa_ai_key', key);
+  checkAIStatus();
+  closeAIConfig();
+  showToast('✅ Clé API enregistrée !', 'success');
+}
+async function testAIKey() {
+  const key = document.getElementById('ai-api-key-input').value.trim();
+  const res  = document.getElementById('ai-test-result');
+  if (!key) { alert('Entrez une clé API.'); return; }
+  res.style.display = 'block';
+  res.textContent = '⏳ Test en cours...';
+  res.style.background = '#EEF2FF'; res.style.color = '#3730A3'; res.style.borderColor = '#C7D2FE';
+  localStorage.setItem('_samassa_ai_key', key);
+  try {
+    const r = await fetch('/api/generate-doc', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ prompt:'Dis juste "Bonjour, l'IA fonctionne !" en une ligne.', apiKey: key })
+    });
+    const d = await r.json();
+    if (d.success) {
+      res.textContent = '✅ Clé valide ! L'IA répond correctement.';
+      res.style.background = '#F0FDF4'; res.style.color = '#059652'; res.style.borderColor = '#D1FAE5';
+    } else {
+      res.textContent = '❌ Erreur : ' + (d.error || 'Clé invalide');
+      res.style.background = '#FEF2F2'; res.style.color = '#DC2626'; res.style.borderColor = '#FECACA';
+    }
+  } catch(e) {
+    res.textContent = '❌ Erreur réseau : ' + e.message;
+    res.style.background = '#FEF2F2'; res.style.color = '#DC2626'; res.style.borderColor = '#FECACA';
+  }
+}
+
+/* Toast */
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.className = 'toast-doc ' + (type||'info');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+/* Init IA au chargement */
+document.addEventListener('DOMContentLoaded', () => {
+  checkAIStatus();
+});
+
+if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
 </body>
 </html>
