@@ -14,12 +14,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{
-  --navy:#0A1628;--navy2:#0F1F38;--blue:#0070C0;--blue2:#0095E0;
-  --green:#059652;--red:#DC2626;--gold:#F59E0B;
-  --text:#0F2137;--text2:#3D5470;--text3:#7A94AF;
-  --border:#C8D8EA;--bg:#EEF3F9;--white:#fff;
-}
 html,body{height:100%;-webkit-font-smoothing:antialiased}
 body{
   font-family:'Inter',system-ui,-apple-system,sans-serif;
@@ -27,168 +21,103 @@ body{
   min-height:100vh;display:flex;align-items:center;justify-content:center;
   padding:20px;position:relative;overflow:hidden;
 }
-/* Cercles décoratifs */
 body::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,149,224,.12) 0%,transparent 70%);top:-100px;right:-100px;pointer-events:none}
 body::after{content:'';position:absolute;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(109,40,217,.1) 0%,transparent 70%);bottom:-100px;left:-60px;pointer-events:none}
 
-/* Carte principale */
-.login-wrap{width:100%;max-width:420px;position:relative;z-index:1}
+.login-wrap{width:100%;max-width:400px;position:relative;z-index:1}
 
-/* Badge République du Mali */
-.mali-badge{
-  text-align:center;margin-bottom:20px;
-  display:flex;flex-direction:column;align-items:center;gap:5px;
-}
+/* Drapeau Mali */
+.mali-badge{text-align:center;margin-bottom:18px;display:flex;flex-direction:column;align-items:center;gap:5px}
 .mali-flag{display:flex;width:36px;height:13px;border-radius:3px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .mali-flag .g{flex:1;background:#009A44}
 .mali-flag .y{flex:1;background:#FCD116}
 .mali-flag .r{flex:1;background:#CE1126}
-.mali-republic{font-size:11px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:.12em;text-transform:uppercase}
-.mali-devise{font-size:10px;color:rgba(255,255,255,.5);font-style:italic}
+.mali-republic{font-size:11px;font-weight:700;color:rgba(255,255,255,.7);letter-spacing:.12em;text-transform:uppercase}
+.mali-devise{font-size:10px;color:rgba(255,255,255,.45);font-style:italic}
 
-.card{
-  background:white;border-radius:22px;
-  box-shadow:0 24px 64px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.2);
-  overflow:hidden;
-}
+/* Carte */
+.card{background:white;border-radius:22px;box-shadow:0 24px 64px rgba(0,0,0,.35);overflow:hidden}
 
-/* En-tête carte */
 .card-header{
   background:linear-gradient(135deg,#0A1628 0%,#0D2340 60%,#0070C0 100%);
-  padding:28px 28px 22px;text-align:center;position:relative;overflow:hidden;
+  padding:26px 28px 20px;text-align:center;position:relative;overflow:hidden;
 }
-.card-header::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06);top:-60px;right:-40px}
-.card-logo{
-  width:68px;height:68px;object-fit:contain;border-radius:16px;
-  background:white;padding:5px;box-shadow:0 4px 16px rgba(0,0,0,.3);
-  margin-bottom:12px;position:relative;z-index:1;
-}
-.card-company{font-size:18px;font-weight:900;color:white;letter-spacing:-.02em;position:relative;z-index:1}
-.card-slogan{font-size:12px;color:rgba(255,255,255,.6);font-style:italic;margin-top:3px;position:relative;z-index:1}
-.card-tagline{
-  display:inline-flex;align-items:center;gap:5px;
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
-  border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;
-  color:rgba(255,255,255,.85);margin-top:10px;letter-spacing:.04em;
-  position:relative;z-index:1;
-}
+.card-header::before{content:'';position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);top:-50px;right:-30px}
+.card-logo{width:64px;height:64px;object-fit:contain;border-radius:14px;background:white;padding:5px;box-shadow:0 4px 16px rgba(0,0,0,.3);margin-bottom:10px;position:relative;z-index:1}
+.card-company{font-size:17px;font-weight:900;color:white;letter-spacing:-.02em;position:relative;z-index:1}
+.card-slogan{font-size:11px;color:rgba(255,255,255,.55);font-style:italic;margin-top:2px;position:relative;z-index:1}
+.card-lock{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:4px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,.8);margin-top:10px;position:relative;z-index:1}
 
-/* Formulaire */
-.card-body{padding:28px}
-.form-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:6px;letter-spacing:-.01em}
-.form-subtitle{font-size:12px;color:var(--text3);margin-bottom:22px;font-weight:500}
+/* Body */
+.card-body{padding:26px 26px 20px}
+.form-title{font-size:15px;font-weight:800;color:#0F2137;margin-bottom:4px}
+.form-subtitle{font-size:12px;color:#7A94AF;margin-bottom:20px;font-weight:500}
 
-.field{margin-bottom:16px;position:relative}
-.field label{display:block;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.07em}
+.field{margin-bottom:15px}
+.field label{display:block;font-size:10px;font-weight:800;color:#3D5470;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em}
 .field-wrap{position:relative;display:flex;align-items:center}
-.field-icon{position:absolute;left:13px;font-size:16px;pointer-events:none;z-index:1}
+.field-icon{position:absolute;left:13px;font-size:16px;pointer-events:none}
 .field input{
-  width:100%;padding:12px 14px 12px 40px;
-  border:1.5px solid var(--border);border-radius:11px;
-  font-size:14px;font-family:'Inter',inherit;color:var(--text);
+  width:100%;padding:12px 42px 12px 40px;
+  border:1.5px solid #C8D8EA;border-radius:11px;
+  font-size:14px;font-family:'Inter',inherit;color:#0F2137;
   background:#F8FBFD;outline:none;transition:all .2s;
   -webkit-text-size-adjust:100%;
 }
-.field input:focus{border-color:var(--blue);background:white;box-shadow:0 0 0 3px rgba(0,112,192,.1)}
-.field input::placeholder{color:var(--text3)}
+.field input:focus{border-color:#0070C0;background:white;box-shadow:0 0 0 3px rgba(0,112,192,.1)}
+.field input::placeholder{color:#A0B4C8}
+.toggle-pw{position:absolute;right:12px;background:none;border:none;cursor:pointer;color:#7A94AF;font-size:15px;padding:4px;transition:color .2s;line-height:1}
+.toggle-pw:hover{color:#0070C0}
 
-/* Toggle password */
-.toggle-pw{
-  position:absolute;right:13px;background:none;border:none;cursor:pointer;
-  color:var(--text3);font-size:15px;padding:4px;z-index:1;
-  transition:color .2s;
-}
-.toggle-pw:hover{color:var(--blue)}
+/* Message erreur */
+.error-box{background:#FEF2F2;border:1.5px solid #FECACA;border-radius:10px;padding:10px 14px;font-size:13px;color:#DC2626;font-weight:600;margin-bottom:14px;display:none;align-items:center;gap:8px}
 
-/* Bouton connexion */
+/* Bouton */
 .btn-login{
-  width:100%;padding:13px;margin-top:6px;
-  background:linear-gradient(135deg,var(--blue),var(--blue2));
-  color:white;border:none;border-radius:11px;
-  font-size:14px;font-weight:800;font-family:'Inter',inherit;
-  cursor:pointer;transition:all .22s;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  box-shadow:0 4px 16px rgba(0,112,192,.35);
-  letter-spacing:-.01em;
+  width:100%;padding:13px;margin-top:4px;
+  background:linear-gradient(135deg,#0070C0,#0095E0);color:white;
+  border:none;border-radius:11px;font-size:14px;font-weight:800;
+  font-family:'Inter',inherit;cursor:pointer;transition:all .22s;
+  box-shadow:0 4px 16px rgba(0,112,192,.35);letter-spacing:-.01em;
 }
-.btn-login:hover{background:linear-gradient(135deg,#005499,var(--blue));transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,112,192,.45)}
-.btn-login:active{transform:translateY(0);box-shadow:0 2px 8px rgba(0,112,192,.3)}
+.btn-login:hover:not(:disabled){background:linear-gradient(135deg,#005499,#0070C0);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,112,192,.45)}
 .btn-login:disabled{background:#A5B4FC;cursor:not-allowed;transform:none;box-shadow:none}
-.btn-login.loading::after{content:'';width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;margin-left:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
 
-/* Message d'erreur */
-.error-box{
-  background:#FEF2F2;border:1.5px solid #FECACA;border-radius:10px;
-  padding:10px 14px;font-size:13px;color:var(--red);font-weight:600;
-  margin-bottom:16px;display:none;align-items:center;gap:8px;
-}
+/* Pied */
+.card-footer{padding:14px 26px 18px;border-top:1px solid #EEF3F9;text-align:center;font-size:11px;color:#7A94AF;line-height:1.8}
+.card-footer strong{color:#3D5470}
 
-/* Pied de carte */
-.card-footer{
-  padding:14px 28px 20px;border-top:1px solid #EEF3F9;
-  text-align:center;font-size:11px;color:var(--text3);line-height:1.8;
-}
-.card-footer strong{color:var(--text2);font-weight:700}
-
-/* Version & contact */
-.login-meta{
-  text-align:center;margin-top:16px;
-  font-size:10px;color:rgba(255,255,255,.4);line-height:1.8;
-}
-.version-badge{
-  display:inline-flex;align-items:center;gap:5px;
-  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
-  border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600;
-  color:rgba(255,255,255,.6);margin-top:6px;
-}
-
-/* Modules disponibles */
-.modules-preview{
-  display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
-  margin-top:12px;
-}
-.module-chip{
-  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
-  border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600;
-  color:rgba(255,255,255,.65);
-}
+/* Meta bas */
+.login-meta{text-align:center;margin-top:14px;font-size:10px;color:rgba(255,255,255,.4);line-height:1.8}
+.version-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600;color:rgba(255,255,255,.6);margin-top:6px}
+.modules-row{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:10px}
+.mod-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:600;color:rgba(255,255,255,.6)}
 </style>
 </head>
 <body>
+
 <div class="login-wrap">
 
-  <!-- Badge République du Mali -->
   <div class="mali-badge">
     <div class="mali-flag"><div class="g"></div><div class="y"></div><div class="r"></div></div>
     <div class="mali-republic">République du Mali</div>
     <div class="mali-devise">Un Peuple — Un But — Une Foi</div>
   </div>
 
-  <!-- Carte principale -->
   <div class="card">
     <div class="card-header">
-      <img src="logo.png" alt="Logo SAMASSA" class="card-logo">
+      <img src="logo.png" alt="Logo" class="card-logo">
       <div class="card-company">SAMASSA TECHNOLOGIE</div>
-      <div class="card-slogan">Tout pour l'informatique</div>
-      <div class="card-tagline">🔐 Suite Pro — Accès sécurisé</div>
+      <div class="card-slogan">Tout pour l'informatique — Kayes, Mali</div>
+      <div class="card-lock">🔐 Accès sécurisé — Suite Pro</div>
     </div>
 
     <div class="card-body">
-      <div class="form-title">Connexion à votre espace</div>
-      <div class="form-subtitle">Entrez vos identifiants pour accéder à la suite</div>
+      <div class="form-title">Connexion</div>
+      <div class="form-subtitle">Entrez votre mot de passe pour accéder à la suite</div>
 
       <div class="error-box" id="error-box">
-        ❌ <span id="error-msg">Identifiants incorrects</span>
-      </div>
-
-      <div class="field">
-        <label>Identifiant</label>
-        <div class="field-wrap">
-          <span class="field-icon">👤</span>
-          <input type="text" id="username" placeholder="Votre identifiant"
-            autocomplete="username" autocapitalize="none" spellcheck="false">
-        </div>
+        ❌ <span id="error-msg">Mot de passe incorrect</span>
       </div>
 
       <div class="field">
@@ -196,7 +125,7 @@ body::after{content:'';position:absolute;width:400px;height:400px;border-radius:
         <div class="field-wrap">
           <span class="field-icon">🔑</span>
           <input type="password" id="password" placeholder="Votre mot de passe"
-            autocomplete="current-password" id="password-input">
+            autocomplete="current-password" autofocus>
           <button class="toggle-pw" type="button" onclick="togglePw(this)" tabindex="-1">👁️</button>
         </div>
       </div>
@@ -213,16 +142,15 @@ body::after{content:'';position:absolute;width:400px;height:400px;border-radius:
     </div>
   </div>
 
-  <!-- Meta infos -->
   <div class="login-meta">
-    <div class="version-badge">⚡ Suite Pro v3.2 — Kayes, Mali</div>
-    <div style="margin-top:8px">40 modèles · Paiement Wave & Orange · QR Scanner · Mode hors-ligne</div>
-    <div class="modules-preview">
-      <span class="module-chip">🧾 Reçus</span>
-      <span class="module-chip">📄 Factures</span>
-      <span class="module-chip">🔧 Réparations</span>
-      <span class="module-chip">📝 Docs Admin</span>
-      <span class="module-chip">📦 Stock</span>
+    <div class="version-badge">⚡ Suite Pro v3.2</div>
+    <div style="margin-top:8px">40 modèles · Wave & Orange Money · QR Scanner</div>
+    <div class="modules-row">
+      <span class="mod-chip">🧾 Reçus</span>
+      <span class="mod-chip">📄 Factures</span>
+      <span class="mod-chip">🔧 Réparations</span>
+      <span class="mod-chip">📝 Docs Admin</span>
+      <span class="mod-chip">📦 Stock</span>
     </div>
   </div>
 
@@ -238,64 +166,39 @@ function togglePw(btn) {
 }
 
 function doLogin() {
-  const u = document.getElementById('username').value.trim();
-  const p = document.getElementById('password').value;
+  const p   = document.getElementById('password').value;
   const btn = document.getElementById('btn-login');
-  const errBox = document.getElementById('error-box');
-  const errMsg = document.getElementById('error-msg');
+  const err = document.getElementById('error-box');
+  const msg = document.getElementById('error-msg');
 
-  errBox.style.display = 'none';
-  if (!u || !p) {
-    errMsg.textContent = 'Veuillez remplir tous les champs.';
-    errBox.style.display = 'flex'; return;
-  }
+  err.style.display = 'none';
+  if (!p) { msg.textContent='Veuillez saisir le mot de passe.'; err.style.display='flex'; return; }
+
   btn.disabled = true;
-  btn.classList.add('loading');
-  btn.innerHTML = '⏳ Vérification...';
+  btn.textContent = '⏳ Vérification...';
 
   setTimeout(() => {
-    const ok = ST_auth ? ST_auth.login(u, p) : doLegacyLogin(u, p);
+    const ok = Auth.login(p);
     if (ok) {
-      btn.innerHTML = '✅ Connecté !';
+      btn.textContent = '✅ Connecté !';
       btn.style.background = 'linear-gradient(135deg,#059652,#10B981)';
-      setTimeout(() => window.location.replace('index.html'), 500);
+      const target = localStorage.getItem('_samassa_login_target');
+      localStorage.removeItem('_samassa_login_target');
+      setTimeout(() => window.location.replace(target || 'index.html'), 400);
     } else {
-      errMsg.textContent = 'Identifiant ou mot de passe incorrect.';
-      errBox.style.display = 'flex';
-      btn.disabled = false; btn.classList.remove('loading');
-      btn.innerHTML = '🚀 Se connecter';
+      msg.textContent = 'Mot de passe incorrect. Réessayez.';
+      err.style.display = 'flex';
+      btn.disabled = false;
+      btn.textContent = '🚀 Se connecter';
       document.getElementById('password').value = '';
       document.getElementById('password').focus();
     }
-  }, 600);
+  }, 500);
 }
 
-// Fallback si auth.js utilise un système différent
-let ST_auth = null;
-function doLegacyLogin(u, p) {
-  const users = JSON.parse(localStorage.getItem('_samassa_users') || '[]');
-  const PASS_HASH = localStorage.getItem('_samassa_pass') || '';
-  const found = users.find(usr => usr.username === u && usr.password === p);
-  if (found || (u === 'admin' && p === PASS_HASH)) {
-    const session = { user: u, expires: Date.now() + 86400000 * 30 };
-    localStorage.setItem('_samassa_session', JSON.stringify(session));
-    return true;
-  }
-  return false;
-}
-
-// Intégration avec auth.js natif
-if (typeof window.AUTH_login === 'function') ST_auth = { login: window.AUTH_login };
-if (typeof window.login === 'function') ST_auth = { login: window.login };
-
-// Connexion par Entrée
-document.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-
-// Vérifier si déjà connecté
-(function(){
-  const s = localStorage.getItem('_samassa_session');
-  if (s) { try { const d = JSON.parse(s); if (Date.now() < d.expires) window.location.replace('index.html'); } catch(e){} }
-})();
+document.getElementById('password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
 </script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
 </body>
