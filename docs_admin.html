@@ -837,17 +837,22 @@ let aiTitle  = 'Document';
 
 /* Vérifier statut IA au chargement */
 function checkAIStatus() {
-  const key = localStorage.getItem('_samassa_ai_key');
+  const key  = localStorage.getItem('_samassa_ai_key');
+  const type = detectKeyType(key);
   const bar  = document.getElementById('ai-status-bar');
   const txt  = document.getElementById('ai-status-text');
   if (!bar) return;
-  if (key && key.startsWith('sk-ant-')) {
+  if (type === 'gemini') {
     bar.className = 'ai-status ok';
-    txt.textContent = '✅ IA active — Clé API configurée';
+    txt.textContent = '✅ Google Gemini actif — Gratuit · Prêt à rédiger';
+    bar.querySelector('button').textContent = '⚙️ Modifier';
+  } else if (type === 'anthropic') {
+    bar.className = 'ai-status ok';
+    txt.textContent = '✅ Anthropic Claude actif — Prêt à rédiger';
     bar.querySelector('button').textContent = '⚙️ Modifier';
   } else {
     bar.className = 'ai-status nok';
-    txt.textContent = 'IA non configurée — Cliquez sur ⚙️ pour configurer';
+    txt.textContent = 'IA non configurée — Obtenez une clé gratuite Google Gemini en 2 min';
   }
 }
 
@@ -878,22 +883,44 @@ function updateCharCount(el) {
   if (el2) { el2.textContent = n + ' / 1000'; el2.style.color = n > 900 ? '#DC2626' : ''; }
 }
 
-/* ── GÉNÉRATION IA ── */
+/* ── PROMPT SYSTÈME MALI ── */
+const SYSTEM_PROMPT_MALI = `Tu es expert en rédaction de documents administratifs officiels au Mali, spécialement pour la ville de Kayes. Tu travailles pour SAMASSA TECHNOLOGIE au Grand Marché de Kayes.
+
+RÈGLES STRICTES :
+1. Rédige DIRECTEMENT le document sans introduction ni commentaire extérieur
+2. Utilise les formules protocolaires maliennes appropriées
+3. Inclus toujours : Lieu (Kayes), date en toutes lettres, formule de politesse finale
+4. En-tête pour documents officiels : "République du Mali — Un Peuple — Un But — Une Foi"
+5. Pour les renseignements manquants, utilise [À COMPLÉTER]
+6. Le document doit être immédiatement utilisable après impression
+7. Sois complet et professionnel — un document incomplet est inutile`;
+
+/* ── DÉTECTEUR TYPE CLÉ ── */
+function detectKeyType(key) {
+  if (!key) return null;
+  if (key.startsWith('sk-ant-') || key.startsWith('sk-')) return 'anthropic';
+  if (key.length > 20) return 'gemini';
+  return null;
+}
+
+/* ── GÉNÉRATION IA (Gemini direct ou Anthropic via proxy) ── */
 async function generateWithAI() {
   const prompt = (document.getElementById('ai-prompt')?.value || '').trim();
   const dest   = (document.getElementById('ai-dest')?.value  || '').trim();
   const nom    = (document.getElementById('ai-nom')?.value   || '').trim();
 
   if (!prompt) {
-    alert('Décrivez le document que vous souhaitez générer.');
     document.getElementById('ai-prompt').focus();
+    showToast('Décrivez le document souhaité', 'info');
     return;
   }
 
-  const apiKey = localStorage.getItem('_samassa_ai_key') || '';
-  if (!apiKey) {
+  const apiKey  = localStorage.getItem('_samassa_ai_key') || '';
+  const keyType = detectKeyType(apiKey);
+
+  if (!apiKey || !keyType) {
     openAIConfig();
-    showToast('Configurez d'abord votre clé API IA', 'info');
+    showToast('⚙️ Configurez d\'abord votre clé API gratuite', 'info');
     return;
   }
 
@@ -901,53 +928,83 @@ async function generateWithAI() {
   const btxt = document.getElementById('btn-ai-txt');
   btn.disabled = true;
   btxt.innerHTML = '<div class="btn-ai-spinner"></div> Rédaction en cours...';
+  document.getElementById('ai-result-wrap').style.display = 'none';
 
-  // Contexte enrichi
+  /* Construire le prompt complet */
   let fullPrompt = prompt;
-  if (dest) fullPrompt += `
-Destinataire : ${dest}`;
-  if (nom)  fullPrompt += `
-Demandeur : ${nom}`;
-  fullPrompt += '
-Ville : Kayes, Mali. Date du jour : ' + new Date().toLocaleDateString('fr-FR', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  if (dest) fullPrompt += `\nDestinataire : ${dest}`;
+  if (nom)  fullPrompt += `\nDemandeur principal : ${nom}`;
+  fullPrompt += '\nVille : Kayes, Mali — Date : ' +
+    new Date().toLocaleDateString('fr-FR', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
   try {
-    const res = await fetch('/api/generate-doc', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: fullPrompt, apiKey })
-    });
+    let text = '', tokens = 0, model = '';
 
-    const data = await res.json();
-
-    if (data.success && data.text) {
-      aiResult = data.text;
-      aiTitle  = extractDocTitle(data.text, prompt);
-
-      document.getElementById('ai-result-text').textContent = data.text;
-      document.getElementById('ai-result-wrap').style.display = 'block';
-
-      if (data.tokens) {
-        const tot = (data.tokens.input_tokens||0) + (data.tokens.output_tokens||0);
-        document.getElementById('tokens-used').textContent = tot + ' tokens';
+    /* ══ GEMINI — appel direct navigateur (gratuit, CORS OK) ══ */
+    if (keyType === 'gemini') {
+      const gemUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const gemRes = await fetch(gemUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM_PROMPT_MALI }] },
+          contents: [{ parts: [{ text: fullPrompt }] }],
+          generationConfig: { maxOutputTokens: 2048, temperature: 0.5, topP: 0.9 }
+        })
+      });
+      const gemData = await gemRes.json();
+      if (gemData?.error) {
+        const msg = gemData.error.message || 'Clé invalide';
+        if (msg.includes('API_KEY') || msg.includes('key')) {
+          showToast('❌ Clé Gemini invalide — Vérifiez la clé', 'error');
+          openAIConfig();
+        } else {
+          showToast('❌ Gemini : ' + msg, 'error');
+        }
+        return;
       }
-
-      document.getElementById('ai-result-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
-      showToast('✅ Document rédigé par l'IA !', 'success');
-    } else {
-      const msg = data.error || 'Erreur inconnue';
-      if (msg.includes('API key') || msg.includes('authentication')) {
-        showToast('Clé API invalide — Vérifiez la configuration', 'error');
-        openAIConfig();
-      } else {
-        showToast('Erreur IA : ' + msg, 'error');
-      }
+      text   = gemData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      tokens = gemData?.usageMetadata?.totalTokenCount || 0;
+      model  = '✨ Gemini 1.5 Flash';
     }
+
+    /* ══ ANTHROPIC — via proxy Vercel ══ */
+    else if (keyType === 'anthropic') {
+      const antRes = await fetch('/api/generate-doc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: fullPrompt, apiKey })
+      });
+      const antData = await antRes.json();
+      if (!antData.success) {
+        showToast('❌ ' + (antData.error || 'Erreur Anthropic'), 'error');
+        return;
+      }
+      text   = antData.text || '';
+      tokens = (antData.tokens?.input_tokens||0) + (antData.tokens?.output_tokens||0);
+      model  = '🤖 Claude';
+    }
+
+    if (!text) {
+      showToast('❌ Réponse vide — Réessayez', 'error');
+      return;
+    }
+
+    /* Afficher le résultat */
+    aiResult = text;
+    aiTitle  = extractDocTitle(text, prompt);
+    document.getElementById('ai-result-text').textContent = text;
+    document.getElementById('ai-result-wrap').style.display = 'block';
+    document.getElementById('tokens-used').textContent =
+      model + ' · ' + (tokens > 0 ? tokens + ' tokens' : 'OK');
+    document.getElementById('ai-result-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
+    showToast('✅ Document rédigé avec succès !', 'success');
+
   } catch (err) {
-    showToast('Erreur réseau : ' + err.message, 'error');
+    showToast('❌ Erreur réseau : ' + err.message, 'error');
   } finally {
     btn.disabled = false;
-    btxt.textContent = '✨ Rédiger le document avec l'IA';
+    btxt.textContent = '✨ Rédiger le document avec l\'IA';
   }
 }
 
@@ -1205,29 +1262,45 @@ function saveAIConfig() {
   showToast('✅ Clé API enregistrée !', 'success');
 }
 async function testAIKey() {
-  const key = document.getElementById('ai-api-key-input').value.trim();
+  const key  = document.getElementById('ai-api-key-input').value.trim();
   const res  = document.getElementById('ai-test-result');
-  if (!key) { alert('Entrez une clé API.'); return; }
+  const type = detectKeyType(key);
+  if (!key)  { showToast('Entrez une clé API', 'info'); return; }
+  if (!type) { showToast('Format de clé non reconnu', 'error'); return; }
   res.style.display = 'block';
   res.textContent = '⏳ Test en cours...';
-  res.style.background = '#EEF2FF'; res.style.color = '#3730A3'; res.style.borderColor = '#C7D2FE';
-  localStorage.setItem('_samassa_ai_key', key);
+  res.style.cssText = 'display:block;padding:10px 13px;border-radius:9px;font-size:11px;font-weight:600;background:#EEF2FF;color:#3730A3;border:1.5px solid #C7D2FE;margin-top:10px';
+
   try {
-    const r = await fetch('/api/generate-doc', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ prompt:'Dis juste "Bonjour, l'IA fonctionne !" en une ligne.', apiKey: key })
-    });
-    const d = await r.json();
-    if (d.success) {
-      res.textContent = '✅ Clé valide ! L'IA répond correctement.';
-      res.style.background = '#F0FDF4'; res.style.color = '#059652'; res.style.borderColor = '#D1FAE5';
+    let ok = false, msg = '';
+
+    if (type === 'gemini') {
+      const r = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
+        { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ contents:[{parts:[{text:'Dis "Bonjour depuis Kayes !" en une seule phrase.'}]}],
+            generationConfig:{maxOutputTokens:50} }) }
+      );
+      const d = await r.json();
+      ok  = !!d?.candidates?.[0]?.content?.parts?.[0]?.text;
+      msg = ok ? '✅ Clé Gemini valide ! Gratuit et opérationnel 🎉' : '❌ ' + (d?.error?.message || 'Clé invalide');
     } else {
-      res.textContent = '❌ Erreur : ' + (d.error || 'Clé invalide');
-      res.style.background = '#FEF2F2'; res.style.color = '#DC2626'; res.style.borderColor = '#FECACA';
+      const r = await fetch('/api/generate-doc', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ prompt:'Dis "OK" en une lettre.', apiKey: key })
+      });
+      const d = await r.json();
+      ok  = d.success;
+      msg = ok ? '✅ Clé Anthropic valide !' : '❌ ' + (d.error || 'Clé invalide');
     }
+
+    res.style.background  = ok ? '#F0FDF4' : '#FEF2F2';
+    res.style.color       = ok ? '#059652' : '#DC2626';
+    res.style.borderColor = ok ? '#D1FAE5' : '#FECACA';
+    res.textContent = msg;
   } catch(e) {
-    res.textContent = '❌ Erreur réseau : ' + e.message;
     res.style.background = '#FEF2F2'; res.style.color = '#DC2626'; res.style.borderColor = '#FECACA';
+    res.textContent = '❌ Erreur réseau : ' + e.message;
   }
 }
 
