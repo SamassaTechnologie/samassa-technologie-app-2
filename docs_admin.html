@@ -492,73 +492,7 @@ Exemples :
 
       </div><!-- /tab-ia-content -->
 
-      <!-- ══ MODAL CONFIG IA (Gemini gratuit + Anthropic) ══ -->
-      <div class="ai-config-modal" id="ai-config-modal">
-        <div class="ai-config-card">
-          <div class="ai-config-header">
-            <div style="font-size:15px;font-weight:800;color:white">⚙️ Configurer l'IA</div>
-            <button onclick="closeAIConfig()" style="background:rgba(255,255,255,.15);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center">✕</button>
-          </div>
-          <div class="ai-config-body">
-
-            <!-- Gemini gratuit -->
-            <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid #86EFAC;border-radius:12px;padding:14px 16px;margin-bottom:12px">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-                <span style="font-size:22px">🆓</span>
-                <div>
-                  <div style="font-size:13px;font-weight:900;color:#059652">Google Gemini — GRATUIT</div>
-                  <div style="font-size:10px;color:#166534;font-weight:500">Recommandé · Compte Google suffit</div>
-                </div>
-                <span style="margin-left:auto;background:#059652;color:white;font-size:9px;font-weight:800;padding:2px 9px;border-radius:10px">GRATUIT</span>
-              </div>
-              <div style="font-size:11px;color:#166534;line-height:1.9;margin-bottom:10px">
-                <strong>Comment obtenir en 2 minutes :</strong><br>
-                1️⃣ Allez sur <strong>aistudio.google.com</strong><br>
-                2️⃣ Connectez-vous avec votre <strong>compte Google</strong><br>
-                3️⃣ Cliquez <strong>"Get API Key"</strong> → <strong>"Create API key"</strong><br>
-                4️⃣ Copiez la clé et collez-la ci-dessous
-              </div>
-              <a href="https://aistudio.google.com/app/apikey" target="_blank"
-                style="display:inline-flex;align-items:center;gap:6px;background:#059652;color:white;text-decoration:none;padding:9px 16px;border-radius:9px;font-size:12px;font-weight:800">
-                🔗 Obtenir ma clé Gemini gratuite →
-              </a>
-            </div>
-
-            <!-- Anthropic optionnel -->
-            <details style="margin-bottom:14px">
-              <summary style="font-size:11px;font-weight:700;color:#3730A3;cursor:pointer;padding:8px 12px;background:#EEF2FF;border-radius:8px;list-style:none">
-                🤖 Utiliser Anthropic Claude à la place (payant)
-              </summary>
-              <div style="padding:10px 12px;font-size:11px;color:#4338CA;line-height:1.8;border:1.5px solid #C7D2FE;border-top:none;border-radius:0 0 8px 8px">
-                Créez un compte sur <strong>console.anthropic.com</strong><br>
-                API Keys → Create Key → clé commence par <code>sk-ant-</code><br>
-                Nouveaux comptes : <strong>$5 offerts</strong> ≈ 1 600 documents
-              </div>
-            </details>
-
-            <!-- Champ clé -->
-            <div style="margin-bottom:12px">
-              <label style="font-size:11px;font-weight:700;color:var(--text2);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Votre clé API</label>
-              <div style="position:relative;display:flex;align-items:center">
-                <input type="password" id="ai-api-key-input"
-                  placeholder="Collez ici votre clé Google Gemini ou Anthropic..."
-                  style="width:100%;padding:11px 44px 11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:monospace;outline:none;transition:border-color .2s"
-                  onfocus="this.style.borderColor='#3730A3'" onblur="this.style.borderColor=''">
-                <button onclick="toggleApiKeyVis()" style="position:absolute;right:10px;background:none;border:none;cursor:pointer;font-size:17px;color:var(--text3)">👁️</button>
-              </div>
-              <div style="font-size:10px;color:var(--text3);margin-top:4px;font-weight:500">
-                🔐 Stockée uniquement sur cet appareil — jamais envoyée à SAMASSA
-              </div>
-            </div>
-
-            <div style="display:flex;gap:8px">
-              <button onclick="testAIKey()" style="flex:1;padding:11px;background:#EEF2FF;color:#3730A3;border:1.5px solid #C7D2FE;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">🧪 Tester</button>
-              <button onclick="saveAIConfig()" style="flex:2;padding:11px;background:linear-gradient(135deg,#059652,#10B981);color:white;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit">💾 Enregistrer</button>
-            </div>
-
-            <div style="margin-top:10px;padding:10px 13px;border-radius:9px;font-size:11px;font-weight:600;display:none" id="ai-test-result"></div>
-          </div>
-        </div>
+      </div>
       </div>
 
     </div><!-- /form-body -->
@@ -1097,16 +1031,25 @@ async function generateWithAI() {
 
     /* ══ GEMINI — appel direct navigateur (gratuit, CORS OK) ══ */
     if (keyType === 'gemini') {
-      const gemUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-      const gemRes = await fetch(gemUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: SYSTEM_PROMPT_MALI }] },
-          contents: [{ parts: [{ text: fullPrompt }] }],
-          generationConfig: { maxOutputTokens: 2048, temperature: 0.5, topP: 0.9 }
-        })
-      });
+      // Essayer plusieurs modèles Gemini dans l'ordre
+      const GEMINI_MODELS = ['gemini-2.0-flash','gemini-flash-latest','gemini-1.5-flash','gemini-1.5-flash-latest'];
+      let gemRes = null, gemData = null;
+      for (const mdl of GEMINI_MODELS) {
+        const gemUrl = `https://generativelanguage.googleapis.com/v1beta/models/${mdl}:generateContent?key=${apiKey}`;
+        try {
+          gemRes = await fetch(gemUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-goog-api-key': apiKey },
+            body: JSON.stringify({
+              system_instruction: { parts: [{ text: SYSTEM_PROMPT_MALI }] },
+              contents: [{ parts: [{ text: fullPrompt }] }],
+              generationConfig: { maxOutputTokens: 2048, temperature: 0.5 }
+            })
+          });
+          gemData = await gemRes.json();
+          if (!gemData?.error) { model = '✨ Gemini (' + mdl + ')'; break; }
+        } catch(e) { continue; }
+      }
       const gemData = await gemRes.json();
       if (gemData?.error) {
         const msg = gemData.error.message || 'Clé invalide';
@@ -1305,6 +1248,85 @@ function exportToWord() {
   </div>
 
 </div>
+
+<!-- ══ MODAL CONFIG IA — hors form-panel pour position:fixed correct ══ -->
+<div id="ai-config-modal" style="display:none;position:fixed;inset:0;background:rgba(10,22,40,.8);z-index:99999;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)">
+  <div style="background:white;border-radius:20px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.35);overflow:hidden;max-height:90vh;overflow-y:auto">
+
+    <!-- En-tête -->
+    <div style="background:linear-gradient(135deg,#1E1B4B,#3730A3);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1">
+      <div style="font-size:15px;font-weight:900;color:white">⚙️ Configurer l'IA Rédacteur</div>
+      <button onclick="closeAIConfig()" style="background:rgba(255,255,255,.15);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center">✕</button>
+    </div>
+
+    <div style="padding:20px">
+
+      <!-- Option Gemini GRATUIT -->
+      <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid #86EFAC;border-radius:14px;padding:16px;margin-bottom:14px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="font-size:24px">🆓</span>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:900;color:#059652">Google Gemini — 100% Gratuit</div>
+            <div style="font-size:11px;color:#166534;font-weight:500;margin-top:1px">Compte Google suffit · Sans carte bancaire</div>
+          </div>
+          <span style="background:#059652;color:white;font-size:10px;font-weight:800;padding:3px 10px;border-radius:12px;white-space:nowrap">GRATUIT</span>
+        </div>
+        <div style="font-size:12px;color:#166534;line-height:2;margin-bottom:12px;background:rgba(255,255,255,.6);padding:10px 12px;border-radius:9px">
+          <strong>Étapes (2 minutes) :</strong><br>
+          1️⃣ Ouvrez <strong>aistudio.google.com</strong><br>
+          2️⃣ Connectez-vous avec votre <strong>compte Google</strong><br>
+          3️⃣ Cliquez <strong>"Get API Key"</strong> → <strong>"Create API key"</strong><br>
+          4️⃣ Copiez la clé et collez-la ci-dessous
+        </div>
+        <a href="https://aistudio.google.com/app/apikey" target="_blank"
+          style="display:flex;align-items:center;justify-content:center;gap:8px;background:#059652;color:white;text-decoration:none;padding:11px;border-radius:10px;font-size:13px;font-weight:800">
+          🔗 Aller sur aistudio.google.com →
+        </a>
+      </div>
+
+      <!-- Option Anthropic -->
+      <details style="margin-bottom:16px">
+        <summary style="font-size:12px;font-weight:700;color:#3730A3;cursor:pointer;padding:9px 13px;background:#EEF2FF;border-radius:9px;user-select:none">
+          🤖 Utiliser Anthropic Claude (payant, $5 offerts à l'inscription)
+        </summary>
+        <div style="padding:10px 13px;font-size:11px;color:#4338CA;line-height:1.9;border:1.5px solid #C7D2FE;border-top:none;border-radius:0 0 9px 9px">
+          Créez un compte sur <strong>console.anthropic.com</strong><br>
+          API Keys → Create Key → clé commence par <code style="background:#EEF2FF;padding:1px 5px;border-radius:4px">sk-ant-</code>
+        </div>
+      </details>
+
+      <!-- Champ clé API -->
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;font-weight:800;color:#3D5470;margin-bottom:7px;text-transform:uppercase;letter-spacing:.07em">Votre clé API</label>
+        <div style="position:relative">
+          <input type="password" id="ai-api-key-input"
+            placeholder="Collez ici votre clé Google Gemini ou Anthropic..."
+            style="width:100%;padding:12px 46px 12px 14px;border:2px solid #C8D8EA;border-radius:11px;font-size:13px;font-family:monospace;outline:none;transition:border-color .2s;box-sizing:border-box"
+            onfocus="this.style.borderColor='#3730A3'" onblur="this.style.borderColor='#C8D8EA'">
+          <button onclick="toggleApiKeyVis()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:#7A94AF;padding:0">👁️</button>
+        </div>
+        <div style="font-size:10px;color:#7A94AF;margin-top:5px">
+          🔐 Clé stockée sur cet appareil uniquement — privée et sécurisée
+        </div>
+      </div>
+
+      <!-- Boutons -->
+      <div style="display:flex;gap:10px;margin-bottom:10px">
+        <button onclick="testAIKey()" style="flex:1;padding:12px;background:#EEF2FF;color:#3730A3;border:2px solid #C7D2FE;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='#E0E7FF'" onmouseout="this.style.background='#EEF2FF'">
+          🧪 Tester la clé
+        </button>
+        <button onclick="saveAIConfig()" style="flex:2;padding:12px;background:linear-gradient(135deg,#059652,#10B981);color:white;border:none;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(5,150,82,.3)">
+          💾 Enregistrer et utiliser
+        </button>
+      </div>
+
+      <!-- Résultat test -->
+      <div id="ai-test-result" style="display:none;padding:11px 13px;border-radius:10px;font-size:12px;font-weight:600;border:1.5px solid"></div>
+
+    </div>
+  </div>
+</div>
+
 </body>
 </html>`;
 
@@ -1397,12 +1419,17 @@ function saveAIToHistory() {
 
 /* ── CONFIG IA ── */
 function openAIConfig() {
+  const modal = document.getElementById('ai-config-modal');
+  if (!modal) { alert('Erreur: modal introuvable'); return; }
   const key = localStorage.getItem('_samassa_ai_key') || '';
   document.getElementById('ai-api-key-input').value = key;
-  document.getElementById('ai-config-modal').style.display = 'flex';
+  modal.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
 }
 function closeAIConfig() {
-  document.getElementById('ai-config-modal').style.display = 'none';
+  const modal = document.getElementById('ai-config-modal');
+  if (modal) modal.style.display = 'none';
+  document.body.style.overflow = '';
 }
 function toggleApiKeyVis() {
   const inp = document.getElementById('ai-api-key-input');
@@ -1430,15 +1457,20 @@ async function testAIKey() {
     let ok = false, msg = '';
 
     if (type === 'gemini') {
-      const r = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
-        { method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ contents:[{parts:[{text:'Dis "Bonjour depuis Kayes !" en une seule phrase.'}]}],
-            generationConfig:{maxOutputTokens:50} }) }
-      );
-      const d = await r.json();
-      ok  = !!d?.candidates?.[0]?.content?.parts?.[0]?.text;
-      msg = ok ? '✅ Clé Gemini valide ! Gratuit et opérationnel 🎉' : '❌ ' + (d?.error?.message || 'Clé invalide');
+      let ok = false, testData = null;
+      const MODELS_TEST = ['gemini-2.0-flash','gemini-flash-latest','gemini-1.5-flash'];
+      for (const mdl of MODELS_TEST) {
+        try {
+          const r = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${mdl}:generateContent?key=${key}`,
+            { method:'POST', headers:{'Content-Type':'application/json','X-goog-api-key':key},
+              body: JSON.stringify({ contents:[{parts:[{text:'Réponds uniquement : OK'}]}], generationConfig:{maxOutputTokens:10} }) }
+          );
+          testData = await r.json();
+          if (testData?.candidates?.[0]?.content?.parts?.[0]?.text) { ok = true; break; }
+        } catch(e) { continue; }
+      }
+      msg = ok ? '✅ Clé Gemini valide ! IA opérationnelle 🎉' : '❌ ' + (testData?.error?.message || 'Clé invalide ou expirée');
     } else {
       const r = await fetch('/api/generate-doc', {
         method:'POST', headers:{'Content-Type':'application/json'},
