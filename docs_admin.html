@@ -406,6 +406,161 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothi
         <div id="hist-list"></div>
       </div>
 
+
+      <!-- ══ ONGLET 🤖 IA RÉDACTEUR ══ -->
+      <div class="tab-content" id="tab-ia-content">
+
+        <!-- Hero -->
+        <div class="ai-hero">
+          <div class="ai-hero-title">✨ Rédacteur IA — Gratuit avec Google</div>
+          <div class="ai-hero-sub">Décrivez votre document en français, l'IA le rédige en 5 secondes</div>
+          <div class="ai-hero-badge">🇲🇱 Documents officiels maliens · Kayes</div>
+        </div>
+
+        <!-- Statut IA -->
+        <div id="ai-status-bar" class="ai-status nok">
+          <div class="ai-status-dot"></div>
+          <span id="ai-status-text">IA non configurée — Obtenez une clé gratuite Google Gemini</span>
+          <button onclick="openAIConfig()" style="margin-left:auto;background:none;border:1.5px solid currentColor;border-radius:7px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;color:inherit;font-family:inherit;white-space:nowrap">⚙️ Configurer</button>
+        </div>
+
+        <!-- Suggestions rapides -->
+        <div class="sugg-label">💡 Cliquez pour remplir un exemple</div>
+        <div class="sugg-grid">
+          <button class="sugg-chip" onclick="fillSugg(this)">📋 Demande d'acte de naissance</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">🎓 Bourse d'études</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">🏠 Attestation de domicile</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">💍 Acte de mariage</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">⚖️ Casier judiciaire</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">💳 Engagement de remboursement</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">🏪 Autorisation commerce</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">🚗 Déclaration d'accident</button>
+        </div>
+
+        <!-- Options destinataire + nom -->
+        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+          <div style="flex:1;min-width:140px">
+            <div style="font-size:10px;font-weight:800;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em">Destinataire (optionnel)</div>
+            <input type="text" id="ai-dest" placeholder="Ex: Monsieur le Maire de Kayes"
+              style="width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;outline:none;transition:border-color .2s"
+              onfocus="this.style.borderColor='#3730A3'" onblur="this.style.borderColor=''">
+          </div>
+          <div style="flex:1;min-width:120px">
+            <div style="font-size:10px;font-weight:800;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em">Demandeur (optionnel)</div>
+            <input type="text" id="ai-nom" placeholder="Nom complet"
+              style="width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;outline:none;transition:border-color .2s"
+              onfocus="this.style.borderColor='#3730A3'" onblur="this.style.borderColor=''">
+          </div>
+        </div>
+
+        <!-- Zone de saisie -->
+        <div class="ai-input-wrap">
+          <textarea class="ai-textarea" id="ai-prompt"
+            placeholder="Décrivez le document souhaité...
+
+Exemples :
+• Rédige une demande de bourse pour Mamadou Coulibaly, 22 ans, né le 15/03/2002 à Kayes, qui veut étudier l'informatique à l'USSGB de Bamako.
+
+• Attestation de domicile pour Fatoumata Diallo, quartier Liberté, Kayes, depuis 5 ans. Usage : ouverture compte bancaire BDM.
+
+• Engagement de remboursement : Seydou Konaté a emprunté 200 000 FCFA à Ibrahima Traoré le 15/01/2026, remboursement avant le 15/04/2026."
+            oninput="updateCharCount(this)" rows="7"></textarea>
+          <div class="ai-char-count" id="ai-char-count">0 / 1000</div>
+        </div>
+
+        <button class="btn-ai" id="btn-ai-gen" onclick="generateWithAI()">
+          <span id="btn-ai-txt">✨ Rédiger le document avec l'IA</span>
+        </button>
+
+        <!-- Résultat IA -->
+        <div class="ai-result-wrap" id="ai-result-wrap" style="display:none">
+          <div class="ai-result-header">
+            <div class="ai-result-label">
+              📄 Document rédigé
+              <span class="tokens-badge" id="tokens-used">—</span>
+            </div>
+            <button class="ai-copy-btn" onclick="copyAIResult()">📋 Copier</button>
+          </div>
+          <div class="ai-result-text" id="ai-result-text"></div>
+          <div class="ai-export-bar">
+            <button class="btn-word"      onclick="exportToWord()">📄 Exporter Word (.doc)</button>
+            <button class="btn-pdf-print" onclick="printAIDoc()">🖨️ Imprimer / PDF</button>
+            <button class="btn-save-ai"   onclick="saveAIToHistory()">💾 Enregistrer</button>
+            <button class="btn-refine"    onclick="refineDoc()">✏️ Affiner</button>
+          </div>
+        </div>
+
+      </div><!-- /tab-ia-content -->
+
+      <!-- ══ MODAL CONFIG IA (Gemini gratuit + Anthropic) ══ -->
+      <div class="ai-config-modal" id="ai-config-modal">
+        <div class="ai-config-card">
+          <div class="ai-config-header">
+            <div style="font-size:15px;font-weight:800;color:white">⚙️ Configurer l'IA</div>
+            <button onclick="closeAIConfig()" style="background:rgba(255,255,255,.15);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center">✕</button>
+          </div>
+          <div class="ai-config-body">
+
+            <!-- Gemini gratuit -->
+            <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid #86EFAC;border-radius:12px;padding:14px 16px;margin-bottom:12px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <span style="font-size:22px">🆓</span>
+                <div>
+                  <div style="font-size:13px;font-weight:900;color:#059652">Google Gemini — GRATUIT</div>
+                  <div style="font-size:10px;color:#166534;font-weight:500">Recommandé · Compte Google suffit</div>
+                </div>
+                <span style="margin-left:auto;background:#059652;color:white;font-size:9px;font-weight:800;padding:2px 9px;border-radius:10px">GRATUIT</span>
+              </div>
+              <div style="font-size:11px;color:#166534;line-height:1.9;margin-bottom:10px">
+                <strong>Comment obtenir en 2 minutes :</strong><br>
+                1️⃣ Allez sur <strong>aistudio.google.com</strong><br>
+                2️⃣ Connectez-vous avec votre <strong>compte Google</strong><br>
+                3️⃣ Cliquez <strong>"Get API Key"</strong> → <strong>"Create API key"</strong><br>
+                4️⃣ Copiez la clé et collez-la ci-dessous
+              </div>
+              <a href="https://aistudio.google.com/app/apikey" target="_blank"
+                style="display:inline-flex;align-items:center;gap:6px;background:#059652;color:white;text-decoration:none;padding:9px 16px;border-radius:9px;font-size:12px;font-weight:800">
+                🔗 Obtenir ma clé Gemini gratuite →
+              </a>
+            </div>
+
+            <!-- Anthropic optionnel -->
+            <details style="margin-bottom:14px">
+              <summary style="font-size:11px;font-weight:700;color:#3730A3;cursor:pointer;padding:8px 12px;background:#EEF2FF;border-radius:8px;list-style:none">
+                🤖 Utiliser Anthropic Claude à la place (payant)
+              </summary>
+              <div style="padding:10px 12px;font-size:11px;color:#4338CA;line-height:1.8;border:1.5px solid #C7D2FE;border-top:none;border-radius:0 0 8px 8px">
+                Créez un compte sur <strong>console.anthropic.com</strong><br>
+                API Keys → Create Key → clé commence par <code>sk-ant-</code><br>
+                Nouveaux comptes : <strong>$5 offerts</strong> ≈ 1 600 documents
+              </div>
+            </details>
+
+            <!-- Champ clé -->
+            <div style="margin-bottom:12px">
+              <label style="font-size:11px;font-weight:700;color:var(--text2);display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Votre clé API</label>
+              <div style="position:relative;display:flex;align-items:center">
+                <input type="password" id="ai-api-key-input"
+                  placeholder="Collez ici votre clé Google Gemini ou Anthropic..."
+                  style="width:100%;padding:11px 44px 11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:monospace;outline:none;transition:border-color .2s"
+                  onfocus="this.style.borderColor='#3730A3'" onblur="this.style.borderColor=''">
+                <button onclick="toggleApiKeyVis()" style="position:absolute;right:10px;background:none;border:none;cursor:pointer;font-size:17px;color:var(--text3)">👁️</button>
+              </div>
+              <div style="font-size:10px;color:var(--text3);margin-top:4px;font-weight:500">
+                🔐 Stockée uniquement sur cet appareil — jamais envoyée à SAMASSA
+              </div>
+            </div>
+
+            <div style="display:flex;gap:8px">
+              <button onclick="testAIKey()" style="flex:1;padding:11px;background:#EEF2FF;color:#3730A3;border:1.5px solid #C7D2FE;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">🧪 Tester</button>
+              <button onclick="saveAIConfig()" style="flex:2;padding:11px;background:linear-gradient(135deg,#059652,#10B981);color:white;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit">💾 Enregistrer</button>
+            </div>
+
+            <div style="margin-top:10px;padding:10px 13px;border-radius:9px;font-size:11px;font-weight:600;display:none" id="ai-test-result"></div>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /form-body -->
 
     <div class="actions" id="preview-actions" style="display:none">
