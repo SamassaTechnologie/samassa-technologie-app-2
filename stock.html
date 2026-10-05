@@ -1,4 +1,267 @@
-<script>(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expires){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})();</script>
-<!doctype html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stock — SAMASSA TECHNOLOGIE</title><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-512x512.png"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css"><style>
-.stock-wrap{max-width:1180px;margin:78px auto 40px;padding:0 22px}.stock-head{background:linear-gradient(135deg,#0D1B2A,#006699);color:#fff;border-radius:14px;padding:22px 26px;display:flex;justify-content:space-between;gap:20px;align-items:center}.stock-head h1{font-size:22px;margin:0 0 5px}.stock-head p{margin:0;color:#B8D8EA;font-size:13px}.stock-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.stock-kpi,.stock-card{background:#fff;border:1px solid #D0DDE8;border-radius:12px;box-shadow:0 2px 12px rgba(13,27,42,.08)}.stock-kpi{padding:15px}.stock-kpi strong{display:block;font-size:22px;color:#0D1B2A}.stock-kpi span{font-size:11px;color:#8099B0;text-transform:uppercase;font-weight:700}.stock-card{padding:18px;margin-bottom:16px}.stock-card h2{font-size:15px;margin:0 0 14px;color:#1A2D44}.stock-form{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:8px;align-items:end}.stock-form label{font-size:10px;color:#4A6080;font-weight:700;display:block;margin-bottom:4px}.stock-form input,.stock-form select{width:100%;padding:9px;border:1px solid #D0DDE8;border-radius:7px;font:inherit}.stock-btn{background:#0088CC;color:#fff;border:0;border-radius:7px;padding:10px 14px;font-weight:700;cursor:pointer}.stock-btn.out{background:#DC2626}.stock-table{width:100%;border-collapse:collapse}.stock-table th,.stock-table td{padding:10px 8px;border-bottom:1px solid #EEF3F7;text-align:left;font-size:12px}.stock-table th{background:#F0F5FA;color:#4A6080;font-size:10px;text-transform:uppercase}.low{color:#B45309;background:#FFFBEB;padding:3px 7px;border-radius:10px;font-weight:700}.ok{color:#15803D;background:#F0FDF4;padding:3px 7px;border-radius:10px;font-weight:700}.del{border:0;background:#FEE2E2;color:#B91C1C;border-radius:6px;padding:5px 8px;cursor:pointer}@media(max-width:800px){.stock-grid{grid-template-columns:1fr 1fr}.stock-form{grid-template-columns:1fr 1fr}.stock-head{display:block}.stock-head a{display:inline-block;margin-top:12px}}@media print{.topbar,.stock-form,.stock-head a{display:none}.stock-wrap{margin:0}.stock-card{box-shadow:none}}
-</style></head><body><div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">📦 Gestion de stock</span><img src="logo.png" alt="Logo" class="topbar-logo"></div><main class="stock-wrap"><div class="stock-head"><div><h1>Stock matériel informatique</h1><p>Suivez vos ordinateurs, accessoires et pièces avec alertes de seuil.</p></div><a href="facture_materiel.html" class="btn" style="background:#16A34A;color:#fff;text-decoration:none">Nouvelle vente matériel →</a></div><div class="stock-grid"><div class="stock-kpi"><strong id="kProducts">0</strong><span>Références</span></div><div class="stock-kpi"><strong id="kUnits">0</strong><span>Unités en stock</span></div><div class="stock-kpi"><strong id="kValue">0 F</strong><span>Valeur estimée</span></div><div class="stock-kpi"><strong id="kLow">0</strong><span>Alertes stock</span></div></div><section class="stock-card"><h2>Ajouter une référence</h2><div class="stock-form"><div><label>Produit / référence</label><input id="name" placeholder="Ex. HP EliteBook 840 G8"></div><div><label>Catégorie</label><select id="category"><option>Ordinateur portable</option><option>Ordinateur bureau</option><option>Accessoire</option><option>Composant</option><option>Imprimante</option><option>Autre</option></select></div><div><label>Quantité</label><input id="qty" type="number" min="0" value="1"></div><div><label>Seuil alerte</label><input id="min" type="number" min="0" value="1"></div><div><label>Prix achat (FCFA)</label><input id="price" type="number" min="0" value="0"></div><button class="stock-btn" onclick="addStock()">Ajouter</button></div></section><section class="stock-card"><h2>Inventaire</h2><div style="overflow-x:auto"><table class="stock-table"><thead><tr><th>Produit</th><th>Catégorie</th><th>Qté</th><th>Seuil</th><th>Prix achat</th><th>Valeur</th><th>État</th><th></th></tr></thead><tbody id="stockBody"></tbody></table></div></section></main><script src="auth.js"></script><script src="stock.js"></script><script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script></body></html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script>
+(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expires){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stock — SAMASSA TECHNOLOGIE</title>
+<meta name="theme-color" content="#0A1628">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.stock-wrap{max-width:1200px;margin:72px auto 60px;padding:0 20px}
+
+/* Hero */
+.stock-hero{background:linear-gradient(135deg,#0A1628 0%,#0D2340 50%,#0070C0 100%);border-radius:16px;padding:22px 26px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.stock-hero h1{font-size:20px;font-weight:900;color:white;margin:0 0 4px;letter-spacing:-.02em}
+.stock-hero p{color:#7AB4D8;font-size:12px;font-weight:500;margin:0}
+.stock-hero-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-hero{padding:9px 16px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:all .2s}
+
+/* KPIs */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kpi-box{background:white;border:1px solid #E2ECF5;border-radius:12px;padding:16px 18px;box-shadow:0 2px 10px rgba(10,22,40,.06)}
+.kpi-box strong{display:block;font-size:26px;font-weight:900;color:#0A1628;line-height:1;margin-bottom:4px;letter-spacing:-.02em}
+.kpi-box span{font-size:10px;font-weight:700;color:#7A94AF;text-transform:uppercase;letter-spacing:.08em}
+.kpi-box.alerte{background:#FFF8EE;border-color:#FDE68A}
+.kpi-box.alerte strong{color:#B45309}
+
+/* Tabs */
+.tab-bar2{display:flex;border:1.5px solid #E2ECF5;border-radius:11px;overflow:hidden;margin-bottom:18px;background:white}
+.tab-btn2{flex:1;padding:10px;background:none;border:none;cursor:pointer;font-size:13px;font-weight:600;color:#7A94AF;font-family:inherit;transition:all .2s}
+.tab-btn2.active{background:#0A1628;color:white;font-weight:700}
+
+/* Formulaire ajout */
+.add-form{background:white;border:1px solid #E2ECF5;border-radius:14px;padding:18px 20px;margin-bottom:18px;box-shadow:0 2px 10px rgba(10,22,40,.06)}
+.add-form h2{font-size:14px;font-weight:800;color:#0A1628;margin:0 0 14px;letter-spacing:-.01em}
+.form-grid6{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:10px;align-items:end}
+.fg label{font-size:10px;font-weight:700;color:#7A94AF;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em}
+.fg input,.fg select{width:100%;padding:9px 11px;border:1.5px solid #E2ECF5;border-radius:9px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus{border-color:#0070C0}
+
+/* Tableau */
+.table-card{background:white;border:1px solid #E2ECF5;border-radius:14px;overflow:hidden;box-shadow:0 2px 10px rgba(10,22,40,.06)}
+.table-toolbar{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid #F0F5FA;flex-wrap:wrap}
+.table-toolbar input{flex:1;min-width:140px;padding:8px 12px;border:1.5px solid #E2ECF5;border-radius:9px;font-size:13px;font-family:inherit;outline:none}
+.table-toolbar select{padding:8px 10px;border:1.5px solid #E2ECF5;border-radius:9px;font-size:12px;font-family:inherit;outline:none}
+.stock-table{width:100%;border-collapse:collapse}
+.stock-table th{background:#F8FBFD;padding:10px 12px;font-size:10px;font-weight:700;color:#7A94AF;text-transform:uppercase;letter-spacing:.07em;text-align:left;border-bottom:2px solid #EEF3F9}
+.stock-table td{padding:10px 12px;font-size:13px;border-bottom:1px solid #F4F8FB;color:#0A1628}
+.stock-table tr:hover td{background:#FAFCFE}
+.badge-low{background:#FEF3C7;color:#92400E;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:800}
+.badge-ok{background:#DCFCE7;color:#166534;padding:3px 9px;border-radius:10px;font-size:10px;font-weight:800}
+.btn-sortie{background:#EBF5FF;color:#0070C0;border:1px solid #BAE6FD;border-radius:7px;padding:5px 10px;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;white-space:nowrap}
+.btn-del{background:#FEE2E2;color:#B91C1C;border:none;border-radius:7px;padding:5px 8px;cursor:pointer;font-size:12px}
+.btn-del:hover{background:#DC2626;color:white}
+
+/* Mouvements */
+.mvt-table{width:100%;border-collapse:collapse}
+.mvt-table th{background:#F8FBFD;padding:9px 12px;font-size:10px;font-weight:700;color:#7A94AF;text-transform:uppercase;letter-spacing:.07em;text-align:left;border-bottom:2px solid #EEF3F9}
+.mvt-table td{padding:9px 12px;font-size:12px;border-bottom:1px solid #F4F8FB}
+.mvt-in{background:#DCFCE7;color:#166534;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:800}
+.mvt-out{background:#FEE2E2;color:#B91C1C;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:800}
+
+@media(max-width:768px){
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .form-grid6{grid-template-columns:1fr 1fr}
+  .stock-hero{flex-direction:column;align-items:flex-start}
+}
+@media print{
+  .topbar,.add-form,.tab-bar2,.table-toolbar,.stock-hero-actions,.btn-sortie,.btn-del{display:none!important}
+  .stock-wrap{margin:0}
+  .table-card{box-shadow:none;border:none}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">📦 Gestion de Stock</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="stock-wrap">
+
+  <!-- Hero -->
+  <div class="stock-hero">
+    <div>
+      <h1>📦 Stock Matériel Informatique</h1>
+      <p>Inventaire · Mouvements · Alertes de réapprovisionnement</p>
+    </div>
+    <div class="stock-hero-actions">
+      <a href="facture_materiel.html" class="btn-hero" style="background:#059652;color:white">➕ Nouvelle vente</a>
+      <button onclick="exportCSV()" class="btn-hero" style="background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.3)">📊 Export CSV</button>
+      <button onclick="window.print()" class="btn-hero" style="background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.3)">🖨️ Imprimer</button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi-box"><strong id="kProducts">0</strong><span>Références</span></div>
+    <div class="kpi-box"><strong id="kUnits">0</strong><span>Unités en stock</span></div>
+    <div class="kpi-box"><strong id="kValue">0</strong><span>Valeur stock (achat)</span></div>
+    <div class="kpi-box alerte"><strong id="kLow">0</strong><span>⚠️ Alertes stock bas</span></div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tab-bar2">
+    <button class="tab-btn2 active" onclick="showTab('inventaire',this)">📋 Inventaire</button>
+    <button class="tab-btn2" onclick="showTab('mouvements',this)">🔄 Mouvements</button>
+    <button class="tab-btn2" onclick="showTab('alertes',this)">⚠️ Alertes</button>
+  </div>
+
+  <!-- TAB : Inventaire -->
+  <div id="tab-inventaire">
+    <!-- Formulaire ajout -->
+    <div class="add-form">
+      <h2>➕ Ajouter / Réapprovisionner un article</h2>
+      <div class="form-grid6">
+        <div class="fg"><label>Produit / Référence *</label><input id="s-name" placeholder="Ex: HP EliteBook 840 G8"></div>
+        <div class="fg"><label>Catégorie</label>
+          <select id="s-cat">
+            <option>Ordinateur portable</option>
+            <option>Ordinateur bureau</option>
+            <option>Écran / Moniteur</option>
+            <option>Imprimante</option>
+            <option>Disque dur / SSD</option>
+            <option>RAM / Mémoire</option>
+            <option>Accessoire clavier/souris</option>
+            <option>Câbles / Adaptateurs</option>
+            <option>Clé USB / Carte mémoire</option>
+            <option>Batterie / Chargeur</option>
+            <option>Pièce détachée</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="fg"><label>Quantité</label><input id="s-qty" type="number" min="0" value="1"></div>
+        <div class="fg"><label>Seuil alerte</label><input id="s-min" type="number" min="0" value="1"></div>
+        <div class="fg"><label>Prix achat (FCFA)</label><input id="s-pa" type="number" min="0" value="0"></div>
+        <div class="fg"><label>Prix vente (FCFA)</label><input id="s-pv" type="number" min="0" value="0"></div>
+        <div style="display:flex;align-items:flex-end"><button onclick="addStock()" style="width:100%;padding:10px 14px;background:linear-gradient(135deg,#0070C0,#0095E0);color:white;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit">Ajouter</button></div>
+      </div>
+    </div>
+
+    <!-- Tableau inventaire -->
+    <div class="table-card">
+      <div class="table-toolbar">
+        <input id="s-search" placeholder="🔍 Rechercher un article..." oninput="filterStock()">
+        <select id="s-cat-filter" onchange="filterStock()" style="min-width:140px">
+          <option value="">Toutes catégories</option>
+          <option>Ordinateur portable</option>
+          <option>Ordinateur bureau</option>
+          <option>Écran / Moniteur</option>
+          <option>Imprimante</option>
+          <option>Disque dur / SSD</option>
+          <option>RAM / Mémoire</option>
+          <option>Accessoire clavier/souris</option>
+          <option>Câbles / Adaptateurs</option>
+          <option>Clé USB / Carte mémoire</option>
+          <option>Batterie / Chargeur</option>
+          <option>Pièce détachée</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="stock-table">
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Catégorie</th>
+              <th>Qté</th>
+              <th>Seuil</th>
+              <th>Prix achat</th>
+              <th>Prix vente</th>
+              <th>Marge</th>
+              <th>Valeur stock</th>
+              <th>État</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="stockBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB : Mouvements -->
+  <div id="tab-mouvements" style="display:none">
+    <div class="table-card">
+      <div style="padding:14px 18px;border-bottom:1px solid #F0F5FA;font-size:14px;font-weight:800;color:#0A1628">
+        🔄 Historique des mouvements de stock
+      </div>
+      <div style="overflow-x:auto">
+        <table class="mvt-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Article</th>
+              <th>Quantité</th>
+              <th>Prix unit.</th>
+              <th>Motif</th>
+            </tr>
+          </thead>
+          <tbody id="mvtBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB : Alertes -->
+  <div id="tab-alertes" style="display:none">
+    <div class="table-card">
+      <div style="padding:14px 18px;border-bottom:1px solid #F0F5FA;font-size:14px;font-weight:800;color:#B45309">
+        ⚠️ Articles à réapprovisionner
+      </div>
+      <div style="overflow-x:auto">
+        <table class="stock-table">
+          <thead>
+            <tr><th>Produit</th><th>Catégorie</th><th>Stock actuel</th><th>Seuil minimum</th><th>Manque</th><th>Action</th></tr>
+          </thead>
+          <tbody id="alertBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="auth.js"></script>
+<script src="utils.js"></script>
+<script src="stock.js"></script>
+<script>
+function showTab(name, btn) {
+  ['inventaire','mouvements','alertes'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn2').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (name === 'alertes') renderAlertes();
+}
+function renderAlertes() {
+  const list = JSON.parse(localStorage.getItem('samassa_stock_v2')||'[]').filter(x => x.qty <= x.min);
+  const body = document.getElementById('alertBody');
+  if (!list.length) {
+    body.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#059652;font-weight:700">✅ Aucune alerte — Tous les stocks sont OK</td></tr>';
+    return;
+  }
+  const fmt = n => Number(n||0).toLocaleString('fr-FR') + ' FCFA';
+  body.innerHTML = list.map(x => `<tr style="background:#FFFBEB">
+    <td><strong>${x.name}</strong></td>
+    <td style="color:#7A94AF;font-size:11px">${x.cat}</td>
+    <td style="color:#DC2626;font-weight:900;font-size:15px">${x.qty}</td>
+    <td>${x.min}</td>
+    <td style="color:#B45309;font-weight:700">${Math.max(0,x.min-x.qty)} unité(s)</td>
+    <td><button onclick="document.getElementById('s-name').value='${x.name.replace(/'/,'\'')}';showTab('inventaire',document.querySelectorAll('.tab-btn2')[0]);document.getElementById('s-name').focus()" style="background:#0070C0;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer">➕ Réapprovisionner</button></td>
+  </tr>`).join('');
+}
+</script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+</html>
