@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script>
+(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expires){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Clients — SAMASSA TECHNOLOGIE</title>
+<meta name="theme-color" content="#0A1628">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:72px auto 60px;padding:0 18px}
+.hero{background:linear-gradient(135deg,#0A1628,#0D2340,#0070C0);border-radius:16px;padding:20px 24px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hero h1{font-size:19px;font-weight:900;color:white;margin:0 0 3px;letter-spacing:-.02em}
+.hero p{color:#7AB4D8;font-size:12px;margin:0}
+.krow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.kbox{background:white;border:1px solid #E2ECF5;border-radius:12px;padding:14px 16px;text-align:center;box-shadow:0 2px 8px rgba(10,22,40,.05)}
+.kbox strong{display:block;font-size:24px;font-weight:900;color:#0A1628;line-height:1;margin-bottom:3px}
+.kbox span{font-size:10px;font-weight:700;color:#7A94AF;text-transform:uppercase;letter-spacing:.08em}
+/* Formulaire */
+.card{background:white;border:1px solid #E2ECF5;border-radius:14px;padding:18px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(10,22,40,.05)}
+.card h2{font-size:14px;font-weight:800;color:#0A1628;margin:0 0 14px}
+.fg{margin-bottom:10px}
+.fg label{display:block;font-size:10px;font-weight:700;color:#7A94AF;margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em}
+.fg input,.fg textarea,.fg select{width:100%;padding:9px 12px;border:1.5px solid #E2ECF5;border-radius:9px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+.fg input:focus,.fg textarea:focus{border-color:#0070C0}
+.fg textarea{resize:vertical;min-height:50px}
+.fgrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* Liste clients */
+.search-bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-bar input{flex:1;min-width:160px;padding:9px 14px;border:1.5px solid #E2ECF5;border-radius:10px;font-size:13px;font-family:inherit;outline:none}
+.client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.client-card{background:white;border:1px solid #E2ECF5;border-radius:13px;padding:16px;box-shadow:0 2px 8px rgba(10,22,40,.05);transition:all .2s;position:relative}
+.client-card:hover{box-shadow:0 6px 20px rgba(10,22,40,.1);border-color:#BAE6FD;transform:translateY(-2px)}
+.c-avatar{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#0070C0,#6366F1);color:white;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.c-name{font-size:14px;font-weight:800;color:#0A1628;margin-bottom:2px}
+.c-nina{font-size:10px;font-family:monospace;color:#0070C0;font-weight:700;margin-bottom:6px}
+.c-info{font-size:11px;color:#7A94AF;line-height:1.7}
+.c-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.c-btn{padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;border:none;text-decoration:none;transition:all .18s}
+.c-del{position:absolute;top:10px;right:10px;background:#FEE2E2;color:#B91C1C;border:none;border-radius:7px;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+.c-del:hover{background:#DC2626;color:white}
+.empty{text-align:center;padding:40px;color:#7A94AF}
+.empty .ico{font-size:48px;opacity:.2;margin-bottom:12px}
+@media(max-width:600px){
+  .krow{grid-template-columns:1fr 1fr 1fr}
+  .fgrow{grid-template-columns:1fr}
+  .hero{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">👥 Répertoire Clients</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div>
+      <h1>👥 Répertoire Clients</h1>
+      <p>Enregistrez vos clients une fois · Retrouvez-les partout</p>
+    </div>
+    <button onclick="exportClients()" style="background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:10px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">📊 Export CSV</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="krow">
+    <div class="kbox"><strong id="k-total">0</strong><span>Total clients</span></div>
+    <div class="kbox"><strong id="k-today">0</strong><span>Ajoutés ce mois</span></div>
+    <div class="kbox"><strong id="k-nina">0</strong><span>Avec NINA</span></div>
+  </div>
+
+  <!-- Formulaire ajout -->
+  <div class="card">
+    <h2>➕ Nouveau client</h2>
+    <div class="fgrow">
+      <div class="fg"><label>Prénom *</label><input id="c-prenom" placeholder="Ex: Mamadou" autocomplete="given-name"></div>
+      <div class="fg"><label>Nom de famille *</label><input id="c-nom" placeholder="Ex: COULIBALY" autocomplete="family-name" style="text-transform:uppercase"></div>
+    </div>
+    <div class="fgrow">
+      <div class="fg"><label>Téléphone</label><input id="c-tel" type="tel" placeholder="+223 7X XX XX XX" autocomplete="tel"></div>
+      <div class="fg"><label>N° NINA</label><input id="c-nina" placeholder="Ex: 197CI901041009A" autocomplete="off" style="font-family:monospace;text-transform:uppercase"></div>
+    </div>
+    <div class="fgrow">
+      <div class="fg"><label>Adresse / Quartier</label><input id="c-adresse" placeholder="Ex: Quartier Liberté, Kayes"></div>
+      <div class="fg"><label>Profession</label><input id="c-profession" placeholder="Ex: Commerçant, Enseignant..."></div>
+    </div>
+    <div class="fg"><label>Notes</label><textarea id="c-notes" placeholder="Remarques sur le client..."></textarea></div>
+    <button onclick="addClient()" style="width:100%;padding:12px;background:linear-gradient(135deg,#0070C0,#0095E0);color:white;border:none;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:4px">💾 Enregistrer le client</button>
+  </div>
+
+  <!-- Recherche -->
+  <div class="search-bar">
+    <input id="c-search" placeholder="🔍 Rechercher par nom, téléphone ou NINA..." oninput="renderClients()">
+  </div>
+
+  <!-- Liste -->
+  <div class="client-grid" id="client-grid"></div>
+
+</div>
+
+<script src="auth.js"></script>
+<script src="utils.js"></script>
+<script>
+const CL_KEY = 'samassa_clients';
+
+function readClients() { return JSON.parse(localStorage.getItem(CL_KEY)||'[]'); }
+function saveClients(list) { localStorage.setItem(CL_KEY, JSON.stringify(list)); renderClients(); }
+
+function addClient() {
+  const prenom = document.getElementById('c-prenom').value.trim();
+  const nom    = document.getElementById('c-nom').value.trim().toUpperCase();
+  if (!prenom || !nom) { alert('Prénom et nom obligatoires.'); return; }
+
+  const client = {
+    id: Date.now(),
+    prenom, nom,
+    tel:        document.getElementById('c-tel').value.trim(),
+    nina:       document.getElementById('c-nina').value.trim().toUpperCase(),
+    adresse:    document.getElementById('c-adresse').value.trim(),
+    profession: document.getElementById('c-profession').value.trim(),
+    notes:      document.getElementById('c-notes').value.trim(),
+    created:    new Date().toISOString()
+  };
+
+  const list = readClients();
+  // Vérifier doublon (même nom + tel)
+  const dup = list.find(c => c.nom === nom && c.prenom.toLowerCase() === prenom.toLowerCase() && c.tel === client.tel);
+  if (dup) { if (!confirm('Ce client semble déjà exister. Ajouter quand même ?')) return; }
+
+  list.unshift(client);
+  saveClients(list);
+
+  // Réinitialiser
+  ['c-prenom','c-nom','c-tel','c-nina','c-adresse','c-profession','c-notes'].forEach(id => document.getElementById(id).value='');
+  showToast('✅ Client enregistré !', 'success');
+  updateKPIs();
+}
+
+function removeClient(id) {
+  if (!confirm('Supprimer ce client ?')) return;
+  saveClients(readClients().filter(c => c.id !== id));
+  updateKPIs();
+}
+
+function renderClients() {
+  const list  = readClients();
+  const q     = (document.getElementById('c-search')?.value || '').toLowerCase().trim();
+  const grid  = document.getElementById('client-grid');
+  const filtered = q ? list.filter(c =>
+    `${c.prenom} ${c.nom} ${c.tel} ${c.nina}`.toLowerCase().includes(q)
+  ) : list;
+
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
+      <div class="ico">👥</div>
+      <p style="font-size:14px;font-weight:700;color:#7A94AF">${q ? 'Aucun client trouvé' : 'Aucun client enregistré'}</p>
+      <p style="font-size:12px;margin-top:4px">Ajoutez votre premier client ci-dessus</p>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(c => {
+    const initiale = (c.prenom[0]||'?').toUpperCase();
+    const fullName = `${c.prenom} ${c.nom}`;
+    const waUrl = c.tel ? `https://wa.me/223${c.tel.replace(/\D/g,'')}` : '#';
+    return `<div class="client-card">
+      <button class="c-del" onclick="removeClient(${c.id})" title="Supprimer">×</button>
+      <div class="c-avatar">${initiale}</div>
+      <div class="c-name">${fullName}</div>
+      ${c.nina ? `<div class="c-nina">🪪 ${c.nina}</div>` : ''}
+      <div class="c-info">
+        ${c.tel       ? `📞 <strong>${c.tel}</strong><br>` : ''}
+        ${c.adresse   ? `📍 ${c.adresse}<br>` : ''}
+        ${c.profession? `💼 ${c.profession}<br>` : ''}
+        ${c.notes     ? `💬 ${c.notes}` : ''}
+      </div>
+      <div class="c-actions">
+        <a href="${waUrl}" target="_blank" class="c-btn" style="background:#DCFCE7;color:#166534">💬 WhatsApp</a>
+        <button class="c-btn" style="background:#EBF5FF;color:#0070C0" onclick="fillFromClient(${c.id})">📋 Utiliser</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateKPIs();
+}
+
+/* Remplir les champs d'une autre page depuis le répertoire */
+function fillFromClient(id) {
+  const c = readClients().find(x => x.id === id);
+  if (!c) return;
+  localStorage.setItem('_samassa_fill_client', JSON.stringify(c));
+  showToast('✅ Client sélectionné — collez-le dans votre document', 'success');
+}
+
+function updateKPIs() {
+  const list = readClients();
+  const now  = new Date();
+  const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  document.getElementById('k-total').textContent = list.length;
+  document.getElementById('k-today').textContent = list.filter(c => (c.created||'').startsWith(thisMonth)).length;
+  document.getElementById('k-nina').textContent  = list.filter(c => c.nina).length;
+}
+
+function exportClients() {
+  const list = readClients();
+  const rows = [['Prénom','Nom','Téléphone','NINA','Adresse','Profession','Notes','Date ajout']];
+  list.forEach(c => rows.push([c.prenom,c.nom,c.tel,c.nina,c.adresse,c.profession,c.notes,c.created?.slice(0,10)]));
+  const csv = rows.map(r => r.map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
+  a.download = 'clients_samassa_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  showToast('📊 Export clients téléchargé', 'success');
+}
+
+function showToast(msg, type) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = `position:fixed;bottom:24px;right:20px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:700;color:white;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);background:${{success:'#059652',error:'#DC2626',info:'#0070C0'}[type]||'#0070C0'}`;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+document.addEventListener('DOMContentLoaded', () => { renderClients(); updateKPIs(); });
+</script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+</html>
