@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Configuration automatique — SAMASSA PRO</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:linear-gradient(135deg,#0A1628,#0070C0);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:white;border-radius:20px;padding:32px 28px;max-width:420px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,.35);text-align:center}
+.logo{width:64px;height:64px;border-radius:14px;margin:0 auto 16px;display:block}
+h1{font-size:20px;font-weight:900;color:#0A1628;margin-bottom:6px}
+p{font-size:13px;color:#7A94AF;margin-bottom:20px}
+.step{background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:12px;padding:14px 16px;margin-bottom:12px;text-align:left;font-size:13px;color:#059652;font-weight:600}
+.step.error{background:#FEF2F2;border-color:#FECACA;color:#DC2626}
+.btn{display:block;width:100%;padding:14px;background:linear-gradient(135deg,#059652,#10B981);color:white;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;text-decoration:none;margin-top:16px}
+.spinner{width:24px;height:24px;border:3px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="card">
+  <img src="logo.png" alt="Logo" class="logo">
+  <h1>Configuration automatique</h1>
+  <p>SAMASSA TECHNOLOGIE — Suite Pro</p>
+  <div id="steps"></div>
+  <a id="goto" href="docs_admin.html" class="btn" style="display:none">✅ Aller aux Documents Admin →</a>
+</div>
+
+<script>
+const steps = document.getElementById('steps');
+const params = new URLSearchParams(window.location.search);
+const aikey  = params.get('aikey') || params.get('key') || '';
+
+function addStep(msg, ok) {
+  const d = document.createElement('div');
+  d.className = 'step' + (ok === false ? ' error' : '');
+  d.textContent = (ok !== false ? '✅ ' : '❌ ') + msg;
+  steps.appendChild(d);
+}
+
+async function configure() {
+  addStep('Connexion à la Suite Pro...', true);
+
+  if (!aikey) {
+    addStep('Aucune clé API trouvée dans l\'URL', false);
+    return;
+  }
+
+  // Configurer la clé Gemini
+  try {
+    localStorage.setItem('_samassa_ai_key', aikey);
+    addStep('Clé Google Gemini configurée ✓', true);
+  } catch(e) {
+    addStep('Erreur localStorage : ' + e.message, false);
+    return;
+  }
+
+  // Créer une session de connexion (si pas déjà connecté)
+  try {
+    const sess = localStorage.getItem('_samassa_session');
+    if (!sess) {
+      addStep('Session : veuillez vous connecter normalement', null);
+    } else {
+      addStep('Session active détectée ✓', true);
+    }
+  } catch(e) {}
+
+  addStep('Configuration terminée avec succès ! 🎉', true);
+
+  // Nettoyer l'URL (supprimer la clé)
+  window.history.replaceState({}, '', window.location.pathname);
+
+  document.getElementById('goto').style.display = 'block';
+
+  // Redirection automatique après 2s
+  setTimeout(() => {
+    window.location.href = 'docs_admin.html';
+  }, 2500);
+}
+
+configure();
+</script>
+</body>
+</html>
