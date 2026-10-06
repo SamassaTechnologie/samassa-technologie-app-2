@@ -136,15 +136,18 @@ function renderInventaire() {
     <tr style="${x.qty <= x.min ? 'background:#FFFBEB' : ''}">
       <td><strong>${esc(x.name)}</strong></td>
       <td style="color:#7A94AF;font-size:11px">${esc(x.cat)}</td>
-      <td style="font-weight:800;font-size:15px;${x.qty<=x.min?'color:#B45309':'color:#0A1628'}">${x.qty}</td>
+      <td style="font-weight:900;font-size:15px;${x.qty<=x.min?'color:#B45309':'color:#0A1628'}">${x.qty}</td>
       <td style="color:#7A94AF">${x.min}</td>
-      <td>${x.pa ? fmt(x.pa) : '—'}</td>
-      <td>${x.pv ? fmt(x.pv) : '—'}</td>
+      <td style="font-size:12px">${x.pa ? fmt(x.pa) : '—'}</td>
+      <td style="font-size:12px">${x.pv ? fmt(x.pv) : '—'}</td>
       <td>${marge(x)}</td>
-      <td><span class="${x.qty<=x.min?'low':'ok'}">${x.qty<=x.min?'⚠️ Réappro':'✓ Dispo'}</span></td>
-      <td style="display:flex;gap:5px;flex-wrap:wrap">
-        <button onclick="sortieStock(${x.id})" style="background:#EBF5FF;color:#0070C0;border:1px solid #BAE6FD;border-radius:6px;padding:4px 9px;cursor:pointer;font-size:11px;font-weight:700;white-space:nowrap">− Sortie</button>
-        <button onclick="removeStock(${x.id})" style="background:#FEE2E2;color:#B91C1C;border:none;border-radius:6px;padding:4px 9px;cursor:pointer;font-size:11px">🗑</button>
+      <td style="font-size:12px;color:#3D5470">${fmt(x.qty * x.pa)}</td>
+      <td><span style="background:${x.qty<=x.min?'#FEF3C7':'#DCFCE7'};color:${x.qty<=x.min?'#92400E':'#166534'};padding:3px 9px;border-radius:10px;font-size:10px;font-weight:800">${x.qty<=x.min?'⚠️ Réappro':'✓ Dispo'}</span></td>
+      <td>
+        <div style="display:flex;gap:5px">
+          <button onclick="sortieStock(${x.id})" class="btn-sortie">− Sortie</button>
+          <button onclick="removeStock(${x.id})" class="btn-del">🗑</button>
+        </div>
       </td>
     </tr>`).join('');
 }
