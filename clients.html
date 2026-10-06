@@ -1,58 +1,78 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script>
-(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expires){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})();
-</script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<script>(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expires){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})()</script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Clients — SAMASSA TECHNOLOGIE</title>
 <meta name="theme-color" content="#0A1628">
 <link rel="manifest" href="manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="mobile.css">
 <style>
 body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-.wrap{max-width:900px;margin:72px auto 60px;padding:0 18px}
-.hero{background:linear-gradient(135deg,#0A1628,#0D2340,#0070C0);border-radius:16px;padding:20px 24px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.hero h1{font-size:19px;font-weight:900;color:white;margin:0 0 3px;letter-spacing:-.02em}
-.hero p{color:#7AB4D8;font-size:12px;margin:0}
-.krow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
-.kbox{background:white;border:1px solid #E2ECF5;border-radius:12px;padding:14px 16px;text-align:center;box-shadow:0 2px 8px rgba(10,22,40,.05)}
-.kbox strong{display:block;font-size:24px;font-weight:900;color:#0A1628;line-height:1;margin-bottom:3px}
-.kbox span{font-size:10px;font-weight:700;color:#7A94AF;text-transform:uppercase;letter-spacing:.08em}
+.cl-wrap{max-width:1100px;margin:72px auto 60px;padding:0 18px}
+.hero{background:linear-gradient(135deg,#1E1B4B 0%,#3730A3 60%,#6366F1 100%);border-radius:16px;padding:22px 26px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.hero h1{font-size:20px;font-weight:900;color:white;margin:0 0 4px;letter-spacing:-.02em}
+.hero p{color:rgba(255,255,255,.6);font-size:12px;margin:0}
+.hero-btns{display:flex;gap:8px;flex-wrap:wrap}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kbox{background:white;border:1px solid #E2ECF5;border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px rgba(10,22,40,.06)}
+.kbox strong{display:block;font-size:26px;font-weight:900;color:#0A1628;line-height:1;margin-bottom:4px}
+.kbox span{font-size:10px;font-weight:700;color:#7A94AF;text-transform:uppercase;letter-spacing:.07em}
 /* Formulaire */
-.card{background:white;border:1px solid #E2ECF5;border-radius:14px;padding:18px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(10,22,40,.05)}
-.card h2{font-size:14px;font-weight:800;color:#0A1628;margin:0 0 14px}
-.fg{margin-bottom:10px}
-.fg label{display:block;font-size:10px;font-weight:700;color:#7A94AF;margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em}
-.fg input,.fg textarea,.fg select{width:100%;padding:9px 12px;border:1.5px solid #E2ECF5;border-radius:9px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
-.fg input:focus,.fg textarea:focus{border-color:#0070C0}
-.fg textarea{resize:vertical;min-height:50px}
-.fgrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-/* Liste clients */
-.search-bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.search-bar input{flex:1;min-width:160px;padding:9px 14px;border:1.5px solid #E2ECF5;border-radius:10px;font-size:13px;font-family:inherit;outline:none}
-.client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.client-card{background:white;border:1px solid #E2ECF5;border-radius:13px;padding:16px;box-shadow:0 2px 8px rgba(10,22,40,.05);transition:all .2s;position:relative}
-.client-card:hover{box-shadow:0 6px 20px rgba(10,22,40,.1);border-color:#BAE6FD;transform:translateY(-2px)}
-.c-avatar{width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#0070C0,#6366F1);color:white;font-size:18px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
-.c-name{font-size:14px;font-weight:800;color:#0A1628;margin-bottom:2px}
-.c-nina{font-size:10px;font-family:monospace;color:#0070C0;font-weight:700;margin-bottom:6px}
-.c-info{font-size:11px;color:#7A94AF;line-height:1.7}
-.c-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.c-btn{padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;border:none;text-decoration:none;transition:all .18s}
-.c-del{position:absolute;top:10px;right:10px;background:#FEE2E2;color:#B91C1C;border:none;border-radius:7px;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
-.c-del:hover{background:#DC2626;color:white}
-.empty{text-align:center;padding:40px;color:#7A94AF}
-.empty .ico{font-size:48px;opacity:.2;margin-bottom:12px}
-@media(max-width:600px){
-  .krow{grid-template-columns:1fr 1fr 1fr}
-  .fgrow{grid-template-columns:1fr}
-  .hero{flex-direction:column;align-items:flex-start}
-}
+.add-card{background:white;border:1px solid #E2ECF5;border-radius:14px;margin-bottom:18px;overflow:hidden;box-shadow:0 2px 8px rgba(10,22,40,.06)}
+.add-hdr{padding:14px 18px;background:#F8FBFD;border-bottom:1px solid #EEF3F9;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.add-hdr h2{font-size:14px;font-weight:800;color:#0A1628;margin:0}
+.add-body{padding:18px;display:none}
+.add-body.open{display:block}
+.fg{margin-bottom:11px}
+.fg label{font-size:10px;font-weight:800;color:#7A94AF;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 12px;border:1.5px solid #E2ECF5;border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#6366F1;box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.btn-add{width:100%;padding:12px;background:linear-gradient(135deg,#3730A3,#6366F1);color:white;border:none;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(55,48,163,.35);transition:all .2s}
+.btn-add:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(55,48,163,.45)}
+/* Recherche */
+.sbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.sbar input{flex:1;min-width:160px;padding:10px 14px;border:1.5px solid #E2ECF5;border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+.sbar input:focus{border-color:#6366F1}
+.sbar select{padding:10px 12px;border:1.5px solid #E2ECF5;border-radius:10px;font-size:12px;font-family:inherit;outline:none;min-width:140px}
+/* Grille */
+.cl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.cl-card{background:white;border:1.5px solid #E2ECF5;border-radius:14px;padding:16px;box-shadow:0 2px 8px rgba(10,22,40,.06);transition:all .2s;position:relative}
+.cl-card:hover{box-shadow:0 6px 20px rgba(10,22,40,.12);transform:translateY(-2px)}
+.avatar{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#3730A3,#6366F1);color:white;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:11px}
+.cl-name{font-size:15px;font-weight:800;color:#0A1628;margin-bottom:3px}
+.cl-nina{font-size:11px;color:#7A94AF;font-family:monospace;margin-bottom:8px}
+.cl-info{font-size:12px;color:#3D5470;line-height:1.8}
+.cl-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+.cl-tag{background:#EEF2FF;color:#4338CA;font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px}
+.cl-tag.green{background:#DCFCE7;color:#166534}
+.cl-actions{display:flex;gap:6px;margin-top:11px;padding-top:10px;border-top:1px solid #F0F5FA}
+.btn-use{flex:1;background:linear-gradient(135deg,#3730A3,#6366F1);color:white;border:none;border-radius:9px;padding:9px;font-size:11px;font-weight:800;cursor:pointer;font-family:inherit}
+.btn-edit{background:#EEF2FF;color:#4338CA;border:1.5px solid #C7D2FE;border-radius:9px;padding:9px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-del{background:#FEE2E2;color:#B91C1C;border:none;border-radius:9px;padding:9px 10px;font-size:13px;cursor:pointer}
+.doc-badge{position:absolute;top:12px;right:12px;background:#F0FDF4;color:#059652;border:1px solid #D1FAE5;font-size:10px;font-weight:800;padding:3px 9px;border-radius:10px}
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(10,22,40,.8);z-index:9999;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.modal-box{background:white;border-radius:18px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.35)}
+.modal-hdr{padding:18px 20px;background:linear-gradient(135deg,#3730A3,#6366F1);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1}
+.modal-hdr h3{font-size:15px;font-weight:900;color:white;margin:0}
+.modal-bdy{padding:20px}
+/* Sélecteur formulaires */
+.flist a{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;margin-bottom:7px;background:#F8FBFD;text-decoration:none;color:#0A1628;font-size:13px;font-weight:600;border:1.5px solid #E2ECF5;transition:all .18s}
+.flist a:hover{background:#EEF2FF;border-color:#C7D2FE;color:#3730A3}
+/* Empty */
+.empty{text-align:center;padding:52px 20px;color:#7A94AF;grid-column:1/-1}
+.empty .ico{font-size:54px;opacity:.2;margin-bottom:12px}
+.empty p{font-size:14px;font-weight:700;margin-bottom:4px}
+/* Toast */
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:700;color:white;z-index:99999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:tin .3s ease}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){.kpi-row{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}.cl-grid{grid-template-columns:1fr}.hero{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -62,176 +82,271 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
   <img src="logo.png" alt="Logo" class="topbar-logo">
 </div>
 
-<div class="wrap">
-
+<div class="cl-wrap">
   <div class="hero">
-    <div>
-      <h1>👥 Répertoire Clients</h1>
-      <p>Enregistrez vos clients une fois · Retrouvez-les partout</p>
+    <div><h1>👥 Répertoire Clients</h1><p>Ajoutez un client une fois · Retrouvez-le dans tous vos formulaires en 2 secondes</p></div>
+    <div class="hero-btns">
+      <button onclick="exportCSV()" style="padding:9px 15px;background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">📊 Export CSV</button>
     </div>
-    <button onclick="exportClients()" style="background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:10px;padding:9px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">📊 Export CSV</button>
   </div>
 
-  <!-- KPIs -->
-  <div class="krow">
-    <div class="kbox"><strong id="k-total">0</strong><span>Total clients</span></div>
-    <div class="kbox"><strong id="k-today">0</strong><span>Ajoutés ce mois</span></div>
-    <div class="kbox"><strong id="k-nina">0</strong><span>Avec NINA</span></div>
+  <div class="kpi-row">
+    <div class="kbox"><strong id="kTotal">0</strong><span>Total clients</span></div>
+    <div class="kbox"><strong id="kMonth">0</strong><span>Ce mois-ci</span></div>
+    <div class="kbox"><strong id="kNina">0</strong><span>Avec NINA</span></div>
+    <div class="kbox"><strong id="kDocs">0</strong><span>Documents liés</span></div>
   </div>
 
-  <!-- Formulaire ajout -->
-  <div class="card">
-    <h2>➕ Nouveau client</h2>
-    <div class="fgrow">
-      <div class="fg"><label>Prénom *</label><input id="c-prenom" placeholder="Ex: Mamadou" autocomplete="given-name"></div>
-      <div class="fg"><label>Nom de famille *</label><input id="c-nom" placeholder="Ex: COULIBALY" autocomplete="family-name" style="text-transform:uppercase"></div>
+  <div class="add-card">
+    <div class="add-hdr" onclick="toggleForm()">
+      <h2>➕ Ajouter / Enregistrer un client</h2>
+      <span id="tog">▼</span>
     </div>
-    <div class="fgrow">
-      <div class="fg"><label>Téléphone</label><input id="c-tel" type="tel" placeholder="+223 7X XX XX XX" autocomplete="tel"></div>
-      <div class="fg"><label>N° NINA</label><input id="c-nina" placeholder="Ex: 197CI901041009A" autocomplete="off" style="font-family:monospace;text-transform:uppercase"></div>
+    <div class="add-body" id="add-body">
+      <div class="g2">
+        <div class="fg"><label>Nom de famille *</label><input id="cNom" placeholder="Ex: COULIBALY" autocapitalize="characters"></div>
+        <div class="fg"><label>Prénom *</label><input id="cPrenom" placeholder="Ex: Mamadou"></div>
+      </div>
+      <div class="g3">
+        <div class="fg"><label>Téléphone *</label><input id="cTel" type="tel" placeholder="77XXXXXX"></div>
+        <div class="fg"><label>N° NINA</label><input id="cNina" placeholder="197KY..." style="font-family:monospace"></div>
+        <div class="fg"><label>Date naissance</label><input id="cNaiss" type="date"></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label>Adresse / Quartier</label><input id="cAdresse" placeholder="Ex: Liberté, Kayes"></div>
+        <div class="fg"><label>Catégorie</label>
+          <select id="cCat"><option value="Particulier">Particulier</option><option value="Entreprise">Entreprise</option><option value="Fonctionnaire">Fonctionnaire</option><option value="Etudiant">Étudiant</option><option value="Commercant">Commerçant</option></select>
+        </div>
+      </div>
+      <div class="fg"><label>Notes</label><textarea id="cNotes" rows="2" placeholder="Remarques, historique client..."></textarea></div>
+      <button class="btn-add" onclick="saveClient()">💾 Enregistrer le client</button>
     </div>
-    <div class="fgrow">
-      <div class="fg"><label>Adresse / Quartier</label><input id="c-adresse" placeholder="Ex: Quartier Liberté, Kayes"></div>
-      <div class="fg"><label>Profession</label><input id="c-profession" placeholder="Ex: Commerçant, Enseignant..."></div>
-    </div>
-    <div class="fg"><label>Notes</label><textarea id="c-notes" placeholder="Remarques sur le client..."></textarea></div>
-    <button onclick="addClient()" style="width:100%;padding:12px;background:linear-gradient(135deg,#0070C0,#0095E0);color:white;border:none;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:4px">💾 Enregistrer le client</button>
   </div>
 
-  <!-- Recherche -->
-  <div class="search-bar">
-    <input id="c-search" placeholder="🔍 Rechercher par nom, téléphone ou NINA..." oninput="renderClients()">
+  <div class="sbar">
+    <input id="clSearch" placeholder="🔍 Nom, téléphone, NINA..." oninput="render()">
+    <select id="clCat" onchange="render()"><option value="">Toutes catégories</option><option>Particulier</option><option>Entreprise</option><option>Fonctionnaire</option><option>Etudiant</option><option>Commercant</option></select>
   </div>
 
-  <!-- Liste -->
-  <div class="client-grid" id="client-grid"></div>
+  <div class="cl-grid" id="clGrid"></div>
+</div>
 
+<!-- Modal utiliser -->
+<div class="modal-bg" id="useModal">
+  <div class="modal-box">
+    <div class="modal-hdr"><h3 id="useModalTitle">Utiliser ce client</h3><button onclick="closeModal('useModal')" style="background:rgba(255,255,255,.15);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center">✕</button></div>
+    <div class="modal-bdy"><div class="flist" id="fList"></div><button onclick="closeModal('useModal')" style="width:100%;padding:10px;background:#F0F5FA;color:#7A94AF;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:4px">Annuler</button></div>
+  </div>
+</div>
+
+<!-- Modal édition -->
+<div class="modal-bg" id="editModal">
+  <div class="modal-box">
+    <div class="modal-hdr"><h3>✏️ Modifier le client</h3><button onclick="closeModal('editModal')" style="background:rgba(255,255,255,.15);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center">✕</button></div>
+    <div class="modal-bdy">
+      <input type="hidden" id="editId">
+      <div class="g2">
+        <div class="fg"><label>Nom *</label><input id="editNom" autocapitalize="characters"></div>
+        <div class="fg"><label>Prénom *</label><input id="editPrenom"></div>
+      </div>
+      <div class="g3">
+        <div class="fg"><label>Téléphone</label><input id="editTel" type="tel"></div>
+        <div class="fg"><label>NINA</label><input id="editNina" style="font-family:monospace"></div>
+        <div class="fg"><label>Naissance</label><input id="editNaiss" type="date"></div>
+      </div>
+      <div class="g2">
+        <div class="fg"><label>Adresse</label><input id="editAdresse"></div>
+        <div class="fg"><label>Catégorie</label><select id="editCat"><option value="Particulier">Particulier</option><option value="Entreprise">Entreprise</option><option value="Fonctionnaire">Fonctionnaire</option><option value="Etudiant">Étudiant</option><option value="Commercant">Commerçant</option></select></div>
+      </div>
+      <div class="fg"><label>Notes</label><textarea id="editNotes" rows="2"></textarea></div>
+      <div style="display:flex;gap:10px;margin-top:4px">
+        <button onclick="closeModal('editModal')" style="flex:1;padding:11px;background:#F0F5FA;color:#3D5470;border:1.5px solid #E2ECF5;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Annuler</button>
+        <button onclick="doUpdate()" style="flex:2;padding:11px;background:linear-gradient(135deg,#3730A3,#6366F1);color:white;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit">💾 Enregistrer</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="auth.js"></script>
 <script src="utils.js"></script>
 <script>
-const CL_KEY = 'samassa_clients';
+const CK = 'samassa_clients';
+const PAGES = [
+  {url:'recu.html',label:'📋 Reçu NINA'},
+  {url:'facture.html',label:'📄 Facture Service'},
+  {url:'facture_materiel.html',label:'🖥️ Facture Matériel'},
+  {url:'bon_reparation.html',label:'🔧 Bon de Réparation'},
+  {url:'recu_vente.html',label:'🛒 Reçu de Vente'},
+  {url:'devis.html',label:'📋 Devis'},
+  {url:'intervention.html',label:'🔧 Fiche Intervention'},
+];
 
-function readClients() { return JSON.parse(localStorage.getItem(CL_KEY)||'[]'); }
-function saveClients(list) { localStorage.setItem(CL_KEY, JSON.stringify(list)); renderClients(); }
+const load = () => JSON.parse(localStorage.getItem(CK)||'[]');
+const save = d => localStorage.setItem(CK, JSON.stringify(d));
+const esc  = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const ini  = (n,p) => ((n||'?')[0]+(p||'?')[0]).toUpperCase();
+const $ = id => document.getElementById(id);
 
-function addClient() {
-  const prenom = document.getElementById('c-prenom').value.trim();
-  const nom    = document.getElementById('c-nom').value.trim().toUpperCase();
-  if (!prenom || !nom) { alert('Prénom et nom obligatoires.'); return; }
-
-  const client = {
-    id: Date.now(),
-    prenom, nom,
-    tel:        document.getElementById('c-tel').value.trim(),
-    nina:       document.getElementById('c-nina').value.trim().toUpperCase(),
-    adresse:    document.getElementById('c-adresse').value.trim(),
-    profession: document.getElementById('c-profession').value.trim(),
-    notes:      document.getElementById('c-notes').value.trim(),
-    created:    new Date().toISOString()
-  };
-
-  const list = readClients();
-  // Vérifier doublon (même nom + tel)
-  const dup = list.find(c => c.nom === nom && c.prenom.toLowerCase() === prenom.toLowerCase() && c.tel === client.tel);
-  if (dup) { if (!confirm('Ce client semble déjà exister. Ajouter quand même ?')) return; }
-
-  list.unshift(client);
-  saveClients(list);
-
-  // Réinitialiser
-  ['c-prenom','c-nom','c-tel','c-nina','c-adresse','c-profession','c-notes'].forEach(id => document.getElementById(id).value='');
-  showToast('✅ Client enregistré !', 'success');
-  updateKPIs();
+function toggleForm() {
+  const b=$('add-body'); b.classList.toggle('open');
+  $('tog').textContent = b.classList.contains('open')?'▲':'▼';
 }
 
-function removeClient(id) {
-  if (!confirm('Supprimer ce client ?')) return;
-  saveClients(readClients().filter(c => c.id !== id));
-  updateKPIs();
+function saveClient() {
+  const nom    = ($('cNom').value||'').trim().toUpperCase();
+  const prenom = ($('cPrenom').value||'').trim();
+  const tel    = ($('cTel').value||'').trim();
+  if(!nom||!prenom){toast('Nom et prénom obligatoires','error');return;}
+  if(!tel){toast('Téléphone obligatoire','error');return;}
+  const list = load();
+  if(list.find(c=>c.tel===tel)&&!confirm('Un client avec ce numéro existe. Ajouter quand même ?')) return;
+  list.push({
+    id:Date.now(), nom, prenom, tel,
+    nina:($('cNina').value||'').trim().toUpperCase(),
+    naiss:$('cNaiss').value||'',
+    adresse:($('cAdresse').value||'').trim(),
+    cat:$('cCat').value||'Particulier',
+    notes:($('cNotes').value||'').trim(),
+    created:new Date().toISOString()
+  });
+  save(list);
+  ['cNom','cPrenom','cTel','cNina','cNaiss','cAdresse','cNotes'].forEach(id=>$(id).value='');
+  render(); kpis(); toast(`✅ ${prenom} ${nom} enregistré(e) !`,'success');
 }
 
-function renderClients() {
-  const list  = readClients();
-  const q     = (document.getElementById('c-search')?.value || '').toLowerCase().trim();
-  const grid  = document.getElementById('client-grid');
-  const filtered = q ? list.filter(c =>
-    `${c.prenom} ${c.nom} ${c.tel} ${c.nina}`.toLowerCase().includes(q)
-  ) : list;
+function render() {
+  const list=load();
+  const q=($('clSearch').value||'').toLowerCase();
+  const cat=$('clCat').value;
+  let items=list;
+  if(q) items=items.filter(c=>(c.nom+' '+c.prenom).toLowerCase().includes(q)||(c.tel||'').includes(q)||(c.nina||'').toLowerCase().includes(q));
+  if(cat) items=items.filter(c=>(c.cat||'Particulier')===cat);
 
-  if (!filtered.length) {
-    grid.innerHTML = `<div class="empty" style="grid-column:1/-1">
-      <div class="ico">👥</div>
-      <p style="font-size:14px;font-weight:700;color:#7A94AF">${q ? 'Aucun client trouvé' : 'Aucun client enregistré'}</p>
-      <p style="font-size:12px;margin-top:4px">Ajoutez votre premier client ci-dessus</p>
-    </div>`;
+  const allDocs=[
+    ...JSON.parse(localStorage.getItem('samassa_recus')||'[]'),
+    ...JSON.parse(localStorage.getItem('samassa_factures')||'[]'),
+    ...JSON.parse(localStorage.getItem('samassa_bons_reparation')||'[]'),
+    ...JSON.parse(localStorage.getItem('samassa_factures_mat')||'[]'),
+  ];
+
+  const grid=$('clGrid');
+  if(!items.length){
+    grid.innerHTML=`<div class="empty"><div class="ico">👥</div><p>${list.length?'Aucun résultat':'Aucun client enregistré'}</p><small>${list.length?'Essayez un autre terme de recherche':'Ajoutez votre premier client ci-dessus ↑'}</small></div>`;
     return;
   }
-
-  grid.innerHTML = filtered.map(c => {
-    const initiale = (c.prenom[0]||'?').toUpperCase();
-    const fullName = `${c.prenom} ${c.nom}`;
-    const waUrl = c.tel ? `https://wa.me/223${c.tel.replace(/\D/g,'')}` : '#';
-    return `<div class="client-card">
-      <button class="c-del" onclick="removeClient(${c.id})" title="Supprimer">×</button>
-      <div class="c-avatar">${initiale}</div>
-      <div class="c-name">${fullName}</div>
-      ${c.nina ? `<div class="c-nina">🪪 ${c.nina}</div>` : ''}
-      <div class="c-info">
-        ${c.tel       ? `📞 <strong>${c.tel}</strong><br>` : ''}
-        ${c.adresse   ? `📍 ${c.adresse}<br>` : ''}
-        ${c.profession? `💼 ${c.profession}<br>` : ''}
-        ${c.notes     ? `💬 ${c.notes}` : ''}
+  grid.innerHTML=[...items].reverse().map(c=>{
+    const dc=allDocs.filter(d=>(d.client||d.clientName||d.nom||'').toLowerCase().includes((c.nom||'').toLowerCase())).length;
+    return `<div class="cl-card">
+      ${dc>0?`<div class="doc-badge">${dc} doc${dc>1?'s':''}</div>`:''}
+      <div class="avatar">${ini(c.nom,c.prenom)}</div>
+      <div class="cl-name">${esc(c.prenom+' '+c.nom)}</div>
+      <div class="cl-nina">${c.nina?'🪪 '+esc(c.nina):'<span style="color:#D1D5DB">Pas de NINA</span>'}</div>
+      <div class="cl-info">📞 <strong>${esc(c.tel)}</strong>${c.adresse?'<br>📍 '+esc(c.adresse):''}${c.naiss?'<br>🎂 '+new Date(c.naiss).toLocaleDateString('fr-FR'):''}</div>
+      <div class="cl-tags">
+        <span class="cl-tag">${esc(c.cat||'Particulier')}</span>
+        ${c.nina?'<span class="cl-tag green">✓ NINA</span>':''}
       </div>
-      <div class="c-actions">
-        <a href="${waUrl}" target="_blank" class="c-btn" style="background:#DCFCE7;color:#166534">💬 WhatsApp</a>
-        <button class="c-btn" style="background:#EBF5FF;color:#0070C0" onclick="fillFromClient(${c.id})">📋 Utiliser</button>
+      <div class="cl-actions">
+        <button class="btn-use" onclick="openUse(${c.id})">📋 Utiliser</button>
+        <button class="btn-edit" onclick="openEdit(${c.id})">✏️</button>
+        <button class="btn-del" onclick="del(${c.id})">🗑</button>
       </div>
     </div>`;
   }).join('');
-
-  updateKPIs();
 }
 
-/* Remplir les champs d'une autre page depuis le répertoire */
-function fillFromClient(id) {
-  const c = readClients().find(x => x.id === id);
-  if (!c) return;
-  localStorage.setItem('_samassa_fill_client', JSON.stringify(c));
-  showToast('✅ Client sélectionné — collez-le dans votre document', 'success');
+function kpis() {
+  const list=load();
+  const m=new Date().toISOString().substring(0,7);
+  $('kTotal').textContent=list.length;
+  $('kMonth').textContent=list.filter(c=>(c.created||'').startsWith(m)).length;
+  $('kNina').textContent=list.filter(c=>c.nina).length;
+  $('kDocs').textContent=[
+    ...JSON.parse(localStorage.getItem('samassa_recus')||'[]'),
+    ...JSON.parse(localStorage.getItem('samassa_factures')||'[]'),
+  ].length;
 }
 
-function updateKPIs() {
-  const list = readClients();
-  const now  = new Date();
-  const thisMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  document.getElementById('k-total').textContent = list.length;
-  document.getElementById('k-today').textContent = list.filter(c => (c.created||'').startsWith(thisMonth)).length;
-  document.getElementById('k-nina').textContent  = list.filter(c => c.nina).length;
+function openUse(id) {
+  const c=load().find(x=>x.id===id);if(!c)return;
+  $('useModalTitle').textContent='📋 Ouvrir avec '+c.prenom+' '+c.nom;
+  const params=`cl_nom=${encodeURIComponent(c.nom)}&cl_prenom=${encodeURIComponent(c.prenom)}&cl_tel=${encodeURIComponent(c.tel)}&cl_nina=${encodeURIComponent(c.nina||'')}&cl_adresse=${encodeURIComponent(c.adresse||'')}`;
+  $('fList').innerHTML=PAGES.map(p=>`<a href="${p.url}?${params}">${p.label} →</a>`).join('');
+  $('useModal').style.display='flex';
+  document.body.style.overflow='hidden';
 }
 
-function exportClients() {
-  const list = readClients();
-  const rows = [['Prénom','Nom','Téléphone','NINA','Adresse','Profession','Notes','Date ajout']];
-  list.forEach(c => rows.push([c.prenom,c.nom,c.tel,c.nina,c.adresse,c.profession,c.notes,c.created?.slice(0,10)]));
-  const csv = rows.map(r => r.map(v => `"${String(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a = document.createElement('a');
-  a.href = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(csv);
-  a.download = 'clients_samassa_' + new Date().toISOString().slice(0,10) + '.csv';
-  a.click();
-  showToast('📊 Export clients téléchargé', 'success');
+function openEdit(id) {
+  const c=load().find(x=>x.id===id);if(!c)return;
+  $('editId').value=c.id;
+  $('editNom').value=c.nom;$('editPrenom').value=c.prenom;
+  $('editTel').value=c.tel;$('editNina').value=c.nina||'';
+  $('editNaiss').value=c.naiss||'';$('editAdresse').value=c.adresse||'';
+  $('editCat').value=c.cat||'Particulier';$('editNotes').value=c.notes||'';
+  $('editModal').style.display='flex';
+  document.body.style.overflow='hidden';
 }
 
-function showToast(msg, type) {
-  const t = document.createElement('div');
-  t.textContent = msg;
-  t.style.cssText = `position:fixed;bottom:24px;right:20px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:700;color:white;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);background:${{success:'#059652',error:'#DC2626',info:'#0070C0'}[type]||'#0070C0'}`;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
+function doUpdate() {
+  const id=parseInt($('editId').value);
+  const list=load();const idx=list.findIndex(x=>x.id===id);if(idx<0)return;
+  list[idx]={...list[idx],
+    nom:($('editNom').value||'').trim().toUpperCase(),
+    prenom:($('editPrenom').value||'').trim(),
+    tel:($('editTel').value||'').trim(),
+    nina:($('editNina').value||'').trim().toUpperCase(),
+    naiss:$('editNaiss').value||'',
+    adresse:($('editAdresse').value||'').trim(),
+    cat:$('editCat').value||'Particulier',
+    notes:($('editNotes').value||'').trim(),
+    updated:new Date().toISOString()
+  };
+  save(list);render();kpis();closeModal('editModal');
+  toast('✅ Client mis à jour','success');
 }
 
-document.addEventListener('DOMContentLoaded', () => { renderClients(); updateKPIs(); });
+function del(id) {
+  const c=load().find(x=>x.id===id);
+  if(!c||!confirm('Supprimer '+c.prenom+' '+c.nom+' ?'))return;
+  save(load().filter(x=>x.id!==id));render();kpis();
+  toast('Client supprimé','info');
+}
+
+function closeModal(id) {
+  $(id).style.display='none';
+  document.body.style.overflow='';
+}
+
+function exportCSV() {
+  const list=load();
+  const rows=[['Nom','Prénom','Téléphone','NINA','Naissance','Adresse','Catégorie','Notes']];
+  list.forEach(c=>rows.push([c.nom,c.prenom,c.tel,c.nina||'',c.naiss||'',c.adresse||'',c.cat||'',c.notes||'']));
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);
+  a.download='clients_samassa_'+new Date().toISOString().substring(0,10)+'.csv';
+  a.click();toast('📊 Export téléchargé','success');
+}
+
+// Auto-remplissage depuis URL
+(function(){
+  const p=new URLSearchParams(window.location.search);
+  if(p.get('cl_nom')){
+    $('cNom').value=p.get('cl_nom')||'';$('cPrenom').value=p.get('cl_prenom')||'';
+    $('cTel').value=p.get('cl_tel')||'';$('cNina').value=p.get('cl_nina')||'';
+    $('cAdresse').value=p.get('cl_adresse')||'';
+    $('add-body').classList.add('open');$('tog').textContent='▲';
+    toast('Données client pré-remplies depuis le formulaire','info');
+  }
+})();
+
+function toast(msg,type) {
+  const t=document.createElement('div');t.className='toast';t.textContent=msg;
+  t.style.background={success:'#059652',error:'#DC2626',info:'#3730A3'}[type]||'#0070C0';
+  document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+
+window.addEventListener('load',()=>{render();kpis();});
 </script>
 <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
 </body>
