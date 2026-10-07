@@ -425,5 +425,39 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif}
 <script src="facture_materiel.js"></script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
 <script src="capacitor-plugins.js"></script>
+<script>
+/* ── Auto-remplissage depuis le répertoire clients ── */
+(function autoFillFromClients() {
+  const p = new URLSearchParams(window.location.search);
+  if (!p.get('cl_nom')) return;
+  const map = {
+    'clientLastName':  p.get('cl_nom')     || '',
+    'clientFirstName': p.get('cl_prenom')  || '',
+    'clientPhone':     p.get('cl_tel')     || '',
+    'clientNina':      p.get('cl_nina')    || '',
+    'clientAddress':   p.get('cl_adresse') || '',
+    'clientCity':      'Kayes',
+    // Aliases pour différents formulaires
+    'clientName':      (p.get('cl_prenom')+' '+p.get('cl_nom')).trim(),
+    'repairClientName':(p.get('cl_prenom')+' '+p.get('cl_nom')).trim(),
+    'repairClientPhone':p.get('cl_tel') || '',
+  };
+  Object.entries(map).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el && val) {
+      el.value = val;
+      el.style.background = '#F0FDF4';
+      el.style.transition = 'background .5s';
+      setTimeout(() => { el.style.background = ''; }, 2000);
+    }
+  });
+  // Nettoyer l'URL
+  window.history.replaceState({}, '', window.location.pathname);
+  // Toast si ST disponible
+  setTimeout(() => {
+    if (window.ST && window.ST.toast) ST.toast('👥 Client pré-rempli depuis le répertoire clients', 'success');
+  }, 500);
+})();
+</script>
 </body>
 </html>
