@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script>(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expires){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})()</script>
+
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Paramètres — SAMASSA TECHNOLOGIE</title>
 <link rel="manifest" href="manifest.json">
@@ -84,8 +84,9 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
 
   <!-- Changer mot de passe -->
   <div class="scard">
-    <div class="scard-hdr">🔐 Sécurité — Changer le mot de passe</div>
+    <div class="scard-hdr">🔐 Sécurité — Mot de passe partagé</div>
     <div class="scard-body">
+      <p style="font-size:12px;color:#7A94AF;line-height:1.6;margin-bottom:12px">Le mot de passe partagé entre vos appareils se modifie dans Vercel avec la variable <code>SAMASSA_LOGIN_PASSWORD</code>.</p>
       <div class="fg"><label>Mot de passe actuel</label><input type="password" id="pwOld" placeholder="Mot de passe actuel"></div>
       <div class="g2">
         <div class="fg"><label>Nouveau mot de passe</label><input type="password" id="pwNew" placeholder="Nouveau mot de passe"></div>

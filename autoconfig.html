@@ -57,12 +57,7 @@ async function configure() {
 
   // Créer une session de connexion (si pas déjà connecté)
   try {
-    const sess = localStorage.getItem('_samassa_session');
-    if (!sess) {
-      addStep('Session : veuillez vous connecter normalement', null);
-    } else {
-      addStep('Session active détectée ✓', true);
-    }
+    addStep('Session serveur utilisée pour tous vos appareils.', true);
   } catch(e) {}
 
   addStep('Configuration terminée avec succès ! 🎉', true);

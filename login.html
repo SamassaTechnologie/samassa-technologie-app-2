@@ -173,13 +173,12 @@ async function doLogin() {
 
   err.style.display = 'none';
   if (!p) { msg.textContent=Auth.isConfigured() ? 'Veuillez saisir le mot de passe.' : 'Créez un mot de passe.'; err.style.display='flex'; return; }
-  if (!Auth.isConfigured() && p.length < 8) { msg.textContent='Le premier mot de passe doit contenir au moins 8 caractères.'; err.style.display='flex'; return; }
 
   btn.disabled = true;
   btn.textContent = '⏳ Vérification...';
 
   setTimeout(async () => {
-    const ok = Auth.isConfigured() ? await Auth.login(p) : (await Auth.setup(p)).ok;
+    const ok = await Auth.login(p);
     if (ok) {
       btn.textContent = '✅ Connecté !';
       btn.style.background = 'linear-gradient(135deg,#059652,#10B981)';
@@ -187,7 +186,7 @@ async function doLogin() {
       localStorage.removeItem('_samassa_login_target');
       setTimeout(() => window.location.replace(target || 'index.html'), 400);
     } else {
-      msg.textContent = Auth.isConfigured() ? 'Mot de passe incorrect. Réessayez.' : 'Impossible de configurer le mot de passe.';
+      msg.textContent = Auth.lastError || 'Mot de passe incorrect. Réessayez.';
       err.style.display = 'flex';
       btn.disabled = false;
       btn.textContent = '🚀 Se connecter';
@@ -198,12 +197,7 @@ async function doLogin() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  if (!Auth.isConfigured()) {
-    document.getElementById('form-title').textContent = 'Première configuration';
-    document.getElementById('form-subtitle').textContent = 'Créez le mot de passe de cet appareil (8 caractères minimum).';
-    document.getElementById('password-label').textContent = 'Créer un mot de passe';
-    document.getElementById('btn-login').textContent = '🔐 Configurer et accéder';
-  }
+  document.getElementById('form-subtitle').textContent = 'Connectez-vous depuis n’importe quel appareil avec le mot de passe partagé.';
 });
 
 document.getElementById('password').addEventListener('keydown', e => {
