@@ -279,5 +279,24 @@
 <script src="recu_cyber.js"></script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
 <script src="capacitor-plugins.js"></script>
+
+<script>
+(function autoFillFromClients() {
+  var p = new URLSearchParams(window.location.search);
+  if (!p.get('cl_nom')) return;
+  var map = {
+    'clientLastName': p.get('cl_nom')||'',
+    'clientFirstName': p.get('cl_prenom')||'',
+    'clientPhone': p.get('cl_tel')||'',
+    'clientNina': p.get('cl_nina')||'',
+    'clientName': (p.get('cl_prenom')+' '+p.get('cl_nom')).trim(),
+  };
+  Object.entries(map).forEach(function(e) {
+    var el = document.getElementById(e[0]);
+    if (el && e[1]) { el.value = e[1]; el.style.background='#F0FDF4'; setTimeout(function(){el.style.background='';},2000); }
+  });
+  window.history.replaceState({}, '', window.location.pathname);
+})();
+</script>
 </body>
 </html>
