@@ -1,80 +1,100 @@
-/* SAMASSA TECHNOLOGIE — Authentification serveur + repli hors ligne */
+/* SAMASSA TECHNOLOGIE — Firebase Authentication */
 'use strict';
 
 const Auth = {
-  SESSION_KEY: '_samassa_session',
-  HASH_KEY: '_samassa_pwd_hash',
-  SESSION_HOURS: 8,
   lastError: '',
-
-  isConfigured() { return Boolean(localStorage.getItem(this.HASH_KEY)); },
-  async setup(password) {
-    if (!password || password.length < 8) return { ok: false, msg: 'Le mot de passe doit contenir au moins 8 caractères.' };
-    localStorage.setItem(this.HASH_KEY, await this._hash(password));
-    return { ok: true, msg: 'Mot de passe local configuré.' };
+  _readyPromise: null,
+  auth: null,
+  config: window.SAMASSA_FIREBASE_CONFIG || {
+    apiKey: 'AIzaSyDxRqnmRraoF4JpHLPAwEmMbLw9qRb2h58',
+    authDomain: 'samassa-kayes-79fbb.firebaseapp.com',
+    projectId: 'samassa-kayes-79fbb',
+    storageBucket: 'samassa-kayes-79fbb.firebasestorage.app',
+    messagingSenderId: '704230186166',
+    appId: '1:704230186166:web:041b7d413d1671178e5a17'
   },
 
-  async login(password) {
+  async ready() {
+    if (this._readyPromise) return this._readyPromise;
+    this._readyPromise = (async () => {
+      await this._loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');
+      await this._loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js');
+      if (!firebase.apps.length) firebase.initializeApp(this.config);
+      this.auth = firebase.auth();
+      await this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      return this.auth;
+    })();
+    return this._readyPromise;
+  },
+
+  _loadScript(src) {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) return resolve();
+      const script = document.createElement('script');
+      script.src = src; script.onload = resolve; script.onerror = () => reject(new Error('Firebase indisponible'));
+      document.head.appendChild(script);
+    });
+  },
+
+  async login(email, password) {
     this.lastError = '';
     try {
-      const response = await fetch('/api/auth', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) });
-      if (response.ok) {
-        localStorage.setItem(this.SESSION_KEY, JSON.stringify({ expires: Date.now() + this.SESSION_HOURS * 3600000, server: true }));
-        return true;
-      }
-      const data = await response.json().catch(() => ({}));
-      if (response.status !== 503) { this.lastError = data.error || 'Mot de passe incorrect.'; return false; }
-    } catch { this.lastError = 'Serveur indisponible.'; }
-
-    // Repli local uniquement si le serveur d’authentification n’est pas encore configuré.
-    if (this.isConfigured()) {
-      const stored = localStorage.getItem(this.HASH_KEY);
-      if (stored && await this._secureEqual(await this._hash(password), stored)) {
-        localStorage.setItem(this.SESSION_KEY, JSON.stringify({ expires: Date.now() + this.SESSION_HOURS * 3600000, local: true }));
-        return true;
-      }
+      const auth = await this.ready();
+      await auth.signInWithEmailAndPassword(String(email).trim(), password);
+      return true;
+    } catch (error) {
+      this.lastError = this._message(error);
+      return false;
     }
-    if (!this.lastError) this.lastError = 'Authentification serveur non configurée. Ajoutez les variables Vercel requises.';
-    return false;
   },
 
   async check() {
     if (window.location.pathname.endsWith('login.html')) return;
-    if (this._sessionValid()) return;
     try {
-      const response = await fetch('/api/auth', { credentials: 'include' });
-      if (response.ok) {
-        localStorage.setItem(this.SESSION_KEY, JSON.stringify({ expires: Date.now() + this.SESSION_HOURS * 3600000, server: true }));
-        return;
-      }
-    } catch {}
-    localStorage.setItem('_samassa_login_target', window.location.href);
-    window.location.replace('login.html');
+      const auth = await this.ready();
+      await new Promise((resolve, reject) => {
+        const unsubscribe = auth.onAuthStateChanged(user => { unsubscribe(); user ? resolve(user) : reject(new Error('not-authenticated')); });
+      });
+    } catch {
+      localStorage.setItem('_samassa_login_target', window.location.href);
+      window.location.replace('login.html');
+    }
   },
 
   async logout() {
-    try { await fetch('/api/auth', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'logout' }) }); } catch {}
-    localStorage.removeItem(this.SESSION_KEY);
+    try { const auth = await this.ready(); await auth.signOut(); } catch {}
     window.location.replace('login.html');
   },
 
   async changePassword(oldPwd, newPwd) {
-    // Le changement partagé doit être réalisé côté Vercel, jamais dans localStorage.
-    return { ok: false, msg: 'Le mot de passe partagé se modifie dans les variables Vercel (SAMASSA_LOGIN_PASSWORD).' };
+    try {
+      const auth = await this.ready();
+      const user = auth.currentUser;
+      if (!user || !user.email) return { ok: false, msg: 'Session Firebase introuvable.' };
+      if (!newPwd || newPwd.length < 8) return { ok: false, msg: 'Le nouveau mot de passe doit faire au moins 8 caractères.' };
+      const credential = firebase.auth.EmailAuthProvider.credential(user.email, oldPwd);
+      await user.reauthenticateWithCredential(credential);
+      await user.updatePassword(newPwd);
+      return { ok: true, msg: 'Mot de passe Firebase modifié avec succès.' };
+    } catch (error) { return { ok: false, msg: this._message(error) }; }
   },
 
-  _sessionValid() {
-    try { const s = JSON.parse(localStorage.getItem(this.SESSION_KEY)); return Boolean(s && Number(s.expires) > Date.now()); } catch { return false; }
+  currentUser() { return this.auth?.currentUser || null; },
+
+  _message(error) {
+    const code = error?.code || '';
+    const messages = {
+      'auth/invalid-credential': 'Email ou mot de passe incorrect.',
+      'auth/wrong-password': 'Email ou mot de passe incorrect.',
+      'auth/user-not-found': 'Aucun compte administrateur trouvé avec cet email.',
+      'auth/invalid-email': 'Adresse email invalide.',
+      'auth/too-many-requests': 'Trop de tentatives. Réessayez plus tard.',
+      'auth/network-request-failed': 'Connexion réseau impossible.',
+      'auth/requires-recent-login': 'Reconnectez-vous avant de changer le mot de passe.'
+    };
+    return messages[code] || error?.message || 'Erreur d’authentification Firebase.';
   },
-  async _hash(value) {
-    const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(String(value)));
-    return Array.from(new Uint8Array(digest), b => b.toString(16).padStart(2, '0')).join('');
-  },
-  async _secureEqual(a, b) {
-    if (a.length !== b.length) return false; let diff = 0;
-    for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-    return diff === 0;
-  },
+
   addLogoutButton() {
     const topbar = document.querySelector('.topbar');
     if (!topbar || document.getElementById('logout-btn')) return;

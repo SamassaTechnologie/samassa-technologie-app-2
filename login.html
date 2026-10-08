@@ -121,11 +121,19 @@ body::after{content:'';position:absolute;width:400px;height:400px;border-radius:
       </div>
 
       <div class="field">
+        <label>Email administrateur</label>
+        <div class="field-wrap">
+          <span class="field-icon">✉️</span>
+          <input type="email" id="email" placeholder="Votre email administrateur" autocomplete="username" >
+        </div>
+      </div>
+
+      <div class="field">
         <label id="password-label">Mot de passe</label>
         <div class="field-wrap">
           <span class="field-icon">🔑</span>
           <input type="password" id="password" placeholder="Votre mot de passe"
-            autocomplete="current-password" autofocus>
+            autocomplete="current-password" >
           <button class="toggle-pw" type="button" onclick="togglePw(this)" tabindex="-1">👁️</button>
         </div>
       </div>
@@ -156,7 +164,7 @@ body::after{content:'';position:absolute;width:400px;height:400px;border-radius:
 
 </div>
 
-<script src="auth.js?v=47fb1f9"></script>
+<script src="firebase-config.js?v=47fb1f9"></script><script src="auth.js?v=firebase1"></script>
 <script>
 function togglePw(btn) {
   const inp = document.getElementById('password');
@@ -166,23 +174,25 @@ function togglePw(btn) {
 }
 
 async function doLogin() {
+  const email = document.getElementById('email').value;
   const p   = document.getElementById('password').value;
   const btn = document.getElementById('btn-login');
   const err = document.getElementById('error-box');
   const msg = document.getElementById('error-msg');
 
   err.style.display = 'none';
-  if (!p) { msg.textContent=Auth.isConfigured() ? 'Veuillez saisir le mot de passe.' : 'Créez un mot de passe.'; err.style.display='flex'; return; }
+  if (!email || !p) { msg.textContent='Veuillez saisir votre email et votre mot de passe.'; err.style.display='flex'; return; }
 
   btn.disabled = true;
   btn.textContent = '⏳ Vérification...';
 
   setTimeout(async () => {
-    const ok = await Auth.login(p);
+    const ok = await Auth.login(email, p);
     if (ok) {
       btn.textContent = '✅ Connecté !';
       btn.style.background = 'linear-gradient(135deg,#059652,#10B981)';
       const target = localStorage.getItem('_samassa_login_target');
+      localStorage.setItem('_samassa_admin_email', email);
       localStorage.removeItem('_samassa_login_target');
       setTimeout(() => window.location.replace(target || 'index.html'), 400);
     } else {
@@ -197,7 +207,8 @@ async function doLogin() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('form-subtitle').textContent = 'Connectez-vous depuis n’importe quel appareil avec le mot de passe partagé.';
+  const savedEmail = localStorage.getItem('_samassa_admin_email');
+  if (savedEmail) document.getElementById('email').value = savedEmail;
 });
 
 document.getElementById('password').addEventListener('keydown', e => {

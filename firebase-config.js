@@ -13,6 +13,8 @@ const FIREBASE_CONFIG = {
   appId:             "1:704230186166:web:041b7d413d1671178e5a17"
 };
 
+window.SAMASSA_FIREBASE_CONFIG = FIREBASE_CONFIG;
+
 const SAMASSA_STORE_ID = "kayes-principal";
 
 const FIREBASE_ENABLED = true;
