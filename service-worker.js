@@ -17,7 +17,7 @@ const STATIC_ASSETS = [
   'stock.html','stock.js',
   'devis.html','devis.js',
   'intervention.html','intervention.js',
-  'clients.html','autoconfig.html','docs_admin.html',
+  'clients.html','rapports.html','autoconfig.html','docs_admin.html',
   'style.css','mobile.css',
   'auth.js','utils.js','sync.js',
   'firebase-config.js','cloud-integration.js',
