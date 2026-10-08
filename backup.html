@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script>(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expires){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})()</script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sauvegarde — SAMASSA TECHNOLOGIE</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.bk-wrap{max-width:800px;margin:72px auto 60px;padding:0 18px}
+.hero{background:linear-gradient(135deg,#0A1628,#0D2340,#0070C0);border-radius:16px;padding:22px 26px;margin-bottom:20px}
+.hero h1{font-size:20px;font-weight:900;color:white;margin:0 0 4px;letter-spacing:-.02em}
+.hero p{color:#7AB4D8;font-size:12px;margin:0}
+.card{background:white;border:1px solid #E2ECF5;border-radius:14px;padding:20px 22px;box-shadow:0 2px 8px rgba(10,22,40,.06);margin-bottom:16px}
+.card h2{font-size:15px;font-weight:800;color:#0A1628;margin:0 0 6px;letter-spacing:-.01em}
+.card p{font-size:12px;color:#7A94AF;margin:0 0 16px;line-height:1.7}
+.btn{padding:12px 20px;border:none;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{transform:translateY(-1px)}
+.btn-green{background:linear-gradient(135deg,#059652,#10B981);color:white;box-shadow:0 4px 14px rgba(5,150,82,.3)}
+.btn-blue{background:linear-gradient(135deg,#0070C0,#0095E0);color:white;box-shadow:0 4px 14px rgba(0,112,192,.3)}
+.btn-red{background:#FEF2F2;color:#DC2626;border:1.5px solid #FECACA}
+.btn-red:hover{background:#DC2626;color:white}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat{background:#F8FBFD;border:1px solid #E2ECF5;border-radius:10px;padding:12px 14px;text-align:center}
+.stat strong{display:block;font-size:22px;font-weight:900;color:#0A1628;line-height:1;margin-bottom:3px}
+.stat span{font-size:10px;font-weight:700;color:#7A94AF;text-transform:uppercase;letter-spacing:.07em}
+.restore-zone{border:2px dashed #C8D8EA;border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:#F8FBFD}
+.restore-zone:hover,.restore-zone.drag{border-color:#0070C0;background:#EBF5FF}
+.restore-zone .icon{font-size:36px;margin-bottom:10px;opacity:.5}
+.restore-zone p{font-size:13px;color:#7A94AF;font-weight:600;margin:0}
+.restore-zone small{font-size:11px;color:#A0B4C8}
+.log{background:#0A1628;border-radius:10px;padding:14px 16px;font-family:monospace;font-size:11px;color:#86EFAC;max-height:180px;overflow-y:auto;margin-top:14px;line-height:1.8}
+.warn-box{background:#FFF8EE;border:1.5px solid #FDE68A;border-radius:10px;padding:12px 14px;font-size:12px;color:#92400E;line-height:1.7;margin-bottom:14px}
+@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">💾 Sauvegarde & Restauration</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="bk-wrap">
+  <div class="hero">
+    <h1>💾 Sauvegarde & Restauration</h1>
+    <p>Protégez vos données · Exportez vers un fichier · Restaurez depuis une sauvegarde</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat"><strong id="st-docs">0</strong><span>Documents</span></div>
+    <div class="stat"><strong id="st-clients">0</strong><span>Clients</span></div>
+    <div class="stat"><strong id="st-stock">0</strong><span>Articles stock</span></div>
+    <div class="stat"><strong id="st-mvts">0</strong><span>Mouvements</span></div>
+    <div class="stat"><strong id="st-size">0 Ko</strong><span>Taille données</span></div>
+    <div class="stat"><strong id="st-last">—</strong><span>Dernière sauvegarde</span></div>
+  </div>
+
+  <!-- Sauvegarde -->
+  <div class="card">
+    <h2>📤 Sauvegarder toutes les données</h2>
+    <p>Exporte toutes vos données (clients, documents, stock, mouvements de caisse) dans un fichier JSON que vous pouvez stocker sur votre téléphone, une clé USB ou envoyer par WhatsApp.</p>
+    <button class="btn btn-green" onclick="doBackup()">📥 Télécharger la sauvegarde (.json)</button>
+    <button class="btn btn-blue" onclick="shareBackup()" style="margin-left:10px">💬 Partager via WhatsApp</button>
+  </div>
+
+  <!-- Restauration -->
+  <div class="card">
+    <h2>📥 Restaurer depuis une sauvegarde</h2>
+    <div class="warn-box">
+      ⚠️ <strong>Attention :</strong> La restauration <strong>remplace</strong> toutes les données actuelles par celles de la sauvegarde. Effectuez d'abord une sauvegarde si vous avez des données récentes non sauvegardées.
+    </div>
+    <div class="restore-zone" id="dropZone" onclick="document.getElementById('fileInput').click()" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)">
+      <div class="icon">📂</div>
+      <p>Cliquez ou glissez votre fichier de sauvegarde ici</p>
+      <small>Fichier .json exporté par SAMASSA PRO</small>
+    </div>
+    <input type="file" id="fileInput" accept=".json" style="display:none" onchange="handleFile(this.files[0])">
+    <div class="log" id="log" style="display:none"></div>
+  </div>
+
+  <!-- Réinitialisation -->
+  <div class="card">
+    <h2>🗑️ Réinitialiser les données</h2>
+    <p>Supprime définitivement toutes les données de l'application (documents, clients, stock). Cette action est irréversible.</p>
+    <button class="btn btn-red" onclick="resetAll()">🗑️ Effacer toutes les données</button>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script>
+const DATA_KEYS = [
+  'samassa_recus','samassa_factures','samassa_factures_mat','samassa_factures_cyber',
+  'samassa_recus_cyber','samassa_bons_reparation','samassa_recus_vente','samassa_devis',
+  'samassa_interventions','samassa_mouvements','samassa_retraits','samassa_clients',
+  'samassa_stock_v2','samassa_stock_mouvements','samassa_docs_admin',
+  'samassa_mouvements_cyber','samassa_recus_counter','samassa_factures_mat_counter',
+  '_samassa_ai_key'
+];
+
+function loadStats() {
+  let totalDocs = 0, totalSize = 0;
+  DATA_KEYS.forEach(k => {
+    const v = localStorage.getItem(k) || '';
+    totalSize += v.length;
+    try {
+      const arr = JSON.parse(v);
+      if (Array.isArray(arr) && k.includes('samassa_') && !k.includes('counter') && !k.includes('ai_key')) {
+        totalDocs += arr.length;
+      }
+    } catch(e) {}
+  });
+  document.getElementById('st-docs').textContent    = JSON.parse(localStorage.getItem('samassa_recus')||'[]').length + JSON.parse(localStorage.getItem('samassa_factures')||'[]').length + JSON.parse(localStorage.getItem('samassa_factures_mat')||'[]').length;
+  document.getElementById('st-clients').textContent = JSON.parse(localStorage.getItem('samassa_clients')||'[]').length;
+  document.getElementById('st-stock').textContent   = JSON.parse(localStorage.getItem('samassa_stock_v2')||'[]').length;
+  document.getElementById('st-mvts').textContent    = JSON.parse(localStorage.getItem('samassa_mouvements')||'[]').length;
+  document.getElementById('st-size').textContent    = Math.round(totalSize / 1024) + ' Ko';
+  const lastBk = localStorage.getItem('_samassa_last_backup');
+  document.getElementById('st-last').textContent    = lastBk ? new Date(lastBk).toLocaleDateString('fr-FR') : 'Jamais';
+}
+
+function doBackup() {
+  const backup = {
+    version: '3.2',
+    app: 'SAMASSA TECHNOLOGIE Suite Pro',
+    date: new Date().toISOString(),
+    data: {}
+  };
+  DATA_KEYS.forEach(k => {
+    const v = localStorage.getItem(k);
+    if (v) backup.data[k] = JSON.parse(v);
+  });
+  const json = JSON.stringify(backup, null, 2);
+  const date = new Date().toISOString().substring(0,10);
+  const a = document.createElement('a');
+  a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
+  a.download = 'samassa_backup_' + date + '.json';
+  a.click();
+  localStorage.setItem('_samassa_last_backup', new Date().toISOString());
+  loadStats();
+  toast('✅ Sauvegarde téléchargée avec succès !', 'success');
+}
+
+function shareBackup() {
+  const backup = { version:'3.2', app:'SAMASSA TECHNOLOGIE', date:new Date().toISOString(), data:{} };
+  DATA_KEYS.forEach(k => { const v=localStorage.getItem(k); if(v) backup.data[k]=JSON.parse(v); });
+  const json = JSON.stringify(backup);
+  const size = Math.round(json.length/1024);
+  const msg = `*SAMASSA TECHNOLOGIE — Sauvegarde*
+
+Date : ${new Date().toLocaleDateString('fr-FR')}
+Clients : ${JSON.parse(localStorage.getItem('samassa_clients')||'[]').length}
+Documents : ${JSON.parse(localStorage.getItem('samassa_recus')||'[]').length + JSON.parse(localStorage.getItem('samassa_factures')||'[]').length}
+Taille : ${size} Ko
+
+_Sauvegarde générée par SAMASSA PRO_`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  toast('ℹ️ Partagez le fichier .json téléchargé', 'info');
+  doBackup();
+}
+
+function handleDrop(ev) {
+  ev.preventDefault();
+  document.getElementById('dropZone').classList.remove('drag');
+  const file = ev.dataTransfer.files[0];
+  if (file) handleFile(file);
+}
+
+function handleFile(file) {
+  if (!file || !file.name.endsWith('.json')) { toast('Sélectionnez un fichier .json valide', 'error'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const backup = JSON.parse(e.target.result);
+      if (!backup.data || !backup.app) { toast('Fichier de sauvegarde invalide', 'error'); return; }
+      if (!confirm('Restaurer la sauvegarde du ' + new Date(backup.date).toLocaleDateString('fr-FR') + ' ?
+
+Cela remplacera toutes les données actuelles.')) return;
+      const log = document.getElementById('log');
+      log.style.display = 'block';
+      log.innerHTML = '';
+      let count = 0;
+      Object.entries(backup.data).forEach(([k, v]) => {
+        localStorage.setItem(k, JSON.stringify(v));
+        const n = Array.isArray(v) ? v.length + ' éléments' : '1 valeur';
+        log.innerHTML += '> ' + k + ' → ' + n + '
+';
+        count++;
+      });
+      log.innerHTML += '
+✅ Restauration terminée — ' + count + ' clés restaurées';
+      loadStats();
+      toast('✅ Données restaurées avec succès !', 'success');
+    } catch(err) {
+      toast('Erreur : ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetAll() {
+  if (!confirm('⚠️ ATTENTION !
+
+Supprimer TOUTES les données ?
+
+Clients, documents, stock, caisse... TOUT sera effacé définitivement.
+
+Cette action est IRRÉVERSIBLE.')) return;
+  if (!confirm('Confirmez une seconde fois : effacer toutes les données ?')) return;
+  DATA_KEYS.forEach(k => localStorage.removeItem(k));
+  toast('✓ Toutes les données ont été effacées', 'info');
+  loadStats();
+}
+
+function toast(msg, type) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:700;color:white;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:fadeIn .3s ease;background:' + ({success:'#059652',error:'#DC2626',info:'#3730A3'}[type]||'#0070C0');
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+window.addEventListener('load', loadStats);
+</script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+</html>
