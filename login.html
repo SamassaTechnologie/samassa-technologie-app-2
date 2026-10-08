@@ -113,15 +113,15 @@ body::after{content:'';position:absolute;width:400px;height:400px;border-radius:
     </div>
 
     <div class="card-body">
-      <div class="form-title">Connexion</div>
-      <div class="form-subtitle">Entrez votre mot de passe pour accéder à la suite</div>
+      <div class="form-title" id="form-title">Connexion</div>
+      <div class="form-subtitle" id="form-subtitle">Entrez votre mot de passe pour accéder à la suite</div>
 
       <div class="error-box" id="error-box">
         ❌ <span id="error-msg">Mot de passe incorrect</span>
       </div>
 
       <div class="field">
-        <label>Mot de passe</label>
+        <label id="password-label">Mot de passe</label>
         <div class="field-wrap">
           <span class="field-icon">🔑</span>
           <input type="password" id="password" placeholder="Votre mot de passe"
@@ -165,20 +165,21 @@ function togglePw(btn) {
   btn.textContent = show ? '🙈' : '👁️';
 }
 
-function doLogin() {
+async function doLogin() {
   const p   = document.getElementById('password').value;
   const btn = document.getElementById('btn-login');
   const err = document.getElementById('error-box');
   const msg = document.getElementById('error-msg');
 
   err.style.display = 'none';
-  if (!p) { msg.textContent='Veuillez saisir le mot de passe.'; err.style.display='flex'; return; }
+  if (!p) { msg.textContent=Auth.isConfigured() ? 'Veuillez saisir le mot de passe.' : 'Créez un mot de passe.'; err.style.display='flex'; return; }
+  if (!Auth.isConfigured() && p.length < 8) { msg.textContent='Le premier mot de passe doit contenir au moins 8 caractères.'; err.style.display='flex'; return; }
 
   btn.disabled = true;
   btn.textContent = '⏳ Vérification...';
 
-  setTimeout(() => {
-    const ok = Auth.login(p);
+  setTimeout(async () => {
+    const ok = Auth.isConfigured() ? await Auth.login(p) : (await Auth.setup(p)).ok;
     if (ok) {
       btn.textContent = '✅ Connecté !';
       btn.style.background = 'linear-gradient(135deg,#059652,#10B981)';
@@ -186,7 +187,7 @@ function doLogin() {
       localStorage.removeItem('_samassa_login_target');
       setTimeout(() => window.location.replace(target || 'index.html'), 400);
     } else {
-      msg.textContent = 'Mot de passe incorrect. Réessayez.';
+      msg.textContent = Auth.isConfigured() ? 'Mot de passe incorrect. Réessayez.' : 'Impossible de configurer le mot de passe.';
       err.style.display = 'flex';
       btn.disabled = false;
       btn.textContent = '🚀 Se connecter';
@@ -195,6 +196,15 @@ function doLogin() {
     }
   }, 500);
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (!Auth.isConfigured()) {
+    document.getElementById('form-title').textContent = 'Première configuration';
+    document.getElementById('form-subtitle').textContent = 'Créez le mot de passe de cet appareil (8 caractères minimum).';
+    document.getElementById('password-label').textContent = 'Créer un mot de passe';
+    document.getElementById('btn-login').textContent = '🔐 Configurer et accéder';
+  }
+});
 
 document.getElementById('password').addEventListener('keydown', e => {
   if (e.key === 'Enter') doLogin();

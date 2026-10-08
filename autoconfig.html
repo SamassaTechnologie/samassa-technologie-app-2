@@ -30,7 +30,7 @@ p{font-size:13px;color:#7A94AF;margin-bottom:20px}
 <script>
 const steps = document.getElementById('steps');
 const params = new URLSearchParams(window.location.search);
-const aikey  = params.get('aikey') || params.get('key') || '';
+const aikey  = '';
 
 function addStep(msg, ok) {
   const d = document.createElement('div');
@@ -49,8 +49,7 @@ async function configure() {
 
   // Configurer la clé Gemini
   try {
-    localStorage.setItem('_samassa_ai_key', aikey);
-    addStep('Clé Google Gemini configurée ✓', true);
+    addStep('Configuration IA serveur requise dans Vercel.', false);
   } catch(e) {
     addStep('Erreur localStorage : ' + e.message, false);
     return;

@@ -62,13 +62,13 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
 
   <!-- IA Rédacteur -->
   <div class="scard">
-    <div class="scard-hdr">🤖 IA Rédacteur — Clé API</div>
+    <div class="scard-hdr">🤖 IA Rédacteur — Service sécurisé</div>
     <div class="scard-body">
       <div class="fg">
-        <label>Clé API Google Gemini (gratuit) ou Anthropic</label>
+        <label>Configuration du service IA</label>
         <div style="position:relative">
-          <input type="password" id="aiKey" placeholder="Collez votre clé ici...">
-          <button onclick="toggleAI()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#7A94AF">👁️</button>
+          <input type="text" id="aiKey" value="Clé gérée côté serveur" readonly>
+
         </div>
       </div>
       <div id="aiStatus" style="font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:12px;display:none"></div>
@@ -77,8 +77,7 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
         <button onclick="saveAI()" style="flex:2;padding:10px;background:linear-gradient(135deg,#059652,#10B981);color:white;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit">💾 Enregistrer</button>
       </div>
       <div style="margin-top:10px;font-size:11px;color:#7A94AF;line-height:1.7">
-        🆓 Clé gratuite : <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#059652;font-weight:700">aistudio.google.com</a> (compte Google requis)<br>
-        🤖 Anthropic Claude : <a href="https://console.anthropic.com" target="_blank" style="color:#3730A3;font-weight:700">console.anthropic.com</a>
+        Les clés fournisseurs sont conservées uniquement dans les variables d’environnement Vercel.
       </div>
     </div>
   </div>
@@ -134,60 +133,40 @@ function toggleAI() {
   inp.type = inp.type==='password' ? 'text' : 'password';
 }
 function saveAI() {
-  const key = document.getElementById('aiKey').value.trim();
-  if (!key) { toast('Entrez une clé API', 'error'); return; }
-  localStorage.setItem('_samassa_ai_key', key);
-  toast('✅ Clé API enregistrée', 'success');
+  document.getElementById('aiKey').value = '';
+  toast('✅ Le service IA est géré par le serveur.', 'success');
   showAIStatus();
 }
 async function testAI() {
-  const key = document.getElementById('aiKey').value.trim();
-  if (!key) { toast('Entrez une clé API', 'error'); return; }
   const st = document.getElementById('aiStatus');
   st.style.display='block'; st.style.background='#EEF2FF'; st.style.color='#3730A3';
-  st.textContent='⏳ Test en cours...';
+  st.textContent='⏳ Test du service IA sécurisé...';
   try {
-    const isGem = !key.startsWith('sk-');
-    if (isGem) {
-      for (const mdl of ['gemini-2.0-flash','gemini-flash-latest','gemini-1.5-flash']) {
-        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${mdl}:generateContent?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'OK?'}]}],generationConfig:{maxOutputTokens:5}})});
-        const d = await r.json();
-        if (d?.candidates?.[0]?.content?.parts?.[0]?.text) {
-          st.style.background='#F0FDF4'; st.style.color='#059652';
-          st.textContent='✅ Clé Gemini valide ! Modèle : '+mdl;
-          return;
-        }
-      }
-      st.style.background='#FEF2F2'; st.style.color='#DC2626';
-      st.textContent='❌ Clé invalide ou expirée';
-    } else {
-      const r = await fetch('/api/generate-doc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:'OK',apiKey:key})});
-      const d = await r.json();
-      if (d.success) { st.style.background='#F0FDF4'; st.style.color='#059652'; st.textContent='✅ Clé Anthropic valide !'; }
-      else { st.style.background='#FEF2F2'; st.style.color='#DC2626'; st.textContent='❌ '+d.error; }
-    }
-  } catch(e) { st.style.background='#FEF2F2'; st.style.color='#DC2626'; st.textContent='❌ Erreur: '+e.message; }
+    const r = await fetch('/api/generate-doc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:'Réponds uniquement OK.'})});
+    const d = await r.json();
+    st.style.background = d.success ? '#F0FDF4' : '#FEF2F2';
+    st.style.color = d.success ? '#059652' : '#DC2626';
+    st.textContent = d.success ? '✅ Service IA serveur opérationnel.' : '❌ ' + (d.error || 'Service non configuré');
+  } catch(e) { st.style.background='#FEF2F2'; st.style.color='#DC2626'; st.textContent='❌ Service indisponible'; }
 }
+
 function showAIStatus() {
-  const key = localStorage.getItem('_samassa_ai_key')||'';
   const st = document.getElementById('aiStatus');
-  if (key) {
-    st.style.display='block'; st.style.background='#F0FDF4'; st.style.color='#059652';
-    st.textContent='✅ Clé configurée : '+(key.startsWith('sk-')?'Anthropic Claude':'Google Gemini')+' · '+(key.substring(0,12)+'...');
-    document.getElementById('aiKey').value = key;
-  }
+  st.style.display='block'; st.style.background='#EEF2FF'; st.style.color='#3730A3';
+  st.textContent='🔒 Clé IA protégée côté serveur (aucune clé stockée dans ce navigateur).';
+  document.getElementById('aiKey').value = '';
 }
-function changePw() {
+async function changePw() {
   const old=document.getElementById('pwOld').value;
   const nw =document.getElementById('pwNew').value;
   const cf =document.getElementById('pwConf').value;
   if (!old||!nw||!cf) { toast('Remplissez tous les champs', 'error'); return; }
   if (nw !== cf) { toast('Les mots de passe ne correspondent pas', 'error'); return; }
-  if (nw.length < 6) { toast('Minimum 6 caractères', 'error'); return; }
+  if (nw.length < 8) { toast('Minimum 6 caractères', 'error'); return; }
   if (typeof Auth!=='undefined' && Auth.changePassword) {
-    const ok = Auth.changePassword(old, nw);
-    if (ok) { toast('✅ Mot de passe changé avec succès', 'success'); document.getElementById('pwOld').value=document.getElementById('pwNew').value=document.getElementById('pwConf').value=''; }
-    else toast('❌ Mot de passe actuel incorrect', 'error');
+    const result = await Auth.changePassword(old, nw);
+    if (result.ok) { toast('✅ Mot de passe changé avec succès', 'success'); document.getElementById('pwOld').value=document.getElementById('pwNew').value=document.getElementById('pwConf').value=''; }
+    else toast('❌ ' + result.msg, 'error');
   } else toast('❌ Fonction non disponible dans cette version', 'error');
 }
 function toast(msg, type) {

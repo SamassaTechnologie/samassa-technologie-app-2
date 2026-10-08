@@ -926,36 +926,26 @@ let aiTitle  = 'Document';
 
 /* Vérifier statut IA au chargement */
 function checkAIStatus() {
-  const key  = localStorage.getItem('_samassa_ai_key');
-  const type = detectKeyType(key);
-  const bar  = document.getElementById('ai-status-bar');
-  const txt  = document.getElementById('ai-status-text');
+  const bar = document.getElementById('ai-status-bar');
+  const txt = document.getElementById('ai-status-text');
   if (!bar) return;
-  if (type === 'gemini') {
-    bar.className = 'ai-status ok';
-    txt.textContent = '✅ Google Gemini actif — Gratuit · Prêt à rédiger';
-    bar.querySelector('button').textContent = '⚙️ Modifier';
-  } else if (type === 'anthropic') {
-    bar.className = 'ai-status ok';
-    txt.textContent = '✅ Anthropic Claude actif — Prêt à rédiger';
-    bar.querySelector('button').textContent = '⚙️ Modifier';
-  } else {
-    bar.className = 'ai-status nok';
-    txt.textContent = 'IA non configurée — Obtenez une clé gratuite Google Gemini en 2 min';
-  }
+  bar.className = 'ai-status nok';
+  txt.textContent = '🔒 IA sécurisée côté serveur — cliquez sur Tester pour vérifier la disponibilité';
+  const button = bar.querySelector('button');
+  if (button) button.textContent = '🧪 Tester';
 }
 
 /* Suggestions rapides */
 function fillSugg(el) {
   const map = {
-    'Demande d'acte de naissance':  'Rédige une demande d'acte de naissance pour [NOM PRÉNOM], né(e) le [DATE] à Kayes, fils/fille de [PÈRE] et [MÈRE], demeurant à [QUARTIER], Kayes. Motif : [usage administratif].',
-    'Bourse d'études':              'Rédige une demande de bourse d'études pour [NOM PRÉNOM], né(e) le [DATE], qui souhaite s'inscrire en [FILIÈRE] à [ÉTABLISSEMENT]. Son père [PROFESSION] gagne [REVENUS] FCFA par mois. Il/Elle a obtenu [DIPLÔME] avec la mention [MENTION].',
-    'Attestation de domicile':       'Rédige une attestation de domicile pour [NOM PRÉNOM], demeurant au quartier [QUARTIER] de Kayes depuis [DURÉE]. Cette attestation est nécessaire pour [MOTIF].',
-    'Acte de mariage':               'Rédige une demande d'acte de mariage pour [NOM ÉPOUX] et [NOM ÉPOUSE], mariés le [DATE] à la mairie de Kayes. Témoins : [TÉMOIN 1] et [TÉMOIN 2]. Motif : [MOTIF].',
-    'Casier judiciaire':             'Rédige une demande d'extrait de casier judiciaire pour [NOM PRÉNOM], né(e) le [DATE] à Kayes, fils/fille de [PÈRE] et [MÈRE], demeurant à [QUARTIER]. Motif : [concours/emploi/visa].',
-    'Engagement de remboursement':   'Rédige un engagement de remboursement. Le débiteur [NOM] a emprunté [MONTANT] FCFA à [CRÉANCIER] le [DATE]. Il s'engage à rembourser en [MODALITÉS] avant le [DATE ÉCHÉANCE].',
-    'Autorisation commerce':         'Rédige une demande d'autorisation d'ouverture de commerce pour [NOM], qui souhaite ouvrir [TYPE DE COMMERCE] au quartier [QUARTIER] de Kayes. Superficie : [M²]. Horaires : [HORAIRES].',
-    'Déclaration d'accident':       'Rédige une déclaration d'accident de circulation survenu le [DATE] à [HEURE] à [LIEU DE KAYES]. Mon véhicule [MARQUE IMMAT] est entré en collision avec [AUTRE VÉHICULE]. Dégâts : [DESCRIPTION].'
+    "Demande d'acte de naissance":  `Rédige une demande d'acte de naissance pour [NOM PRÉNOM], né(e) le [DATE] à Kayes, fils/fille de [PÈRE] et [MÈRE], demeurant à [QUARTIER], Kayes. Motif : [usage administratif].`,
+    "Bourse d'études":              `Rédige une demande de bourse d'études pour [NOM PRÉNOM], né(e) le [DATE], qui souhaite s'inscrire en [FILIÈRE] à [ÉTABLISSEMENT]. Son père [PROFESSION] gagne [REVENUS] FCFA par mois. Il/Elle a obtenu [DIPLÔME] avec la mention [MENTION].`,
+    "Attestation de domicile":       `Rédige une attestation de domicile pour [NOM PRÉNOM], demeurant au quartier [QUARTIER] de Kayes depuis [DURÉE]. Cette attestation est nécessaire pour [MOTIF].`,
+    "Acte de mariage":               `Rédige une demande d'acte de mariage pour [NOM ÉPOUX] et [NOM ÉPOUSE], mariés le [DATE] à la mairie de Kayes. Témoins : [TÉMOIN 1] et [TÉMOIN 2]. Motif : [MOTIF].`,
+    "Casier judiciaire":             `Rédige une demande d'extrait de casier judiciaire pour [NOM PRÉNOM], né(e) le [DATE] à Kayes, fils/fille de [PÈRE] et [MÈRE], demeurant à [QUARTIER]. Motif : [concours/emploi/visa].`,
+    "Engagement de remboursement":   `Rédige un engagement de remboursement. Le débiteur [NOM] a emprunté [MONTANT] FCFA à [CRÉANCIER] le [DATE]. Il s'engage à rembourser en [MODALITÉS] avant le [DATE ÉCHÉANCE].`,
+    "Autorisation commerce":         `Rédige une demande d'autorisation d'ouverture de commerce pour [NOM], qui souhaite ouvrir [TYPE DE COMMERCE] au quartier [QUARTIER] de Kayes. Superficie : [M²]. Horaires : [HORAIRES].`,
+    "Déclaration d'accident":       `Rédige une déclaration d'accident de circulation survenu le [DATE] à [HEURE] à [LIEU DE KAYES]. Mon véhicule [MARQUE IMMAT] est entré en collision avec [AUTRE VÉHICULE]. Dégâts : [DESCRIPTION].`
   };
   const txt = el.textContent.trim();
   const found = Object.keys(map).find(k => txt.includes(k));
@@ -1004,14 +994,7 @@ async function generateWithAI() {
     return;
   }
 
-  const apiKey  = localStorage.getItem('_samassa_ai_key') || '';
-  const keyType = detectKeyType(apiKey);
-
-  if (!apiKey || !keyType) {
-    openAIConfig();
-    showToast('⚙️ Configurez d\'abord votre clé API gratuite', 'info');
-    return;
-  }
+  // Les clés IA restent côté serveur : aucune clé n'est lue ou stockée dans le navigateur.
 
   const btn  = document.getElementById('btn-ai-gen');
   const btxt = document.getElementById('btn-ai-txt');
@@ -1029,59 +1012,18 @@ async function generateWithAI() {
   try {
     let text = '', tokens = 0, model = '';
 
-    /* ══ GEMINI — appel direct navigateur (gratuit, CORS OK) ══ */
-    if (keyType === 'gemini') {
-      // Essayer plusieurs modèles Gemini dans l'ordre
-      const GEMINI_MODELS = ['gemini-2.0-flash','gemini-flash-latest','gemini-1.5-flash','gemini-1.5-flash-latest'];
-      let gemRes = null, gemData = null;
-      for (const mdl of GEMINI_MODELS) {
-        const gemUrl = `https://generativelanguage.googleapis.com/v1beta/models/${mdl}:generateContent?key=${apiKey}`;
-        try {
-          gemRes = await fetch(gemUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-goog-api-key': apiKey },
-            body: JSON.stringify({
-              system_instruction: { parts: [{ text: SYSTEM_PROMPT_MALI }] },
-              contents: [{ parts: [{ text: fullPrompt }] }],
-              generationConfig: { maxOutputTokens: 2048, temperature: 0.5 }
-            })
-          });
-          gemData = await gemRes.json();
-          if (!gemData?.error) { model = '✨ Gemini (' + mdl + ')'; break; }
-        } catch(e) { continue; }
-      }
-      const gemData = await gemRes.json();
-      if (gemData?.error) {
-        const msg = gemData.error.message || 'Clé invalide';
-        if (msg.includes('API_KEY') || msg.includes('key')) {
-          showToast('❌ Clé Gemini invalide — Vérifiez la clé', 'error');
-          openAIConfig();
-        } else {
-          showToast('❌ Gemini : ' + msg, 'error');
-        }
-        return;
-      }
-      text   = gemData?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-      tokens = gemData?.usageMetadata?.totalTokenCount || 0;
-      model  = '✨ Gemini 1.5 Flash';
+    const aiRes = await fetch('/api/generate-doc', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: fullPrompt })
+    });
+    const aiData = await aiRes.json();
+    if (!aiRes.ok || !aiData.success) {
+      showToast('❌ ' + (aiData.error || 'Service IA indisponible'), 'error');
+      return;
     }
-
-    /* ══ ANTHROPIC — via proxy Vercel ══ */
-    else if (keyType === 'anthropic') {
-      const antRes = await fetch('/api/generate-doc', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ prompt: fullPrompt, apiKey })
-      });
-      const antData = await antRes.json();
-      if (!antData.success) {
-        showToast('❌ ' + (antData.error || 'Erreur Anthropic'), 'error');
-        return;
-      }
-      text   = antData.text || '';
-      tokens = (antData.tokens?.input_tokens||0) + (antData.tokens?.output_tokens||0);
-      model  = '🤖 Claude';
-    }
+    text = aiData.text || '';
+    tokens = aiData.tokens?.total || ((aiData.tokens?.input_tokens || 0) + (aiData.tokens?.output_tokens || 0));
+    model = aiData.model || 'IA serveur';
 
     if (!text) {
       showToast('❌ Réponse vide — Réessayez', 'error');
@@ -1108,8 +1050,7 @@ async function generateWithAI() {
 
 /* Extraire un titre du document généré */
 function extractDocTitle(text, prompt) {
-  const firstLine = text.split('
-').find(l => l.trim().length > 4) || '';
+  const firstLine = text.split('\n').find(l => l.trim().length > 4) || '';
   if (firstLine.length < 60) return firstLine.trim();
   const keywords = ['DEMANDE','ATTESTATION','CERTIFICAT','CONTRAT','DÉCLARATION','LETTRE','ENGAGEMENT','AUTORISATION','PROCURATION'];
   for (const kw of keywords) {
@@ -1388,9 +1329,9 @@ function refineDoc() {
   if (!aiResult) return;
   const prompt = document.getElementById('ai-prompt');
   const current = prompt.value.trim();
-  prompt.value = 'Améliore et complète ce document en ajoutant les détails manquants, en vérifiant les formules administratives et en le rendant plus professionnel :
+  prompt.value = `Améliore et complète ce document en ajoutant les détails manquants, en vérifiant les formules administratives et en le rendant plus professionnel :
 
-' + aiResult;
+` + aiResult;
   updateCharCount(prompt);
   prompt.scrollIntoView({ behavior:'smooth', block:'start' });
   prompt.focus();
@@ -1414,83 +1355,34 @@ function saveAIToHistory() {
   });
   localStorage.setItem('samassa_docs_admin', JSON.stringify(hist));
   loadStats();
-  showToast('💾 Document enregistré dans l'historique (' + refNum + ')', 'success');
+  showToast("💾 Document enregistré dans l'historique (" + refNum + ')', 'success');
 }
 
 /* ── CONFIG IA ── */
 function openAIConfig() {
-  const modal = document.getElementById('ai-config-modal');
-  if (!modal) { alert('Erreur: modal introuvable'); return; }
-  const key = localStorage.getItem('_samassa_ai_key') || '';
-  document.getElementById('ai-api-key-input').value = key;
-  modal.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
+  testAIKey();
 }
-function closeAIConfig() {
-  const modal = document.getElementById('ai-config-modal');
-  if (modal) modal.style.display = 'none';
-  document.body.style.overflow = '';
-}
-function toggleApiKeyVis() {
-  const inp = document.getElementById('ai-api-key-input');
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-}
+function closeAIConfig() {}
+function toggleApiKeyVis() {}
 function saveAIConfig() {
-  const key = document.getElementById('ai-api-key-input').value.trim();
-  if (!key) { alert('Entrez une clé API valide.'); return; }
-  localStorage.setItem('_samassa_ai_key', key);
-  checkAIStatus();
-  closeAIConfig();
-  showToast('✅ Clé API enregistrée !', 'success');
+  showToast('🔒 Les clés IA sont gérées côté serveur.', 'info');
 }
 async function testAIKey() {
-  const key  = document.getElementById('ai-api-key-input').value.trim();
-  const res  = document.getElementById('ai-test-result');
-  const type = detectKeyType(key);
-  if (!key)  { showToast('Entrez une clé API', 'info'); return; }
-  if (!type) { showToast('Format de clé non reconnu', 'error'); return; }
+  const res = document.getElementById('ai-test-result');
+  if (!res) return;
   res.style.display = 'block';
-  res.textContent = '⏳ Test en cours...';
-  res.style.cssText = 'display:block;padding:10px 13px;border-radius:9px;font-size:11px;font-weight:600;background:#EEF2FF;color:#3730A3;border:1.5px solid #C7D2FE;margin-top:10px';
-
+  res.textContent = '⏳ Test du service IA sécurisé...';
   try {
-    let ok = false, msg = '';
-
-    if (type === 'gemini') {
-      let ok = false, testData = null;
-      const MODELS_TEST = ['gemini-2.0-flash','gemini-flash-latest','gemini-1.5-flash'];
-      for (const mdl of MODELS_TEST) {
-        try {
-          const r = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${mdl}:generateContent?key=${key}`,
-            { method:'POST', headers:{'Content-Type':'application/json','X-goog-api-key':key},
-              body: JSON.stringify({ contents:[{parts:[{text:'Réponds uniquement : OK'}]}], generationConfig:{maxOutputTokens:10} }) }
-          );
-          testData = await r.json();
-          if (testData?.candidates?.[0]?.content?.parts?.[0]?.text) { ok = true; break; }
-        } catch(e) { continue; }
-      }
-      msg = ok ? '✅ Clé Gemini valide ! IA opérationnelle 🎉' : '❌ ' + (testData?.error?.message || 'Clé invalide ou expirée');
-    } else {
-      const r = await fetch('/api/generate-doc', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ prompt:'Dis "OK" en une lettre.', apiKey: key })
-      });
-      const d = await r.json();
-      ok  = d.success;
-      msg = ok ? '✅ Clé Anthropic valide !' : '❌ ' + (d.error || 'Clé invalide');
-    }
-
-    res.style.background  = ok ? '#F0FDF4' : '#FEF2F2';
-    res.style.color       = ok ? '#059652' : '#DC2626';
-    res.style.borderColor = ok ? '#D1FAE5' : '#FECACA';
-    res.textContent = msg;
+    const r = await fetch('/api/generate-doc', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ prompt:'Réponds uniquement : OK' }) });
+    const d = await r.json();
+    const ok = Boolean(r.ok && d.success);
+    res.style.background = ok ? '#F0FDF4' : '#FEF2F2';
+    res.style.color = ok ? '#059652' : '#DC2626';
+    res.textContent = ok ? '✅ Service IA serveur opérationnel.' : '❌ ' + (d.error || 'Service non configuré');
   } catch(e) {
-    res.style.background = '#FEF2F2'; res.style.color = '#DC2626'; res.style.borderColor = '#FECACA';
-    res.textContent = '❌ Erreur réseau : ' + e.message;
+    res.style.background = '#FEF2F2'; res.style.color = '#DC2626'; res.textContent = '❌ Service indisponible';
   }
 }
-
 /* Toast */
 function showToast(msg, type) {
   const t = document.createElement('div');

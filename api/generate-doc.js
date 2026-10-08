@@ -1,112 +1,56 @@
-// api/generate-doc.js
-// Proxy IA : supporte Google Gemini (gratuit) ET Anthropic Claude
-
+// API serveur — les clés IA doivent être configurées dans les variables d'environnement Vercel.
 export const config = { runtime: 'edge' };
 
-const SYSTEM_PROMPT = `Tu es expert en rédaction de documents administratifs officiels au Mali, spécialement pour la ville de Kayes. Tu travailles pour SAMASSA TECHNOLOGIE.
+const SYSTEM_PROMPT = `Tu es expert en rédaction de documents administratifs officiels au Mali, spécialement pour Kayes. Tu travailles pour SAMASSA TECHNOLOGIE.
+Rédige directement le document, utilise les formules protocolaires maliennes, inclus Kayes, la date en toutes lettres et une formule de politesse finale. Pour les renseignements manquants, utilise [À COMPLÉTER]. Le document doit être immédiatement utilisable après impression.`;
 
-RÈGLES STRICTES :
-1. Rédige DIRECTEMENT le document sans introduction ni commentaire extérieur
-2. Utilise les formules protocolaires maliennes appropriées
-3. Inclus toujours : Lieu (Kayes), date en toutes lettres, formule de politesse finale
-4. En-tête pour documents officiels : "République du Mali — Un Peuple — Un But — Une Foi"
-5. Pour les renseignements manquants, utilise [À COMPLÉTER]
-6. Le document doit être immédiatement utilisable après impression
-7. Sois complet et professionnel`;
+const headers = {
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': process.env.ALLOWED_ORIGIN || 'https://samassa-technologie-app-2.vercel.app',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type'
+};
 
 export default async function handler(req) {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      }
-    });
-  }
-
-  if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
-  }
-
-  const CORS = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
+  if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers });
+  if (req.method !== 'POST') return new Response(JSON.stringify({ error: 'Méthode non autorisée' }), { status: 405, headers });
 
   try {
-    const { prompt, context, apiKey } = await req.json();
-
-    // Déterminer le type de clé
-    const key       = apiKey || process.env.ANTHROPIC_API_KEY || process.env.GEMINI_API_KEY || '';
-    const isGemini  = key && !key.startsWith('sk-ant-') && !key.startsWith('sk-');
-    const isAnthropic = key && (key.startsWith('sk-ant-') || key.startsWith('sk-'));
-
-    if (!key) {
-      return new Response(JSON.stringify({
-        error: 'Clé API manquante',
-        message: 'Configurez GEMINI_API_KEY ou ANTHROPIC_API_KEY dans Vercel Environment Variables'
-      }), { status: 500, headers: CORS });
+    const body = await req.json();
+    const prompt = typeof body.prompt === 'string' ? body.prompt.trim() : '';
+    const context = typeof body.context === 'string' ? body.context.trim() : '';
+    if (!prompt || prompt.length > 4000) {
+      return new Response(JSON.stringify({ error: 'La demande est obligatoire et limitée à 4000 caractères.' }), { status: 400, headers });
     }
 
-    let fullPrompt = prompt;
-    if (context) fullPrompt += `\nContexte : ${context}`;
-    fullPrompt += `\nVille : Kayes, Mali. Date : ${new Date().toLocaleDateString('fr-FR', {weekday:'long',year:'numeric',month:'long',day:'numeric'})}`;
+    const geminiKey = process.env.GEMINI_API_KEY;
+    const anthropicKey = process.env.ANTHROPIC_API_KEY;
+    const fullPrompt = `${prompt}${context ? `\nContexte : ${context}` : ''}\nVille : Kayes, Mali. Date : ${new Date().toLocaleDateString('fr-FR', {weekday:'long', year:'numeric', month:'long', day:'numeric'})}`;
 
-    // ── Gemini (gratuit) ──
-    if (isGemini) {
-      const gemRes = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-            contents: [{ parts: [{ text: fullPrompt }] }],
-            generationConfig: { maxOutputTokens: 2048, temperature: 0.5, topP: 0.9 }
-          })
-        }
-      );
-      const gemData = await gemRes.json();
-      const text = gemData?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (text) {
-        return new Response(JSON.stringify({
-          success: true, text,
-          model: 'gemini-1.5-flash',
-          tokens: { total: gemData?.usageMetadata?.totalTokenCount || 0 }
-        }), { headers: CORS });
-      }
-      return new Response(JSON.stringify({ error: 'Réponse Gemini vide', raw: gemData }), { status: 500, headers: CORS });
-    }
-
-    // ── Anthropic Claude ──
-    if (isAnthropic) {
-      const antRes = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': key,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 2048,
-          system: SYSTEM_PROMPT,
-          messages: [{ role: 'user', content: fullPrompt }]
-        })
+    if (geminiKey) {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(geminiKey)}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ system_instruction: { parts: [{ text: SYSTEM_PROMPT }] }, contents: [{ parts: [{ text: fullPrompt }] }], generationConfig: { maxOutputTokens: 2048, temperature: 0.5 } })
       });
-      const antData = await antRes.json();
-      if (antData?.content?.[0]?.text) {
-        return new Response(JSON.stringify({
-          success: true,
-          text: antData.content[0].text,
-          model: 'claude-sonnet-4-6',
-          tokens: antData.usage
-        }), { headers: CORS });
-      }
-      return new Response(JSON.stringify({ error: 'Réponse Anthropic vide', raw: antData }), { status: 500, headers: CORS });
+      const data = await response.json();
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) return new Response(JSON.stringify({ success: true, text, model: 'gemini-2.0-flash', tokens: { total: data?.usageMetadata?.totalTokenCount || 0 } }), { headers });
+      return new Response(JSON.stringify({ error: data?.error?.message || 'Réponse Gemini vide' }), { status: 502, headers });
     }
 
-    return new Response(JSON.stringify({ error: 'Format de clé API non reconnu' }), { status: 400, headers: CORS });
+    if (anthropicKey) {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'x-api-key': anthropicKey, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 2048, system: SYSTEM_PROMPT, messages: [{ role: 'user', content: fullPrompt }] })
+      });
+      const data = await response.json();
+      const text = data?.content?.[0]?.text;
+      if (text) return new Response(JSON.stringify({ success: true, text, model: 'claude-sonnet-4-6', tokens: data.usage }), { headers });
+      return new Response(JSON.stringify({ error: data?.error?.message || 'Réponse Anthropic vide' }), { status: 502, headers });
+    }
 
-  } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: CORS });
+    return new Response(JSON.stringify({ error: 'Aucun fournisseur IA configuré sur le serveur.' }), { status: 503, headers });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Erreur interne du service IA.' }), { status: 500, headers });
   }
 }
