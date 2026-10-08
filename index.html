@@ -630,6 +630,21 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     <div class="command-card command-accent amber"><div class="command-card-title">⏳ Prochains RDV</div><div class="command-card-value" id="cmd-next-rdv">—</div><div class="command-card-sub" id="cmd-next-rdv-sub">Aucun rendez-vous programmé</div></div>
   </div>
 
+
+  <!-- ══ Widget alertes stock + documents récents ══ -->
+  <div id="stock-alert-section" style="display:none;margin-bottom:22px">
+    <div style="background:#FFF8EE;border:1.5px solid #FDE68A;border-radius:14px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-size:22px">⚠️</span>
+        <div>
+          <div style="font-size:13px;font-weight:800;color:#B45309" id="stock-alert-title">Articles à réapprovisionner</div>
+          <div style="font-size:11px;color:#92400E;margin-top:2px" id="stock-alert-list"></div>
+        </div>
+      </div>
+      <a href="stock.html" style="padding:8px 16px;background:#B45309;color:white;border-radius:9px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">📦 Gérer le stock →</a>
+    </div>
+  </div>
+
   <!-- Actions rapides -->
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
     <span style="font-size:12px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em">⚡ Actions rapides</span>
