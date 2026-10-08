@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script>(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expires){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})()</script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rapports — SAMASSA TECHNOLOGIE</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.rp{max-width:1100px;margin:72px auto 60px;padding:0 18px}
+.hero{background:linear-gradient(135deg,#0A1628,#0D2340,#0070C0);border-radius:16px;padding:22px 26px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.hero h1{font-size:20px;font-weight:900;color:white;margin:0 0 4px;letter-spacing:-.02em}
+.hero p{color:#7AB4D8;font-size:12px;margin:0}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.card{background:white;border:1px solid #E2ECF5;border-radius:14px;padding:18px 20px;box-shadow:0 2px 8px rgba(10,22,40,.06)}
+.card h3{font-size:13px;font-weight:800;color:#0A1628;margin:0 0 14px}
+.kc{background:white;border:1px solid #E2ECF5;border-radius:12px;padding:14px 16px;box-shadow:0 2px 8px rgba(10,22,40,.06)}
+.kn{font-size:26px;font-weight:900;color:#0A1628;line-height:1;margin-bottom:3px;letter-spacing:-.02em}
+.kl{font-size:10px;font-weight:700;color:#7A94AF;text-transform:uppercase;letter-spacing:.08em}
+.ks{font-size:11px;color:#7A94AF;margin-top:4px}
+.kc.bl{border-left:4px solid #0070C0}.kc.gr{border-left:4px solid #059652}.kc.pu{border-left:4px solid #6D28D9}.kc.am{border-left:4px solid #D97706}
+.pb{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;align-items:center}
+.pb label{font-size:12px;font-weight:700;color:#7A94AF}
+.pb button{padding:7px 13px;border-radius:8px;border:1.5px solid #E2ECF5;background:white;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;color:#3D5470;transition:all .18s}
+.pb button.a{background:#0A1628;color:white;border-color:#0A1628}
+.ti{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F4F8FB}
+.ti:last-child{border:none}
+.tbg{flex:1;height:6px;background:#F0F5FA;border-radius:3px;overflow:hidden}
+.tf{height:100%;border-radius:3px;transition:width .8s}
+.tv{font-size:12px;font-weight:700;color:#0A1628;min-width:60px;text-align:right}
+.litem{display:flex;align-items:center;gap:7px;font-size:12px;color:#3D5470;margin-bottom:6px}
+.ldot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+@media(max-width:768px){.g4,.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">📈 Rapports & Statistiques</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+<div class="rp">
+  <div class="hero">
+    <div><h1>📈 Rapports &amp; Statistiques</h1><p>Vue analytique de l'activité SAMASSA TECHNOLOGIE</p></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="exportCSV()" style="padding:9px 14px;background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">📊 Export CSV</button>
+      <button onclick="window.print()" style="padding:9px 14px;background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">🖨️ Imprimer</button>
+    </div>
+  </div>
+  <div class="pb">
+    <label>Période :</label>
+    <button onclick="setPeriod(7,this)">7 jours</button>
+    <button onclick="setPeriod(30,this)" class="a">30 jours</button>
+    <button onclick="setPeriod(90,this)">3 mois</button>
+    <button onclick="setPeriod(365,this)">1 an</button>
+    <button onclick="setPeriod(9999,this)">Tout</button>
+  </div>
+  <div class="g4">
+    <div class="kc bl"><div class="kn" id="kCA">0</div><div class="kl">Chiffre d'affaires</div><div class="ks">FCFA encaissés</div></div>
+    <div class="kc gr"><div class="kn" id="kDocs">0</div><div class="kl">Documents émis</div><div class="ks">sur la période</div></div>
+    <div class="kc pu"><div class="kn" id="kClients">0</div><div class="kl">Clients servis</div><div class="ks">uniques</div></div>
+    <div class="kc am"><div class="kn" id="kMoy">0</div><div class="kl">Ticket moyen</div><div class="ks">FCFA / document</div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px">
+    <h3>💰 Chiffre d'affaires des 6 derniers mois</h3>
+    <div style="overflow-x:auto"><svg id="svgCA" style="width:100%;height:200px;display:block" viewBox="0 0 600 200"></svg></div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <h3>🏆 Top services / produits</h3>
+      <div id="topSvcs"></div>
+    </div>
+    <div class="card">
+      <h3>📊 Documents par type</h3>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <svg id="svgDonut" width="110" height="110" viewBox="0 0 110 110"></svg>
+        <div id="donutLgd" style="flex:1"></div>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <h3>💳 Modes de paiement</h3>
+      <div id="pmStats"></div>
+    </div>
+    <div class="card">
+      <h3>👥 Derniers clients ajoutés</h3>
+      <div id="recentCl"></div>
+    </div>
+  </div>
+</div>
+<script src="auth.js"></script>
+<script>
+var DAYS=30;
+var KEYS={recus:'samassa_recus',factures:'samassa_factures',factMat:'samassa_factures_mat',factCyber:'samassa_factures_cyber',recusCyber:'samassa_recus_cyber',bons:'samassa_bons_reparation',ventes:'samassa_recus_vente',mouvements:'samassa_mouvements',clients:'samassa_clients'};
+function gd(k){return JSON.parse(localStorage.getItem(k)||'[]');}
+function fa(arr){
+  if(DAYS>=9999)return arr;
+  var cut=new Date();cut.setDate(cut.getDate()-DAYS);
+  return arr.filter(function(d){return new Date(d.date||d.timestamp||d.created||0)>=cut;});
+}
+function ga(d){return Number(d.total||d.amount||d.montant||0);}
+function fmt(n){return Math.round(n).toLocaleString('fr-FR');}
+function setPeriod(d,btn){
+  DAYS=d;
+  document.querySelectorAll('.pb button').forEach(function(b){b.classList.remove('a');});
+  btn.classList.add('a');
+  render();
+}
+function render(){
+  var all={};Object.keys(KEYS).forEach(function(k){all[k]=gd(KEYS[k]);});
+  var allDocs=all.recus.concat(all.factures,all.factMat,all.factCyber,all.recusCyber,all.bons,all.ventes);
+  var docs=fa(allDocs);
+  var mvts=fa(all.mouvements).filter(function(m){return m.type==='entree';});
+  var ca=mvts.reduce(function(s,m){return s+(m.amount||m.montant||0);},0);
+  var clients=[...new Set(docs.map(function(d){return d.clientName||d.client||'';}).filter(Boolean))];
+  document.getElementById('kCA').textContent=fmt(ca)+' F';
+  document.getElementById('kDocs').textContent=docs.length;
+  document.getElementById('kClients').textContent=clients.length;
+  document.getElementById('kMoy').textContent=docs.length?fmt(ca/docs.length)+' F':'0 F';
+  drawBars(all.mouvements);
+  drawTop(docs);
+  drawDonut(all);
+  drawPM(docs);
+  drawClients(all.clients);
+}
+function drawBars(mvts){
+  var months={};var now=new Date();
+  for(var i=5;i>=0;i--){
+    var d=new Date(now.getFullYear(),now.getMonth()-i,1);
+    var k=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    months[k]={label:d.toLocaleDateString('fr-FR',{month:'short'}),total:0};
+  }
+  mvts.filter(function(m){return m.type==='entree';}).forEach(function(m){
+    var k=(m.date||m.timestamp||'').substring(0,7);
+    if(months[k])months[k].total+=(m.amount||m.montant||0);
+  });
+  var vals=Object.values(months);
+  var max=Math.max.apply(null,vals.map(function(v){return v.total;}))||1;
+  var W=600,H=200,n=vals.length,bw=50,gap=W/n;
+  var svg='';
+  vals.forEach(function(v,i){
+    var x=i*gap+(gap-bw)/2;
+    var h=Math.max(4,Math.floor(v.total/max*(H-50)));
+    var y=H-30-h;
+    var fill=i===n-1?'#0070C0':'#BAE6FD';
+    svg+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+h+'" rx="4" fill="'+fill+'"/>';
+    svg+='<text x="'+(x+bw/2)+'" y="'+(H-12)+'" text-anchor="middle" font-size="10" fill="#7A94AF" font-family="Inter,sans-serif">'+v.label+'</text>';
+    if(v.total>0)svg+='<text x="'+(x+bw/2)+'" y="'+(y-4)+'" text-anchor="middle" font-size="9" fill="#0A1628" font-weight="800" font-family="Inter,sans-serif">'+fmt(v.total/1000)+'k</text>';
+  });
+  document.getElementById('svgCA').innerHTML=svg;
+}
+function drawTop(docs){
+  var sv={};
+  docs.forEach(function(d){
+    var items=d.items||d.articles||d.services||[];
+    if(Array.isArray(items)&&items.length){
+      items.forEach(function(it){var k=it.desc||it.description||it.nom||'';if(k)sv[k]=(sv[k]||0)+1;});
+    } else {var k=d.motif||d.type||'Service';if(k)sv[k]=(sv[k]||0)+1;}
+  });
+  var top=Object.entries(sv).sort(function(a,b){return b[1]-a[1];}).slice(0,6);
+  var maxV=top[0]?top[0][1]:1;
+  var C=['#0070C0','#059652','#6D28D9','#D97706','#DC2626','#0891B2'];
+  if(!top.length){document.getElementById('topSvcs').innerHTML='<p style="color:#7A94AF;text-align:center;padding:16px;font-size:13px">Aucune donnée</p>';return;}
+  document.getElementById('topSvcs').innerHTML=top.map(function(e,i){
+    return '<div class="ti"><div style="width:22px;height:22px;border-radius:6px;background:'+C[i]+'22;color:'+C[i]+';font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(i+1)+'</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:#0A1628;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+e[0]+'</div><div class="tbg"><div class="tf" style="width:'+Math.round(e[1]/maxV*100)+'%;background:'+C[i]+'"></div></div></div><div class="tv">'+e[1]+'×</div></div>';
+  }).join('');
+}
+function drawDonut(all){
+  var types=[
+    {l:'Reçus NINA',c:all.recus.length,col:'#0070C0'},
+    {l:'Factures',c:all.factures.length+all.factMat.length+all.factCyber.length,col:'#059652'},
+    {l:'Réparations',c:all.bons.length,col:'#6D28D9'},
+    {l:'Ventes',c:all.ventes.length,col:'#D97706'},
+    {l:'Cyber',c:all.recusCyber.length,col:'#0891B2'},
+  ].filter(function(t){return t.c>0;});
+  var total=types.reduce(function(s,t){return s+t.c;},0)||1;
+  var cx=55,cy=55,r=46,ri=26,ang=-Math.PI/2,paths='';
+  types.forEach(function(t){
+    var sw=t.c/total*Math.PI*2;
+    var x1=cx+r*Math.cos(ang),y1=cy+r*Math.sin(ang);
+    var x2=cx+r*Math.cos(ang+sw),y2=cy+r*Math.sin(ang+sw);
+    var x3=cx+ri*Math.cos(ang+sw),y3=cy+ri*Math.sin(ang+sw);
+    var x4=cx+ri*Math.cos(ang),y4=cy+ri*Math.sin(ang);
+    var lg=sw>Math.PI?1:0;
+    paths+='<path d="M'+x1+','+y1+' A'+r+','+r+' 0 '+lg+',1 '+x2+','+y2+' L'+x3+','+y3+' A'+ri+','+ri+' 0 '+lg+',0 '+x4+','+y4+' Z" fill="'+t.col+'" opacity=".9"/>';
+    ang+=sw;
+  });
+  paths+='<circle cx="'+cx+'" cy="'+cy+'" r="'+ri+'" fill="white"/>';
+  paths+='<text x="'+cx+'" y="'+(cy+4)+'" text-anchor="middle" font-size="12" font-weight="900" fill="#0A1628" font-family="Inter,sans-serif">'+total+'</text>';
+  document.getElementById('svgDonut').innerHTML=paths;
+  document.getElementById('donutLgd').innerHTML=types.map(function(t){return '<div class="litem"><div class="ldot" style="background:'+t.col+'"></div><span>'+t.l+'</span><span style="margin-left:auto;font-weight:700;color:#0A1628">'+t.c+'</span></div>';}).join('');
+}
+function drawPM(docs){
+  var pm={};
+  docs.forEach(function(d){var k=d.payment||d.pm||d.paymentMethod||'—';pm[k]=(pm[k]||0)+1;});
+  var total=Object.values(pm).reduce(function(s,v){return s+v;},0)||1;
+  var ICONS={Wave:'🌊','Orange Money':'🟠','Moov Money':'🔵',Espèces:'💵'};
+  var entries=Object.entries(pm).sort(function(a,b){return b[1]-a[1];});
+  if(!entries.length){document.getElementById('pmStats').innerHTML='<p style="color:#7A94AF;text-align:center;padding:16px;font-size:13px">Aucune donnée</p>';return;}
+  document.getElementById('pmStats').innerHTML=entries.map(function(e){
+    return '<div class="ti"><div style="font-size:18px;width:28px;text-align:center">'+(ICONS[e[0]]||'💳')+'</div><div style="flex:1"><div style="font-size:12px;font-weight:700;color:#0A1628;margin-bottom:4px">'+e[0]+'</div><div class="tbg"><div class="tf" style="width:'+Math.round(e[1]/total*100)+'%;background:#0070C0"></div></div></div><div style="font-size:12px;font-weight:700;color:#0A1628;min-width:50px;text-align:right">'+e[1]+' ('+Math.round(e[1]/total*100)+'%)</div></div>';
+  }).join('');
+}
+function drawClients(clients){
+  var recent=clients.slice().reverse().slice(0,5);
+  if(!recent.length){document.getElementById('recentCl').innerHTML='<p style="color:#7A94AF;text-align:center;padding:16px;font-size:13px">Aucun client</p>';return;}
+  document.getElementById('recentCl').innerHTML=recent.map(function(c){
+    return '<div class="ti"><div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#3730A3,#6366F1);color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+((c.nom||'?')[0]+(c.prenom||'?')[0]).toUpperCase()+'</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:#0A1628;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c.prenom+' '+c.nom+'</div><div style="font-size:11px;color:#7A94AF">'+c.tel+'</div></div></div>';
+  }).join('');
+}
+function exportCSV(){
+  var all={};Object.keys(KEYS).forEach(function(k){all[k]=gd(KEYS[k]);});
+  var docs=all.recus.concat(all.factures,all.factMat,all.bons,all.ventes);
+  var rows=[['Date','Type','Client','Montant','Paiement']];
+  docs.forEach(function(d){rows.push([(d.date||d.timestamp||'').substring(0,10),d.type||'—',d.clientName||d.client||'—',Math.round(d.total||d.amount||0),d.payment||d.pm||'—']);});
+  var csv=rows.map(function(r){return r.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='rapport_'+new Date().toISOString().substring(0,10)+'.csv';a.click();
+}
+window.addEventListener('load',function(){render();setTimeout(render,400);});
+window.addEventListener('resize',function(){render();});
+</script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+</html>
