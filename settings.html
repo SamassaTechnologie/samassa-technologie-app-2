@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<script>(function(){var s=localStorage.getItem('_samassa_session');if(!s){window.location.replace('login.html');throw 0;}try{var d=JSON.parse(s);if(Date.now()>=d.expires){localStorage.removeItem('_samassa_session');window.location.replace('login.html');throw 0;}}catch(e){if(e!==0){window.location.replace('login.html');throw 0;}}})()</script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Paramètres — SAMASSA TECHNOLOGIE</title>
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.st-wrap{max-width:700px;margin:72px auto 60px;padding:0 18px}
+.hero{background:linear-gradient(135deg,#0A1628,#1E1B4B,#3730A3);border-radius:16px;padding:22px 26px;margin-bottom:20px}
+.hero h1{font-size:20px;font-weight:900;color:white;margin:0 0 4px;letter-spacing:-.02em}
+.hero p{color:rgba(255,255,255,.6);font-size:12px;margin:0}
+.scard{background:white;border:1px solid #E2ECF5;border-radius:14px;margin-bottom:14px;overflow:hidden;box-shadow:0 2px 8px rgba(10,22,40,.06)}
+.scard-hdr{padding:14px 18px;background:#F8FBFD;border-bottom:1px solid #EEF3F9;font-size:14px;font-weight:800;color:#0A1628;display:flex;align-items:center;gap:8px}
+.scard-body{padding:18px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:10px;font-weight:800;color:#7A94AF;margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em}
+.fg input,.fg textarea,.fg select{width:100%;padding:10px 12px;border:1.5px solid #E2ECF5;border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s}
+.fg input:focus,.fg textarea:focus{border-color:#3730A3}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-save{width:100%;padding:12px;background:linear-gradient(135deg,#3730A3,#6366F1);color:white;border:none;border-radius:11px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(55,48,163,.3);transition:all .2s;margin-top:4px}
+.btn-save:hover{transform:translateY(-1px)}
+.link-item{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #F4F8FB;text-decoration:none;color:#0A1628;transition:background .15s}
+.link-item:last-child{border:none}
+.link-item:hover{color:#3730A3}
+.link-item span{font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px}
+.link-arrow{color:#C8D8EA;font-size:16px}
+@media(max-width:600px){.g2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="index.html" class="back-link">← Retour</a>
+  <span class="topbar-title">⚙️ Paramètres</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="st-wrap">
+  <div class="hero"><h1>⚙️ Paramètres</h1><p>Configurez votre application SAMASSA PRO</p></div>
+
+  <!-- Infos entreprise -->
+  <div class="scard">
+    <div class="scard-hdr">🏢 Informations de l'entreprise</div>
+    <div class="scard-body">
+      <div class="g2">
+        <div class="fg"><label>Nom de l'entreprise</label><input id="bizName" value="SAMASSA TECHNOLOGIE"></div>
+        <div class="fg"><label>Slogan</label><input id="bizTag" value="Tout pour l'informatique"></div>
+      </div>
+      <div class="fg"><label>Adresse</label><textarea id="bizAddr" rows="2">Grand Marché de Kayes, près du 1er arrondissement de la police — Rue Soundiata Keita</textarea></div>
+      <div class="g2">
+        <div class="fg"><label>Téléphone</label><input id="bizPhone" value="00223 77291931 / 62970630"></div>
+        <div class="fg"><label>Email</label><input id="bizEmail" value="samassatechnologie10@gmail.com"></div>
+      </div>
+      <div class="fg"><label>Gérant</label><input id="bizManager" value="Boussé SAMASSA"></div>
+      <button class="btn-save" onclick="saveBiz()">💾 Enregistrer les informations</button>
+    </div>
+  </div>
+
+  <!-- IA Rédacteur -->
+  <div class="scard">
+    <div class="scard-hdr">🤖 IA Rédacteur — Clé API</div>
+    <div class="scard-body">
+      <div class="fg">
+        <label>Clé API Google Gemini (gratuit) ou Anthropic</label>
+        <div style="position:relative">
+          <input type="password" id="aiKey" placeholder="Collez votre clé ici...">
+          <button onclick="toggleAI()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#7A94AF">👁️</button>
+        </div>
+      </div>
+      <div id="aiStatus" style="font-size:12px;padding:8px 12px;border-radius:8px;margin-bottom:12px;display:none"></div>
+      <div style="display:flex;gap:10px">
+        <button onclick="testAI()" style="flex:1;padding:10px;background:#EEF2FF;color:#3730A3;border:1.5px solid #C7D2FE;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">🧪 Tester</button>
+        <button onclick="saveAI()" style="flex:2;padding:10px;background:linear-gradient(135deg,#059652,#10B981);color:white;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit">💾 Enregistrer</button>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:#7A94AF;line-height:1.7">
+        🆓 Clé gratuite : <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#059652;font-weight:700">aistudio.google.com</a> (compte Google requis)<br>
+        🤖 Anthropic Claude : <a href="https://console.anthropic.com" target="_blank" style="color:#3730A3;font-weight:700">console.anthropic.com</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Changer mot de passe -->
+  <div class="scard">
+    <div class="scard-hdr">🔐 Sécurité — Changer le mot de passe</div>
+    <div class="scard-body">
+      <div class="fg"><label>Mot de passe actuel</label><input type="password" id="pwOld" placeholder="Mot de passe actuel"></div>
+      <div class="g2">
+        <div class="fg"><label>Nouveau mot de passe</label><input type="password" id="pwNew" placeholder="Nouveau mot de passe"></div>
+        <div class="fg"><label>Confirmer</label><input type="password" id="pwConf" placeholder="Confirmer"></div>
+      </div>
+      <button class="btn-save" style="background:linear-gradient(135deg,#0A1628,#0070C0)" onclick="changePw()">🔐 Changer le mot de passe</button>
+    </div>
+  </div>
+
+  <!-- Liens utiles -->
+  <div class="scard">
+    <div class="scard-hdr">🔗 Outils & Liens</div>
+    <div class="scard-body" style="padding:8px 18px">
+      <a href="backup.html" class="link-item"><span>💾 Sauvegarde & Restauration</span><span class="link-arrow">›</span></a>
+      <a href="rapports.html" class="link-item"><span>📈 Rapports & Statistiques</span><span class="link-arrow">›</span></a>
+      <a href="clients.html" class="link-item"><span>👥 Répertoire Clients</span><span class="link-arrow">›</span></a>
+      <a href="stock.html" class="link-item"><span>📦 Gestion de Stock</span><span class="link-arrow">›</span></a>
+      <a href="docs_admin.html" class="link-item"><span>📝 Documents Administratifs (40 modèles + IA)</span><span class="link-arrow">›</span></a>
+    </div>
+  </div>
+
+  <!-- Version -->
+  <div style="text-align:center;padding:16px;color:#C8D8EA;font-size:11px;font-weight:600">
+    SAMASSA TECHNOLOGIE Suite Pro v3.2 — Kayes, Mali<br>
+    <span id="data-info" style="font-size:10px"></span>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script>
+function saveBiz() {
+  ['bizName','bizTag','bizAddr','bizPhone','bizEmail','bizManager'].forEach(id => {
+    localStorage.setItem('_samassa_biz_'+id, document.getElementById(id).value);
+  });
+  toast('✅ Informations enregistrées', 'success');
+}
+function loadBiz() {
+  ['bizName','bizTag','bizAddr','bizPhone','bizEmail','bizManager'].forEach(id => {
+    const v = localStorage.getItem('_samassa_biz_'+id);
+    if (v) document.getElementById(id).value = v;
+  });
+}
+function toggleAI() {
+  const inp = document.getElementById('aiKey');
+  inp.type = inp.type==='password' ? 'text' : 'password';
+}
+function saveAI() {
+  const key = document.getElementById('aiKey').value.trim();
+  if (!key) { toast('Entrez une clé API', 'error'); return; }
+  localStorage.setItem('_samassa_ai_key', key);
+  toast('✅ Clé API enregistrée', 'success');
+  showAIStatus();
+}
+async function testAI() {
+  const key = document.getElementById('aiKey').value.trim();
+  if (!key) { toast('Entrez une clé API', 'error'); return; }
+  const st = document.getElementById('aiStatus');
+  st.style.display='block'; st.style.background='#EEF2FF'; st.style.color='#3730A3';
+  st.textContent='⏳ Test en cours...';
+  try {
+    const isGem = !key.startsWith('sk-');
+    if (isGem) {
+      for (const mdl of ['gemini-2.0-flash','gemini-flash-latest','gemini-1.5-flash']) {
+        const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${mdl}:generateContent?key=${key}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'OK?'}]}],generationConfig:{maxOutputTokens:5}})});
+        const d = await r.json();
+        if (d?.candidates?.[0]?.content?.parts?.[0]?.text) {
+          st.style.background='#F0FDF4'; st.style.color='#059652';
+          st.textContent='✅ Clé Gemini valide ! Modèle : '+mdl;
+          return;
+        }
+      }
+      st.style.background='#FEF2F2'; st.style.color='#DC2626';
+      st.textContent='❌ Clé invalide ou expirée';
+    } else {
+      const r = await fetch('/api/generate-doc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:'OK',apiKey:key})});
+      const d = await r.json();
+      if (d.success) { st.style.background='#F0FDF4'; st.style.color='#059652'; st.textContent='✅ Clé Anthropic valide !'; }
+      else { st.style.background='#FEF2F2'; st.style.color='#DC2626'; st.textContent='❌ '+d.error; }
+    }
+  } catch(e) { st.style.background='#FEF2F2'; st.style.color='#DC2626'; st.textContent='❌ Erreur: '+e.message; }
+}
+function showAIStatus() {
+  const key = localStorage.getItem('_samassa_ai_key')||'';
+  const st = document.getElementById('aiStatus');
+  if (key) {
+    st.style.display='block'; st.style.background='#F0FDF4'; st.style.color='#059652';
+    st.textContent='✅ Clé configurée : '+(key.startsWith('sk-')?'Anthropic Claude':'Google Gemini')+' · '+(key.substring(0,12)+'...');
+    document.getElementById('aiKey').value = key;
+  }
+}
+function changePw() {
+  const old=document.getElementById('pwOld').value;
+  const nw =document.getElementById('pwNew').value;
+  const cf =document.getElementById('pwConf').value;
+  if (!old||!nw||!cf) { toast('Remplissez tous les champs', 'error'); return; }
+  if (nw !== cf) { toast('Les mots de passe ne correspondent pas', 'error'); return; }
+  if (nw.length < 6) { toast('Minimum 6 caractères', 'error'); return; }
+  if (typeof Auth!=='undefined' && Auth.changePassword) {
+    const ok = Auth.changePassword(old, nw);
+    if (ok) { toast('✅ Mot de passe changé avec succès', 'success'); document.getElementById('pwOld').value=document.getElementById('pwNew').value=document.getElementById('pwConf').value=''; }
+    else toast('❌ Mot de passe actuel incorrect', 'error');
+  } else toast('❌ Fonction non disponible dans cette version', 'error');
+}
+function toast(msg, type) {
+  const t=document.createElement('div');t.textContent=msg;
+  t.style.cssText='position:fixed;bottom:20px;right:20px;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:700;color:white;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.2);animation:fadeIn .3s ease;background:'+({success:'#059652',error:'#DC2626',info:'#3730A3'}[type]||'#0070C0');
+  document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
+}
+window.addEventListener('load',()=>{
+  loadBiz(); showAIStatus();
+  const total = ['samassa_recus','samassa_factures','samassa_clients','samassa_stock_v2'].reduce((s,k)=>s+JSON.parse(localStorage.getItem(k)||'[]').length,0);
+  document.getElementById('data-info').textContent = total+' enregistrements en mémoire locale';
+});
+</script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body>
+</html>
