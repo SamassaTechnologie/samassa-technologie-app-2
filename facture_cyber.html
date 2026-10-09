@@ -120,7 +120,7 @@
       <div class="section-label cyber" style="margin-top:14px">Totaux</div>
       <div class="form-grid">
         <div class="form-group"><label>Sous-total HT</label><input type="text" id="totalHT" readonly value="0 FCFA"></div>
-        <div class="form-group"><label>TVA 18%</label><input type="text" id="totalTVA" readonly value="0 FCFA"></div>
+        <div class="form-group"><label>TVA</label><select id="taxRate" onchange="recalc()" style="background:#F8FBFD"><option value="0" selected>Sans TVA (0%)</option><option value="18">TVA 18%</option></select><input type="text" id="totalTVA" readonly value="0 FCFA" style="margin-top:6px"></div>
         <div class="form-group span2">
           <label>Total TTC (FCFA)</label>
           <input type="text" id="totalTTC" readonly value="0 FCFA" style="font-weight:700;font-size:15px;background:#EEF2FF;border-color:#6366F1">
@@ -130,7 +130,7 @@
       <div class="section-label cyber" style="margin-top:14px">Règlement</div>
       <div class="form-grid payment-fields">
         <div class="form-group"><label>Statut du paiement</label><select id="paymentStatus"><option value="auto">Automatique selon le montant</option><option value="payé">Payé</option><option value="partiel">Partiellement payé</option><option value="impayé">Impayé</option></select></div>
-        <div class="form-group"><label>Montant payé (FCFA)</label><input type="number" id="amountPaid" min="0" value="0" placeholder="0"></div>
+        <div class="form-group"><label>Montant payé (FCFA)</label><input type="number" id="amountPaid" min="0" value="0" placeholder="0" oninput="recalc()" onchange="recalc()"></div>
         <div class="form-group"><label>Reste à payer (FCFA)</label><input type="text" id="amountDue" readonly value="0 FCFA" style="font-weight:700;background:#FFF8EE;border-color:#FDE68A"></div>
         <div class="form-group"><label>Date d’échéance</label><input type="date" id="paymentDueDate"></div>
       </div>

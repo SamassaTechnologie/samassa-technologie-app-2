@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ST.el('invoiceNumber').value = ST.nextNumber('samassa_factures_cyber', 'FCY-');
   recalc();
   document.addEventListener('itemsChanged', recalc);
-  ['amountPaid','paymentDueDate'].forEach(id => ST.el(id)?.addEventListener('input', recalc));
+  ['amountPaid','paymentDueDate'].forEach(id => { const el = ST.el(id); if (el) { el.addEventListener('input', recalc); el.addEventListener('change', recalc); } });
   ST.el('paymentStatus')?.addEventListener('change', () => {
     const status = ST.v('paymentStatus');
     if (status === 'payé') ST.el('amountPaid').value = Math.round((ST.v('totalTTC') || '0').replace(/\D/g, '') || 0);
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* ── Recalcul totaux (identique à facture.js) ── */
+/* ── Recalcul totaux — TVA désactivée par défaut ── */
 function paymentData(ttc) {
   const selected = ST.v('paymentStatus');
   const paidInput = Math.max(0, Number(ST.v('amountPaid') || 0));
@@ -33,7 +33,8 @@ function paymentData(ttc) {
 
 function recalc() {
   const ht = ST.calcItems();
-  const tva = ht * 0.18;
+  const rate = Number(ST.v('taxRate') || 0);
+  const tva = ht * rate / 100;
   const ttc = ht + tva;
   const pay = paymentData(ttc);
   const set = (id, v) => { const e = ST.el(id); if (e) e.value = v; };
@@ -105,7 +106,8 @@ function generateInvoice() {
       </tr>`;
   });
 
-  const tva = ht * 0.18, ttc = ht + tva;
+  const rate = Number(ST.v('taxRate') || 0);
+  const tva = ht * rate / 100, ttc = ht + tva;
   ST.el('d-ht').textContent  = ST.fmt(ht);
   ST.el('d-tva').textContent = ST.fmt(tva);
   ST.el('d-ttc').textContent = ST.fmt(ttc);
