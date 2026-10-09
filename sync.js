@@ -1,5 +1,5 @@
 /* ============================================================
-   SAMASSA TECHNOLOGIE — sync.js v3.1
+   SAMASSA TECHNOLOGIE — sync.js v4.0
    Synchronisation Firebase — STRATÉGIE SANS PERTE
 
    RÈGLE ABSOLUE :
@@ -69,7 +69,7 @@ const SyncEngine = {
       this._listen();
 
     } catch (e) {
-      console.error('[Sync v3.1] init:', e.message);
+      console.error('[Sync v4.0] init:', e.message);
       this._status('error');
       setTimeout(() => this.init(), 30000);
     }
@@ -95,26 +95,39 @@ const SyncEngine = {
   /* ══════════════════════════════════════════
      2. CHARGEMENT SDK FIREBASE
   ══════════════════════════════════════════ */
-  _loadSDK() {
-    return new Promise((resolve, reject) => {
-      if (window.firebase?.database) { this._initDB(); resolve(); return; }
-      const load = (src, cb) => {
-        const s = document.createElement('script');
-        s.src = src; s.onload = cb;
-        s.onerror = () => reject(new Error('SDK Firebase non chargé : ' + src));
-        document.head.appendChild(s);
-      };
-      load('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js', () => {
-        load('https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js', () => {
-          this._initDB(); resolve();
-        });
-      });
-    });
+  /*
+     Transport REST Firebase : plus fiable sur mobile/PWA que le SDK
+     Realtime Database (qui peut rester bloqué sur une connexion WebSocket).
+  */
+  async _loadSDK() {
+    this._initDB();
   },
 
   _initDB() {
-    if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
-    this.db = firebase.database();
+    const url = FIREBASE_CONFIG && FIREBASE_CONFIG.databaseURL;
+    if (!url) throw new Error('databaseURL Firebase absente.');
+    this.db = { rest: true, baseUrl: url.replace(/\/$/, '') };
+  },
+
+  _restUrl(key) {
+    return `${this.db.baseUrl}/${encodeURIComponent(SAMASSA_STORE_ID)}/${encodeURIComponent(key)}.json`;
+  },
+
+  async _restGet(key) {
+    const response = await fetch(this._restUrl(key), { signal: AbortSignal.timeout(12000) });
+    if (!response.ok) throw new Error(`Firebase GET ${response.status}`);
+    return response.json();
+  },
+
+  async _restPut(key, value) {
+    const response = await fetch(this._restUrl(key), {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(value),
+      signal: AbortSignal.timeout(12000)
+    });
+    if (!response.ok) throw new Error(`Firebase PUT ${response.status}`);
+    return response.json();
   },
 
   /* ══════════════════════════════════════════
@@ -128,7 +141,7 @@ const SyncEngine = {
     }
     const data = localStorage.getItem(key) || '[]';
     try {
-      await this.db.ref(`${SAMASSA_STORE_ID}/${key}`).set({
+      await this._restPut(key, {
         data,
         device:    this._deviceId(),
         updatedAt: Date.now(),
@@ -171,10 +184,10 @@ const SyncEngine = {
   async _mergeKey(key) {
     if (!this.db) return false;
     try {
-      const snap = await this.db.ref(`${SAMASSA_STORE_ID}/${key}`).get();
-      if (!snap.exists()) return false;
+      const remote = await this._restGet(key);
+      if (!remote || typeof remote !== 'object' || !('data' in remote)) return false;
 
-      const remoteList = this._parse(snap.val().data);
+      const remoteList = this._parse(remote.data);
       if (!remoteList.length) return false;
 
       const localRaw  = localStorage.getItem(key) || '[]';
@@ -226,43 +239,11 @@ const SyncEngine = {
      Utilise aussi la stratégie MERGE
   ══════════════════════════════════════════ */
   _listen() {
-    if (!this.db) return;
-    SYNC_KEYS.forEach(key => {
-      this.db.ref(`${SAMASSA_STORE_ID}/${key}`).on('value', snap => {
-        if (!snap.exists()) return;
-        const remote = snap.val();
-
-        /* Ignorer nos propres écritures */
-        if (remote.device === this._deviceId()) return;
-
-        /* Merge avec les données distantes */
-        const remoteList = this._parse(remote.data);
-        const localList  = this._parse(localStorage.getItem(key) || '[]');
-        const localIds   = new Set(localList.map(i => this._id(i)));
-        const newItems   = remoteList.filter(i => !localIds.has(this._id(i)));
-
-        if (!newItems.length) return;
-
-        /* Ajouter uniquement les nouveaux */
-        const merged = [...localList, ...newItems];
-        this._block = true;
-        localStorage.setItem(key, JSON.stringify(merged));
-        this._block = false;
-
-        console.log(`[Sync] Réception ${key}: +${newItems.length} items`);
-        this._status('synced');
-        document.dispatchEvent(
-          new CustomEvent('samassa:sync', { detail: { key } })
-        );
-
-        /* Notification discrète */
-        const msg = `🔄 ${newItems.length} nouvelle(s) donnée(s) reçue(s)`;
-        const showToast = typeof toast === 'function' ? toast
-          : typeof ST !== 'undefined' ? ST.toast.bind(ST)
-          : null;
-        if (showToast) showToast(msg, 'info');
-      });
-    });
+    if (!this.db || this._pollTimer) return;
+    /* REST n’a pas d’écoute WebSocket : polling léger multi-appareils. */
+    this._pollTimer = setInterval(() => {
+      if (!document.hidden && this.online) this._mergeAll();
+    }, 15000);
   },
 
   /* ══════════════════════════════════════════
