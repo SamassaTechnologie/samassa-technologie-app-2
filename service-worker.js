@@ -1,9 +1,9 @@
 /* ============================================================
-   SAMASSA TECHNOLOGIE — Service Worker PWA v3.2
+   SAMASSA TECHNOLOGIE — Service Worker PWA v3.7
    Tous les modules en cache (hors-ligne complet)
 ============================================================ */
-const CACHE_NAME  = 'samassa-pro-v3.6';
-const CACHE_PAGES = 'samassa-pages-v3.6';
+const CACHE_NAME  = 'samassa-pro-v3.7';
+const CACHE_PAGES = 'samassa-pages-v3.7';
 
 const STATIC_ASSETS = [
   'index.html','login.html',
