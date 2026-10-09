@@ -1073,222 +1073,94 @@ function copyAIResult() {
 }
 
 /* ── EXPORT WORD ── */
+function escapeWordHTML(value) {
+  return String(value ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* Convertir le Markdown simple de Gemini en paragraphes Word propres. */
+function formatAIForWord(text) {
+  const lines = String(text || '').replace(/\r\n?/g,'\n').split('\n');
+  const blocks = [];
+  let current = [];
+  const flush = () => { if (current.length) { blocks.push(current); current = []; } };
+
+  lines.forEach(raw => {
+    const line = raw.replace(/[ \t]+$/,'');
+    if (/^\s*-{4,}\s*$/.test(line)) return;
+    if (!line.trim()) { flush(); return; }
+    current.push(line.replace(/^\s{6,}/,'').trim());
+  });
+  flush();
+
+  return blocks.map(block => {
+    const first = block[0] || '';
+    const heading = /^(OBJET|MOTIF|ÉTAT CIVIL|INFORMATIONS|DÉTAILS|ARTICLE\s+\d+|DOCUMENT|CIRCONSTANCES|DATES|ENTRE|BAILLEUR|LOCATAIRE|RÉPUBLIQUE DU MALI)$/i.test(first.replace(/:$/,''));
+    const linesHTML = block.map(line => {
+      let out = escapeWordHTML(line);
+      out = out.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+      out = out.replace(/^#{1,3}\s+(.+)$/, '<strong>$1</strong>');
+      return out;
+    }).join('<br>');
+    return `<p class="${heading ? 'doc-heading' : ''}">${linesHTML}</p>`;
+  }).join('\n');
+}
+
 function exportToWord() {
   if (!aiResult) return;
 
-  const docTitle = aiTitle || 'Document_Administratif';
-  const safeTitle = docTitle.replace(/[^a-zA-ZÀ-ÿ0-9\s_-]/g,'').trim();
+  const docTitle = aiTitle || 'Document Administratif';
+  const safeTitle = docTitle.replace(/[^a-zA-ZÀ-ÿ0-9\s_-]/g,'').trim() || 'Document_Administratif';
+  const titleHTML = escapeWordHTML(docTitle);
+  const bodyHTML = formatAIForWord(aiResult);
+  const date = escapeWordHTML(new Date().toLocaleDateString('fr-FR'));
 
-  // Construire le document Word HTML
+  /* Document Word HTML volontairement autonome : aucun panneau de l’application
+     ni modal de configuration n’est inclus dans le fichier téléchargé. */
   const wordHTML = `<!DOCTYPE html>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
       xmlns:w="urn:schemas-microsoft-com:office:word"
-      xmlns="http://www.w3.org/TR/REC-html40">
+      xmlns="http://www.w3.org/TR/REC-html40" lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <title>${safeTitle}</title>
-  <!--[if gte mso 9]><xml>
-  <w:WordDocument>
-    <w:View>Print</w:View>
-    <w:Zoom>100</w:Zoom>
-    <w:DoNotOptimizeForBrowser/>
-  </w:WordDocument>
-  </xml><![endif]-->
-  <style>
-    @page Section1 {
-      size: 21cm 29.7cm;
-      margin: 2.5cm 2cm 2cm 2.5cm;
-      mso-header-margin: 1.27cm;
-      mso-footer-margin: 1.27cm;
-    }
-    div.Section1 { page: Section1; }
-    body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 12pt;
-      line-height: 1.6;
-      color: #000000;
-      margin: 0;
-      padding: 0;
-    }
-    .entete-mali {
-      text-align: center;
-      margin-bottom: 16pt;
-      padding-bottom: 10pt;
-      border-bottom: 2pt solid #000;
-    }
-    .republique {
-      font-size: 11pt;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 1pt;
-    }
-    .devise {
-      font-size: 10pt;
-      font-style: italic;
-      margin-top: 4pt;
-    }
-    .drapeau {
-      display: inline-block;
-      margin: 6pt 0;
-      font-size: 10pt;
-    }
-    .co-header {
-      margin-bottom: 14pt;
-      border-bottom: 1pt solid #ddd;
-      padding-bottom: 10pt;
-    }
-    .co-name {
-      font-size: 14pt;
-      font-weight: bold;
-      color: #0A1628;
-    }
-    .co-slogan {
-      font-size: 10pt;
-      font-style: italic;
-      color: #0070C0;
-    }
-    .co-info {
-      font-size: 10pt;
-      color: #444;
-      margin-top: 4pt;
-      line-height: 1.6;
-    }
-    .doc-body {
-      font-family: "Times New Roman", Times, serif;
-      font-size: 12pt;
-      line-height: 1.8;
-      white-space: pre-wrap;
-      margin: 14pt 0;
-    }
-    .doc-footer {
-      margin-top: 30pt;
-      padding-top: 10pt;
-      border-top: 1pt solid #ddd;
-      font-size: 9pt;
-      color: #666;
-      text-align: center;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>${titleHTML}</title>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
+<style>
+  @page Section1 { size:21cm 29.7cm; margin:2.2cm 2.1cm 2cm 2.1cm; }
+  div.Section1 { page:Section1; }
+  body { font-family:"Times New Roman",serif; font-size:12pt; line-height:1.45; color:#111; margin:0; }
+  .masthead { text-align:center; border-bottom:1.5pt solid #111; padding-bottom:10pt; margin-bottom:20pt; }
+  .country { font-size:12pt; font-weight:bold; text-transform:uppercase; letter-spacing:1.2pt; }
+  .motto { font-size:10pt; font-style:italic; margin-top:5pt; }
+  .company { border-bottom:0.75pt solid #B8C2CC; padding:0 0 12pt; margin-bottom:22pt; }
+  .company-name { font-size:15pt; font-weight:bold; color:#0D1B2A; }
+  .company-sub { font-size:10pt; font-style:italic; color:#0070C0; margin-top:3pt; }
+  .company-info { font-size:9.5pt; color:#4A4A4A; margin-top:5pt; line-height:1.35; }
+  .doc-title { text-align:center; font-size:13pt; font-weight:bold; text-transform:uppercase; margin:0 0 18pt; }
+  .doc-heading { font-weight:bold; margin:13pt 0 5pt; page-break-after:avoid; }
+  .document-content p { margin:0 0 10pt; orphans:3; widows:3; }
+  .document-content strong { font-weight:bold; }
+  .footer { border-top:0.75pt solid #B8C2CC; margin-top:26pt; padding-top:7pt; text-align:center; font-size:8.5pt; color:#666; }
+</style>
 </head>
-<body>
-<div class="Section1">
+<body><div class="Section1">
+  <div class="masthead"><div class="country">République du Mali</div><div class="motto">Un Peuple — Un But — Une Foi</div></div>
+  <div class="company"><div class="company-name">SAMASSA TECHNOLOGIE</div><div class="company-sub">Tout pour l'informatique — Kayes, Mali</div><div class="company-info">Grand Marché de Kayes — Rue Soundiata Keita, près du 1er arrondissement<br>Tél. : 77 29 19 31 / 62 97 06 30&nbsp;&nbsp;|&nbsp;&nbsp;samassatechnologie10@gmail.com</div></div>
+  <div class="doc-title">${titleHTML}</div>
+  <div class="document-content">${bodyHTML}</div>
+  <div class="footer">Document généré par SAMASSA TECHNOLOGIE Suite Pro — ${date}</div>
+</div></body></html>`;
 
-  <div class="entete-mali">
-    <div class="republique">République du Mali</div>
-    <div class="drapeau">🟩🟨🟥 &nbsp; Un Peuple — Un But — Une Foi</div>
-  </div>
-
-  <div class="co-header">
-    <div class="co-name">SAMASSA TECHNOLOGIE</div>
-    <div class="co-slogan">Tout pour l'informatique — Kayes, Mali</div>
-    <div class="co-info">
-      Grand Marché de Kayes — Rue Soundiata Keita, près du 1er arrondissement<br>
-      Tél : 77 29 19 31 / 62 97 06 30 &nbsp;|&nbsp; samassatechnologie10@gmail.com
-    </div>
-  </div>
-
-  <div class="doc-body">${aiResult.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-
-  <div class="doc-footer">
-    Document généré par SAMASSA TECHNOLOGIE Suite Pro — ${new Date().toLocaleDateString('fr-FR')}
-  </div>
-
-</div>
-
-<!-- ══ MODAL CONFIG IA — hors form-panel pour position:fixed correct ══ -->
-<div id="ai-config-modal" style="display:none;position:fixed;inset:0;background:rgba(10,22,40,.8);z-index:99999;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)">
-  <div style="background:white;border-radius:20px;width:100%;max-width:420px;box-shadow:0 24px 64px rgba(0,0,0,.35);overflow:hidden;max-height:90vh;overflow-y:auto">
-
-    <!-- En-tête -->
-    <div style="background:linear-gradient(135deg,#1E1B4B,#3730A3);padding:18px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:1">
-      <div style="font-size:15px;font-weight:900;color:white">⚙️ Configurer l'IA Rédacteur</div>
-      <button onclick="closeAIConfig()" style="background:rgba(255,255,255,.15);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center">✕</button>
-    </div>
-
-    <div style="padding:20px">
-
-      <!-- Option Gemini GRATUIT -->
-      <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:2px solid #86EFAC;border-radius:14px;padding:16px;margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-          <span style="font-size:24px">🆓</span>
-          <div style="flex:1">
-            <div style="font-size:14px;font-weight:900;color:#059652">Google Gemini — 100% Gratuit</div>
-            <div style="font-size:11px;color:#166534;font-weight:500;margin-top:1px">Compte Google suffit · Sans carte bancaire</div>
-          </div>
-          <span style="background:#059652;color:white;font-size:10px;font-weight:800;padding:3px 10px;border-radius:12px;white-space:nowrap">GRATUIT</span>
-        </div>
-        <div style="font-size:12px;color:#166534;line-height:2;margin-bottom:12px;background:rgba(255,255,255,.6);padding:10px 12px;border-radius:9px">
-          <strong>Étapes (2 minutes) :</strong><br>
-          1️⃣ Ouvrez <strong>aistudio.google.com</strong><br>
-          2️⃣ Connectez-vous avec votre <strong>compte Google</strong><br>
-          3️⃣ Cliquez <strong>"Get API Key"</strong> → <strong>"Create API key"</strong><br>
-          4️⃣ Copiez la clé et collez-la ci-dessous
-        </div>
-        <a href="https://aistudio.google.com/app/apikey" target="_blank"
-          style="display:flex;align-items:center;justify-content:center;gap:8px;background:#059652;color:white;text-decoration:none;padding:11px;border-radius:10px;font-size:13px;font-weight:800">
-          🔗 Aller sur aistudio.google.com →
-        </a>
-      </div>
-
-      <!-- Option Anthropic -->
-      <details style="margin-bottom:16px">
-        <summary style="font-size:12px;font-weight:700;color:#3730A3;cursor:pointer;padding:9px 13px;background:#EEF2FF;border-radius:9px;user-select:none">
-          🤖 Utiliser Anthropic Claude (payant, $5 offerts à l'inscription)
-        </summary>
-        <div style="padding:10px 13px;font-size:11px;color:#4338CA;line-height:1.9;border:1.5px solid #C7D2FE;border-top:none;border-radius:0 0 9px 9px">
-          Créez un compte sur <strong>console.anthropic.com</strong><br>
-          API Keys → Create Key → clé commence par <code style="background:#EEF2FF;padding:1px 5px;border-radius:4px">sk-ant-</code>
-        </div>
-      </details>
-
-      <!-- Champ clé API -->
-      <div style="margin-bottom:14px">
-        <label style="display:block;font-size:11px;font-weight:800;color:#3D5470;margin-bottom:7px;text-transform:uppercase;letter-spacing:.07em">Votre clé API</label>
-        <div style="position:relative">
-          <input type="password" id="ai-api-key-input"
-            placeholder="Collez ici votre clé Google Gemini ou Anthropic..."
-            style="width:100%;padding:12px 46px 12px 14px;border:2px solid #C8D8EA;border-radius:11px;font-size:13px;font-family:monospace;outline:none;transition:border-color .2s;box-sizing:border-box"
-            onfocus="this.style.borderColor='#3730A3'" onblur="this.style.borderColor='#C8D8EA'">
-          <button onclick="toggleApiKeyVis()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;color:#7A94AF;padding:0">👁️</button>
-        </div>
-        <div style="font-size:10px;color:#7A94AF;margin-top:5px">
-          🔐 Clé stockée sur cet appareil uniquement — privée et sécurisée
-        </div>
-      </div>
-
-      <!-- Boutons -->
-      <div style="display:flex;gap:10px;margin-bottom:10px">
-        <button onclick="testAIKey()" style="flex:1;padding:12px;background:#EEF2FF;color:#3730A3;border:2px solid #C7D2FE;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.background='#E0E7FF'" onmouseout="this.style.background='#EEF2FF'">
-          🧪 Tester la clé
-        </button>
-        <button onclick="saveAIConfig()" style="flex:2;padding:12px;background:linear-gradient(135deg,#059652,#10B981);color:white;border:none;border-radius:11px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(5,150,82,.3)">
-          💾 Enregistrer et utiliser
-        </button>
-      </div>
-
-      <!-- Résultat test -->
-      <div id="ai-test-result" style="display:none;padding:11px 13px;border-radius:10px;font-size:12px;font-weight:600;border:1.5px solid"></div>
-
-    </div>
-  </div>
-</div>
-
-</body>
-</html>`;
-
-  const blob = new Blob(['﻿' + wordHTML], {
-    type: 'application/vnd.ms-word;charset=utf-8'
-  });
-
+  const blob = new Blob(['\ufeff' + wordHTML], { type:'application/msword;charset=utf-8' });
   const url = URL.createObjectURL(blob);
-  const a   = document.createElement('a');
-  a.href     = url;
+  const a = document.createElement('a');
+  a.href = url;
   a.download = safeTitle.replace(/\s+/g,'_') + '.doc';
   document.body.appendChild(a);
   a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
   showToast('📄 Document Word téléchargé !', 'success');
 }
 
