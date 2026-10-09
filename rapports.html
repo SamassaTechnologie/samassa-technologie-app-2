@@ -45,7 +45,7 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
 </div>
 <div class="rp">
   <div class="hero">
-    <div><h1>📈 Rapports &amp; Statistiques</h1><p>Vue analytique de l'activité SAMASSA TECHNOLOGIE</p></div>
+    <div><h1>📈 Rapports &amp; Statistiques</h1><p>Vue analytique de l'activité SAMASSA TECHNOLOGIE · période sélectionnée</p></div>
     <div style="display:flex;gap:8px">
       <button onclick="exportCSV()" style="padding:9px 14px;background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">📊 Export CSV</button>
       <button onclick="window.print()" style="padding:9px 14px;background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">🖨️ Imprimer</button>
@@ -53,11 +53,11 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
   </div>
   <div class="pb">
     <label>Période :</label>
-    <button onclick="setPeriod(7,this)">7 jours</button>
-    <button onclick="setPeriod(30,this)" class="a">30 jours</button>
-    <button onclick="setPeriod(90,this)">3 mois</button>
-    <button onclick="setPeriod(365,this)">1 an</button>
-    <button onclick="setPeriod(9999,this)">Tout</button>
+    <button onclick="setPeriod('day',this)">Aujourd'hui</button>
+    <button onclick="setPeriod('week',this)">Cette semaine</button>
+    <button onclick="setPeriod('month',this)" class="a">Ce mois</button>
+    <button onclick="setPeriod('year',this)">Cette année</button>
+    <button onclick="setPeriod('all',this)">Tout</button>
   </div>
   <div class="g4">
     <div class="kc bl"><div class="kn" id="kCA">0</div><div class="kl">Chiffre d'affaires</div><div class="ks">FCFA encaissés</div></div>
@@ -97,18 +97,33 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
 <script src="firebase-config.js?v=sync4"></script>
 <script src="sync.js?v=5"></script>
 <script>
-var DAYS=30;
+var PERIOD='month';
 var KEYS={recus:'samassa_recus',factures:'samassa_factures',factMat:'samassa_factures_mat',factCyber:'samassa_factures_cyber',recusCyber:'samassa_recus_cyber',bons:'samassa_bons_reparation',ventes:'samassa_recus_vente',mouvements:'samassa_mouvements',clients:'samassa_clients'};
 function gd(k){return JSON.parse(localStorage.getItem(k)||'[]');}
+function parseDate(v){
+  if(!v)return null;
+  if(v instanceof Date)return isNaN(v)?null:v;
+  var s=String(v);
+  var iso=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(iso)return new Date(Number(iso[1]),Number(iso[2])-1,Number(iso[3]));
+  var fr=s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);
+  if(fr)return new Date(Number(fr[3]),Number(fr[2])-1,Number(fr[1]));
+  var d=new Date(s); return isNaN(d)?null:d;
+}
+function startOfWeek(d){var x=new Date(d);x.setHours(0,0,0,0);var day=x.getDay()||7;x.setDate(x.getDate()-day+1);return x;}
 function fa(arr){
-  if(DAYS>=9999)return arr;
-  var cut=new Date();cut.setDate(cut.getDate()-DAYS);
-  return arr.filter(function(d){return new Date(d.date||d.timestamp||d.created||0)>=cut;});
+  if(PERIOD==='all')return arr;
+  var now=new Date();now.setHours(23,59,59,999);var cut=new Date(now);
+  if(PERIOD==='day'){cut.setHours(0,0,0,0);}
+  else if(PERIOD==='week'){cut=startOfWeek(now);}
+  else if(PERIOD==='year'){cut=new Date(now.getFullYear(),0,1);}
+  else {cut=new Date(now.getFullYear(),now.getMonth(),1);}
+  return arr.filter(function(d){var x=parseDate(d.date||d.timestamp||d.created);return x&&x>=cut&&x<=now;});
 }
 function ga(d){return Number(d.total||d.amount||d.montant||0);}
 function fmt(n){return Math.round(n).toLocaleString('fr-FR');}
-function setPeriod(d,btn){
-  DAYS=d;
+function setPeriod(period,btn){
+  PERIOD=period;
   document.querySelectorAll('.pb button').forEach(function(b){b.classList.remove('a');});
   btn.classList.add('a');
   render();
@@ -138,7 +153,7 @@ function drawBars(mvts){
     months[k]={label:d.toLocaleDateString('fr-FR',{month:'short'}),total:0};
   }
   mvts.filter(function(m){return m.type==='entree';}).forEach(function(m){
-    var k=(m.date||m.timestamp||'').substring(0,7);
+    var md=parseDate(m.date||m.timestamp);var k=md?(md.getFullYear()+'-'+String(md.getMonth()+1).padStart(2,'0')):'';
     if(months[k])months[k].total+=(m.amount||m.montant||0);
   });
   var vals=Object.values(months);

@@ -36,6 +36,7 @@
 }
 html{-webkit-text-size-adjust:100%}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;overscroll-behavior:none}
+.app-splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(145deg,#071522,#0D1B2A 55%,#0070C0);display:flex;align-items:center;justify-content:center;opacity:1;visibility:visible;transition:opacity .45s ease,visibility .45s ease}.app-splash.hide{opacity:0;visibility:hidden;pointer-events:none}.app-splash-inner{text-align:center;color:white;animation:splashIn .7s ease both}.app-splash-logo{width:126px;height:126px;object-fit:contain;background:white;border-radius:28px;padding:10px;box-shadow:0 18px 50px rgba(0,0,0,.28);display:block;margin:0 auto 22px}.app-splash-name{font-size:24px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.app-splash-tag{font-size:14px;color:#B9D9EC;margin-top:8px}.app-splash-line{width:48px;height:3px;background:#19A7E0;border-radius:3px;margin:18px auto 0}@keyframes splashIn{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:none}}
 
 /* ═══════════════════════════════════════════
    SIDEBAR (desktop)
@@ -419,6 +420,9 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
 </style>
 </head>
 <body>
+<div class="app-splash" id="app-splash" aria-label="SAMASSA TECHNOLOGIE">
+  <div class="app-splash-inner"><img src="logo.png" alt="Logo SAMASSA TECHNOLOGIE" class="app-splash-logo"><div class="app-splash-name">SAMASSA TECHNOLOGIE</div><div class="app-splash-tag">Tout pour l’informatique</div><div class="app-splash-line"></div></div>
+</div>
 
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
 <div class="sidebar">
@@ -448,7 +452,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
 
   <!-- Nav -->
   <nav class="sb-nav">
-    <div class="sb-section-label">Principal</div>
+    <div class="sb-section-label">Pilotage</div>
     <div class="sb-item active" onclick="showTab('dashboard')" id="sb-dashboard">
       <span class="sb-item-icon">🏠</span>
       <span class="sb-item-label">Tableau de bord</span>
@@ -468,7 +472,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     </div>
 
     <div class="sb-divider"></div>
-    <div class="sb-section-label">Documents</div>
+    <div class="sb-section-label">Production &amp; ventes</div>
     <a href="recu.html" class="sb-item">
       <span class="sb-item-icon">🧾</span>
       <span class="sb-item-label">Reçu de paiement</span>
@@ -503,7 +507,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     </a>
 
     <div class="sb-divider"></div>
-    <div class="sb-section-label">Cyber Café</div>
+    <div class="sb-section-label">Analyse &amp; clientèle</div>
     <a href="recu_cyber.html" class="sb-item">
       <span class="sb-item-icon">🖥️</span>
       <span class="sb-item-label">Reçu Cyber</span>
@@ -628,6 +632,12 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     <div class="command-card command-accent"><div class="command-card-title">📈 Encaissements du jour</div><div class="command-card-value" id="cmd-today-total">0 F</div><div class="command-card-sub" id="cmd-today-sub">Toutes opérations enregistrées aujourd’hui</div></div>
     <div class="command-card command-accent green"><div class="command-card-title">✅ RDV arrivés</div><div class="command-card-value" id="cmd-due-rdv">0</div><div class="command-card-sub">Clients à prévenir ou servir</div></div>
     <div class="command-card command-accent amber"><div class="command-card-title">⏳ Prochains RDV</div><div class="command-card-value" id="cmd-next-rdv">—</div><div class="command-card-sub" id="cmd-next-rdv-sub">Aucun rendez-vous programmé</div></div>
+  </div>
+
+  <div class="dashboard-section-label">Analyse &amp; décisions</div>
+  <div class="card" style="margin-bottom:20px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:linear-gradient(110deg,#ffffff,#F4FAFF)">
+    <div><div style="font-size:14px;font-weight:800;color:var(--text)">📈 Rapports de gestion</div><div style="font-size:12px;color:var(--text2);margin-top:3px">Consultez vos résultats par jour, semaine, mois ou année.</div></div>
+    <a href="rapports.html" style="background:var(--blue);color:white;text-decoration:none;border-radius:9px;padding:9px 14px;font-size:12px;font-weight:800;white-space:nowrap">Ouvrir les rapports →</a>
   </div>
 
 
@@ -863,6 +873,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
 <script src="sync.js?v=5"></script>
 
 <script>
+setTimeout(()=>document.getElementById('app-splash')?.classList.add('hide'),1400);
 /* ══ HELPERS ══ */
 const $  = id => document.getElementById(id);
 function fmtNum(n) { return Math.round(n).toLocaleString('fr-FR'); }

@@ -92,9 +92,11 @@ body::after{content:'';position:absolute;width:400px;height:400px;border-radius:
 .version-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:600;color:rgba(255,255,255,.6);margin-top:6px}
 .modules-row{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-top:10px}
 .mod-chip{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:600;color:rgba(255,255,255,.6)}
+.app-splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(145deg,#071522,#0D1B2A 55%,#0070C0);display:flex;align-items:center;justify-content:center;transition:opacity .45s ease,visibility .45s ease}.app-splash.hide{opacity:0;visibility:hidden;pointer-events:none}.app-splash-inner{text-align:center;color:white}.app-splash-logo{width:126px;height:126px;object-fit:contain;background:white;border-radius:28px;padding:10px;box-shadow:0 18px 50px rgba(0,0,0,.28);display:block;margin:0 auto 22px}.app-splash-name{font-size:24px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}.app-splash-tag{font-size:14px;color:#B9D9EC;margin-top:8px}.app-splash-line{width:48px;height:3px;background:#19A7E0;border-radius:3px;margin:18px auto 0}
 </style>
 </head>
 <body>
+<div class="app-splash" id="app-splash"><div class="app-splash-inner"><img src="logo.png" alt="Logo SAMASSA TECHNOLOGIE" class="app-splash-logo"><div class="app-splash-name">SAMASSA TECHNOLOGIE</div><div class="app-splash-tag">Tout pour l’informatique</div><div class="app-splash-line"></div></div></div>
 
 <div class="login-wrap">
 
@@ -164,6 +166,7 @@ body::after{content:'';position:absolute;width:400px;height:400px;border-radius:
 
 </div>
 
+<script>setTimeout(()=>document.getElementById('app-splash')?.classList.add('hide'),1400);</script>
 <script src="firebase-config.js?v=47fb1f9"></script><script src="auth.js?v=firebase1"></script>
 <script>
 function togglePw(btn) {
