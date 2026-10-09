@@ -34,7 +34,7 @@
 
       const ai = aiSdk.getAI(app, { backend: new aiSdk.GoogleAIBackend() });
       const model = aiSdk.getGenerativeModel(ai, {
-        model: window.SAMASSA_AI_MODEL || 'gemini-3.8-flash'
+        model: window.SAMASSA_AI_MODEL || 'gemini-2.5-flash'
       });
       return { model, appCheck: Boolean(siteKey), provider: 'Firebase AI Logic' };
     })();
