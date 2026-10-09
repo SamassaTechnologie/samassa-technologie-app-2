@@ -2,8 +2,9 @@
   "rules": {
     "$store": {
       ".read": "auth != null",
-      ".write": "auth != null",
       "$key": {
+        ".read": "auth != null",
+        ".write": "auth != null && ($key != 'user_roles' || !root.child($store).child('user_roles').exists() || root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'administrateur')",
         ".validate": "newData.exists()"
       }
     }

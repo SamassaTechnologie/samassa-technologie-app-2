@@ -1,9 +1,9 @@
 /* ============================================================
-   SAMASSA TECHNOLOGIE — Service Worker PWA v4.3
+   SAMASSA TECHNOLOGIE — Service Worker PWA v4.4
    Tous les modules en cache (hors-ligne complet)
 ============================================================ */
-const CACHE_NAME  = 'samassa-pro-v4.3';
-const CACHE_PAGES = 'samassa-pages-v4.3';
+const CACHE_NAME  = 'samassa-pro-v4.4';
+const CACHE_PAGES = 'samassa-pages-v4.4';
 
 const STATIC_ASSETS = [
   'index.html','login.html',
@@ -17,7 +17,7 @@ const STATIC_ASSETS = [
   'stock.html','stock.js',
   'devis.html','devis.js',
   'intervention.html','intervention.js',
-  'clients.html','rapports.html','backup.html','settings.html','autoconfig.html','docs_admin.html',
+  'clients.html','rapports.html','backup.html','settings.html','utilisateurs.html','autoconfig.html','docs_admin.html',
   'style.css','mobile.css',
   'auth.js?v=firebase1','utils.js','sync.js',
   'firebase-config.js','ai-firebase.js','cloud-integration.js',
