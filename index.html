@@ -539,6 +539,10 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
       <span class="sb-item-icon">👥</span>
       <span class="sb-item-label">Utilisateurs &amp; rôles</span>
     </a>
+    <a href="journal.html" class="sb-item">
+      <span class="sb-item-icon">🧾</span>
+      <span class="sb-item-label">Journal d’activité</span>
+    </a>
   </nav>
 
   <!-- Footer -->
@@ -770,6 +774,17 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
           <button class="btn-mv" onclick="addMouvement()">+ Ajouter</button>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:16px;border-left:4px solid var(--purple)">
+    <div class="card-header"><span class="card-title">🔒 Clôture journalière</span><span style="font-size:11px;color:var(--text3)">Contrôle de caisse</span></div>
+    <div class="card-body">
+      <div id="closing-summary" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px"></div>
+      <div style="display:flex;gap:9px;align-items:end;flex-wrap:wrap">
+        <div class="fg" style="min-width:190px;flex:1"><label class="fg-lbl">Solde réel compté (FCFA)</label><input type="number" id="closing-real" min="0" placeholder="Ex. 125000"></div>
+        <button class="btn-mv" onclick="closeDay()" style="background:linear-gradient(135deg,#7C3AED,#9333EA)">🔒 Clôturer aujourd'hui</button>
+      </div>
+      <div id="closing-history" style="margin-top:13px"></div>
     </div>
   </div>
   <div class="card">
@@ -1165,7 +1180,29 @@ function addMouvement(){
   renderMouvements();loadStats();
   if($('tab-dashboard').classList.contains('active'))loadDashboard();
 }
+function renderClosing(){
+  const list=getData('samassa_mouvements'), todayList=list.filter(m=>(m.date||'').startsWith(today()));
+  const inTotal=todayList.filter(m=>m.type==='entree').reduce((s,m)=>s+Number(m.amount||0),0);
+  const outTotal=todayList.filter(m=>m.type==='sortie').reduce((s,m)=>s+Number(m.amount||0),0);
+  const theoretical=inTotal-outTotal, box=$('closing-summary');
+  if(box)box.innerHTML=`<div style="background:var(--green-bg);padding:10px;border-radius:9px"><div style="font-size:10px;color:var(--text3)">ENTRÉES</div><strong style="color:var(--green)">+${fmtNum(inTotal)} F</strong></div><div style="background:var(--red-bg);padding:10px;border-radius:9px"><div style="font-size:10px;color:var(--text3)">SORTIES</div><strong style="color:var(--red)">-${fmtNum(outTotal)} F</strong></div><div style="background:var(--purple-bg);padding:10px;border-radius:9px"><div style="font-size:10px;color:var(--text3)">SOLDE THÉORIQUE</div><strong style="color:var(--purple)">${fmtNum(theoretical)} F</strong></div>`;
+  const closes=getData('samassa_clotures').slice().reverse().slice(0,3), h=$('closing-history');
+  if(h)h.innerHTML=closes.length?'<div style="font-size:11px;font-weight:800;color:var(--text2);margin-bottom:5px">Dernières clôtures</div>'+closes.map(c=>`<div style="display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--border);font-size:11px"><span>📅 ${fmtDate(c.date)} · ${c.user||'Utilisateur'}</span><span style="font-weight:800;color:${c.ecart===0?'var(--green)':'var(--amber)'}">Réel ${fmtNum(c.reel)} F · Écart ${c.ecart>=0?'+':''}${fmtNum(c.ecart)} F</span></div>`).join(''):'';
+}
+function closeDay(){
+  const real=Number($('closing-real')?.value||0);if(!real){toast('Saisissez le solde réel compté.','error');return;}
+  const list=getData('samassa_mouvements').filter(m=>(m.date||'').startsWith(today()));
+  const theoretical=list.reduce((s,m)=>s+(m.type==='entree'?1:-1)*Number(m.amount||0),0);
+  const closes=getData('samassa_clotures');
+  if(closes.some(c=>c.date===today())&&!confirm('Une clôture existe déjà aujourd’hui. La remplacer ?'))return;
+  const filtered=closes.filter(c=>c.date!==today());
+  const user=(typeof Auth!=='undefined'&&Auth.currentUser&&Auth.currentUser())?.email||'Utilisateur connecté';
+  filtered.push({id:'close-'+Date.now(),date:today(),theorique:theoretical,reel:real,ecart:real-theoretical,user,timestamp:new Date().toISOString()});
+  localStorage.setItem('samassa_clotures',JSON.stringify(filtered));$('closing-real').value='';renderClosing();toast(`🔒 Caisse clôturée · écart ${fmtNum(real-theoretical)} FCFA`,'success');
+}
+
 function renderMouvements(){
+  renderClosing();
   let list=getData('samassa_mouvements');
   const ft=$('flt-type')?.value||'',fp=$('flt-pm')?.value||'',fs=($('flt-search')?.value||'').toLowerCase();
   if(ft)list=list.filter(m=>m.type===ft);if(fp)list=list.filter(m=>m.pm===fp);

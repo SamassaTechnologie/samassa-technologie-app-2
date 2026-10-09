@@ -27,7 +27,9 @@ const SYNC_KEYS = [
   'samassa_docs_admin',
   'samassa_clients',
   'samassa_stock_v2',
-  '_samassa_docs'
+  '_samassa_docs',
+  'samassa_audit_log',
+  'samassa_clotures'
 ];
 
 const SyncEngine = {
@@ -36,6 +38,8 @@ const SyncEngine = {
   online:  navigator.onLine,
   _block:  false,  /* bloque l'intercepteur pendant les écritures internes */
   _queue:  [],     /* file d'attente hors-ligne */
+  _origSet: null,
+  _origRemove: null,
 
   /* ══════════════════════════════════════════
      1. INITIALISATION
@@ -269,25 +273,36 @@ const SyncEngine = {
      → Respecte le flag _block pour éviter
        les boucles infinies
   ══════════════════════════════════════════ */
+  _audit(key, action) {
+    if (this._block || key === 'samassa_audit_log' || !this._origSet) return;
+    try {
+      const logs = this._parse(localStorage.getItem('samassa_audit_log') || '[]');
+      const user = (typeof Auth !== 'undefined' && Auth.currentUser && Auth.currentUser()) || null;
+      logs.push({ id:'audit-'+Date.now()+'-'+Math.random().toString(36).slice(2,7), key, action, page:location.pathname.split('/').pop()||'index.html', user:user?.email||'Utilisateur connecté', role:typeof Auth!=='undefined'?(Auth.role||'—'):'—', timestamp:new Date().toISOString() });
+      this._block = true;
+      this._origSet('samassa_audit_log', JSON.stringify(logs.slice(-500)));
+      this._block = false;
+      if (this.ready && this.online) this._push('samassa_audit_log'); else if (!this._queue.includes('samassa_audit_log')) this._queue.push('samassa_audit_log');
+    } catch(e) { this._block = false; console.warn('[Audit]', e.message); }
+  },
+
   _intercept() {
     const engine = this;
-    const _orig  = localStorage.setItem.bind(localStorage);
-
+    this._origSet = localStorage.setItem.bind(localStorage);
+    this._origRemove = localStorage.removeItem.bind(localStorage);
     localStorage.setItem = function(key, value) {
-      /* Écriture locale TOUJOURS en premier */
-      _orig(key, value);
-
-      /* Push Firebase si clé surveillée et pas en merge */
+      engine._origSet(key, value);
       if (!engine._block && SYNC_KEYS.includes(key)) {
-        if (engine.ready && engine.online) {
-          engine._status('syncing');
-          engine._push(key)
-            .then(() => engine._status('synced'))
-            .catch(() => engine._status('error'));
-        } else {
-          /* Mémoriser pour push ultérieur */
-          if (!engine._queue.includes(key)) engine._queue.push(key);
-        }
+        engine._audit(key, 'Enregistrement ou modification');
+        if (engine.ready && engine.online) { engine._status('syncing'); engine._push(key).then(() => engine._status('synced')).catch(() => engine._status('error')); }
+        else if (!engine._queue.includes(key)) engine._queue.push(key);
+      }
+    };
+    localStorage.removeItem = function(key) {
+      engine._origRemove(key);
+      if (!engine._block && SYNC_KEYS.includes(key)) {
+        engine._audit(key, 'Suppression');
+        if (engine.ready && engine.online) engine._push(key); else if (!engine._queue.includes(key)) engine._queue.push(key);
       }
     };
   },

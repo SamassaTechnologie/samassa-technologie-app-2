@@ -8,7 +8,7 @@ const ROLE_DEFINITIONS = {
   responsable_stock: { label:'Responsable stock', icon:'📦', pages:['index.html','rapports.html','clients.html','stock.html','facture_materiel.html','facture.html'], permissions:['reports','stock','sales'] }
 };
 const ROLE_PAGE_RULES = {
-  'utilisateurs.html':['administrateur'], 'settings.html':['administrateur'], 'setup-firebase.html':['administrateur'], 'backup.html':['administrateur'], 'docs_admin.html':['administrateur'],
+  'utilisateurs.html':['administrateur'], 'journal.html':['administrateur'], 'settings.html':['administrateur'], 'setup-firebase.html':['administrateur'], 'backup.html':['administrateur'], 'docs_admin.html':['administrateur'],
   'recu.html':['administrateur','caissier'], 'facture.html':['administrateur','caissier','responsable_stock'], 'facture_cyber.html':['administrateur','caissier'], 'recu_cyber.html':['administrateur','caissier'], 'recu_vente.html':['administrateur','caissier'], 'devis.html':['administrateur','caissier','technicien'],
   'bon_reparation.html':['administrateur','technicien'], 'intervention.html':['administrateur','technicien'], 'stock.html':['administrateur','technicien','responsable_stock'], 'facture_materiel.html':['administrateur','responsable_stock'],
   'rapports.html':['administrateur','caissier','technicien','responsable_stock'], 'clients.html':['administrateur','caissier','technicien','responsable_stock'], 'index.html':['administrateur','caissier','technicien','responsable_stock']
