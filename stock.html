@@ -142,6 +142,7 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
         <div class="fg"><label>Seuil alerte</label><input id="s-min" type="number" min="0" value="1"></div>
         <div class="fg"><label>Prix achat (FCFA)</label><input id="s-pa" type="number" min="0" value="0"></div>
         <div class="fg"><label>Prix vente (FCFA)</label><input id="s-pv" type="number" min="0" value="0"></div>
+        <div class="fg"><label>Code-barres</label><div style="display:flex;gap:5px"><input id="s-barcode" placeholder="EAN / QR"><button type="button" onclick="scanProductBarcode()" style="padding:8px;border:0;border-radius:8px;background:#EEF2FF;color:#3730A3;cursor:pointer">📷</button></div></div>
         <div style="display:flex;align-items:flex-end"><button onclick="addStock()" style="width:100%;padding:10px 14px;background:linear-gradient(135deg,#0070C0,#0095E0);color:white;border:none;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit">Ajouter</button></div>
       </div>
     </div>

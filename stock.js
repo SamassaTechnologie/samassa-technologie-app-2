@@ -12,6 +12,25 @@ function fmt(n) { return Number(n||0).toLocaleString('fr-FR') + ' FCFA'; }
 function today() { return new Date().toISOString().split('T')[0]; }
 function esc(s) { return String(s||'').replace(/[&<>'"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":"&#39;",'"':'&quot;'}[c])); }
 
+window.scanProductBarcode = async function () {
+  if (!window.BarcodeDetector || !navigator.mediaDevices?.getUserMedia) {
+    const value = prompt('Scan caméra indisponible. Saisissez le code-barres :');
+    if (value) $('s-barcode').value = value.trim();
+    return;
+  }
+  const video=document.createElement('video'); video.setAttribute('playsinline','true');
+  video.style.cssText='position:fixed;inset:12%;width:76%;height:76%;object-fit:cover;z-index:10000;background:#000;border:4px solid #fff;border-radius:14px';
+  document.body.appendChild(video); let stream;
+  const close=()=>{stream?.getTracks().forEach(t=>t.stop());video.remove();};
+  try {
+    stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}}});
+    video.srcObject=stream; await video.play();
+    const detector=new BarcodeDetector({formats:['ean_13','ean_8','code_128','qr_code']});
+    const loop=async()=>{if(!video.isConnected)return;try{const codes=await detector.detect(video);if(codes[0]){$('s-barcode').value=codes[0].rawValue;close();showToast('✅ Code-barres détecté','success');return;}}catch(e){}requestAnimationFrame(loop)};
+    loop();
+  } catch (e) { close(); const value=prompt('Caméra indisponible. Saisissez le code-barres :'); if(value) $('s-barcode').value=value.trim(); }
+};
+
 /* ── Données ── */
 function readStock() { return JSON.parse(localStorage.getItem(STOCK_KEY) || '[]'); }
 function saveStock(data) { localStorage.setItem(STOCK_KEY, JSON.stringify(data)); renderAll(); }
@@ -26,6 +45,7 @@ window.addStock = function () {
   const min    = Math.max(0, +$('s-min').value  || 1);
   const pa     = Math.max(0, +$('s-pa').value   || 0);
   const pv     = Math.max(0, +$('s-pv').value   || 0);
+  const barcode = ($('s-barcode')?.value || '').trim();
 
   if (!name) { alert('Indiquez le nom du produit.'); $('s-name').focus(); return; }
 
@@ -38,6 +58,7 @@ window.addStock = function () {
     existing.min   = min;
     existing.pa    = pa || existing.pa;
     existing.pv    = pv || existing.pv;
+    if (barcode) existing.barcode = barcode;
     existing.updated = new Date().toISOString();
     // Enregistrer le mouvement
     addMouvement('entree', existing.id, name, qty, pa, 'Réapprovisionnement');
@@ -45,7 +66,7 @@ window.addStock = function () {
     showToast(`✅ Stock ${name} mis à jour : +${qty} unités`, 'success');
   } else {
     const item = {
-      id: Date.now(), name, cat, qty, min, pa, pv,
+      id: Date.now(), name, cat, barcode, qty, min, pa, pv,
       created: new Date().toISOString(),
       updated: new Date().toISOString()
     };
@@ -55,7 +76,7 @@ window.addStock = function () {
     showToast(`✅ ${name} ajouté au stock`, 'success');
   }
   // Reset
-  $('s-name').value = ''; $('s-qty').value = 1; $('s-pa').value = 0; $('s-pv').value = 0;
+  $('s-name').value = ''; $('s-barcode').value = ''; $('s-qty').value = 1; $('s-pa').value = 0; $('s-pv').value = 0;
 };
 
 /* ── Sortie stock ── */

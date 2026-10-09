@@ -29,7 +29,10 @@ const SYNC_KEYS = [
   'samassa_stock_v2',
   '_samassa_docs',
   'samassa_audit_log',
-  'samassa_clotures'
+  'samassa_clotures',
+  'samassa_stock_mouvements',
+  'samassa_fournisseurs',
+  'samassa_creances'
 ];
 
 const SyncEngine = {
