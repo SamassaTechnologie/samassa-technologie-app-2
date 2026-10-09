@@ -1,5 +1,5 @@
 /* ============================================================
-   SAMASSA TECHNOLOGIE — sync.js v3.0
+   SAMASSA TECHNOLOGIE — sync.js v3.1
    Synchronisation Firebase — STRATÉGIE SANS PERTE
 
    RÈGLE ABSOLUE :
@@ -24,7 +24,10 @@ const SYNC_KEYS = [
   'samassa_recus_cyber',
   'samassa_factures_cyber',
   'samassa_retraits',
-  'samassa_docs_admin'
+  'samassa_docs_admin',
+  'samassa_clients',
+  'samassa_stock_v2',
+  '_samassa_docs'
 ];
 
 const SyncEngine = {
@@ -66,7 +69,7 @@ const SyncEngine = {
       this._listen();
 
     } catch (e) {
-      console.error('[Sync v3.0] init:', e.message);
+      console.error('[Sync v3.1] init:', e.message);
       this._status('error');
       setTimeout(() => this.init(), 30000);
     }
