@@ -175,6 +175,15 @@ function renderMouvements() {
 function renderAll() { renderInventaire(); renderMouvements(); }
 
 /* ── Export CSV ── */
+window.exportRestockCSV = function () {
+  const list=readStock().filter(x=>Number(x.qty||0)<=Number(x.min||0));
+  if(!list.length){showToast('✅ Aucun article à réapprovisionner','success');return;}
+  const rows=[['Produit','Catégorie','Stock actuel','Seuil minimum','Quantité à acheter','Prix achat unitaire','Budget estimé']];
+  list.forEach(x=>{const q=Math.max(1,Number(x.min||0)-Number(x.qty||0));rows.push([x.name,x.cat,x.qty,x.min,q,x.pa,q*Number(x.pa||0)]);});
+  const csv=rows.map(r=>r.map(c=>'"'+String(c).replace(/"/g,'""')+'"').join(';')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent(csv);a.download='liste-reapprovisionnement-'+today()+'.csv';a.click();showToast('🛒 Liste d’achats téléchargée','success');
+};
+
 window.exportCSV = function () {
   const list = readStock();
   const rows = [['Produit','Catégorie','Qté','Seuil','Prix achat','Prix vente','Valeur stock','État']];

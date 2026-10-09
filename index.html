@@ -1111,6 +1111,14 @@ function loadStats() {
   const bonsReparation=getData('samassa_bons_reparation');
   const mouvements=getData('samassa_mouvements');
   const retraits=getData('samassa_retraits');
+  const stock=getData('samassa_stock_v2');
+  const lowStock=stock.filter(x=>Number(x.qty||0)<=Number(x.min||0));
+  const stockAlert=$('stock-alert-section');
+  if(stockAlert){
+    stockAlert.style.display=lowStock.length?'block':'none';
+    if($('stock-alert-title'))$('stock-alert-title').textContent=`${lowStock.length} article${lowStock.length>1?'s':''} à réapprovisionner`;
+    if($('stock-alert-list'))$('stock-alert-list').textContent=lowStock.slice(0,5).map(x=>`${x.name} (${Math.max(0,Number(x.min||0)-Number(x.qty||0))} à acheter)`).join(' · ')+(lowStock.length>5?' · …':'');
+  }
 
   /* Documents */
   const totalDocs=factures.length+facturesMat.length+facturesCyber.length+devis.length+interventions.length+bonsReparation.length;
