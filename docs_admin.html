@@ -580,6 +580,7 @@ Exemples :
 
 <script src="auth.js?v=firebase1"></script>
 <script src="firebase-config.js"></script>
+<script src="ai-firebase.js?v=1"></script>
 <script src="sync.js"></script>
 <script src="utils.js"></script>
 <script>
@@ -928,7 +929,7 @@ function checkAIStatus() {
   const txt = document.getElementById('ai-status-text');
   if (!bar) return;
   bar.className = 'ai-status nok';
-  txt.textContent = '🔒 IA sécurisée côté serveur — cliquez sur Tester pour vérifier la disponibilité';
+  txt.textContent = '✨ Firebase AI Logic — Gemini sécurisé par Firebase';
   const button = bar.querySelector('button');
   if (button) button.textContent = '🧪 Tester';
 }
@@ -1009,19 +1010,25 @@ async function generateWithAI() {
 
   try {
     let text = '', tokens = 0, model = '';
-
-    const aiRes = await fetch('/api/generate-doc', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: fullPrompt })
-    });
-    const aiData = await aiRes.json();
-    if (!aiRes.ok || !aiData.success) {
-      showToast('❌ ' + (aiData.error || 'Service IA indisponible'), 'error');
-      return;
+    try {
+      const firebaseAI = await window.SAMASSA_AI.generate(`${SYSTEM_PROMPT_MALI}\n\n${fullPrompt}`);
+      text = firebaseAI.text || '';
+      model = firebaseAI.model + (firebaseAI.appCheck ? ' + App Check' : '');
+    } catch (firebaseError) {
+      console.warn('Firebase AI Logic indisponible, repli Vercel :', firebaseError);
+      const aiRes = await fetch('/api/generate-doc', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: fullPrompt })
+      });
+      const aiData = await aiRes.json();
+      if (!aiRes.ok || !aiData.success) {
+        showToast('❌ Firebase AI Logic et service de secours indisponibles : ' + (aiData.error || firebaseError.message), 'error');
+        return;
+      }
+      text = aiData.text || '';
+      tokens = aiData.tokens?.total || ((aiData.tokens?.input_tokens || 0) + (aiData.tokens?.output_tokens || 0));
+      model = aiData.model || 'IA serveur de secours';
     }
-    text = aiData.text || '';
-    tokens = aiData.tokens?.total || ((aiData.tokens?.input_tokens || 0) + (aiData.tokens?.output_tokens || 0));
-    model = aiData.model || 'IA serveur';
 
     if (!text) {
       showToast('❌ Réponse vide — Réessayez', 'error');
@@ -1371,12 +1378,18 @@ async function testAIKey() {
   res.style.display = 'block';
   res.textContent = '⏳ Test du service IA sécurisé...';
   try {
-    const r = await fetch('/api/generate-doc', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ prompt:'Réponds uniquement : OK' }) });
-    const d = await r.json();
-    const ok = Boolean(r.ok && d.success);
-    res.style.background = ok ? '#F0FDF4' : '#FEF2F2';
-    res.style.color = ok ? '#059652' : '#DC2626';
-    res.textContent = ok ? '✅ Service IA serveur opérationnel.' : '❌ ' + (d.error || 'Service non configuré');
+    let d;
+    try {
+      const result = await window.SAMASSA_AI.generate('Réponds uniquement : OK');
+      d = { ok: true, message: result.model + (result.appCheck ? ' + App Check actif' : ' — App Check à configurer') };
+    } catch (firebaseError) {
+      const r = await fetch('/api/generate-doc', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ prompt:'Réponds uniquement : OK' }) });
+      const fallback = await r.json();
+      d = { ok: Boolean(r.ok && fallback.success), message: fallback.error || firebaseError.message };
+    }
+    res.style.background = d.ok ? '#F0FDF4' : '#FEF2F2';
+    res.style.color = d.ok ? '#059652' : '#DC2626';
+    res.textContent = d.ok ? '✅ ' + d.message : '❌ ' + d.message;
   } catch(e) {
     res.style.background = '#FEF2F2'; res.style.color = '#DC2626'; res.textContent = '❌ Service indisponible';
   }

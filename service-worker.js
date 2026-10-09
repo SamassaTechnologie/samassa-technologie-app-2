@@ -2,8 +2,8 @@
    SAMASSA TECHNOLOGIE — Service Worker PWA v3.2
    Tous les modules en cache (hors-ligne complet)
 ============================================================ */
-const CACHE_NAME  = 'samassa-pro-v3.5';
-const CACHE_PAGES = 'samassa-pages-v3.5';
+const CACHE_NAME  = 'samassa-pro-v3.6';
+const CACHE_PAGES = 'samassa-pages-v3.6';
 
 const STATIC_ASSETS = [
   'index.html','login.html',
@@ -20,7 +20,7 @@ const STATIC_ASSETS = [
   'clients.html','rapports.html','backup.html','settings.html','autoconfig.html','docs_admin.html',
   'style.css','mobile.css',
   'auth.js?v=firebase1','utils.js','sync.js',
-  'firebase-config.js','cloud-integration.js',
+  'firebase-config.js','ai-firebase.js','cloud-integration.js',
   'scanner.js','jsqr.js','qrcode.min.js',
   'capacitor-plugins.js',
   'manifest.json',

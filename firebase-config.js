@@ -13,6 +13,8 @@ const FIREBASE_CONFIG = {
   appId:             "1:704230186166:web:041b7d413d1671178e5a17"
 };
 
+// Renseigner uniquement après création d’une clé reCAPTCHA Enterprise dans App Check.
+// window.SAMASSA_RECAPTCHA_SITE_KEY = '6Le...';
 window.SAMASSA_FIREBASE_CONFIG = FIREBASE_CONFIG;
 
 const SAMASSA_STORE_ID = "kayes-principal";
