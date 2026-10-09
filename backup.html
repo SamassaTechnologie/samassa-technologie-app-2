@@ -124,25 +124,26 @@ function loadStats() {
   document.getElementById('st-last').textContent    = lastBk ? new Date(lastBk).toLocaleDateString('fr-FR') : 'Jamais';
 }
 
-function doBackup() {
-  const backup = {
-    version: '3.2',
-    app: 'SAMASSA TECHNOLOGIE Suite Pro',
-    date: new Date().toISOString(),
-    data: {}
-  };
+function collectBackup() {
+  const backup = { version:'4.0', app:'SAMASSA TECHNOLOGIE Suite Pro', date:new Date().toISOString(), data:{} };
   DATA_KEYS.forEach(k => {
     const v = localStorage.getItem(k);
-    if (v) backup.data[k] = JSON.parse(v);
+    if (v !== null) { try { backup.data[k] = JSON.parse(v); } catch(e) { backup.data[k] = v; } }
   });
+  return backup;
+}
+function downloadBackup(backup, suffix='') {
   const json = JSON.stringify(backup, null, 2);
   const date = new Date().toISOString().substring(0,10);
   const a = document.createElement('a');
   a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
-  a.download = 'samassa_backup_' + date + '.json';
+  a.download = 'samassa_backup_' + date + suffix + '.json';
   a.click();
   localStorage.setItem('_samassa_last_backup', new Date().toISOString());
   loadStats();
+}
+function doBackup() {
+  downloadBackup(collectBackup());
   toast('✅ Sauvegarde téléchargée avec succès !', 'success');
 }
 
@@ -172,48 +173,40 @@ function handleDrop(ev) {
 }
 
 function handleFile(file) {
-  if (!file || !file.name.endsWith('.json')) { toast('Sélectionnez un fichier .json valide', 'error'); return; }
+  if (!file || !file.name.toLowerCase().endsWith('.json')) { toast('Sélectionnez un fichier .json valide', 'error'); return; }
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
       const backup = JSON.parse(e.target.result);
-      if (!backup.data || !backup.app) { toast('Fichier de sauvegarde invalide', 'error'); return; }
-      if (!confirm('Restaurer la sauvegarde du ' + new Date(backup.date).toLocaleDateString('fr-FR') + ' ?
-
-Cela remplacera toutes les données actuelles.')) return;
+      if (!backup.data || !backup.app || !backup.date) { toast('Fichier de sauvegarde invalide', 'error'); return; }
+      const backupKeys = Object.keys(backup.data);
+      if (backupKeys.some(k => !DATA_KEYS.includes(k))) { toast('Fichier de sauvegarde non reconnu ou modifié.', 'error'); return; }
+      const label = new Date(backup.date).toLocaleDateString('fr-FR');
+      if (!confirm(`Restaurer la sauvegarde du ${label} ?\n\nUne copie automatique de vos données actuelles sera téléchargée avant remplacement.`)) return;
+      downloadBackup(collectBackup(), '_avant_restauration');
       const log = document.getElementById('log');
-      log.style.display = 'block';
-      log.innerHTML = '';
+      log.style.display = 'block'; log.textContent = '';
       let count = 0;
       Object.entries(backup.data).forEach(([k, v]) => {
         localStorage.setItem(k, JSON.stringify(v));
-        const n = Array.isArray(v) ? v.length + ' éléments' : '1 valeur';
-        log.innerHTML += '> ' + k + ' → ' + n + '
-';
+        const n = Array.isArray(v) ? `${v.length} éléments` : '1 valeur';
+        log.textContent += `> ${k} → ${n}\n`;
         count++;
       });
-      log.innerHTML += '
-✅ Restauration terminée — ' + count + ' clés restaurées';
+      log.textContent += `\n✅ Restauration terminée — ${count} clés restaurées`;
       loadStats();
       toast('✅ Données restaurées avec succès !', 'success');
-    } catch(err) {
-      toast('Erreur : ' + err.message, 'error');
-    }
+    } catch(err) { toast('Erreur : ' + err.message, 'error'); }
   };
   reader.readAsText(file);
 }
 
 function resetAll() {
-  if (!confirm('⚠️ ATTENTION !
-
-Supprimer TOUTES les données ?
-
-Clients, documents, stock, caisse... TOUT sera effacé définitivement.
-
-Cette action est IRRÉVERSIBLE.')) return;
+  if (!confirm('⚠️ ATTENTION !\n\nSupprimer TOUTES les données ?\n\nClients, documents, stock, caisse... TOUT sera effacé définitivement.')) return;
   if (!confirm('Confirmez une seconde fois : effacer toutes les données ?')) return;
+  downloadBackup(collectBackup(), '_avant_suppression');
   DATA_KEYS.forEach(k => localStorage.removeItem(k));
-  toast('✓ Toutes les données ont été effacées', 'info');
+  toast('✓ Données effacées. Une sauvegarde de sécurité a été téléchargée.', 'info');
   loadStats();
 }
 

@@ -1,5 +1,5 @@
 /* ============================================================
-   SAMASSA TECHNOLOGIE — sync.js v4.0
+   SAMASSA TECHNOLOGIE — sync.js v4.1
    Synchronisation Firebase — STRATÉGIE SANS PERTE
 
    RÈGLE ABSOLUE :
@@ -69,7 +69,7 @@ const SyncEngine = {
       this._listen();
 
     } catch (e) {
-      console.error('[Sync v4.0] init:', e.message);
+      console.error('[Sync v4.1] init:', e.message);
       this._status('error');
       setTimeout(() => this.init(), 30000);
     }
@@ -109,18 +109,35 @@ const SyncEngine = {
     this.db = { rest: true, baseUrl: url.replace(/\/$/, '') };
   },
 
-  _restUrl(key) {
-    return `${this.db.baseUrl}/${encodeURIComponent(SAMASSA_STORE_ID)}/${encodeURIComponent(key)}.json`;
+  _restUrl(key, token) {
+    const base = `${this.db.baseUrl}/${encodeURIComponent(SAMASSA_STORE_ID)}/${encodeURIComponent(key)}.json`;
+    return token ? `${base}?auth=${encodeURIComponent(token)}` : base;
+  },
+
+  async _authToken() {
+    try {
+      if (typeof Auth === 'undefined' || !Auth.ready) return null;
+      const auth = await Auth.ready();
+      const user = auth.currentUser;
+      return user ? await user.getIdToken() : null;
+    } catch (e) {
+      console.warn('[Sync] jeton Firebase indisponible:', e.message);
+      return null;
+    }
   },
 
   async _restGet(key) {
-    const response = await fetch(this._restUrl(key), { signal: AbortSignal.timeout(12000) });
+    const token = await this._authToken();
+    if (!token) throw new Error('Authentification Firebase requise');
+    const response = await fetch(this._restUrl(key, token), { signal: AbortSignal.timeout(12000) });
     if (!response.ok) throw new Error(`Firebase GET ${response.status}`);
     return response.json();
   },
 
   async _restPut(key, value) {
-    const response = await fetch(this._restUrl(key), {
+    const token = await this._authToken();
+    if (!token) throw new Error('Authentification Firebase requise');
+    const response = await fetch(this._restUrl(key, token), {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(value),

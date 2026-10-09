@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "$store": {
+      ".read": "auth != null",
+      ".write": "auth != null",
+      "$key": {
+        ".validate": "newData.exists()"
+      }
+    }
+  }
+}
