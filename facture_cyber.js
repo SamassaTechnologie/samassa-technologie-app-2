@@ -12,17 +12,38 @@ document.addEventListener('DOMContentLoaded', () => {
   ST.el('invoiceNumber').value = ST.nextNumber('samassa_factures_cyber', 'FCY-');
   recalc();
   document.addEventListener('itemsChanged', recalc);
+  ['amountPaid','paymentDueDate'].forEach(id => ST.el(id)?.addEventListener('input', recalc));
+  ST.el('paymentStatus')?.addEventListener('change', () => {
+    const status = ST.v('paymentStatus');
+    if (status === 'payé') ST.el('amountPaid').value = Math.round((ST.v('totalTTC') || '0').replace(/\D/g, '') || 0);
+    if (status === 'impayé') ST.el('amountPaid').value = 0;
+    recalc();
+  });
 });
 
 /* ── Recalcul totaux (identique à facture.js) ── */
+function paymentData(ttc) {
+  const selected = ST.v('paymentStatus');
+  const paidInput = Math.max(0, Number(ST.v('amountPaid') || 0));
+  const paid = selected === 'payé' ? ttc : selected === 'impayé' ? 0 : Math.min(paidInput, ttc);
+  const due = Math.max(0, ttc - paid);
+  const status = selected === 'payé' ? 'Payé' : selected === 'impayé' ? 'Impayé' : selected === 'partiel' ? 'Partiellement payé' : (paid >= ttc && ttc > 0 ? 'Payé' : paid > 0 ? 'Partiellement payé' : 'Impayé');
+  return { paid, due, status, dueDate: ST.v('paymentDueDate') };
+}
+
 function recalc() {
-  const ht  = ST.calcItems();
+  const ht = ST.calcItems();
   const tva = ht * 0.18;
   const ttc = ht + tva;
+  const pay = paymentData(ttc);
   const set = (id, v) => { const e = ST.el(id); if (e) e.value = v; };
-  set('totalHT',  ST.fmtNum(ht)  + ' FCFA');
+  set('totalHT', ST.fmtNum(ht) + ' FCFA');
   set('totalTVA', ST.fmtNum(tva) + ' FCFA');
   set('totalTTC', ST.fmtNum(ttc) + ' FCFA');
+  set('amountDue', ST.fmtNum(pay.due) + ' FCFA');
+  const hint = ST.el('paymentHint');
+  if (hint) hint.textContent = pay.status + ' · Reste à payer : ' + ST.fmt(pay.due) + (pay.dueDate ? ' · Échéance : ' + ST.fmtDate(pay.dueDate) : '');
+  return { ht, tva, ttc, pay };
 }
 
 /* ── Gestion lignes ── */
@@ -50,7 +71,7 @@ function addQuick(desc, qty, price) {
 
 /* ── Générer la facture ── */
 function generateInvoice() {
-  recalc();
+  const totals = recalc();
   const v = ST.v;
 
   ST.el('d-coName').textContent  = v('companyName');
@@ -88,6 +109,13 @@ function generateInvoice() {
   ST.el('d-ht').textContent  = ST.fmt(ht);
   ST.el('d-tva').textContent = ST.fmt(tva);
   ST.el('d-ttc').textContent = ST.fmt(ttc);
+  const pay = paymentData(ttc);
+  ST.el('d-paymentStatus').textContent = pay.status;
+  ST.el('d-paid').textContent = ST.fmt(pay.paid);
+  ST.el('d-due').textContent = ST.fmt(pay.due);
+  ST.el('d-dueDate').textContent = pay.dueDate ? ST.fmtDate(pay.dueDate) : '—';
+  const box = ST.el('d-paymentSummary');
+  if (box) { box.style.borderColor = pay.status === 'Payé' ? '#86EFAC' : pay.status === 'Impayé' ? '#FCA5A5' : '#FDE68A'; box.style.background = pay.status === 'Payé' ? '#F0FDF4' : pay.status === 'Impayé' ? '#FEF2F2' : '#FFF8EE'; }
 
   ST.showDoc();
 }
@@ -108,7 +136,8 @@ function saveDoc() {
   if (list.find(f => f.number === num)) {
     ST.toast('Facture ' + num + ' déjà enregistrée.', 'info'); return;
   }
-  list.push({ number: num, client: ST.v('clientName'), date: ST.fmtDate(ST.v('invoiceDate')), total: ttcRaw, statut: 'En attente', timestamp: new Date().toISOString() });
+  const pay = paymentData(ttcRaw);
+  list.push({ number: num, client: ST.v('clientName'), date: ST.fmtDate(ST.v('invoiceDate')), total: ttcRaw, amountPaid: pay.paid, amountDue: pay.due, statut: pay.status, paymentStatus: pay.status, dueDate: pay.dueDate, paymentMethod: ST.v('paymentMethod') || '', timestamp: new Date().toISOString() });
   localStorage.setItem('samassa_factures_cyber', JSON.stringify(list));
   ST.toast('Facture Cyber ' + num + ' enregistrée ✓', 'success');
   ST.el('invoiceNumber').value = ST.nextNumber('samassa_factures_cyber', 'FCY-');
@@ -128,6 +157,9 @@ Bonjour *${cl}*,
 📄 *Facture Cyber N° ${ST.v('invoiceNumber')}*
 📅 Date : ${ST.fmtDate(ST.v('invoiceDate'))}
 💰 Total TTC : *${ttc}*
+💳 Statut : *${paymentData(parseFloat(ttc.replace(/\D/g, '')) || 0).status}*
+💵 Déjà payé : *${ST.v('amountPaid') || '0'} FCFA*
+📌 Reste à payer : *${ST.v('amountDue')}*
 
 _Modes de paiement acceptés :_
 🌊 Wave ⭐  |  🟠 Orange Money  |  🔵 Moov Money  |  💵 Espèces
