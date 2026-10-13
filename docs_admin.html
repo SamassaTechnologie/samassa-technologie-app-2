@@ -251,7 +251,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothi
   <div class="form-panel">
     <div class="panel-header">
       <h2>📝 Générateur de Documents</h2>
-      <p>38 modèles conformes aux normes maliennes</p>
+      <p>48 modèles de rédaction administrative adaptés au Mali</p>
     </div>
     <div class="form-body">
 
@@ -267,7 +267,7 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothi
         <div class="stats-bar">
           <div class="stat-item"><div class="stat-n" id="stat-total">0</div><div class="stat-l">Générés</div></div>
           <div class="stat-item"><div class="stat-n" id="stat-today">0</div><div class="stat-l">Aujourd'hui</div></div>
-          <div class="stat-item"><div class="stat-n">38</div><div class="stat-l">Modèles</div></div>
+          <div class="stat-item"><div class="stat-n">48</div><div class="stat-l">Modèles</div></div>
         </div>
 
         <!-- Recherche -->
@@ -433,6 +433,16 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothi
           <button class="sugg-chip" onclick="fillSugg(this)">💳 Engagement de remboursement</button>
           <button class="sugg-chip" onclick="fillSugg(this)">🏪 Autorisation commerce</button>
           <button class="sugg-chip" onclick="fillSugg(this)">🚗 Déclaration d'accident</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">📢 Lettre de réclamation</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">📌 Note de service</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">📅 Convocation réunion</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">💼 Demande de stage</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">🏠 Attestation d'hébergement</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">🏢 Déclaration d'existence</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">🧾 Demande de NIF</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">📂 Lettre de candidature</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">🤝 Procuration administrative</button>
+          <button class="sugg-chip" onclick="fillSugg(this)">🤲 Attestation de prise en charge</button>
         </div>
 
         <!-- Options destinataire + nom -->
@@ -451,6 +461,18 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothi
           </div>
         </div>
 
+        <!-- Forme de document -->
+        <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap">
+          <label for="ai-forme" style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.07em">Forme</label>
+          <select id="ai-forme" style="flex:1;min-width:190px;padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;color:var(--text)">
+            <option value="lettre_personnelle">Lettre administrative personnelle</option>
+            <option value="lettre_administrative">Lettre entre services / forme administrative</option>
+            <option value="note_service">Note de service</option>
+            <option value="attestation">Attestation ou engagement</option>
+            <option value="convocation">Convocation / invitation</option>
+          </select>
+        </div>
+
         <!-- Zone de saisie -->
         <div class="ai-input-wrap">
           <textarea class="ai-textarea" id="ai-prompt"
@@ -462,8 +484,8 @@ Exemples :
 • Attestation de domicile pour Fatoumata Diallo, quartier Liberté, Kayes, depuis 5 ans. Usage : ouverture compte bancaire BDM.
 
 • Engagement de remboursement : Seydou Konaté a emprunté 200 000 FCFA à Ibrahima Traoré le 15/01/2026, remboursement avant le 15/04/2026."
-            oninput="updateCharCount(this)" rows="7"></textarea>
-          <div class="ai-char-count" id="ai-char-count">0 / 1000</div>
+            maxlength="1800" oninput="updateCharCount(this)" rows="7"></textarea>
+          <div class="ai-char-count" id="ai-char-count">0 / 1800</div>
         </div>
 
         <button class="btn-ai" id="btn-ai-gen" onclick="generateWithAI()">
@@ -507,7 +529,7 @@ Exemples :
     <div class="preview-placeholder" id="preview-placeholder">
       <div class="ph-icon">📝</div>
       <p style="font-size:14px;font-weight:600;color:var(--text2)">Sélectionnez un type de document</p>
-      <p style="font-size:12px;text-align:center;max-width:260px">38 modèles conformes aux normes maliennes</p>
+      <p style="font-size:12px;text-align:center;max-width:260px">48 modèles de rédaction administrative adaptés au Mali</p>
     </div>
 
     <div class="ai-loading" id="ai-loading" style="display:none">
@@ -944,7 +966,17 @@ function fillSugg(el) {
     "Casier judiciaire":             `Rédige une demande d'extrait de casier judiciaire pour [NOM PRÉNOM], né(e) le [DATE] à Kayes, fils/fille de [PÈRE] et [MÈRE], demeurant à [QUARTIER]. Motif : [concours/emploi/visa].`,
     "Engagement de remboursement":   `Rédige un engagement de remboursement. Le débiteur [NOM] a emprunté [MONTANT] FCFA à [CRÉANCIER] le [DATE]. Il s'engage à rembourser en [MODALITÉS] avant le [DATE ÉCHÉANCE].`,
     "Autorisation commerce":         `Rédige une demande d'autorisation d'ouverture de commerce pour [NOM], qui souhaite ouvrir [TYPE DE COMMERCE] au quartier [QUARTIER] de Kayes. Superficie : [M²]. Horaires : [HORAIRES].`,
-    "Déclaration d'accident":       `Rédige une déclaration d'accident de circulation survenu le [DATE] à [HEURE] à [LIEU DE KAYES]. Mon véhicule [MARQUE IMMAT] est entré en collision avec [AUTRE VÉHICULE]. Dégâts : [DESCRIPTION].`
+    "Déclaration d'accident":       `Rédige une déclaration d'accident de circulation survenu le [DATE] à [HEURE] à [LIEU DE KAYES]. Mon véhicule [MARQUE IMMAT] est entré en collision avec [AUTRE VÉHICULE]. Dégâts : [DESCRIPTION].`,
+    "Lettre de réclamation":         `Rédige une lettre de réclamation à [DESTINATAIRE] concernant [SERVICE OU CONTRAT]. Le problème dure depuis [DATE]. Expose les faits, les démarches déjà effectuées et la solution demandée.`,
+    "Note de service":               `Rédige une note de service destinée à [DESTINATAIRES] au sujet de [OBJET]. Date d'effet : [DATE]. Consignes : [CONSIGNES]. Signataire : [FONCTION].`,
+    "Convocation réunion":           `Rédige une convocation à une réunion sur [OBJET], le [DATE] à [HEURE], au [LIEU]. Participants : [LISTE]. Ordre du jour : [POINTS].`,
+    "Demande de stage":              `Rédige une demande de stage pour [NOM] auprès de [ENTREPRISE OU SERVICE], du [DATE DÉBUT] au [DATE FIN], dans le domaine [DOMAINE]. Formation : [FORMATION].`,
+    "Attestation d'hébergement":     `Rédige une attestation d'hébergement par [HÉBERGEANT] au profit de [HÉBERGÉ], à l'adresse [ADRESSE], depuis [DATE]. Motif : [MOTIF].`,
+    "Déclaration d'existence":       `Rédige une déclaration d'existence pour l'entreprise [RAISON SOCIALE], activité [ACTIVITÉ], adresse [ADRESSE], téléphone [TÉLÉPHONE], gérée par [GÉRANT], début d'activité [DATE].`,
+    "Demande de NIF":                 `Rédige une demande de numéro d'identification fiscale (NIF) pour [ENTREPRISE], à adresser au Centre des impôts de [VILLE]. Joindre : extrait de naissance, RCCM, bail ou domiciliation, statuts.`,
+    "Lettre de candidature":         `Rédige une lettre de candidature à une préqualification ou un appel d'offres pour [PROJET], référence [RÉFÉRENCE], au nom de [ENTREPRISE].`,
+    "Procuration administrative":     `Rédige une procuration administrative par [MANDANT] donnant pouvoir à [MANDATAIRE] pour [DÉMARCHE PRÉCISE] auprès de [ADMINISTRATION], valable jusqu'au [DATE].`,
+    "Attestation de prise en charge": `Rédige une attestation de prise en charge par [RESPONSABLE] au profit de [BÉNÉFICIAIRE] pour [OBJET : études, soins ou voyage], couvrant [FRAIS OU DURÉE].`
   };
   const txt = el.textContent.trim();
   const found = Object.keys(map).find(k => txt.includes(k));
@@ -958,20 +990,32 @@ function fillSugg(el) {
 function updateCharCount(el) {
   const n = el.value.length;
   const el2 = document.getElementById('ai-char-count');
-  if (el2) { el2.textContent = n + ' / 1000'; el2.style.color = n > 900 ? '#DC2626' : ''; }
+  if (el2) { el2.textContent = n + ' / 1800'; el2.style.color = n > 1620 ? '#DC2626' : n > 1400 ? '#D97706' : ''; }
 }
 
 /* ── PROMPT SYSTÈME MALI ── */
-const SYSTEM_PROMPT_MALI = `Tu es expert en rédaction de documents administratifs officiels au Mali, spécialement pour la ville de Kayes. Tu travailles pour SAMASSA TECHNOLOGIE au Grand Marché de Kayes.
+const SYSTEM_PROMPT_MALI = `Tu es un rédacteur administratif professionnel francophone, spécialisé dans les usages administratifs au Mali et à Kayes. Tu travailles pour SAMASSA TECHNOLOGIE. Tu produis un projet de document à relire et signer, jamais une décision officielle ni un formulaire délivré par une administration.
 
-RÈGLES STRICTES :
-1. Rédige DIRECTEMENT le document sans introduction ni commentaire extérieur
-2. Utilise les formules protocolaires maliennes appropriées
-3. Inclus toujours : Lieu (Kayes), date en toutes lettres, formule de politesse finale
-4. En-tête pour documents officiels : "République du Mali — Un Peuple — Un But — Une Foi"
-5. Pour les renseignements manquants, utilise [À COMPLÉTER]
-6. Le document doit être immédiatement utilisable après impression
-7. Sois complet et professionnel — un document incomplet est inutile`;
+RÈGLES DE FOND :
+1. Rédige directement le document, sans commentaire de l'IA avant ou après.
+2. N'invente aucune loi, aucun numéro de texte, aucun cachet, aucune signature et aucune autorité compétente.
+3. Remplace toute information absente par [À COMPLÉTER].
+4. Utilise le français administratif malien, clair, sobre, respectueux et précis.
+5. Mets le lieu et la date en toutes lettres : Kayes, le [DATE À COMPLÉTER].
+6. Distingue clairement lettre personnelle, lettre entre services, note de service, attestation, engagement et convocation.
+7. Respecte les cinq C : clair, complet, concis, convaincant et correct.
+
+STRUCTURE À UTILISER SELON LA FORME :
+- Lettre : émetteur, destinataire, lieu-date, objet, référence si utile, formule d'appel, introduction, développement, demande ou conclusion, formule de politesse et signature.
+- Note de service : timbre, numéro, date, destinataires, objet, consignes numérotées, entrée en vigueur et signature.
+- Attestation ou engagement : titre, identité et qualité du déclarant, faits attestés ou engagement précis, lieu-date, signature et pièces jointes si indiquées.
+- Convocation : destinataire, objet, date, heure, lieu, ordre du jour, documents à apporter et signature.
+
+PRÉSENTATION :
+- Commence par un titre court en majuscules, puis utilise des rubriques lisibles.
+- Ne mets pas de Markdown, d'astérisques, de ligne de séparation ou d'emoji dans le document final.
+- Ajoute une formule de politesse cohérente avec l'appel.
+- L'en-tête « République du Mali — Un Peuple — Un But — Une Foi » est un repère de présentation et ne doit pas faire croire à un document émis par l'État.`;
 
 /* ── DÉTECTEUR TYPE CLÉ ── */
 function detectKeyType(key) {
@@ -986,6 +1030,7 @@ async function generateWithAI() {
   const prompt = (document.getElementById('ai-prompt')?.value || '').trim();
   const dest   = (document.getElementById('ai-dest')?.value  || '').trim();
   const nom    = (document.getElementById('ai-nom')?.value   || '').trim();
+  const forme  = document.getElementById('ai-forme')?.value || 'lettre_personnelle';
 
   if (!prompt) {
     document.getElementById('ai-prompt').focus();
@@ -1005,6 +1050,7 @@ async function generateWithAI() {
   let fullPrompt = prompt;
   if (dest) fullPrompt += `\nDestinataire : ${dest}`;
   if (nom)  fullPrompt += `\nDemandeur principal : ${nom}`;
+  fullPrompt += `\nForme administrative obligatoire : ${forme}`;
   fullPrompt += '\nVille : Kayes, Mali — Date : ' +
     new Date().toLocaleDateString('fr-FR', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
@@ -1082,29 +1128,30 @@ function escapeWordHTML(value) {
 /* Convertir le Markdown simple de Gemini en paragraphes Word propres. */
 function formatAIForWord(text) {
   const lines = String(text || '').replace(/\r\n?/g,'\n').split('\n');
-  const blocks = [];
-  let current = [];
-  const flush = () => { if (current.length) { blocks.push(current); current = []; } };
-
+  const out = [];
+  let paragraph = [];
+  let list = [];
+  const esc = value => escapeWordHTML(value)
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^#{1,3}\s+(.+)$/,'<strong>$1</strong>');
+  const flushParagraph = () => {
+    if (paragraph.length) { out.push(`<p>${paragraph.map(esc).join('<br>')}</p>`); paragraph=[]; }
+  };
+  const flushList = () => {
+    if (list.length) { out.push(`<ul>${list.map(item => `<li>${esc(item)}</li>`).join('')}</ul>`); list=[]; }
+  };
   lines.forEach(raw => {
-    const line = raw.replace(/[ \t]+$/,'');
-    if (/^\s*-{4,}\s*$/.test(line)) return;
-    if (!line.trim()) { flush(); return; }
-    current.push(line.replace(/^\s{6,}/,'').trim());
+    const line = raw.replace(/[ \t]+$/,'').trim();
+    if (!line || /^[-_=]{4,}$/.test(line)) { flushParagraph(); flushList(); return; }
+    const bullet = line.match(/^(?:[-*•▪◦]|\d+[.)])\s+(.+)$/);
+    if (bullet) { flushParagraph(); list.push(bullet[1]); return; }
+    if (/^(OBJET|RÉFÉRENCE|PIÈCES JOINTES|À L'ATTENTION|NOTE DE SERVICE|CONVOCATION|ATTESTATION|ENGAGEMENT|DESTINATAIRE|ORDRE DU JOUR|SIGNATURE|Fait à|Kayes, le)/i.test(line)) {
+      flushParagraph(); flushList(); out.push(`<p class="doc-heading">${esc(line)}</p>`); return;
+    }
+    paragraph.push(line);
   });
-  flush();
-
-  return blocks.map(block => {
-    const first = block[0] || '';
-    const heading = /^(OBJET|MOTIF|ÉTAT CIVIL|INFORMATIONS|DÉTAILS|ARTICLE\s+\d+|DOCUMENT|CIRCONSTANCES|DATES|ENTRE|BAILLEUR|LOCATAIRE|RÉPUBLIQUE DU MALI)$/i.test(first.replace(/:$/,''));
-    const linesHTML = block.map(line => {
-      let out = escapeWordHTML(line);
-      out = out.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-      out = out.replace(/^#{1,3}\s+(.+)$/, '<strong>$1</strong>');
-      return out;
-    }).join('<br>');
-    return `<p class="${heading ? 'doc-heading' : ''}">${linesHTML}</p>`;
-  }).join('\n');
+  flushParagraph(); flushList();
+  return out.join('\n');
 }
 
 function exportToWord() {
@@ -1137,9 +1184,13 @@ function exportToWord() {
   .company-name { font-size:15pt; font-weight:bold; color:#0D1B2A; }
   .company-sub { font-size:10pt; font-style:italic; color:#0070C0; margin-top:3pt; }
   .company-info { font-size:9.5pt; color:#4A4A4A; margin-top:5pt; line-height:1.35; }
-  .doc-title { text-align:center; font-size:13pt; font-weight:bold; text-transform:uppercase; margin:0 0 18pt; }
+  .doc-meta { display:flex; justify-content:space-between; gap:20pt; font-size:9.5pt; margin:0 0 16pt; }
+  .doc-meta .right { text-align:right; }
+  .doc-title { text-align:center; font-size:13pt; font-weight:bold; text-transform:uppercase; margin:0 0 18pt; letter-spacing:.5pt; }
   .doc-heading { font-weight:bold; margin:13pt 0 5pt; page-break-after:avoid; }
-  .document-content p { margin:0 0 10pt; orphans:3; widows:3; }
+  .document-content p { margin:0 0 10pt; orphans:3; widows:3; text-align:justify; }
+  .document-content ul { margin:0 0 10pt 22pt; padding:0; }
+  .document-content li { margin:0 0 5pt; }
   .document-content strong { font-weight:bold; }
   .footer { border-top:0.75pt solid #B8C2CC; margin-top:26pt; padding-top:7pt; text-align:center; font-size:8.5pt; color:#666; }
 </style>
@@ -1147,8 +1198,10 @@ function exportToWord() {
 <body><div class="Section1">
   <div class="masthead"><div class="country">République du Mali</div><div class="motto">Un Peuple — Un But — Une Foi</div></div>
   <div class="company"><div class="company-name">SAMASSA TECHNOLOGIE</div><div class="company-sub">Tout pour l'informatique — Kayes, Mali</div><div class="company-info">Grand Marché de Kayes — Rue Soundiata Keita, près du 1er arrondissement<br>Tél. : 77 29 19 31 / 62 97 06 30&nbsp;&nbsp;|&nbsp;&nbsp;samassatechnologie10@gmail.com</div></div>
+  <div class="doc-meta"><div><strong>Objet :</strong> ${titleHTML}</div><div class="right">Kayes, le ${date}<br>Réf. : DA-${new Date().getFullYear()}</div></div>
   <div class="doc-title">${titleHTML}</div>
   <div class="document-content">${bodyHTML}</div>
+  <div style="margin-top:24pt;padding-top:8pt;border-top:.5pt solid #D8DEE5;font-size:9.5pt"><strong>Pièces jointes :</strong> [À COMPLÉTER si nécessaire]</div>
   <div class="footer">Document généré par SAMASSA TECHNOLOGIE Suite Pro — ${date}</div>
 </div></body></html>`;
 
