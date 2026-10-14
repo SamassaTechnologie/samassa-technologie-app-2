@@ -1,0 +1,73 @@
+/* ===== Rédacteur IA – Mali : style bureautique bleu / blanc ===== */
+:root{--b:#0b6fb8;--b2:#1aa7e8;--clair:#eaf4fb;--bord:#cfe0ee;--txt:#1b2a38;--vert:#1a8f4c}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:#f4f8fb;color:var(--txt)}
+[hidden]{display:none!important}
+
+/* --- Barre du haut --- */
+.top{background:#fff;border-bottom:3px solid var(--b2);padding:8px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{height:44px}
+.brand b{display:block;color:var(--b);font-size:1.1rem}
+.brand small{color:#5b6b79}
+.cyber{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.prix input{width:80px;padding:6px;border:1px solid var(--bord);border-radius:6px;font-weight:700}
+.badge{background:var(--clair);color:var(--b);padding:6px 10px;border-radius:20px;font-size:.9rem}
+
+/* --- Boutons --- */
+.btn{background:var(--b);color:#fff;border:0;border-radius:6px;padding:9px 16px;font-size:.95rem;cursor:pointer}
+.btn:hover{background:#095a97}
+.btn.sec{background:#fff;color:var(--b);border:1px solid var(--b)}
+.btn.vert{background:var(--vert)}
+.lien{background:none;border:0;color:#7a8a98;text-decoration:underline;cursor:pointer;font-size:.8rem}
+
+main{max-width:1000px;margin:0 auto;padding:16px}
+#recherche{width:100%;padding:12px 14px;border:1px solid var(--bord);border-radius:8px;font-size:1rem}
+.cats{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.cats button{border:1px solid var(--bord);background:#fff;color:var(--b);padding:6px 14px;border-radius:20px;cursor:pointer}
+.cats button.on{background:var(--b);color:#fff;border-color:var(--b)}
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.carte{background:#fff;border:1px solid var(--bord);border-left:5px solid var(--b2);border-radius:8px;padding:12px;cursor:pointer;text-align:left}
+.carte:hover{box-shadow:0 2px 8px rgba(11,111,184,.2)}
+.carte b{display:block;color:var(--b)}
+.carte small{color:#6a7a88}
+
+/* --- Formulaire --- */
+h2{color:var(--b)}
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;background:#fff;border:1px solid var(--bord);border-radius:8px;padding:14px;margin:12px 0}
+.champ{display:flex;flex-direction:column;gap:4px;font-size:.9rem}
+.champ.large{grid-column:1/-1}
+.champ em{color:#9aa8b4;font-style:normal;font-size:.75rem}
+input,textarea,select{padding:8px;border:1px solid var(--bord);border-radius:6px;font:inherit;width:100%}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--b2)}
+.lignes{grid-column:1/-1}
+.ligne{display:grid;grid-template-columns:3fr 1fr 1.4fr auto;gap:6px;margin-bottom:6px}
+.ligne.np{grid-template-columns:3fr 1fr auto}
+.ligne .x{background:#fff;border:1px solid #e0b4b4;color:#b33;border-radius:6px;cursor:pointer}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+
+/* --- Aperçu du document (page A4 simulée) --- */
+.apercu{background:#fff;max-width:21cm;margin:16px auto;padding:1.6cm;box-shadow:0 2px 12px rgba(0,0,0,.18);font-family:"Times New Roman",serif;font-size:12pt;line-height:1.15}
+.apercu p{margin:0}
+.apercu table{width:100%;border-collapse:collapse}
+.apercu td{vertical-align:top;padding:3pt 4pt}
+.ent{display:flex;gap:12px;align-items:center;border-bottom:2px solid var(--b2);padding-bottom:6px;margin-bottom:14pt}
+.ent img{height:55px}
+.ent b{display:block;color:var(--b);font-size:15pt}
+.ent i{display:block;font-size:10pt}
+.ent small{font-size:9pt}
+.pied{border-top:1px solid var(--b2);margin-top:30pt;padding-top:4pt;text-align:center;font-size:9pt}
+
+dialog{border:0;border-radius:10px;max-width:640px;width:94%;box-shadow:0 8px 30px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+.aide{color:#6a7a88;font-size:.85rem}
+
+@media(max-width:560px){.apercu{padding:.8cm;font-size:11pt}.ligne{grid-template-columns:1fr 1fr}}
+
+/* --- Impression : seul le document est imprimé --- */
+@media print{
+  body *{visibility:hidden}
+  #apercu,#apercu *{visibility:visible}
+  #apercu{position:absolute;left:0;top:0;width:100%;max-width:none;margin:0;padding:0;box-shadow:none}
+  @page{size:A4;margin:2.5cm}
+}

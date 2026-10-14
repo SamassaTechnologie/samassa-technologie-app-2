@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rédacteur IA - Mali</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b6fb8">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== Barre du haut : MODE CYBER (prix + compteur) ===== -->
+<header class="top">
+  <div class="brand">
+    <img src="logo.png" alt="">
+    <div><b>Rédacteur IA – Mali</b><small>Vos documents officiels en un clic</small></div>
+  </div>
+  <div class="cyber">
+    <label class="prix">Prix : <input id="prix" type="number" min="0" value="500"> F</label>
+    <span class="badge">Impressions : <b id="cptImp">0</b></span>
+    <span class="badge">Recette : <b id="recette">0</b> F</span>
+    <button id="btnReset" class="lien" type="button">Remise à zéro</button>
+    <button id="btnParam" class="btn sec" type="button">⚙ Paramètres</button>
+    <button id="btnInstall" class="btn" type="button" hidden>⬇ Installer</button>
+  </div>
+</header>
+
+<main>
+  <!-- ===== Accueil : recherche + catégories + modèles ===== -->
+  <section id="vueAccueil">
+    <input id="recherche" type="search" placeholder="🔍 Rechercher un modèle (ex. congé, facture, NIF…)">
+    <div id="cats" class="cats"></div>
+    <div id="liste" class="grille"></div>
+  </section>
+
+  <!-- ===== Formulaire du modèle choisi ===== -->
+  <section id="vueForm" hidden>
+    <button id="btnRetour" class="btn sec" type="button">← Retour aux modèles</button>
+    <h2 id="formTitre"></h2>
+    <div id="champs" class="form"></div>
+    <div class="actions">
+      <button id="btnGen" class="btn" type="button">Générer</button>
+      <button id="btnWord" class="btn vert" type="button" hidden>⬇ Télécharger Word</button>
+      <button id="btnPrint" class="btn sec" type="button" hidden>🖨 Imprimer</button>
+    </div>
+    <div id="apercu" class="apercu" hidden></div>
+  </section>
+</main>
+
+<!-- ===== Paramètres du cyber ===== -->
+<dialog id="dlgParam">
+  <h3>Paramètres du cyber</h3>
+  <p class="aide">Ces informations apparaissent dans l'en-tête et le pied de page de tous les documents.</p>
+  <div class="form">
+    <label class="champ"><span>Nom du cyber</span><input id="pNom"></label>
+    <label class="champ"><span>Slogan</span><input id="pSlogan"></label>
+    <label class="champ"><span>Téléphone</span><input id="pTel"></label>
+    <label class="champ"><span>Email</span><input id="pEmail"></label>
+    <label class="champ large"><span>Adresse</span><input id="pAdresse"></label>
+    <label class="champ"><span>Ville (lieu par défaut)</span><input id="pVille"></label>
+    <label class="champ"><span>NIF (facultatif)</span><input id="pNif"></label>
+    <label class="champ"><span>RCCM (facultatif)</span><input id="pRccm"></label>
+    <label class="champ large"><span>Logo (image PNG/JPG)</span><input id="pLogo" type="file" accept="image/*"></label>
+  </div>
+  <div class="actions">
+    <button id="pOk" class="btn" type="button">Enregistrer</button>
+    <button id="pLogoReset" class="btn sec" type="button">Logo d'origine</button>
+    <button id="pFermer" class="btn sec" type="button">Fermer</button>
+  </div>
+</dialog>
+
+<!-- Suggestions de désignations pour factures / devis -->
+<datalist id="services">
+  <option value="Photocopie"><option value="Impression noir et blanc"><option value="Impression couleur">
+  <option value="Saisie de document"><option value="Scan de document"><option value="Connexion internet (1 heure)">
+  <option value="Plastification"><option value="Reliure"><option value="Installation de logiciel">
+  <option value="Maintenance informatique"><option value="Création de CV">
+</datalist>
+
+<!-- Bibliothèques : mises en cache par le service worker pour le mode hors ligne -->
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<!-- Secours (clé USB / sans internet) : copiez les 2 fichiers dans un dossier libs/ -->
+<script>
+  window.docx || document.write('<script src="libs/docx.js"><\/script>');
+  window.saveAs || document.write('<script src="libs/FileSaver.min.js"><\/script>');
+</script>
+<script src="app.js"></script>
+</body>
+</html>
