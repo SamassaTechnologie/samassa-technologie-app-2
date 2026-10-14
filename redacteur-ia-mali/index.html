@@ -81,13 +81,10 @@
 </datalist>
 
 <!-- Bibliothèques : mises en cache par le service worker pour le mode hors ligne -->
-<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<!-- Secours (clé USB / sans internet) : copiez les 2 fichiers dans un dossier libs/ -->
-<script>
-  window.docx || document.write('<script src="libs/docx.js"><\/script>');
-  window.saveAs || document.write('<script src="libs/FileSaver.min.js"><\/script>');
-</script>
+<!-- Bibliothèque Word embarquée localement : l’export fonctionne hors CDN et hors ligne. -->
+<script src="libs/docx.js"></script>
+<!-- FileSaver est facultatif : app.js utilise automatiquement le téléchargement natif du navigateur. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" onerror="this.remove()"></script>
 <script src="app.js"></script>
 </body>
 </html>

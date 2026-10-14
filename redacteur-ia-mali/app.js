@@ -580,7 +580,7 @@ async function logoInfo(){
 }
 
 async function telechargerWord(){
-  if (!(await assurerDocx())) { alert("Impossible de charger la bibliothèque Word. Vérifiez votre connexion Internet puis réessayez (le premier chargement nécessite Internet)."); return; }
+  if (!(await assurerDocx())) { alert("La bibliothèque Word locale n’a pas pu être chargée. Rechargez la page puis réessayez."); return; }
   const {Document, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType, ShadingType, ImageRun, Header, Footer, Packer} = docx;
   const AL = {left: AlignmentType.LEFT, center: AlignmentType.CENTER, right: AlignmentType.RIGHT, both: AlignmentType.JUSTIFIED};
   const BLEU = '1AA7E8', TW = 9072; // largeur utile A4 avec marges 2,5 cm (en twips)
