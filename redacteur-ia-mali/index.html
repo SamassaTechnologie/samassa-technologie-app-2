@@ -80,11 +80,7 @@
   <option value="Maintenance informatique"><option value="Création de CV">
 </datalist>
 
-<!-- Bibliothèques : mises en cache par le service worker pour le mode hors ligne -->
-<!-- Bibliothèque Word embarquée localement : l’export fonctionne hors CDN et hors ligne. -->
-<script src="libs/docx.js"></script>
-<!-- FileSaver est facultatif : app.js utilise automatiquement le téléchargement natif du navigateur. -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" onerror="this.remove()"></script>
+<!-- Aucune bibliothèque externe : tout fonctionne en local, même sans Internet -->
 <script src="app.js"></script>
 </body>
 </html>

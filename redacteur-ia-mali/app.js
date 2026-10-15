@@ -313,39 +313,165 @@ L('Administration', "Demande de légalisation de documents", "Demande de légali
   "DOCS:Documents à légaliser:a",
   "J'ai l'honneur de solliciter la légalisation des documents suivants : [DOCS].\nJe m'engage à m'acquitter des frais exigés.",
   "Monsieur le Maire"),
-/* ---------------- BANQUE (+8) ---------------- */
-L('Administration', "Demande d'ouverture de compte bancaire", "Demande d'ouverture d'un compte bancaire",
-  "BANQUE:Nom de la banque|AGENCE:Agence / ville|TYPE_COMPTE:Type de compte:s:compte courant,compte épargne,compte professionnel|PROFESSION:Profession / activité|PIECE:Pièce d'identité (type et numéro)|DEPOT:Montant du dépôt initial (facultatif)",
-  "J'ai l'honneur de solliciter l'ouverture d'un [TYPE_COMPTE] auprès de votre établissement, dans votre agence de [AGENCE].\nExerçant la profession / activité de [PROFESSION], je souhaite bénéficier des services associés à ce compte.\nVous trouverez ci-joint les renseignements et pièces nécessaires à l'étude de ma demande. Je reste à votre disposition pour toute information complémentaire.",
-  "Monsieur/Madame le Directeur de l'agence"),
-L('Administration', "Demande de fermeture de compte bancaire", "Demande de clôture de compte bancaire",
-  "BANQUE:Nom de la banque|AGENCE:Agence / ville|NUM_COMPTE:Numéro de compte|MOTIF:Motif de la clôture:a|DESTINATION:Destination du solde créditeur (RIB ou retrait)",
-  "Je vous prie de bien vouloir procéder à la clôture de mon compte n° [NUM_COMPTE] ouvert dans votre agence de [AGENCE].\nCette demande est motivée par : [MOTIF]. Je vous remercie de m'indiquer les éventuelles formalités restantes et de traiter le solde créditeur selon les instructions suivantes : [DESTINATION].\nJe certifie avoir restitué, ou m'engage à restituer, les moyens de paiement liés à ce compte.",
-  "Monsieur/Madame le Directeur de l'agence"),
-L('Administration', "Demande d'attestation de compte bancaire", "Demande d'attestation de compte",
-  "BANQUE:Nom de la banque|AGENCE:Agence / ville|NUM_COMPTE:Numéro de compte (facultatif)|OBJET_ATTESTATION:Objet de l'attestation (visa, dossier, concours...)",
-  "J'ai l'honneur de solliciter la délivrance d'une attestation relative à mon compte ouvert auprès de votre agence de [AGENCE].\nCette attestation m'est nécessaire pour : [OBJET_ATTESTATION].\nJe vous remercie d'y faire figurer, si nécessaire, les informations bancaires utiles à la constitution de mon dossier, dans le respect des procédures de votre établissement.",
-  "Monsieur/Madame le Directeur de l'agence"),
-L('Administration', "Demande de relevé de compte bancaire", "Demande de relevé de compte",
-  "BANQUE:Nom de la banque|AGENCE:Agence / ville|NUM_COMPTE:Numéro de compte|PERIODE:Période concernée|FORMAT:Format souhaité:s:relevé papier,relevé électronique|MOTIF:Motif de la demande (facultatif)",
-  "Je vous prie de bien vouloir me délivrer un relevé de mon compte n° [NUM_COMPTE], ouvert dans votre agence de [AGENCE], pour la période suivante : [PERIODE].\nJe souhaite recevoir ce document au format [FORMAT]. Motif éventuel : [MOTIF].\nJe reste disponible pour régler les frais applicables et accomplir toute formalité nécessaire.",
-  "Monsieur/Madame le Directeur de l'agence"),
-L('Administration', "Demande de changement de coordonnées bancaires", "Demande de mise à jour des coordonnées",
-  "BANQUE:Nom de la banque|AGENCE:Agence / ville|NUM_COMPTE:Numéro de compte|NOUVELLE_ADRESSE:Nouvelle adresse|NOUVEAU_TEL:Nouveau téléphone|NOUVEL_EMAIL:Nouvel e-mail|DATE_EFFET:Date souhaitée de prise en compte:d",
-  "Je vous prie de bien vouloir mettre à jour les coordonnées rattachées à mon compte n° [NUM_COMPTE].\nÀ compter du [DATE_EFFET], je vous remercie d'enregistrer les informations suivantes : adresse [NOUVELLE_ADRESSE], téléphone [NOUVEAU_TEL] et e-mail [NOUVEL_EMAIL].\nJe joins à la présente les justificatifs nécessaires et vous remercie de me confirmer la prise en compte de cette modification.",
-  "Monsieur/Madame le Directeur de l'agence"),
-L('Administration', "Demande de modification de signature bancaire", "Demande de changement de signature",
-  "BANQUE:Nom de la banque|AGENCE:Agence / ville|NUM_COMPTE:Numéro de compte|MOTIF_SIG:Motif du changement de signature:a|DATE_EFFET:Date souhaitée de prise en compte:d|PIECES_SIG:Pièces justificatives jointes:a",
-  "Je vous prie de bien vouloir enregistrer la modification de ma signature sur le compte n° [NUM_COMPTE].\nCette demande est motivée par : [MOTIF_SIG]. La nouvelle signature devra être prise en compte à partir du [DATE_EFFET].\nVous trouverez ci-joint les pièces justificatives suivantes : [PIECES_SIG]. Je reste disponible pour toute vérification d'identité requise.",
-  "Monsieur/Madame le Directeur de l'agence"),
-L('Administration', "Demande de chéquier ou de carte bancaire", "Demande de moyen de paiement",
-  "BANQUE:Nom de la banque|AGENCE:Agence / ville|NUM_COMPTE:Numéro de compte|MOYEN:Produit demandé:s:chéquier,carte bancaire|TYPE_CARTE:Type de carte (facultatif)|RETRAIT:Mode de retrait souhaité:s:retrait en agence,envoi à l'adresse indiquée",
-  "Titulaire du compte n° [NUM_COMPTE], je vous prie de bien vouloir mettre à ma disposition le moyen de paiement suivant : [MOYEN].\nLe cas échéant, je souhaite une [TYPE_CARTE]. Je souhaite retirer ce moyen de paiement selon le mode suivant : [RETRAIT].\nJe m'engage à respecter les conditions et tarifs applicables à ce service.",
-  "Monsieur/Madame le Directeur de l'agence"),
-L('Administration', "Demande de procuration bancaire", "Demande d'établissement d'une procuration bancaire",
-  "BANQUE:Nom de la banque|AGENCE:Agence / ville|NUM_COMPTE:Numéro de compte|MANDATAIRE:Nom et prénom du mandataire|NAISS_MAND:Date et lieu de naissance du mandataire|PIECE_MAND:Pièce d'identité du mandataire|ETENDUE:Étendue des pouvoirs accordés:a|DUREE:Durée de la procuration (facultatif)",
-  "Je sollicite l'établissement d'une procuration bancaire au profit de [MANDATAIRE], né(e) le / à [NAISS_MAND], titulaire de la pièce d'identité [PIECE_MAND], sur mon compte n° [NUM_COMPTE].\nLes pouvoirs accordés sont les suivants : [ETENDUE]. Cette procuration est demandée pour une durée de [DUREE].\nJe vous remercie de m'indiquer les formalités et justificatifs nécessaires à son enregistrement.",
-  "Monsieur/Madame le Directeur de l'agence")
+
+/* ---------------- BANQUE & FINANCE (5) ---------------- */
+L('Banque & Finance', "Ouverture de compte bancaire", "Demande d'ouverture de compte",
+  "TYPE:Type de compte:s:courant,épargne,professionnel|NAISS:Date et lieu de naissance|PROFESSION:Profession|PJ:Pièces jointes:a:Copie de la pièce d'identité\nCertificat de résidence\nPhotos d'identité",
+  "Né(e) le [NAISS], exerçant la profession de [PROFESSION], j'ai l'honneur de solliciter l'ouverture d'un compte [TYPE] dans les livres de votre établissement.\nJe m'engage à respecter les conditions de fonctionnement du compte et à fournir toutes les pièces exigées.",
+  "Monsieur le Directeur de la Banque"),
+L('Banque & Finance', "Fermeture de compte bancaire", "Demande de clôture de compte",
+  "N_CPT:Numéro du compte|MOTIF:Motif de la clôture|SOLDE:Destination du solde (virement, retrait en espèces)",
+  "Titulaire du compte n° [N_CPT] ouvert dans vos livres, j'ai l'honneur de solliciter sa clôture pour le motif suivant : [MOTIF].\nJe vous prie de bien vouloir remettre le solde par la voie suivante : [SOLDE], après déduction des frais éventuels, et de me délivrer un quitus de clôture.",
+  "Monsieur le Directeur de la Banque"),
+L('Banque & Finance', "Demande de crédit / prêt", "Demande de crédit",
+  "N_CPT:Numéro de compte|MONTANT:Montant demandé (F CFA):m|OBJ_CREDIT:Objet du crédit|DUREE:Durée de remboursement|REVENU:Revenu mensuel (F CFA):m",
+  "Titulaire du compte n° [N_CPT], j'ai l'honneur de solliciter un crédit de [MONTANT] F CFA ([MONTANT_L] francs CFA) destiné à : [OBJ_CREDIT].\nMon revenu mensuel est de [REVENU] F CFA et je propose un remboursement sur [DUREE].\nJe me tiens à votre disposition pour fournir tout justificatif.",
+  "Monsieur le Directeur de la Banque"),
+L('Banque & Finance', "Demande de relevé de compte", "Demande de relevé de compte",
+  "N_CPT:Numéro du compte|PERIODE:Période souhaitée (ex. janvier à juin 2026)",
+  "Titulaire du compte n° [N_CPT], j'ai l'honneur de solliciter la délivrance de mon relevé de compte pour la période : [PERIODE].",
+  "Monsieur le Directeur de la Banque"),
+L('Banque & Finance', "Opposition carte / chéquier perdu", "Opposition sur carte ou chéquier",
+  "ELEM:Élément perdu:s:ma carte bancaire,mon chéquier|N_CPT:Numéro du compte|DATE_PERTE:Date de la perte:d|CIRC:Circonstances",
+  "Je vous informe de la perte ou du vol de [ELEM], associé au compte n° [N_CPT], survenu le [DATE_PERTE] : [CIRC].\nJe vous prie de procéder immédiatement à son opposition et de m'en délivrer un nouveau.",
+  "Monsieur le Directeur de la Banque"),
+
+/* ---------------- IMPÔTS & TRÉSOR (6) ---------------- */
+L('Impôts & Trésor', "Demande de quitus fiscal", "Demande d'attestation de situation fiscale",
+  "NIF_P:Votre NIF|ENTREPRISE:Entreprise / activité|MOTIF:Motif (marché, banque, appel d'offres...)",
+  "Titulaire du NIF [NIF_P] et exerçant sous l'enseigne [ENTREPRISE], j'ai l'honneur de solliciter la délivrance d'une attestation de situation fiscale (quitus), nécessaire pour : [MOTIF].",
+  "Monsieur le Directeur Général des Impôts"),
+L('Impôts & Trésor', "Demande de délai de paiement d'impôt", "Demande de délai de paiement",
+  "NIF_P:Votre NIF|NATURE:Impôt concerné|MONTANT:Montant dû (F CFA):m|DELAI_SOUHAITE:Délai souhaité|MOTIF:Difficultés rencontrées:a",
+  "Titulaire du NIF [NIF_P], je suis redevable de [NATURE] pour un montant de [MONTANT] F CFA ([MONTANT_L] francs CFA).\nFaisant face à des difficultés de trésorerie : [MOTIF], j'ai l'honneur de solliciter un délai de paiement de [DELAI_SOUHAITE].\nJe m'engage à respecter l'échéancier qui me sera accordé.",
+  "Monsieur le Directeur Général des Impôts"),
+L('Impôts & Trésor', "Contestation d'imposition", "Réclamation contre une imposition",
+  "NIF_P:Votre NIF|NATURE:Impôt contesté|ANNEE:Année d'imposition|MONTANT:Montant réclamé (F CFA):m|ARGUMENTS:Motifs de la contestation:a",
+  "Titulaire du NIF [NIF_P], j'ai reçu un avis d'imposition au titre de [NATURE] pour l'année [ANNEE], d'un montant de [MONTANT] F CFA.\nJe conteste cette imposition pour les motifs suivants : [ARGUMENTS].\nJe sollicite en conséquence sa révision ou son annulation.",
+  "Monsieur le Directeur Général des Impôts"),
+L('Impôts & Trésor', "Déclaration de cessation d'activité", "Cessation d'activité",
+  "NIF_P:Votre NIF|ENTREPRISE:Entreprise|DATE_CESS:Date de cessation:d|MOTIF:Motif",
+  "J'ai l'honneur de vous informer de la cessation de mon activité exercée sous l'enseigne [ENTREPRISE] (NIF [NIF_P]), à compter du [DATE_CESS].\nMotif : [MOTIF].\nJe vous prie de bien vouloir prendre acte de cette cessation et de m'indiquer les formalités à accomplir.",
+  "Monsieur le Directeur Général des Impôts"),
+L('Impôts & Trésor', "Demande de paiement (Trésor public)", "Demande de paiement de facture",
+  "STRUCTURE:Structure débitrice|FACTURE_N:N° de la facture / du marché|OBJ_MARCHE:Objet des prestations|MONTANT:Montant dû (F CFA):m",
+  "Notre entreprise a exécuté pour le compte de [STRUCTURE] les prestations suivantes : [OBJ_MARCHE] (facture / marché n° [FACTURE_N]).\nLe montant de [MONTANT] F CFA ([MONTANT_L] francs CFA) demeure impayé à ce jour.\nNous sollicitons le règlement de cette somme dans les meilleurs délais.",
+  "Monsieur le Directeur National du Trésor et de la Comptabilité Publique", FIN_NOUS, true),
+L('Impôts & Trésor', "Demande de patente", "Demande de patente",
+  "NIF_P:Votre NIF|ACTIVITE:Activité exercée|ADRESSE_ACT:Adresse de l'activité",
+  "J'exerce l'activité de [ACTIVITE] à [ADRESSE_ACT] (NIF [NIF_P]).\nJ'ai l'honneur de solliciter ma prise en charge au titre de la contribution des patentes et la délivrance du document correspondant.",
+  "Monsieur le Directeur Général des Impôts"),
+
+/* ---------------- DOMAINES & FONCIER (4) ---------------- */
+L('Domaines & Foncier', "Demande de titre foncier", "Demande d'immatriculation foncière",
+  "PARCELLE:Description (lot, îlot, quartier)|SUPERFICIE:Superficie (m²)|ORIGINE:Origine du droit (achat, héritage, attribution)|PJ:Pièces jointes:a:Acte de cession ou de vente\nPlan de situation\nCopie de la pièce d'identité",
+  "Je suis propriétaire de la parcelle située à [PARCELLE], d'une superficie de [SUPERFICIE] m², acquise par : [ORIGINE].\nJ'ai l'honneur de solliciter son immatriculation et la délivrance d'un titre foncier à mon nom.",
+  "Monsieur le Directeur Régional des Domaines et du Cadastre"),
+L('Domaines & Foncier', "Demande d'attribution de parcelle", "Demande d'attribution de parcelle",
+  "USAGE:Usage:s:habitation,commercial,agricole,industriel|LOCALITE:Localité souhaitée|SUPERFICIE:Superficie souhaitée (m²)|SITUATION:Votre situation:a",
+  "J'ai l'honneur de solliciter l'attribution d'une parcelle à usage [USAGE], d'environ [SUPERFICIE] m², à [LOCALITE].\nMa situation : [SITUATION].\nJe m'engage à respecter la réglementation foncière et à mettre la parcelle en valeur.",
+  "Monsieur le Maire"),
+L('Domaines & Foncier', "Demande de permis de construire", "Demande de permis de construire",
+  "TERRAIN:Adresse et références du terrain|NATURE:Nature de la construction|SURFACE:Surface bâtie (m²)|PJ:Pièces jointes:a:Titre ou acte de propriété\nPlans de la construction\nCopie de la pièce d'identité",
+  "Propriétaire du terrain situé à [TERRAIN], j'ai l'honneur de solliciter un permis de construire pour : [NATURE], d'une surface de [SURFACE] m².\nJe m'engage à respecter les règles d'urbanisme et les prescriptions techniques.",
+  "Monsieur le Maire"),
+L('Domaines & Foncier', "Demande de bornage", "Demande de bornage de parcelle",
+  "PARCELLE:Description de la parcelle|LIEU_PARC:Quartier / localité|MOTIF:Motif (litige, vente, titre foncier)",
+  "Propriétaire de la parcelle [PARCELLE] située à [LIEU_PARC], j'ai l'honneur de solliciter son bornage par un géomètre du cadastre, en vue de : [MOTIF].\nJe m'engage à régler les frais correspondants.",
+  "Monsieur le Chef du Bureau du Cadastre"),
+
+/* ---------------- POLICE & JUSTICE (4) ---------------- */
+L('Police & Justice', "Main courante / déclaration", "Déclaration de faits (main courante)",
+  "FAITS:Exposé des faits:a|DATE_FAITS:Date des faits:d|LIEU_FAITS:Lieu des faits",
+  "J'ai l'honneur de porter à votre connaissance les faits suivants, survenus le [DATE_FAITS] à [LIEU_FAITS] : [FAITS].\nJe souhaite que ces faits soient consignés sur le registre de main courante, sans engager de poursuites pour le moment.",
+  "Monsieur le Commissaire de Police"),
+L('Police & Justice', "Demande de copie de jugement", "Demande de copie de jugement",
+  "JUGEMENT:Référence du jugement (n°, date)|PARTIES:Parties concernées|JURIDICTION:Juridiction",
+  "J'ai l'honneur de solliciter la délivrance d'une copie du jugement référencé [JUGEMENT], rendu par [JURIDICTION] dans l'affaire opposant : [PARTIES].\nJe m'engage à régler les frais de timbres et de greffe.",
+  "Monsieur le Greffier en Chef"),
+L('Police & Justice', "Requête au tribunal", "Requête",
+  "OBJ_REQ:Objet de la requête:a|EXPOSE:Exposé des faits:a",
+  "J'ai l'honneur de vous exposer ce qui suit : [EXPOSE].\nEn conséquence, je sollicite de votre haute bienveillance : [OBJ_REQ].\nJe joins à la présente les pièces justificatives.",
+  "Monsieur le Président du Tribunal"),
+L('Police & Justice', "Autorisation de réunion / manifestation", "Demande d'autorisation de réunion",
+  "EVENEMENT:Nature de l'événement|DATE_EV:Date:d|LIEU_EV:Lieu|PARTICIPANTS:Nombre de participants",
+  "J'ai l'honneur de solliciter l'autorisation d'organiser [EVENEMENT], le [DATE_EV] à [LIEU_EV], avec environ [PARTICIPANTS] participants.\nJe m'engage à garantir le bon ordre et à respecter la réglementation en vigueur.",
+  "Monsieur le Préfet"),
+
+/* ---------------- SANTÉ (2) ---------------- */
+L('Santé', "Demande de certificat médical", "Demande de certificat médical",
+  "MOTIF:Motif (aptitude, arrêt de travail, voyage...)",
+  "J'ai l'honneur de solliciter la délivrance d'un certificat médical nécessaire pour : [MOTIF].\nJe me présenterai à la consultation à la date que vous voudrez bien m'indiquer.",
+  "Monsieur le Médecin Chef"),
+L('Santé', "Demande de dossier médical", "Demande de copie de dossier médical",
+  "PATIENT:Nom du patient|PERIODE:Période concernée|MOTIF:Motif de la demande",
+  "J'ai l'honneur de solliciter la copie du dossier médical de [PATIENT] pour la période [PERIODE], en vue de : [MOTIF].",
+  "Monsieur le Médecin Chef"),
+
+/* ---------------- ASSURANCE (3) ---------------- */
+L('Assurance', "Déclaration de sinistre", "Déclaration de sinistre",
+  "N_POLICE:N° de police d'assurance|DATE_SIN:Date du sinistre:d|LIEU_SIN:Lieu du sinistre|DESCRIPTION:Description et dégâts:a",
+  "Assuré(e) sous la police n° [N_POLICE], je vous déclare le sinistre survenu le [DATE_SIN] à [LIEU_SIN] : [DESCRIPTION].\nJe vous prie de bien vouloir diligenter une expertise et me faire connaître la suite réservée à mon dossier.",
+  "Monsieur le Directeur de la compagnie d'assurance"),
+L('Assurance', "Demande de remboursement", "Demande de remboursement",
+  "N_POLICE:N° de police|OBJ_REMB:Objet du remboursement|MONTANT:Montant (F CFA):m",
+  "Assuré(e) sous la police n° [N_POLICE], j'ai l'honneur de solliciter le remboursement de : [OBJ_REMB], pour un montant de [MONTANT] F CFA ([MONTANT_L] francs CFA).\nJe joins les justificatifs.",
+  "Monsieur le Directeur de la compagnie d'assurance"),
+L('Assurance', "Résiliation de contrat d'assurance", "Résiliation de contrat d'assurance",
+  "N_POLICE:N° de police|DATE_EFFET:Date d'effet souhaitée:d|MOTIF:Motif",
+  "J'ai l'honneur de vous notifier la résiliation de mon contrat d'assurance n° [N_POLICE], à compter du [DATE_EFFET], pour le motif suivant : [MOTIF].\nJe vous prie de m'en accuser réception.",
+  "Monsieur le Directeur de la compagnie d'assurance"),
+
+/* ---------------- DOUANE & TRANSPORT (3) ---------------- */
+L('Douane & Transport', "Demande d'exonération douanière", "Demande d'exonération de droits de douane",
+  "MARCHANDISES:Marchandises concernées:a|VALEUR:Valeur estimée (F CFA):m|PROVENANCE:Provenance|MOTIF:Motif de l'exonération",
+  "J'ai l'honneur de solliciter l'exonération des droits et taxes de douane sur : [MARCHANDISES], en provenance de [PROVENANCE], d'une valeur de [VALEUR] F CFA.\nMotif : [MOTIF].",
+  "Monsieur le Directeur Général des Douanes"),
+L('Douane & Transport', "Demande d'agrément de transport", "Demande d'agrément de transport",
+  "ACTIVITE_T:Type de transport (marchandises, voyageurs...)|VEHICULES:Véhicules concernés (immatriculation, type):a",
+  "J'ai l'honneur de solliciter un agrément pour exercer l'activité de transport de [ACTIVITE_T] avec les véhicules suivants : [VEHICULES].\nJe m'engage à respecter la réglementation des transports.",
+  "Monsieur le Directeur des Transports"),
+L('Douane & Transport', "Demande de duplicata de carte grise", "Demande de duplicata de carte grise",
+  "IMMAT:Immatriculation|MARQUE:Marque et type|MOTIF:Motif (perte, vol, détérioration)",
+  "Propriétaire du véhicule [MARQUE], immatriculé [IMMAT], j'ai l'honneur de solliciter un duplicata de la carte grise, l'original ayant été perdu ou détérioré : [MOTIF].",
+  "Monsieur le Directeur des Transports"),
+
+/* ---------------- ASSOCIATION & ENTREPRISE (4) ---------------- */
+L('Association & Entreprise', "Demande de récépissé d'association", "Demande de récépissé de déclaration d'association",
+  "NOM_ASSO:Nom de l'association|SIEGE:Siège|OBJECTIFS:Objectifs:a|PJ:Pièces jointes:a:Statuts\nRèglement intérieur\nPV de l'assemblée constitutive\nListe des membres du bureau",
+  "J'ai l'honneur de vous déclarer la création de l'association [NOM_ASSO], dont le siège est à [SIEGE].\nElle a pour objectifs : [OBJECTIFS].\nJe sollicite la délivrance du récépissé de déclaration.",
+  "Monsieur le Ministre de l'Administration Territoriale"),
+D('Association & Entreprise', "Convocation d'assemblée générale", "ASSO:Nom de l'association / société:t:@nom|DATE_AG:Date de l'assemblée:d|HEURE:Heure|LIEU_AG:Lieu|ORDRE:Ordre du jour:a",
+  "Les membres de [ASSO] sont convoqués en assemblée générale le [DATE_AG] à [HEURE], à [LIEU_AG].\nOrdre du jour :\n[ORDRE]\nVotre présence est indispensable. En cas d'empêchement, vous pouvez donner pouvoir à un autre membre.",
+  {tdoc:"CONVOCATION À L'ASSEMBLÉE GÉNÉRALE"}),
+L('Association & Entreprise', "Demande de partenariat", "Proposition de partenariat",
+  "PROJET:Présentation de votre structure / projet:a|PROPOSITION:Ce que vous proposez:a",
+  "Nous nous permettons de vous présenter notre structure : [PROJET].\nNous vous proposons un partenariat sur la base suivante : [PROPOSITION].\nNous serions heureux de vous rencontrer pour en discuter.",
+  "Monsieur le Directeur", FIN_NOUS, true),
+L('Association & Entreprise', "Soumission à un appel d'offres", "Soumission - appel d'offres",
+  "REF_AO:Référence de l'appel d'offres|OBJ_AO:Objet de l'appel d'offres|MONTANT:Montant de l'offre (F CFA):m|VALIDITE:Validité de l'offre (ex. 90 jours)",
+  "En réponse à l'appel d'offres n° [REF_AO] relatif à : [OBJ_AO], nous avons l'honneur de soumettre notre offre pour un montant de [MONTANT] F CFA ([MONTANT_L] francs CFA).\nNotre offre reste valable [VALIDITE]. Nous joignons les pièces administratives et techniques exigées.",
+  "Monsieur le Président de la Commission d'ouverture des offres", FIN_NOUS, true),
+
+/* ---------------- ÉTAT CIVIL (3) ---------------- */
+L('État civil', "Demande d'acte de mariage", "Demande d'acte de mariage",
+  "EPOUX:Nom de l'époux|EPOUSE:Nom de l'épouse|DATE_MAR:Date du mariage:d|LIEU_MAR:Lieu du mariage",
+  "J'ai l'honneur de solliciter la délivrance d'une copie de l'acte de mariage de [EPOUX] et de [EPOUSE], célébré le [DATE_MAR] à [LIEU_MAR].",
+  "Monsieur l'Officier d'État Civil"),
+L('État civil', "Demande d'acte de décès", "Demande d'acte de décès",
+  "DEFUNT:Nom du défunt|DATE_DECES:Date du décès:d|LIEU_DECES:Lieu du décès|LIEN:Votre lien de parenté",
+  "En ma qualité de [LIEN], j'ai l'honneur de solliciter la délivrance d'un acte de décès au nom de [DEFUNT], décédé(e) le [DATE_DECES] à [LIEU_DECES].",
+  "Monsieur l'Officier d'État Civil"),
+L('État civil', "Demande de jugement supplétif", "Requête aux fins de jugement supplétif d'acte de naissance",
+  "PERSONNE:Nom de la personne concernée|NAISS:Date de naissance|LIEU_NAISS:Lieu de naissance|PERE:Nom du père|MERE:Nom de la mère|MOTIF:Raison de l'absence d'acte",
+  "J'ai l'honneur de solliciter un jugement supplétif d'acte de naissance au profit de [PERSONNE], né(e) le [NAISS] à [LIEU_NAISS], fils/fille de [PERE] et de [MERE].\nL'acte n'a pas pu être établi pour la raison suivante : [MOTIF].\nJe joins les pièces et témoignages utiles.",
+  "Monsieur le Président du Tribunal"),
+
+/* ---------------- AGRICULTURE (1) ---------------- */
+L('Agriculture', "Demande d'appui agricole", "Demande d'appui (semences, engrais, matériel)",
+  "CULTURE:Cultures pratiquées|SUPERFICIE:Superficie exploitée (ha)|LOCALITE:Localité|BESOIN:Appui demandé:a",
+  "Exploitant(e) agricole à [LOCALITE], je cultive [CULTURE] sur [SUPERFICIE] hectares.\nJ'ai l'honneur de solliciter l'appui suivant : [BESOIN].\nJe m'engage à utiliser cet appui exclusivement pour mon exploitation.",
+  "Monsieur le Directeur Régional de l'Agriculture")
 ];
 
 /* ==================================================================
@@ -581,27 +707,13 @@ function apercuHtml(B){
 }
 
 /* ==================================================================
-   7. EXPORT WORD (.docx) avec docx.js — modifiable dans Word
-   Times New Roman 12, marges 2,5 cm, en-tête logo, pied de page adresse
+   7. EXPORT WORD (.docx) — générateur INTÉGRÉ, sans aucune bibliothèque
+   ni connexion Internet. Un .docx est une archive ZIP de fichiers XML :
+   on écrit donc nous-mêmes le ZIP (sans compression) et le XML Word.
+   Times New Roman 12, marges 2,5 cm, en-tête logo, pied de page + pagination.
    ================================================================== */
-// Chargement de docx.js avec plusieurs sources de secours (local, jsDelivr, unpkg)
-function chargerScript(url){
-  return new Promise((ok, ko) => {
-    const el = document.createElement('script'); el.src = url;
-    if (url.startsWith('http')) el.crossOrigin = 'anonymous';   // permet la mise en cache hors ligne
-    el.onload = ok; el.onerror = () => { el.remove(); ko(); };
-    document.head.appendChild(el);
-  });
-}
-async function assurerDocx(){
-  if (typeof docx !== 'undefined') return true;
-  const sources = ['libs/docx.js', 'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js', 'https://unpkg.com/docx@8.5.0/build/index.js'];
-  for (const u of sources) { try { await chargerScript(u); if (typeof docx !== 'undefined') return true; } catch (e) {} }
-  return false;
-}
-
 let logoCache = null;
-async function logoInfo(){
+async function logoInfo(){ // logo (PNG) + dimensions, pour l'en-tête Word
   if (logoCache) return logoCache;
   const src = LS.get('logo', null) || 'logo.png';
   try {
@@ -612,74 +724,95 @@ async function logoInfo(){
   return logoCache;
 }
 
+/* --- 7a. Écriture d'un fichier ZIP (méthode "stockée", sans compression) --- */
+const utf8 = s => new TextEncoder().encode(s);
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+const crc32 = d => { let c = 0xFFFFFFFF; for (let i = 0; i < d.length; i++) c = CRC_T[(c ^ d[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; };
+function creerZip(fichiers){ // fichiers : [{n: 'chemin', d: Uint8Array}]
+  const parts = [], central = []; let off = 0;
+  const heure = 0, date = ((2026 - 1980) << 9) | (1 << 5) | 1;
+  fichiers.forEach(f => {
+    const nom = utf8(f.n), crc = crc32(f.d), L = new DataView(new ArrayBuffer(30)), C = new DataView(new ArrayBuffer(46));
+    L.setUint32(0, 0x04034b50, true); L.setUint16(4, 20, true); L.setUint16(6, 0x0800, true); L.setUint16(10, heure, true); L.setUint16(12, date, true);
+    L.setUint32(14, crc, true); L.setUint32(18, f.d.length, true); L.setUint32(22, f.d.length, true); L.setUint16(26, nom.length, true);
+    C.setUint32(0, 0x02014b50, true); C.setUint16(4, 20, true); C.setUint16(6, 20, true); C.setUint16(8, 0x0800, true); C.setUint16(12, heure, true); C.setUint16(14, date, true);
+    C.setUint32(16, crc, true); C.setUint32(20, f.d.length, true); C.setUint32(24, f.d.length, true); C.setUint16(28, nom.length, true); C.setUint32(42, off, true);
+    parts.push(new Uint8Array(L.buffer), nom, f.d); central.push(new Uint8Array(C.buffer), nom);
+    off += 30 + nom.length + f.d.length;
+  });
+  const cd = central.reduce((n, x) => n + x.length, 0), E = new DataView(new ArrayBuffer(22));
+  E.setUint32(0, 0x06054b50, true); E.setUint16(8, fichiers.length, true); E.setUint16(10, fichiers.length, true); E.setUint32(12, cd, true); E.setUint32(16, off, true);
+  return new Blob([...parts, ...central, new Uint8Array(E.buffer)], {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+}
+
+/* --- 7b. Génération du XML Word à partir des blocs --- */
+const xe = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const NS = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"';
+const XML = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+const BLEU = '1AA7E8', TW = 9072;   // TW = largeur utile en twips (A4 moins marges 2,5 cm)
+const runX = r => String(r.x).split('\n').map((t, i) =>
+  `<w:r><w:rPr>${r.b ? '<w:b/>' : ''}${r.i ? '<w:i/>' : ''}${r.c ? `<w:color w:val="${r.c}"/>` : ''}${r.sz ? `<w:sz w:val="${r.sz}"/><w:szCs w:val="${r.sz}"/>` : ''}${r.u ? '<w:u w:val="single"/>' : ''}</w:rPr>${i ? '<w:br/>' : ''}<w:t xml:space="preserve">${xe(t)}</w:t></w:r>`).join('');
+const paraX = b => b.raw ? b.raw :
+  `<w:p><w:pPr>${b.bb ? `<w:pBdr><w:bottom w:val="single" w:sz="6" w:space="1" w:color="${BLEU}"/></w:pBdr>` : ''}<w:spacing w:before="${(b.sb || 0) * 20}" w:after="${(b.sa ?? 6) * 20}" w:line="276" w:lineRule="auto"/>${(b.ind || b.fi) ? `<w:ind w:left="${b.ind || 0}"${b.fi ? ' w:firstLine="567"' : ''}/>` : ''}<w:jc w:val="${b.al || 'left'}"/></w:pPr>${(b.runs || []).map(runX).join('')}</w:p>`;
+const tableX = t => {
+  const v = t.bord ? 'single' : 'nil', w = t.w.map(x => Math.round(TW * x / 100));
+  const bd = ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map(s => `<w:${s} w:val="${v}" w:sz="4" w:space="0" w:color="444444"/>`).join('');
+  return `<w:tbl><w:tblPr><w:tblW w:w="${TW}" w:type="dxa"/><w:tblBorders>${bd}</w:tblBorders><w:tblLayout w:type="fixed"/></w:tblPr><w:tblGrid>${w.map(x => `<w:gridCol w:w="${x}"/>`).join('')}</w:tblGrid>`
+    + t.rows.map(r => '<w:tr>' + r.map((c, i) => `<w:tc><w:tcPr><w:tcW w:w="${w[i]}" w:type="dxa"/>${c.fill ? `<w:shd w:val="clear" w:color="auto" w:fill="${c.fill}"/>` : ''}<w:tcMar><w:top w:w="60" w:type="dxa"/><w:left w:w="80" w:type="dxa"/><w:bottom w:w="60" w:type="dxa"/><w:right w:w="80" w:type="dxa"/></w:tcMar></w:tcPr>${c.blocs.map(paraX).join('')}</w:tc>`).join('') + '</w:tr>').join('') + '</w:tbl>';
+};
+const imageX = (cx, cy) => `<w:p><w:pPr><w:spacing w:after="0"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="1" name="Logo"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="0" name="logo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdLogo"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
+
+function construireDocx(B, logo){
+  // Corps du document (un paragraphe vide sépare deux tableaux collés, sinon Word les fusionne)
+  let corps = '', precTable = false;
+  B.forEach(b => {
+    if (b.tbl) { if (precTable) corps += '<w:p><w:pPr><w:spacing w:after="0"/></w:pPr></w:p>'; corps += tableX(b.tbl); precTable = true; }
+    else { corps += paraX(b); precTable = false; }
+  });
+  if (precTable) corps += '<w:p/>';
+  const document_ = `${XML}<w:document ${NS}><w:body>${corps}<w:sectPr><w:headerReference w:type="default" r:id="rIdH"/><w:footerReference w:type="default" r:id="rIdF"/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1417" w:right="1417" w:bottom="1417" w:left="1417" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+
+  // En-tête : [LOGO CYBER] + nom, slogan, contacts, puis filet bleu
+  const cLogo = logo ? imageX(Math.round(55 * logo.w / logo.h * 9525), 55 * 9525) : paraX({runs: [{x: '[LOGO CYBER]', c: '999999'}], sa: 0});
+  const entete = `${XML}<w:hdr ${NS}>` + tableX({w: [18, 82], rows: [[{blocs: [{raw: cLogo}]}, {blocs: [
+    {runs: [{x: P.nom, b: true, c: '0B6FB8', sz: 30}], sa: 0}, {runs: [{x: P.slogan, i: true, sz: 20}], sa: 0}, {runs: [{x: `Tél : ${P.tel} – ${P.email}`, sz: 18}], sa: 0}]}]]})
+    + paraX({runs: [], bb: true, sa: 0}) + '</w:hdr>';
+
+  // Pied de page : adresse + "Page X / Y"
+  const pt = t => `<w:r><w:rPr><w:sz w:val="18"/></w:rPr><w:t xml:space="preserve">${xe(t)}</w:t></w:r>`;
+  const champ = c => `<w:fldSimple w:instr=" ${c} "><w:r><w:rPr><w:sz w:val="18"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple>`;
+  const pied_ = `${XML}<w:ftr ${NS}><w:p><w:pPr><w:pBdr><w:top w:val="single" w:sz="6" w:space="4" w:color="${BLEU}"/></w:pBdr><w:spacing w:after="0"/><w:jc w:val="center"/></w:pPr>${pt(pied())}</w:p>`
+    + `<w:p><w:pPr><w:spacing w:after="0"/><w:jc w:val="center"/></w:pPr>${pt('Page ')}${champ('PAGE')}${pt(' / ')}${champ('NUMPAGES')}</w:p></w:ftr>`;
+
+  const styles = `${XML}<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman" w:eastAsia="Times New Roman"/><w:sz w:val="24"/><w:szCs w:val="24"/><w:lang w:val="fr-FR"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="120"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style></w:styles>`;
+  const R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships', PK = 'http://schemas.openxmlformats.org/package/2006/relationships';
+  const types = `${XML}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/><Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/></Types>`;
+  const rels = `${XML}<Relationships xmlns="${PK}"><Relationship Id="rId1" Type="${R}/officeDocument" Target="word/document.xml"/></Relationships>`;
+  const docRels = `${XML}<Relationships xmlns="${PK}"><Relationship Id="rIdS" Type="${R}/styles" Target="styles.xml"/><Relationship Id="rIdH" Type="${R}/header" Target="header1.xml"/><Relationship Id="rIdF" Type="${R}/footer" Target="footer1.xml"/></Relationships>`;
+  const f = [{n: '[Content_Types].xml', d: utf8(types)}, {n: '_rels/.rels', d: utf8(rels)}, {n: 'word/document.xml', d: utf8(document_)}, {n: 'word/_rels/document.xml.rels', d: utf8(docRels)},
+             {n: 'word/styles.xml', d: utf8(styles)}, {n: 'word/header1.xml', d: utf8(entete)}, {n: 'word/footer1.xml', d: utf8(pied_)}];
+  if (logo) {
+    f.push({n: 'word/_rels/header1.xml.rels', d: utf8(`${XML}<Relationships xmlns="${PK}"><Relationship Id="rIdLogo" Type="${R}/image" Target="media/logo.png"/></Relationships>`)});
+    f.push({n: 'word/media/logo.png', d: logo.data});
+  }
+  return creerZip(f);
+}
+
 async function telechargerWord(){
-  if (!(await assurerDocx())) { alert("La bibliothèque Word locale n’a pas pu être chargée. Rechargez la page puis réessayez."); return; }
-  const {Document, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, BorderStyle, AlignmentType, ShadingType, ImageRun, Header, Footer, Packer} = docx;
-  const AL = {left: AlignmentType.LEFT, center: AlignmentType.CENTER, right: AlignmentType.RIGHT, both: AlignmentType.JUSTIFIED};
-  const BLEU = '1AA7E8', TW = 9072; // largeur utile A4 avec marges 2,5 cm (en twips)
-  const none = {style: BorderStyle.NONE, size: 0, color: 'FFFFFF'}, ligne = {style: BorderStyle.SINGLE, size: 4, color: '444444'};
-  const runs = rs => rs.flatMap(r => String(r.x).split('\n').map((t, i) => new TextRun({text: t, break: i ? 1 : 0, bold: r.b, italics: r.i, underline: r.u ? {} : undefined, size: r.sz, color: r.c})));
-
-  const para = b => new Paragraph({
-    alignment: AL[b.al || 'left'], children: runs(b.runs),
-    spacing: {before: (b.sb || 0) * 20, after: (b.sa ?? 6) * 20, line: 276},
-    indent: {left: b.ind || undefined, firstLine: b.fi ? 567 : undefined},
-    border: b.bb ? {bottom: {style: BorderStyle.SINGLE, size: 6, color: BLEU, space: 1}} : undefined
-  });
-  const tableau = t => new Table({
-    width: {size: TW, type: WidthType.DXA}, columnWidths: t.w.map(x => Math.round(TW * x / 100)),
-    borders: t.bord ? undefined : {top: none, bottom: none, left: none, right: none, insideHorizontal: none, insideVertical: none},
-    rows: t.rows.map(r => new TableRow({children: r.map((c, i) => new TableCell({
-      width: {size: Math.round(TW * t.w[i] / 100), type: WidthType.DXA},
-      borders: t.bord ? {top: ligne, bottom: ligne, left: ligne, right: ligne} : {top: none, bottom: none, left: none, right: none},
-      shading: c.fill ? {type: ShadingType.CLEAR, color: 'auto', fill: c.fill} : undefined,
-      margins: {top: 60, bottom: 60, left: 80, right: 80},
-      children: c.blocs.map(para)
-    }))}))
-  });
-  const enfants = blocs.map(b => b.tbl ? tableau(b.tbl) : para(b));
-
-  // En-tête : [LOGO CYBER] + nom, slogan, contacts
-  const logo = await logoInfo();
-  const cLogo = logo
-    ? new Paragraph({children: [new ImageRun({data: logo.data, transformation: {width: Math.round(55 * logo.w / logo.h), height: 55}})]})
-    : new Paragraph({children: [new TextRun({text: '[LOGO CYBER]', color: '999999'})]});
-  const cTxt = [
-    new Paragraph({spacing: {after: 0}, children: [new TextRun({text: P.nom, bold: true, size: 30, color: '0B6FB8'})]}),
-    new Paragraph({spacing: {after: 0}, children: [new TextRun({text: P.slogan, italics: true, size: 20})]}),
-    new Paragraph({spacing: {after: 0}, children: [new TextRun({text: `Tél : ${P.tel} – ${P.email}`, size: 18})]})
-  ];
-  const entete = new Header({children: [
-    new Table({
-      width: {size: TW, type: WidthType.DXA}, columnWidths: [1600, TW - 1600],
-      borders: {top: none, bottom: none, left: none, right: none, insideHorizontal: none, insideVertical: none},
-      rows: [new TableRow({children: [
-        new TableCell({width: {size: 1600, type: WidthType.DXA}, borders: {top: none, bottom: none, left: none, right: none}, children: [cLogo]}),
-        new TableCell({width: {size: TW - 1600, type: WidthType.DXA}, borders: {top: none, bottom: none, left: none, right: none}, children: cTxt})
-      ]})]}),
-    new Paragraph({border: {bottom: {style: BorderStyle.SINGLE, size: 8, color: BLEU, space: 1}}, children: []})
-  ]});
-  const basPage = new Footer({children: [new Paragraph({alignment: AlignmentType.CENTER, border: {top: {style: BorderStyle.SINGLE, size: 6, color: BLEU, space: 4}}, children: [new TextRun({text: pied(), size: 18})]}), new Paragraph({alignment: AlignmentType.CENTER, children: [new TextRun({children: ['Page ', docx.PageNumber.CURRENT, ' / ', docx.PageNumber.TOTAL_PAGES], size: 18})]})]});
-
-  const doc = new Document({
-    creator: P.nom, title: modele.titre,
-    styles: {default: {document: {run: {font: 'Times New Roman', size: 24}}}},
-    sections: [{
-      properties: {page: {size: {width: 11906, height: 16838}, margin: {top: 1417, right: 1417, bottom: 1417, left: 1417, header: 567, footer: 567}}},
-      headers: {default: entete}, footers: {default: basPage}, children: enfants
-    }]
-  });
-  const blob = await Packer.toBlob(doc);
-  const nom = norm(modele.titre).replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') + '_' + new Date().toISOString().slice(0, 10) + '.docx';
-  if (window.saveAs) saveAs(blob, nom);
-  else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nom; a.click(); }
+  try {
+    const blob = construireDocx(blocs, await logoInfo());
+    const nom = norm(modele.titre).replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') + '_' + new Date().toISOString().slice(0, 10) + '.docx';
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = nom; document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+  } catch (e) { alert("Erreur lors de la création du fichier Word : " + e.message); }
 }
 
 /* ==================================================================
    8. ACCUEIL : recherche + catégories
    ================================================================== */
 let catActive = 'Tous';
-const ICO = {'Emploi':'💼','Administration':'🏛️','Entreprise Cyber':'🖨️','Scolaire':'🎓','Divers':'✉️','Vente & Commerce':'🛒','Immobilier':'🏠'};
+const ICO = {'Emploi':'💼','Administration':'🏛️','Entreprise Cyber':'🖨️','Scolaire':'🎓','Divers':'✉️','Vente & Commerce':'🛒','Immobilier':'🏠','Banque & Finance':'🏦','Impôts & Trésor':'💰','Domaines & Foncier':'🗺️','Police & Justice':'⚖️','Santé':'🩺','Assurance':'🛡️','Douane & Transport':'🚚','Association & Entreprise':'🤝','État civil':'📜','Agriculture':'🌾'};
 function afficherAccueil(){
   const cats = ['Tous', ...new Set(MODELES.map(m => m.cat))];
   $('#cats').innerHTML = cats.map(c => `<button class="${c === catActive ? 'on' : ''}" data-c="${esc(c)}">${esc(c)}${c === 'Tous' ? ' (' + MODELES.length + ')' : ''}</button>`).join('');
@@ -743,4 +876,3 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catc
 if (LS.get('logo', null)) $('.brand img').src = LS.get('logo');
 majCompteur();
 afficherAccueil();
-assurerDocx();   // précharge la bibliothèque Word
