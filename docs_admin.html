@@ -405,108 +405,177 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothi
       </div>
 
 
-      <!-- ══ ONGLET 🤖 IA RÉDACTEUR ══ -->
+      <!-- ══ ONGLET 🤖 IA RÉDACTEUR v3.0 ══ -->
       <div class="tab-content" id="tab-ia-content">
 
-        <!-- Hero -->
+        <!-- Hero IA -->
         <div class="ai-hero">
-          <div class="ai-hero-title">✨ Rédacteur IA — Gratuit avec Google</div>
-          <div class="ai-hero-sub">Décrivez votre document en français, l'IA le rédige en 5 secondes</div>
-          <div class="ai-hero-badge">🇲🇱 Documents officiels maliens · Kayes</div>
+          <div class="ai-hero-title">✨ Rédacteur IA — Assistant administratif Mali</div>
+          <div class="ai-hero-sub">Décrivez votre document · L'IA le rédige selon les normes maliennes en 5 secondes</div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <div class="ai-hero-badge">🇲🇱 Normes Mali · Kayes</div>
+            <div class="ai-hero-badge" id="ai-model-badge" style="display:none"></div>
+          </div>
         </div>
 
         <!-- Statut IA -->
         <div id="ai-status-bar" class="ai-status nok">
           <div class="ai-status-dot"></div>
-          <span id="ai-status-text">IA non configurée — Obtenez une clé gratuite Google Gemini</span>
-          <button onclick="openAIConfig()" style="margin-left:auto;background:none;border:1.5px solid currentColor;border-radius:7px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;color:inherit;font-family:inherit;white-space:nowrap">⚙️ Configurer</button>
+          <span id="ai-status-text">IA — Clé API requise dans Vercel Settings</span>
+          <a href="https://aistudio.google.com/app/apikey" target="_blank"
+            style="margin-left:auto;background:none;border:1.5px solid currentColor;border-radius:7px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;color:inherit;font-family:inherit;text-decoration:none;white-space:nowrap">
+            🆓 Obtenir clé gratuite →
+          </a>
         </div>
 
-        <!-- Suggestions rapides -->
-        <div class="sugg-label">💡 Cliquez pour remplir un exemple</div>
-        <div class="sugg-grid">
-          <button class="sugg-chip" onclick="fillSugg(this)">📋 Demande d'acte de naissance</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">🎓 Bourse d'études</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">🏠 Attestation de domicile</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">💍 Acte de mariage</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">⚖️ Casier judiciaire</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">💳 Engagement de remboursement</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">🏪 Autorisation commerce</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">🚗 Déclaration d'accident</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">📢 Lettre de réclamation</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">📌 Note de service</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">📅 Convocation réunion</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">💼 Demande de stage</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">🏠 Attestation d'hébergement</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">🏢 Déclaration d'existence</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">🧾 Demande de NIF</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">📂 Lettre de candidature</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">🤝 Procuration administrative</button>
-          <button class="sugg-chip" onclick="fillSugg(this)">🤲 Attestation de prise en charge</button>
+        <!-- Onglets mode -->
+        <div style="display:flex;border:1.5px solid #C7D2FE;border-radius:10px;overflow:hidden;margin-bottom:14px;background:white">
+          <button class="ia-mode-btn active" id="mode-btn-nouveau" onclick="setIAMode('nouveau')" style="flex:1;padding:9px;background:var(--indigo);color:white;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:all .2s">✨ Nouveau document</button>
+          <button class="ia-mode-btn" id="mode-btn-affiner" onclick="setIAMode('affiner')" style="flex:1;padding:9px;background:none;color:#7A94AF;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit;transition:all .2s">✏️ Affiner / Améliorer</button>
         </div>
 
-        <!-- Options destinataire + nom -->
-        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
-          <div style="flex:1;min-width:140px">
-            <div style="font-size:10px;font-weight:800;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em">Destinataire (optionnel)</div>
-            <input type="text" id="ai-dest" placeholder="Ex: Monsieur le Maire de Kayes"
-              style="width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;outline:none;transition:border-color .2s"
-              onfocus="this.style.borderColor='#3730A3'" onblur="this.style.borderColor=''">
+        <!-- MODE NOUVEAU DOCUMENT -->
+        <div id="ia-mode-nouveau">
+
+          <!-- Suggestions rapides ENRICHIES -->
+          <div class="sugg-label">💡 Exemples — Cliquez pour pré-remplir</div>
+          <div class="sugg-grid" style="margin-bottom:12px">
+            <button class="sugg-chip" onclick="fillSugg(this)" data-text="Rédige une demande d'acte de naissance pour Mamadou COULIBALY, né le 15 mars 1998 à Kayes, fils de Sékou COULIBALY et Fatoumata DIARRA, demeurant au quartier Liberté, Kayes. Motif : inscription à l'université.">📋 Acte de naissance</button>
+            <button class="sugg-chip" onclick="fillSugg(this)" data-text="Rédige une demande de bourse d'études pour Aissata TRAORÉ, née le 20/06/2003 à Kayes, titulaire du BAC série Sciences obtenu en 2023 avec mention Assez Bien. Elle souhaite s'inscrire en Licence d'Informatique à l'USSGB de Bamako. Son père est commerçant avec un revenu mensuel d'environ 150 000 FCFA et sa mère est sans emploi.">🎓 Bourse d'études</button>
+            <button class="sugg-chip" onclick="fillSugg(this)" data-text="Rédige une attestation de domicile pour Ibrahim KEITA, demeurant au quartier Plateau, rue 45, maison n°12, Kayes, depuis 4 ans. Je suis le propriétaire des lieux. Cette attestation est demandée pour l'ouverture d'un compte bancaire à la BDM-SA.">🏠 Attestation domicile</button>
+            <button class="sugg-chip" onclick="fillSugg(this)" data-text="Rédige une lettre de réclamation à la EDM-SA (Énergie du Mali) de Kayes. Mon compteur n°KY-2847 est en panne depuis 3 semaines. Je subis des délestages quotidiens de 8h à 20h malgré mes paiements réguliers. Je demande une intervention urgente.">⚡ Réclamation EDM</button>
+            <button class="sugg-chip" onclick="fillSugg(this)" data-text="Rédige un engagement de remboursement. Moussa DIALLO, demeurant au quartier Médine, Kayes, reconnaît avoir emprunté la somme de 500 000 FCFA (cinq cent mille francs CFA) à Awa SANGARÉ le 10 janvier 2026. Il s'engage à rembourser en 3 mensualités de 166 667 FCFA les 10 de chaque mois.">💳 Remboursement</button>
+            <button class="sugg-chip" onclick="fillSugg(this)" data-text="Rédige une note de service pour informer tout le personnel de SAMASSA TECHNOLOGIE que les horaires de travail sont modifiés à compter du 1er novembre 2026 : ouverture à 8h00 et fermeture à 19h00, du lundi au samedi. Le dimanche reste jour de repos.">📋 Note de service</button>
+            <button class="sugg-chip" onclick="fillSugg(this)" data-text="Rédige une demande d'autorisation d'ouverture de commerce pour Boubacar SISSOKO qui souhaite ouvrir une boutique de vente de matériels informatiques et d'accessoires téléphoniques au quartier Grand Marché de Kayes, surface de 25 m², horaires 8h-19h du lundi au samedi.">🏪 Ouverture commerce</button>
+            <button class="sugg-chip" onclick="fillSugg(this)" data-text="Rédige un extrait de casier judiciaire pour Djeneba CAMARA, née le 05/09/1990 à Sikasso, fille de Lassine CAMARA et Mariam KONATÉ, demeurant à Kayes quartier Liberté depuis 2018. Motif : participation à un concours de la fonction publique.">⚖️ Casier judiciaire</button>
           </div>
-          <div style="flex:1;min-width:120px">
-            <div style="font-size:10px;font-weight:800;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em">Demandeur (optionnel)</div>
-            <input type="text" id="ai-nom" placeholder="Nom complet"
-              style="width:100%;padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;outline:none;transition:border-color .2s"
-              onfocus="this.style.borderColor='#3730A3'" onblur="this.style.borderColor=''">
+
+          <!-- Options document -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+            <div>
+              <div style="font-size:10px;font-weight:800;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em">Type de document</div>
+              <select id="ai-forme" style="width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;outline:none;transition:border-color .2s">
+                <option value="lettre_personnelle">📄 Lettre personnelle / Demande</option>
+                <option value="attestation">📜 Attestation / Certificat</option>
+                <option value="contrat">🤝 Contrat / Convention</option>
+                <option value="note_service">📋 Note de service</option>
+                <option value="pv_reunion">📝 Procès-verbal de réunion</option>
+                <option value="engagement">✍️ Engagement / Reconnaissance</option>
+                <option value="rapport">📊 Rapport / Compte-rendu</option>
+                <option value="reclamation">📢 Réclamation / Plainte</option>
+                <option value="cv_lettre">💼 CV / Lettre de motivation</option>
+                <option value="autre">📌 Autre type</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:800;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em">Ton & Longueur</div>
+              <div style="display:flex;gap:6px">
+                <select id="ai-ton" style="flex:1;padding:9px 8px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;outline:none">
+                  <option value="formel">Formel</option>
+                  <option value="très formel">Très formel</option>
+                  <option value="standard">Standard</option>
+                </select>
+                <select id="ai-longueur" style="flex:1;padding:9px 8px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;outline:none">
+                  <option value="normal">Normal</option>
+                  <option value="court">Court</option>
+                  <option value="détaillé">Détaillé</option>
+                </select>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Forme de document -->
-        <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap">
-          <label for="ai-forme" style="font-size:10px;font-weight:800;color:var(--text3);text-transform:uppercase;letter-spacing:.07em">Forme</label>
-          <select id="ai-forme" style="flex:1;min-width:190px;padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;color:var(--text)">
-            <option value="lettre_personnelle">Lettre administrative personnelle</option>
-            <option value="lettre_administrative">Lettre entre services / forme administrative</option>
-            <option value="note_service">Note de service</option>
-            <option value="attestation">Attestation ou engagement</option>
-            <option value="convocation">Convocation / invitation</option>
-          </select>
-        </div>
+          <!-- Destinataire + Demandeur -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+            <div>
+              <div style="font-size:10px;font-weight:800;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em">Destinataire</div>
+              <input type="text" id="ai-dest" placeholder="Ex: Monsieur le Maire de Kayes"
+                style="width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;outline:none;transition:border-color .2s"
+                onfocus="this.style.borderColor='var(--indigo)'" onblur="this.style.borderColor=''">
+            </div>
+            <div>
+              <div style="font-size:10px;font-weight:800;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.07em">Demandeur</div>
+              <input type="text" id="ai-nom" placeholder="Prénom NOM complet"
+                style="width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-family:inherit;outline:none;transition:border-color .2s"
+                onfocus="this.style.borderColor='var(--indigo)'" onblur="this.style.borderColor=''">
+            </div>
+          </div>
 
-        <!-- Zone de saisie -->
-        <div class="ai-input-wrap">
-          <textarea class="ai-textarea" id="ai-prompt"
-            placeholder="Décrivez le document souhaité...
+          <!-- Zone de saisie -->
+          <div class="ai-input-wrap">
+            <textarea class="ai-textarea" id="ai-prompt"
+              placeholder="Décrivez en détail le document souhaité...
 
-Exemples :
-• Rédige une demande de bourse pour Mamadou Coulibaly, 22 ans, né le 15/03/2002 à Kayes, qui veut étudier l'informatique à l'USSGB de Bamako.
+✅ Bonne demande :
+&quot;Rédige une demande de bourse pour Amadou DIALLO, né le 12/05/2002, BAC 2023 mention Bien, veut étudier Médecine à Bamako, père fonctionnaire 200 000 FCFA/mois.&quot;
 
-• Attestation de domicile pour Fatoumata Diallo, quartier Liberté, Kayes, depuis 5 ans. Usage : ouverture compte bancaire BDM.
+❌ Trop vague :
+&quot;Fais une lettre&quot;"
+              oninput="updateCharCount(this)" rows="6"></textarea>
+            <div class="ai-char-count" id="ai-char-count">0 / 1200</div>
+          </div>
 
-• Engagement de remboursement : Seydou Konaté a emprunté 200 000 FCFA à Ibrahima Traoré le 15/01/2026, remboursement avant le 15/04/2026."
-            maxlength="1800" oninput="updateCharCount(this)" rows="7"></textarea>
-          <div class="ai-char-count" id="ai-char-count">0 / 1800</div>
-        </div>
+          <button class="btn-ai" id="btn-ai-gen" onclick="generateWithAI('nouveau')">
+            <span id="btn-ai-txt">✨ Rédiger le document</span>
+          </button>
+        </div><!-- /mode-nouveau -->
 
-        <button class="btn-ai" id="btn-ai-gen" onclick="generateWithAI()">
-          <span id="btn-ai-txt">✨ Rédiger le document avec l'IA</span>
-        </button>
+        <!-- MODE AFFINER -->
+        <div id="ia-mode-affiner" style="display:none">
+          <div style="background:#EEF2FF;border:1.5px solid #C7D2FE;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#3730A3">
+            <strong>✏️ Mode Affinage</strong> — Collez un document existant et donnez une instruction d'amélioration.
+          </div>
+          <div style="margin-bottom:10px">
+            <div style="font-size:10px;font-weight:800;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em">Document à améliorer</div>
+            <textarea id="ai-previous" rows="8" placeholder="Collez ici votre document existant à améliorer..."
+              style="width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:12px;font-family:'Times New Roman',serif;outline:none;resize:vertical;transition:border-color .2s;line-height:1.7"
+              onfocus="this.style.borderColor='var(--indigo)'" onblur="this.style.borderColor=''"></textarea>
+          </div>
+          <div style="margin-bottom:12px">
+            <div style="font-size:10px;font-weight:800;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em">Instruction d'amélioration</div>
+            <input type="text" id="ai-instruction"
+              placeholder="Ex: Rends plus formel · Ajoute une formule de politesse · Corrige les fautes · Ajoute la clause de résiliation..."
+              style="width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s"
+              onfocus="this.style.borderColor='var(--indigo)'" onblur="this.style.borderColor=''">
+          </div>
+          <!-- Boutons d'amélioration rapide -->
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+            <button onclick="setInstruction('Rends ce document plus formel et professionnel')" class="sugg-chip" style="font-size:11px">🎩 Plus formel</button>
+            <button onclick="setInstruction('Corrige les fautes d'orthographe et de grammaire')" class="sugg-chip" style="font-size:11px">✅ Corriger fautes</button>
+            <button onclick="setInstruction('Ajoute les formules protocolaires maliennes manquantes')" class="sugg-chip" style="font-size:11px">🇲🇱 Formules Mali</button>
+            <button onclick="setInstruction('Raccourcis ce document en gardant l'essentiel')" class="sugg-chip" style="font-size:11px">✂️ Raccourcir</button>
+            <button onclick="setInstruction('Développe et enrichis ce document avec plus de détails')" class="sugg-chip" style="font-size:11px">📝 Développer</button>
+            <button onclick="setInstruction('Ajoute un objet, des références et une formule de politesse finale')" class="sugg-chip" style="font-size:11px">📌 Compléter</button>
+          </div>
+          <button class="btn-ai" id="btn-affiner" onclick="generateWithAI('affiner')" style="background:linear-gradient(135deg,#7C3AED,#8B5CF6)">
+            <span id="btn-affiner-txt">✏️ Améliorer le document</span>
+          </button>
+        </div><!-- /mode-affiner -->
 
         <!-- Résultat IA -->
         <div class="ai-result-wrap" id="ai-result-wrap" style="display:none">
           <div class="ai-result-header">
             <div class="ai-result-label">
-              📄 Document rédigé
+              📄 <span id="ai-result-title">Document généré</span>
               <span class="tokens-badge" id="tokens-used">—</span>
             </div>
             <button class="ai-copy-btn" onclick="copyAIResult()">📋 Copier</button>
           </div>
           <div class="ai-result-text" id="ai-result-text"></div>
+
+          <!-- Actions affinage rapide sur le résultat -->
+          <div style="padding:10px 16px;background:#F8FBFD;border-top:1px solid #E0E7FF;display:flex;gap:6px;flex-wrap:wrap">
+            <span style="font-size:10px;color:#7A94AF;font-weight:700;align-self:center;white-space:nowrap">Affiner :</span>
+            <button onclick="quickRefine('Rends ce document plus formel')" style="background:#EEF2FF;color:var(--indigo);border:1px solid #C7D2FE;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">🎩 + Formel</button>
+            <button onclick="quickRefine('Raccourcis ce document')" style="background:#EEF2FF;color:var(--indigo);border:1px solid #C7D2FE;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">✂️ Raccourcir</button>
+            <button onclick="quickRefine('Développe et enrichis ce document')" style="background:#EEF2FF;color:var(--indigo);border:1px solid #C7D2FE;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">📝 Développer</button>
+            <button onclick="quickRefine('Corrige toutes les fautes')" style="background:#EEF2FF;color:var(--indigo);border:1px solid #C7D2FE;border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">✅ Corriger</button>
+          </div>
+
           <div class="ai-export-bar">
-            <button class="btn-word"      onclick="exportToWord()">📄 Exporter Word (.doc)</button>
-            <button class="btn-pdf-print" onclick="printAIDoc()">🖨️ Imprimer / PDF</button>
+            <button class="btn-word"      onclick="exportToWord()">📄 Word (.doc)</button>
+            <button class="btn-pdf-print" onclick="printAIDoc()">🖨️ Imprimer/PDF</button>
             <button class="btn-save-ai"   onclick="saveAIToHistory()">💾 Enregistrer</button>
-            <button class="btn-refine"    onclick="refineDoc()">✏️ Affiner</button>
+            <button class="btn-refine"    onclick="openAffinerMode()">✏️ Affiner encore</button>
           </div>
         </div>
 
@@ -957,7 +1026,38 @@ function checkAIStatus() {
 }
 
 /* Suggestions rapides */
+function setInstruction(txt) {
+  document.getElementById('ai-instruction').value = txt;
+  document.getElementById('ai-instruction').focus();
+}
+
+function setIAMode(mode) {
+  document.getElementById('ia-mode-nouveau').style.display = mode==='nouveau' ? 'block' : 'none';
+  document.getElementById('ia-mode-affiner').style.display = mode==='affiner' ? 'block' : 'none';
+  document.getElementById('mode-btn-nouveau').style.cssText = mode==='nouveau'
+    ? 'flex:1;padding:9px;background:var(--indigo);color:white;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit'
+    : 'flex:1;padding:9px;background:none;color:#7A94AF;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit';
+  document.getElementById('mode-btn-affiner').style.cssText = mode==='affiner'
+    ? 'flex:1;padding:9px;background:var(--indigo);color:white;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit'
+    : 'flex:1;padding:9px;background:none;color:#7A94AF;border:none;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit';
+}
+
+function openAffinerMode() {
+  if (aiResult) document.getElementById('ai-previous').value = aiResult;
+  setIAMode('affiner');
+  document.getElementById('ia-mode-affiner').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function quickRefine(instruction) {
+  if (!aiResult) return;
+  document.getElementById('ai-previous').value    = aiResult;
+  document.getElementById('ai-instruction').value = instruction;
+  setIAMode('affiner');
+  generateWithAI('affiner');
+}
+
 function fillSugg(el) {
+  const txt = el.dataset.text || el.textContent.trim();
   const map = {
     "Demande d'acte de naissance":  `Rédige une demande d'acte de naissance pour [NOM PRÉNOM], né(e) le [DATE] à Kayes, fils/fille de [PÈRE] et [MÈRE], demeurant à [QUARTIER], Kayes. Motif : [usage administratif].`,
     "Bourse d'études":              `Rédige une demande de bourse d'études pour [NOM PRÉNOM], né(e) le [DATE], qui souhaite s'inscrire en [FILIÈRE] à [ÉTABLISSEMENT]. Son père [PROFESSION] gagne [REVENUS] FCFA par mois. Il/Elle a obtenu [DIPLÔME] avec la mention [MENTION].`,
@@ -1026,7 +1126,7 @@ function detectKeyType(key) {
 }
 
 /* ── GÉNÉRATION IA (Gemini direct ou Anthropic via proxy) ── */
-async function generateWithAI() {
+async function generateWithAI(mode) { mode = mode || 'nouveau';
   const prompt = (document.getElementById('ai-prompt')?.value || '').trim();
   const dest   = (document.getElementById('ai-dest')?.value  || '').trim();
   const nom    = (document.getElementById('ai-nom')?.value   || '').trim();
@@ -1086,6 +1186,8 @@ async function generateWithAI() {
     aiTitle  = extractDocTitle(text, prompt);
     document.getElementById('ai-result-text').textContent = text;
     document.getElementById('ai-result-wrap').style.display = 'block';
+    document.getElementById('ai-model-badge').style.display='inline-flex';
+    document.getElementById('ai-model-badge').textContent='🤖 '+model;
     document.getElementById('tokens-used').textContent =
       model + ' · ' + (tokens > 0 ? tokens + ' tokens' : 'OK');
     document.getElementById('ai-result-wrap').scrollIntoView({ behavior:'smooth', block:'start' });
