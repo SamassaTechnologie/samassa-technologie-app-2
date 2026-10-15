@@ -2,8 +2,8 @@
    SAMASSA TECHNOLOGIE — Service Worker PWA v4.6
    Tous les modules en cache (hors-ligne complet)
 ============================================================ */
-const CACHE_NAME  = 'samassa-pro-v5.5';
-const CACHE_PAGES = 'samassa-pages-v5.5';
+const CACHE_NAME  = 'samassa-pro-v5.6';
+const CACHE_PAGES = 'samassa-pages-v5.6';
 
 const STATIC_ASSETS = [
   'index.html','login.html',
@@ -18,13 +18,7 @@ const STATIC_ASSETS = [
   'devis.html','devis.js',
   'intervention.html','intervention.js',
   'clients.html','rapports.html','backup.html','settings.html','utilisateurs.html','journal.html','gestion.html','autoconfig.html','docs_admin.html',
-    'redacteur-ia/manifest.json',
-    'redacteur-ia/icon-192.png',
-    'redacteur-ia/logo.png',
-    'redacteur-ia/app.js',
-    'redacteur-ia/style.css',
-    'redacteur-ia/index.html',
-  'redacteur-ia-mali/index.html','redacteur-ia-mali/app.js','redacteur-ia-mali/style.css','redacteur-ia-mali/manifest.json','redacteur-ia-mali/icon-192.png','redacteur-ia-mali/icon-512.png','redacteur-ia-mali/logo.png','redacteur-ia-mali/sw.js','redacteur-ia-mali/libs/docx.js',
+  'redacteur-ia-mali/index.html','redacteur-ia-mali/app.js','redacteur-ia-mali/style.css','redacteur-ia-mali/manifest.json','redacteur-ia-mali/icon-192.png','redacteur-ia-mali/icon-512.png','redacteur-ia-mali/logo.png','redacteur-ia-mali/sw.js',
   'style.css','mobile.css',
   'auth.js?v=firebase1','utils.js','sync.js',
   'firebase-config.js','ai-firebase.js','cloud-integration.js',
