@@ -26,6 +26,8 @@ const PARAM_DEFAUT = {
   ville: 'Kayes', nif: '', rccm: ''
 };
 let P = Object.assign({}, PARAM_DEFAUT, LS.get('param', {}));
+// Options d'impression : en-tête (infos du cyber), logo, pied de page (adresse) — mémorisées
+const OPT = Object.assign({entete: true, logo: true, pied: true}, LS.get('opt', {}));
 
 /* ---------- 2. NOMBRE EN LETTRES (pour factures, reçus, contrats) ---------- */
 function enLettres(n){
@@ -839,8 +841,10 @@ function blocHtml(b){
 const pied = () => `${P.nom} – ${P.adresse} – Tél : ${P.tel} – ${P.email}${P.nif ? ' – NIF : ' + P.nif : ''}${P.rccm ? ' – RCCM : ' + P.rccm : ''}`;
 function apercuHtml(B){
   const logo = LS.get('logo', null) || 'logo.png';
-  return `<div class="ent"><img src="${logo}" alt=""><div><b>${esc(P.nom)}</b><i>${esc(P.slogan)}</i><small>Tél : ${esc(P.tel)} – ${esc(P.email)}</small></div></div>`
-    + B.map(blocHtml).join('') + `<div class="pied">${esc(pied())}</div>`;
+  const texte = `<div><b>${esc(P.nom)}</b><i>${esc(P.slogan)}</i><small>Tél : ${esc(P.tel)} – ${esc(P.email)}</small></div>`;
+  const ent = (OPT.entete || OPT.logo) ? `<div class="ent">${OPT.logo ? `<img src="${logo}" alt="">` : ''}${OPT.entete ? texte : ''}</div>` : '';
+  const bas = OPT.pied ? `<div class="pied">${esc(pied())}</div>` : '';
+  return ent + B.map(blocHtml).join('') + bas;
 }
 
 /* ==================================================================
@@ -900,6 +904,7 @@ const tableX = t => {
 const imageX = (cx, cy) => `<w:p><w:pPr><w:spacing w:after="0"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="1" name="Logo"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="0" name="logo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdLogo"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
 
 function construireDocx(B, logo){
+  const avecH = OPT.entete || OPT.logo, avecF = OPT.pied;   // parties à inclure dans le Word
   // Corps du document (un paragraphe vide sépare deux tableaux collés, sinon Word les fusionne)
   let corps = '', precTable = false;
   B.forEach(b => {
@@ -907,13 +912,13 @@ function construireDocx(B, logo){
     else { corps += paraX(b); precTable = false; }
   });
   if (precTable) corps += '<w:p/>';
-  const document_ = `${XML}<w:document ${NS}><w:body>${corps}<w:sectPr><w:headerReference w:type="default" r:id="rIdH"/><w:footerReference w:type="default" r:id="rIdF"/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1417" w:right="1417" w:bottom="1417" w:left="1417" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+  const document_ = `${XML}<w:document ${NS}><w:body>${corps}<w:sectPr>${avecH ? '<w:headerReference w:type="default" r:id="rIdH"/>' : ''}${avecF ? '<w:footerReference w:type="default" r:id="rIdF"/>' : ''}<w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1417" w:right="1417" w:bottom="1417" w:left="1417" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>`;
 
-  // En-tête : [LOGO CYBER] + nom, slogan, contacts, puis filet bleu
+  // En-tête : logo et/ou infos du cyber, puis filet bleu (selon les cases cochées)
   const cLogo = logo ? imageX(Math.round(55 * logo.w / logo.h * 9525), 55 * 9525) : paraX({runs: [{x: '[LOGO CYBER]', c: '999999'}], sa: 0});
-  const entete = `${XML}<w:hdr ${NS}>` + tableX({w: [18, 82], rows: [[{blocs: [{raw: cLogo}]}, {blocs: [
-    {runs: [{x: P.nom, b: true, c: '0B6FB8', sz: 30}], sa: 0}, {runs: [{x: P.slogan, i: true, sz: 20}], sa: 0}, {runs: [{x: `Tél : ${P.tel} – ${P.email}`, sz: 18}], sa: 0}]}]]})
-    + paraX({runs: [], bb: true, sa: 0}) + '</w:hdr>';
+  const cTxt = {blocs: [{runs: [{x: P.nom, b: true, c: '0B6FB8', sz: 30}], sa: 0}, {runs: [{x: P.slogan, i: true, sz: 20}], sa: 0}, {runs: [{x: `Tél : ${P.tel} – ${P.email}`, sz: 18}], sa: 0}]};
+  const cells = (OPT.logo && OPT.entete) ? [{blocs: [{raw: cLogo}]}, cTxt] : OPT.logo ? [{blocs: [{raw: cLogo}]}] : [cTxt];
+  const entete = avecH ? `${XML}<w:hdr ${NS}>` + tableX({w: cells.length === 2 ? [18, 82] : [100], rows: [cells]}) + paraX({runs: [], bb: true, sa: 0}) + '</w:hdr>' : '';
 
   // Pied de page : adresse + "Page X / Y"
   const pt = t => `<w:r><w:rPr><w:sz w:val="18"/></w:rPr><w:t xml:space="preserve">${xe(t)}</w:t></w:r>`;
@@ -923,12 +928,14 @@ function construireDocx(B, logo){
 
   const styles = `${XML}<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Times New Roman" w:hAnsi="Times New Roman" w:cs="Times New Roman" w:eastAsia="Times New Roman"/><w:sz w:val="24"/><w:szCs w:val="24"/><w:lang w:val="fr-FR"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="120"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/></w:style></w:styles>`;
   const R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships', PK = 'http://schemas.openxmlformats.org/package/2006/relationships';
-  const types = `${XML}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/><Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/></Types>`;
+  const types = `${XML}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>${avecH ? '<Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/>' : ''}${avecF ? '<Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/>' : ''}</Types>`;
   const rels = `${XML}<Relationships xmlns="${PK}"><Relationship Id="rId1" Type="${R}/officeDocument" Target="word/document.xml"/></Relationships>`;
-  const docRels = `${XML}<Relationships xmlns="${PK}"><Relationship Id="rIdS" Type="${R}/styles" Target="styles.xml"/><Relationship Id="rIdH" Type="${R}/header" Target="header1.xml"/><Relationship Id="rIdF" Type="${R}/footer" Target="footer1.xml"/></Relationships>`;
+  const docRels = `${XML}<Relationships xmlns="${PK}"><Relationship Id="rIdS" Type="${R}/styles" Target="styles.xml"/>${avecH ? `<Relationship Id="rIdH" Type="${R}/header" Target="header1.xml"/>` : ''}${avecF ? `<Relationship Id="rIdF" Type="${R}/footer" Target="footer1.xml"/>` : ''}</Relationships>`;
   const f = [{n: '[Content_Types].xml', d: utf8(types)}, {n: '_rels/.rels', d: utf8(rels)}, {n: 'word/document.xml', d: utf8(document_)}, {n: 'word/_rels/document.xml.rels', d: utf8(docRels)},
-             {n: 'word/styles.xml', d: utf8(styles)}, {n: 'word/header1.xml', d: utf8(entete)}, {n: 'word/footer1.xml', d: utf8(pied_)}];
-  if (logo) {
+             {n: 'word/styles.xml', d: utf8(styles)}];
+  if (avecH) f.push({n: 'word/header1.xml', d: utf8(entete)});
+  if (avecF) f.push({n: 'word/footer1.xml', d: utf8(pied_)});
+  if (avecH && OPT.logo && logo) {
     f.push({n: 'word/_rels/header1.xml.rels', d: utf8(`${XML}<Relationships xmlns="${PK}"><Relationship Id="rIdLogo" Type="${R}/image" Target="media/logo.png"/></Relationships>`)});
     f.push({n: 'word/media/logo.png', d: logo.data});
   }
@@ -1002,6 +1009,13 @@ $('#pLogo').onchange = e => { // le logo est réduit (hauteur 150 px) pour tenir
   im.src = URL.createObjectURL(f);
 };
 $('#pLogoReset').onclick = () => { try { localStorage.removeItem('logo'); } catch (e) {} logoCache = null; $('.brand img').src = 'logo.png'; };
+
+// Cases : en-tête / logo / pied de page (appliquées à l'aperçu, à l'impression et au Word)
+const optIds = {entete: 'optEntete', logo: 'optLogo', pied: 'optPied'};
+for (const k in optIds) {
+  const e = $('#' + optIds[k]); e.checked = !!OPT[k];
+  e.onchange = () => { OPT[k] = e.checked; LS.set('opt', OPT); if (blocs && !$('#apercu').hidden) $('#apercu').innerHTML = apercuHtml(blocs); };
+}
 
 // Installation PWA
 let evtInstall = null;
