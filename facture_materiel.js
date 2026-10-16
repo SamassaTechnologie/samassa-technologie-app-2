@@ -343,7 +343,7 @@ window.saveDoc = function () {
 
   /* Aussi enregistrer en caisse */
   try {
-    var caisse = JSON.parse(localStorage.getItem('_samassa_mouvements') || '[]');
+    var caisse = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]');
     caisse.push({
       id:        'MAT-' + Date.now(),
       type:      'entree',
@@ -352,7 +352,7 @@ window.saveDoc = function () {
       date:      new Date().toISOString().slice(0, 10),
       timestamp: new Date().toISOString()
     });
-    localStorage.setItem('_samassa_mouvements', JSON.stringify(caisse));
+    localStorage.setItem('samassa_mouvements', JSON.stringify(caisse));
   } catch (e) {}
 
   ST.toast('✅ Facture ' + num + ' enregistrée en caisse', 'success');

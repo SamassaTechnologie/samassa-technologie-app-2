@@ -34,6 +34,7 @@ const SYNC_KEYS = [
   'samassa_fournisseurs',
   'samassa_creances'
 ];
+const LEGACY_MOVEMENTS_KEY = '_samassa_mouvements';
 
 const SyncEngine = {
   db:      null,
@@ -48,6 +49,7 @@ const SyncEngine = {
      1. INITIALISATION
   ══════════════════════════════════════════ */
   async init() {
+    this._migrateLegacyKeys();
     this._status('init');
 
     if (typeof FIREBASE_ENABLED === 'undefined' || !FIREBASE_ENABLED) {
@@ -97,6 +99,24 @@ const SyncEngine = {
         this._flush();
       }
     });
+  },
+
+  _migrateLegacyKeys() {
+    try {
+      const legacy = this._parse(localStorage.getItem(LEGACY_MOVEMENTS_KEY) || '[]');
+      if (!legacy.length) return;
+      const current = this._parse(localStorage.getItem('samassa_mouvements') || '[]');
+      const ids = new Set(current.map(item => this._id(item)));
+      const merged = [...current, ...legacy.filter(item => !ids.has(this._id(item)))];
+      this._block = true;
+      localStorage.setItem('samassa_mouvements', JSON.stringify(merged));
+      localStorage.removeItem(LEGACY_MOVEMENTS_KEY);
+      this._block = false;
+      console.info(`[Sync] Migration caisse : +${merged.length - current.length} mouvements`);
+    } catch (e) {
+      this._block = false;
+      console.warn('[Sync] Migration caisse impossible:', e.message);
+    }
   },
 
   /* ══════════════════════════════════════════

@@ -32,8 +32,13 @@ const Auth = {
   async roleUrl(uid){const token=await this.idToken();if(!token)throw new Error('Session Firebase introuvable');return `${this.config.databaseURL.replace(/\/$/,'')}/${this.storeId}/user_roles/${encodeURIComponent(uid)}.json?auth=${encodeURIComponent(token)}`;},
   async loadRole(user){
     this.user=user;
-    try{const r=await fetch(await this.roleUrl(user.uid),{signal:AbortSignal.timeout(8000)});const data=r.ok?await r.json():null;this.role=(data&&data.role)||localStorage.getItem('_samassa_role_'+user.uid)||'administrateur';if(data&&data.disabled)throw new Error('compte-désactivé');}
-    catch(e){if(e.message==='compte-désactivé')throw e;this.role=localStorage.getItem('_samassa_role_'+user.uid)||'administrateur';}
+    const r=await fetch(await this.roleUrl(user.uid),{signal:AbortSignal.timeout(8000)});
+    if(!r.ok) throw new Error(`role-fetch-${r.status}`);
+    const data=await r.json();
+    if(!data || !data.role) throw new Error('role-not-assigned');
+    if(data.disabled) throw new Error('compte-désactivé');
+    if(!ROLE_DEFINITIONS[data.role]) throw new Error('role-invalid');
+    this.role=data.role;
     localStorage.setItem('_samassa_role_'+user.uid,this.role);
     document.documentElement.dataset.role=this.role;
     return this.role;

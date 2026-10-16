@@ -198,9 +198,10 @@ RÈGLE LONGUEUR
    GESTIONNAIRE PRINCIPAL
 ══════════════════════════════════════════════════════ */
 export default async function handler(req) {
+  const allowedOrigin = 'https://samassa-technologie-app-2.vercel.app';
   const CORS = {
     'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
   };
@@ -222,6 +223,9 @@ export default async function handler(req) {
 
   try {
     const body = await req.json();
+    if (JSON.stringify(body).length > 120000) {
+      return new Response(JSON.stringify({ error: 'Requête trop volumineuse.' }), { status: 413, headers: CORS });
+    }
     const {
       prompt   = '',
       forme    = 'lettre_personnelle',
@@ -232,7 +236,11 @@ export default async function handler(req) {
       mode     = 'nouveau',        // 'nouveau' | 'affiner' | 'traduire'
       previous = '',               // document précédent (mode affiner)
       instruction = ''             // instruction d'affinage
-    } = body;
+      } = body;
+
+    if (String(prompt).length > 12000 || String(previous).length > 30000 || String(instruction).length > 12000) {
+      return new Response(JSON.stringify({ error: 'Le contenu fourni dépasse la taille autorisée.' }), { status: 413, headers: CORS });
+    }
 
     if (!prompt && mode !== 'affiner') {
       return new Response(JSON.stringify({ error: 'Prompt vide' }), { status: 400, headers: CORS });
