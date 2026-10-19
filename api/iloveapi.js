@@ -19,6 +19,7 @@ const COMMON_HEADERS = {
 };
 
 function ok(data, status = 200) { return json(data, status, COMMON_HEADERS); }
+function requestUrl(req) { return new URL(req.url, 'https://samassa-technologie-app-2.vercel.app'); }
 function fail(error) {
   const status = Number.isInteger(error?.status) ? error.status : 500;
   const details = {};
@@ -87,7 +88,7 @@ async function processTask(req) {
 }
 
 async function download(req) {
-  const url = new URL(req.url);
+  const url = requestUrl(req);
   const task = validateTask(url.searchParams.get('task') || '');
   const server = url.searchParams.get('server') || '';
   const token = await getToken();
@@ -103,8 +104,10 @@ async function download(req) {
 export default async function handler(req) {
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: COMMON_HEADERS });
   try {
+    const url = requestUrl(req);
+    const action = url.searchParams.get('action') || (req.method === 'GET' ? 'download' : 'start');
+    if (action === 'health' && req.method === 'GET') return ok({ success: true, service: 'iloveapi', configured: Boolean(process.env.ILOVEAPI_PUBLIC_KEY), timestamp: new Date().toISOString() });
     await requireUser(req);
-    const action = new URL(req.url).searchParams.get('action') || (req.method === 'GET' ? 'download' : 'start');
     if (action === 'start' && req.method === 'POST') return await start(req);
     if (action === 'upload' && req.method === 'POST') return await upload(req);
     if (action === 'process' && req.method === 'POST') return await processTask(req);
