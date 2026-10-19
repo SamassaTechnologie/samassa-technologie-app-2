@@ -27,8 +27,10 @@ async function readCloud(response, stage) {
   let body = null;
   try { body = text ? JSON.parse(text) : null; } catch { body = null; }
   if (!response.ok) {
-    const message = body?.message || body?.errors?.[0]?.message || `Erreur CloudConvert à l’étape ${stage}.`;
-    throw Object.assign(new Error(message), { status: response.status === 429 ? 429 : 502, code: `CLOUDCONVERT_${stage.toUpperCase()}_ERROR` });
+    const message = response.status === 401
+      ? 'La clé CloudConvert est invalide ou ne correspond pas à une clé API v2. Créez une clé dans le tableau de bord CloudConvert.'
+      : body?.message || body?.errors?.[0]?.message || `Erreur CloudConvert à l’étape ${stage}.`;
+    throw Object.assign(new Error(message), { status: response.status === 401 ? 503 : response.status === 429 ? 429 : 502, code: response.status === 401 ? 'CLOUDCONVERT_INVALID_KEY' : `CLOUDCONVERT_${stage.toUpperCase()}_ERROR` });
   }
   return body;
 }

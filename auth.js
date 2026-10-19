@@ -24,7 +24,7 @@ const Auth = {
 
   async ready(){
     if(this._readyPromise)return this._readyPromise;
-    this._readyPromise=(async()=>{await this._loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');await this._loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js');if(!firebase.apps.length)firebase.initializeApp(this.config);this.auth=firebase.auth();await this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);return this.auth;})();
+    this._readyPromise=(async()=>{await this._loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js');await this._loadScript('https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js');if(!firebase.apps.length)firebase.initializeApp(this.config);this.auth=firebase.auth();await this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);await new Promise(resolve=>{let done=false;let unsub=()=>{};const finish=()=>{if(done)return;done=true;unsub();resolve();};unsub=this.auth.onAuthStateChanged(finish);setTimeout(finish,5000);});return this.auth;})();
     return this._readyPromise;
   },
   _loadScript(src){return new Promise((resolve,reject)=>{if(document.querySelector(`script[src="${src}"]`))return resolve();const script=document.createElement('script');script.src=src;script.onload=resolve;script.onerror=()=>reject(new Error('Firebase indisponible'));document.head.appendChild(script);});},
