@@ -14,12 +14,12 @@ Configurer ces variables dans le projet Vercel, pour les environnements Preview 
 
 ```text
 ILOVEAPI_PUBLIC_KEY=identifiant_public_du_projet_iloveapi
-FIREBASE_WEB_API_KEY=clé_web_firebase
+FIREBASE_WEB_API_KEY=clé_web_firebase (recommandé, valeur publique)
 FIREBASE_DATABASE_URL=https://samassa-kayes-79fbb-default-rtdb.europe-west1.firebasedatabase.app
 FIREBASE_STORE_ID=kayes-principal
 ```
 
-`ILOVEAPI_PUBLIC_KEY` est utilisé côté serveur pour obtenir un jeton court auprès de l’endpoint `/auth`. Ne jamais placer la clé secrète iLoveAPI dans un fichier frontend, un dépôt Git ou une variable `NEXT_PUBLIC_*`. Si une clé secrète est utilisée ultérieurement pour la signature JWT côté serveur, elle doit rester dans une variable Vercel privée.
+`ILOVEAPI_PUBLIC_KEY` est utilisé côté serveur pour obtenir un jeton court auprès de l’endpoint `/auth`. `FIREBASE_WEB_API_KEY` est recommandé comme variable explicite, mais l’application possède un repli vers la clé web publique déjà configurée pour le projet. Ne jamais placer la clé secrète iLoveAPI dans un fichier frontend, un dépôt Git ou une variable `NEXT_PUBLIC_*`. Si une clé secrète est utilisée ultérieurement pour la signature JWT côté serveur, elle doit rester dans une variable Vercel privée.
 
 ## Routes
 
