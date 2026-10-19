@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Outils PDF & images — SAMASSA TECHNOLOGIE</title>
+<link rel="icon" href="icon-512x512.png"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+.il-wrap{max-width:980px;margin:32px auto;padding:0 18px}.il-card{background:#fff;border:1px solid #dbe7f3;border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(14,55,90,.08)}
+.il-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.il-field{display:flex;flex-direction:column;gap:7px}.il-field label{font-size:12px;font-weight:800;color:#31506d}.il-field input,.il-field select{border:1px solid #c9d8e6;border-radius:10px;padding:11px;background:#fff;font:inherit}.il-full{grid-column:1/-1}.il-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.il-btn{border:0;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer;color:#fff;background:#0879bd}.il-btn.secondary{background:#e8f1f8;color:#24506f}.il-btn:disabled{opacity:.55;cursor:not-allowed}.il-status{margin-top:18px;padding:13px;border-radius:10px;background:#f1f6fa;color:#31506d;white-space:pre-wrap}.il-status.error{background:#fff0f0;color:#a32626}.il-status.ok{background:#edf9f1;color:#16733c}.il-help{font-size:12px;color:#607d96;line-height:1.55}.il-files{font-size:12px;color:#31506d}.il-back{display:inline-block;margin-bottom:16px;color:#0879bd;text-decoration:none;font-weight:800}
+@media(max-width:680px){.il-grid{grid-template-columns:1fr}.il-full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="topbar"><a class="tb-title" href="index.html">SAMASSA TECHNOLOGIE</a><div class="tb-actions"><a class="il-back" href="index.html">← Tableau de bord</a></div></div>
+<main class="il-wrap"><div class="il-card">
+<h1>Outils PDF & images</h1><p class="il-help">Les fichiers sont transmis temporairement à iLoveAPI pour le traitement puis téléchargés. La clé secrète reste sur le serveur SAMASSA.</p>
+<div class="il-grid">
+<div class="il-field"><label for="il-tool">Traitement</label><select id="il-tool"><optgroup label="PDF"><option value="compress">Compresser un PDF</option><option value="merge">Fusionner des PDF</option><option value="split">Diviser un PDF</option><option value="pdfjpg">PDF vers JPG</option><option value="imagepdf">Images vers PDF</option><option value="officepdf">Office vers PDF</option><option value="pdfocr">OCR PDF</option><option value="rotate">Faire pivoter un PDF</option><option value="watermark">Filigrane PDF</option><option value="protect">Protéger un PDF</option><option value="unlock">Déverrouiller un PDF</option><option value="repair">Réparer un PDF</option></optgroup><optgroup label="Images"><option value="compressimage">Compresser des images</option><option value="convertimage">Convertir des images</option><option value="resizeimage">Redimensionner des images</option><option value="rotateimage">Faire pivoter des images</option><option value="upscaleimage">Améliorer une image</option><option value="removebackgroundimage">Supprimer l’arrière-plan</option></optgroup></select></div>
+<div class="il-field"><label for="il-region">Région de traitement</label><select id="il-region"><option value="eu">Europe</option><option value="fr">France</option><option value="us">États-Unis</option></select></div>
+<div class="il-field il-full"><label for="il-files">Fichiers (25 Mo maximum par fichier, 10 fichiers maximum)</label><input id="il-files" type="file" multiple accept=".pdf,.doc,.docx,.odt,.jpg,.jpeg,.png,.gif,.webp,.bmp,.tif,.tiff"><div id="il-file-list" class="il-files">Aucun fichier sélectionné.</div></div>
+</div>
+<div class="il-actions"><button class="il-btn" id="il-run">Lancer le traitement</button><button class="il-btn secondary" id="il-reset">Réinitialiser</button></div>
+<div id="il-status" class="il-status">Prêt.</div>
+</div></main>
+<script src="firebase-config.js"></script><script src="auth.js"></script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id), filesEl=$('il-files'), statusEl=$('il-status'), run=$('il-run');
+let selected=[];
+filesEl.addEventListener('change',()=>{selected=[...filesEl.files];$('il-file-list').textContent=selected.length?selected.map(f=>`${f.name} (${(f.size/1048576).toFixed(2)} Mo)`).join(' · '):'Aucun fichier sélectionné.';});
+function status(text,type=''){statusEl.textContent=text;statusEl.className='il-status '+type;}
+async function api(url,options={}){const token=await Auth.idToken();if(!token)throw new Error('Session Firebase introuvable.');const r=await fetch(url,{...options,headers:{...(options.headers||{}),Authorization:`Bearer ${token}`}});const data=r.headers.get('content-type')?.includes('application/json')?await r.json():null;if(!r.ok)throw new Error(data?.error?.message||data?.error||`Erreur HTTP ${r.status}`);return data;}
+async function runTool(){if(!selected.length){status('Sélectionnez au moins un fichier.','error');return}if(selected.some(f=>f.size>25*1024*1024)){status('Un fichier dépasse la limite de 25 Mo.','error');return}run.disabled=true;try{const tool=$('il-tool').value;status('1/4 Authentification et création de la tâche…');const task=await api('/api/iloveapi?action=start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tool,region:$('il-region').value})});const uploaded=[];for(let i=0;i<selected.length;i++){status(`2/4 Upload ${i+1}/${selected.length}…`);const fd=new FormData();fd.append('task',task.task);fd.append('server',task.server);fd.append('file',selected[i],selected[i].name);const result=await api('/api/iloveapi?action=upload',{method:'POST',body:fd});uploaded.push(result.file)}status('3/4 Traitement iLoveAPI en cours…');await api('/api/iloveapi?action=process',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task:task.task,server:task.server,tool,files:uploaded.map(x=>({server_filename:x.server_filename,filename:x.filename||selected[uploaded.indexOf(x)]?.name||'fichier'}))})});status('4/4 Téléchargement du résultat…');const token=await Auth.idToken();const r=await fetch(`/api/iloveapi?action=download&server=${encodeURIComponent(task.server)}&task=${encodeURIComponent(task.task)}`,{headers:{Authorization:`Bearer ${token}`}});if(!r.ok){const e=await r.json().catch(()=>null);throw new Error(e?.error?.message||`Téléchargement impossible (${r.status})`)}const blob=await r.blob();const cd=r.headers.get('content-disposition')||'';const match=cd.match(/filename="?([^";]+)"?/i);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=match?.[1]||`samassa-${tool}-resultat`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);status('Traitement terminé. Le téléchargement a commencé.','ok')}catch(e){console.error(e);status(e.message||'Une erreur est survenue.','error')}finally{run.disabled=false}}
+run.addEventListener('click',runTool);$('il-reset').addEventListener('click',()=>{filesEl.value='';selected=[];$('il-file-list').textContent='Aucun fichier sélectionné.';status('Prêt.');});
+</script>
+</body></html>

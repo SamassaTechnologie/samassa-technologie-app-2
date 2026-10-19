@@ -2,11 +2,11 @@
    SAMASSA TECHNOLOGIE — Service Worker PWA v4.6
    Tous les modules en cache (hors-ligne complet)
 ============================================================ */
-const CACHE_NAME  = 'samassa-pro-v5.7';
-const CACHE_PAGES = 'samassa-pages-v5.7';
+const CACHE_NAME  = 'samassa-pro-v5.8';
+const CACHE_PAGES = 'samassa-pages-v5.8';
 
 const STATIC_ASSETS = [
-  'index.html','login.html',
+  'index.html','iloveapi.html','login.html',
   'facture.html','facture.js',
   'facture_materiel.html','facture_materiel.js',
   'facture_cyber.html','facture_cyber.js','cyber-docs.html',
