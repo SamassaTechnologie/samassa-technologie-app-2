@@ -9,6 +9,8 @@ import {
   validateFile, MAX_FILES, errorResponse, json, parseJson, upstream
 } from '../lib/iloveapi-service.js';
 
+export const config = { runtime: 'edge' };
+
 const API_BASE = 'https://api.ilovepdf.com/v1';
 const ALLOWED_ORIGIN = 'https://samassa-technologie-app-2.vercel.app';
 const COMMON_HEADERS = {
