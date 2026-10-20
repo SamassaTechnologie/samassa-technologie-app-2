@@ -2,8 +2,8 @@
    - À l'installation : met en cache l'application + les 2 bibliothèques (docx.js, FileSaver).
    - Ensuite : tout est servi depuis le cache, sans internet.
    Changez VERSION à chaque modification des fichiers pour forcer la mise à jour. */
-const VERSION = 'redacteur-mali-v9';
-const LOCAL = ['./', 'index.html', 'style.css', 'app.js', 'modeles-ventes.js', 'manifest.json', 'logo.png', 'icon-192.png', 'icon-512.png'];
+const VERSION = 'redacteur-mali-v10';
+const LOCAL = ['./', 'index.html', 'style.css', 'app.js', 'modeles-ventes.js', 'fonctions-plus.js', 'manifest.json', 'logo.png', 'icon-192.png', 'icon-512.png'];
 const CDN = [];   // plus aucune dépendance externe
 
 self.addEventListener('install', e => {
