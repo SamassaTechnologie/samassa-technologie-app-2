@@ -11,6 +11,15 @@
           ".validate": "newData.hasChildren(['role']) && (newData.child('role').val() == 'administrateur' || newData.child('role').val() == 'caissier' || newData.child('role').val() == 'technicien' || newData.child('role').val() == 'responsable_stock')"
         }
       },
+      "analytics": {
+        ".read": "auth != null && root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'administrateur'",
+        "events": {
+          "$eventId": {
+            ".write": "auth != null && newData.child('uid').val() == auth.uid",
+            ".validate": "newData.hasChildren(['uid','feature','action','result','at']) && (newData.child('feature').val() == 'writer' || newData.child('feature').val() == 'scanner')"
+          }
+        }
+      },
       "$key": {
         ".read": "auth != null",
         ".write": "auth != null && (root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'administrateur' || (root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'caissier' && ($key == 'samassa_recus' || $key == 'samassa_recus_vente' || $key == 'samassa_factures' || $key == 'samassa_factures_cyber' || $key == 'samassa_mouvements' || $key == 'samassa_clotures' || $key == 'samassa_audit_log' || $key == 'samassa_clients' || $key == 'samassa_retraits' || $key == 'samassa_creances' || $key == 'samassa_devis')) || (root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'technicien' && ($key == 'samassa_interventions' || $key == 'samassa_bons_reparation' || $key == 'samassa_devis' || $key == 'samassa_stock' || $key == 'samassa_stock_v2' || $key == 'samassa_stock_mouvements' || $key == 'samassa_clients' || $key == 'samassa_audit_log')) || (root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'responsable_stock' && ($key == 'samassa_stock' || $key == 'samassa_stock_v2' || $key == 'samassa_stock_mouvements' || $key == 'samassa_factures_mat' || $key == 'samassa_factures' || $key == 'samassa_fournisseurs' || $key == 'samassa_clients' || $key == 'samassa_audit_log')))",

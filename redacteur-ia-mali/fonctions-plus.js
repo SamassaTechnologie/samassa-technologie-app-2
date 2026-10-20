@@ -347,7 +347,11 @@
           const d = await r.json().catch(() => ({}));
           if (!r.ok || !d.text) throw new Error(r.status === 503 ? 'le service Gemini de SAMASSA n’est pas configuré' : (d.error || 'service Gemini indisponible, code ' + r.status));
           t.value = d.text; sauverBrouillon();
-        } catch (e) { alert('L\'assistant IA n\'est pas disponible pour le moment (' + e.message + ').'); }
+          if (window.SAMASSA_ANALYTICS) SAMASSA_ANALYTICS.track('writer', isImprove ? 'amélioration de champ' : 'rédaction de champ', 'success', {model: modele.titre});
+        } catch (e) {
+          if (window.SAMASSA_ANALYTICS) SAMASSA_ANALYTICS.track('writer', isImprove ? 'amélioration de champ' : 'rédaction de champ', 'error', {model: modele.titre});
+          alert('L\'assistant IA n\'est pas disponible pour le moment (' + e.message + ').');
+        }
         b.disabled = false; b.textContent = avant;
       };
       t.after(b);
@@ -366,6 +370,7 @@
   const genBase = $('#btnGen').onclick;
   $('#btnGen').onclick = function () {
     genBase.apply(this, arguments);
+    if (window.SAMASSA_ANALYTICS) SAMASSA_ANALYTICS.track('writer', 'génération de document', 'success', {model: modele && modele.titre || 'modèle'});
     try { enregistrerHistorique(); bShare.hidden = false; } catch (e) {}
   };
   const printBase = $('#btnPrint').onclick;
