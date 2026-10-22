@@ -2,6 +2,8 @@
 // Rédacteur IA — Google Gemini + Anthropic
 // SYSTEM_PROMPT ultra-détaillé avec templates Mali + mode affinage
 
+import { requireUser } from '../lib/iloveapi-service.js';
+
 export const config = { runtime: 'edge' };
 
 /* ══════════════════════════════════════════════════════
@@ -203,11 +205,19 @@ export default async function handler(req) {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
   };
 
   if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
   if (req.method !== 'POST')    return new Response('Method not allowed', { status: 405 });
+
+  /* Connexion obligatoire : seul un utilisateur Firebase avec un rôle valide peut utiliser l'IA */
+  try {
+    await requireUser(req);
+  } catch (authErr) {
+    return new Response(JSON.stringify({ success: false, error: authErr.message || 'Connexion requise.' }),
+      { status: authErr.status || 401, headers: CORS });
+  }
 
   /* Clés API depuis les variables d'environnement Vercel */
   const GEMINI_KEY    = process.env.GEMINI_API_KEY    || '';
