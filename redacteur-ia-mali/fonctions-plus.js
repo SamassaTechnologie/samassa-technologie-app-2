@@ -1,3 +1,15 @@
+/* En-têtes pour le proxy IA : jeton Firebase de l'utilisateur connecté */
+async function aiAuthHeaders() {
+  const h = { 'Content-Type': 'application/json' };
+  try {
+    if (typeof Auth !== 'undefined' && Auth.idToken) {
+      const t = await Auth.idToken();
+      if (t) h.Authorization = 'Bearer ' + t;
+    }
+  } catch (e) { /* non connecté : le serveur refusera */ }
+  return h;
+}
+
 /* ==================================================================
    RÉDACTEUR IA – MALI  |  fonctions-plus.js  (v1.0)
    Ajoute, sans toucher à app.js :
@@ -335,7 +347,7 @@
         b.disabled = true; const avant = b.textContent; b.textContent = 'Rédaction en cours…';
         try {
           const isImprove = Boolean(base);
-          const r = await fetch('/api/generate-doc', {method: 'POST', headers: {'Content-Type': 'application/json'},
+          const r = await fetch('/api/generate-doc', {method: 'POST', headers: await aiAuthHeaders(),
             body: JSON.stringify(isImprove ? {
               mode: 'affiner', previous: base,
               instruction: `Améliore uniquement le champ « ${lab} » du modèle « ${modele.titre} ». ${consigne || 'Corrige la langue, la clarté et le style administratif malien sans changer le sens.'}`,
