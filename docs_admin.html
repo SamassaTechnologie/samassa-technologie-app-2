@@ -1126,6 +1126,18 @@ function detectKeyType(key) {
 }
 
 /* ── GÉNÉRATION IA (Gemini direct ou Anthropic via proxy) ── */
+/* En-têtes pour le proxy IA : jeton Firebase de l'utilisateur connecté */
+async function aiAuthHeaders() {
+  const h = { 'Content-Type': 'application/json' };
+  try {
+    if (typeof Auth !== 'undefined' && Auth.idToken) {
+      const t = await Auth.idToken();
+      if (t) h.Authorization = 'Bearer ' + t;
+    }
+  } catch (e) { /* non connecté : le serveur refusera */ }
+  return h;
+}
+
 async function generateWithAI(mode) { mode = mode || 'nouveau';
   const prompt = (document.getElementById('ai-prompt')?.value || '').trim();
   const dest   = (document.getElementById('ai-dest')?.value  || '').trim();
@@ -1163,7 +1175,7 @@ async function generateWithAI(mode) { mode = mode || 'nouveau';
     } catch (firebaseError) {
       console.warn('Firebase AI Logic indisponible, repli Vercel :', firebaseError);
       const aiRes = await fetch('/api/generate-doc', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: await aiAuthHeaders(),
         body: JSON.stringify({ prompt: fullPrompt })
       });
       const aiData = await aiRes.json();
@@ -1410,7 +1422,7 @@ async function testAIKey() {
       const result = await window.SAMASSA_AI.generate('Réponds uniquement : OK');
       d = { ok: true, message: result.model + (result.appCheck ? ' + App Check actif' : ' — App Check à configurer') };
     } catch (firebaseError) {
-      const r = await fetch('/api/generate-doc', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ prompt:'Réponds uniquement : OK' }) });
+      const r = await fetch('/api/generate-doc', { method:'POST', headers: await aiAuthHeaders(), body: JSON.stringify({ prompt:'Réponds uniquement : OK' }) });
       const fallback = await r.json();
       d = { ok: Boolean(r.ok && fallback.success), message: fallback.error || firebaseError.message };
     }
