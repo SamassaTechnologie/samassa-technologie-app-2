@@ -141,12 +141,24 @@ function saveAI() {
   toast('✅ Le service IA est géré par le serveur.', 'success');
   showAIStatus();
 }
+/* En-têtes pour le proxy IA : jeton Firebase de l'utilisateur connecté */
+async function aiAuthHeaders() {
+  const h = { 'Content-Type': 'application/json' };
+  try {
+    if (typeof Auth !== 'undefined' && Auth.idToken) {
+      const t = await Auth.idToken();
+      if (t) h.Authorization = 'Bearer ' + t;
+    }
+  } catch (e) { /* non connecté : le serveur refusera */ }
+  return h;
+}
+
 async function testAI() {
   const st = document.getElementById('aiStatus');
   st.style.display='block'; st.style.background='#EEF2FF'; st.style.color='#3730A3';
   st.textContent='⏳ Test du service IA sécurisé...';
   try {
-    const r = await fetch('/api/generate-doc',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:'Réponds uniquement OK.'})});
+    const r = await fetch('/api/generate-doc',{method:'POST',headers: await aiAuthHeaders(),body:JSON.stringify({prompt:'Réponds uniquement OK.'})});
     const d = await r.json();
     st.style.background = d.success ? '#F0FDF4' : '#FEF2F2';
     st.style.color = d.success ? '#059652' : '#DC2626';
