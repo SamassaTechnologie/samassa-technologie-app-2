@@ -1,13 +1,12 @@
 {
   "rules": {
     "$store": {
-      ".read": "auth != null",
+      ".read": "auth != null && root.child($store).child('user_roles').child(auth.uid).exists()",
       "user_roles": {
-        ".read": "auth != null",
-        ".write": "auth != null && ((!data.exists() && newData.hasChildren([auth.uid])) || root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'administrateur')",
+        ".write": "auth != null && root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'administrateur'",
         "$uid": {
           ".read": "auth != null && (auth.uid == $uid || root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'administrateur')",
-          ".write": "auth != null && (root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'administrateur' || (!data.exists() && auth.uid == $uid && newData.child('role').val() == 'administrateur'))",
+          ".write": "auth != null && (root.child($store).child('user_roles').child(auth.uid).child('role').val() == 'administrateur' || (!root.child($store).child('user_roles').exists() && auth.uid == $uid && newData.child('role').val() == 'administrateur'))",
           ".validate": "newData.hasChildren(['role']) && (newData.child('role').val() == 'administrateur' || newData.child('role').val() == 'caissier' || newData.child('role').val() == 'technicien' || newData.child('role').val() == 'responsable_stock')"
         }
       },

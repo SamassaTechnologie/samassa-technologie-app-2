@@ -2,6 +2,11 @@
  * SAMASSA TECHNOLOGIE — intégration cloud sécurisée.
  * Les secrets sont conservés côté serveur dans les variables Vercel.
  */
+async function cloudHeaders() {
+  const h = { 'Content-Type': 'application/json' };
+  try { if (typeof Auth !== 'undefined' && Auth.idToken) { const t = await Auth.idToken(); if (t) h.Authorization = 'Bearer ' + t; } } catch (e) {}
+  return h;
+}
 const CLOUD_CONFIG = { apiUrl: '/api/save-document', timeout: 10000 };
 
 async function saveDocumentToCloud(documentData) {
@@ -11,7 +16,7 @@ async function saveDocumentToCloud(documentData) {
     }
     showCloudSaveIndicator('Sauvegarde en cours...', 'loading');
     const response = await fetch(CLOUD_CONFIG.apiUrl, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: await cloudHeaders(),
       body: JSON.stringify({ document: {
         documentNumber: String(documentData.documentNumber), documentType: String(documentData.documentType),
         clientName: String(documentData.clientName), clientPhone: documentData.clientPhone ? String(documentData.clientPhone) : undefined,
