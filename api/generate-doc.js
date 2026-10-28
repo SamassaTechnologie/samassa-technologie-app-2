@@ -285,17 +285,21 @@ Applique l'instruction ci-dessus au document. Retourne UNIQUEMENT le document am
     }
 
     let text = '', model = '', tokens = 0;
+    // Budget de temps : la fonction doit répondre en moins de 25 s. Chaque appel est limité pour laisser une chance au suivant.
+    const debut = Date.now();
+    const delai = (max) => AbortSignal.timeout(Math.max(1500, Math.min(max, 22000 - (Date.now() - debut))));
 
     /* ── Gemini (priorité) ── */
     if (GEMINI_KEY) {
-      const MODELS = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-flash-latest'];
+      const MODELS = (process.env.GEMINI_MODELS || 'gemini-3.5-flash,gemini-2.5-flash,gemini-flash-latest').split(',').map(x => x.trim()).filter(Boolean);
       for (const mdl of MODELS) {
         try {
           const r = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/${mdl}:generateContent?key=${GEMINI_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/${mdl}:generateContent`,
             {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              signal: delai(14000),
+              headers: { 'Content-Type': 'application/json', 'x-goog-api-key': GEMINI_KEY },
               body: JSON.stringify({
                 system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
                 contents: [{ parts: [{ text: fullPrompt }] }],
@@ -322,13 +326,14 @@ Applique l'instruction ci-dessus au document. Retourne UNIQUEMENT le document am
     if (!text && ANTHROPIC_KEY) {
       const r = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
+        signal: delai(14000),
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': ANTHROPIC_KEY,
           'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
+          model: process.env.ANTHROPIC_MODEL || 'claude-sonnet-4-6',
           max_tokens: longueur === 'détaillé' ? 3000 : 1800,
           system: SYSTEM_PROMPT,
           messages: [{ role: 'user', content: fullPrompt }]
