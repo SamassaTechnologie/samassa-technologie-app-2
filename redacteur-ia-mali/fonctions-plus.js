@@ -314,7 +314,7 @@ async function aiAuthHeaders() {
     if (spec) {
       const q = norm($('#recherche').value.trim());
       const ordre = catActive === FAV ? favs() : LS.get('recents', []);
-      const items = ordre.map(t => MODELES.findIndex(m => m.titre === t)).filter(i => i >= 0 && (!q || norm(MODELES[i].titre).includes(q)));
+      const items = ordre.map(t => MODELES.findIndex(m => m.titre === t)).filter(i => i >= 0 && correspond(MODELES[i], q));
       $('#liste').innerHTML = items.map(i => '<button class="carte" data-i="' + i + '"><b>' + (ICO[MODELES[i].cat] || '📄') + ' ' + esc(MODELES[i].titre) + '</b><small>' + esc(MODELES[i].cat) + '</small></button>').join('') ||
         '<p>' + (catActive === FAV ? 'Aucun favori. Touchez l\'étoile ☆ d\'un modèle pour l\'ajouter ici.' : 'Aucun modèle récent. Ouvrez un modèle pour le retrouver ici.') + '</p>';
       $$('#liste .carte').forEach(b => { b.onclick = () => ouvrir(+b.dataset.i); });

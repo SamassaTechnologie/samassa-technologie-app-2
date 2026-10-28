@@ -2,8 +2,8 @@
    - À l'installation : met en cache l'application + les 2 bibliothèques (docx.js, FileSaver).
    - Ensuite : tout est servi depuis le cache, sans internet.
    Changez VERSION à chaque modification des fichiers pour forcer la mise à jour. */
-const VERSION = 'redacteur-mali-v13';
-const LOCAL = ['./', 'index.html', 'style.css', 'app.js', 'modeles-ventes.js', 'modeles-succession.js', 'fonctions-plus.js', '../firebase-config.js', '../auth.js?v=firebase1', '../analytics.js?v=1', 'manifest.json', 'logo.png', 'icon-192.png', 'icon-512.png'];
+const VERSION = 'redacteur-mali-v14';
+const LOCAL = ['./', 'index.html', 'style.css', 'app.js', 'modeles-ventes.js', 'modeles-succession.js', 'fonctions-plus.js', 'ameliorations.js', '../firebase-config.js', '../auth.js?v=firebase1', '../analytics.js?v=1', 'manifest.json', 'logo.png', 'icon-192.png', 'icon-512.png'];
 const CDN = [];   // plus aucune dépendance externe
 
 self.addEventListener('install', e => {
@@ -24,6 +24,8 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  const u = new URL(e.request.url);
+  if (u.pathname.startsWith('/api/')) return;   // ne jamais mettre en cache l'API
   e.respondWith((async () => {
     const cache = await caches.open(VERSION);
     const hit = await cache.match(e.request, {ignoreSearch: true});
