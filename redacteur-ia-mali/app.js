@@ -29,6 +29,12 @@ const PARAM_DEFAUT = {
 let P = Object.assign({}, PARAM_DEFAUT, LS.get('param', {}));
 // Options d'impression : en-tête (infos du cyber), logo, pied de page (adresse) — mémorisées
 const OPT = Object.assign({entete: true, logo: true, pied: true}, LS.get('opt', {}));
+// MODE : « public » (particulier : documents sans l'en-tête du cyber) ou « cyber » (en-tête, logo, compteur, bilan).
+// Un appareil qui a déjà servi de cyber (compteur, paramètres ou bilan enregistrés) reste en mode cyber.
+let MODE = LS.get('mode', null);
+if (MODE !== 'public' && MODE !== 'cyber') MODE = (LS.get('cpt', 0) > 0 || LS.get('param', null) || LS.get('jours', null)) ? 'cyber' : 'public';
+// Options réellement appliquées au document : en mode public, jamais l'en-tête, le logo ni le pied du cyber
+const OPTV = new Proxy(OPT, {get: (o, k) => (MODE === 'cyber' || !['entete', 'logo', 'pied'].includes(k)) ? o[k] : false});
 
 /* ---------- 2. NOMBRE EN LETTRES (pour factures, reçus, contrats) ---------- */
 function enLettres(n){
@@ -843,8 +849,8 @@ const pied = () => `${P.nom} – ${P.adresse} – Tél : ${P.tel} – ${P.email}
 function apercuHtml(B){
   const logo = logoSur(LS.get('logo', null));
   const texte = `<div><b>${esc(P.nom)}</b><i>${esc(P.slogan)}</i><small>Tél : ${esc(P.tel)} – ${esc(P.email)}</small></div>`;
-  const ent = (OPT.entete || OPT.logo) ? `<div class="ent">${OPT.logo ? `<img src="${logo}" alt="">` : ''}${OPT.entete ? texte : ''}</div>` : '';
-  const bas = OPT.pied ? `<div class="pied">${esc(pied())}</div>` : '';
+  const ent = (OPTV.entete || OPTV.logo) ? `<div class="ent">${OPTV.logo ? `<img src="${logo}" alt="">` : ''}${OPTV.entete ? texte : ''}</div>` : '';
+  const bas = OPTV.pied ? `<div class="pied">${esc(pied())}</div>` : '';
   return ent + B.map(blocHtml).join('') + bas;
 }
 
@@ -905,7 +911,7 @@ const tableX = t => {
 const imageX = (cx, cy) => `<w:p><w:pPr><w:spacing w:after="0"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="1" name="Logo"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="0" name="logo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdLogo"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`;
 
 function construireDocx(B, logo){
-  const avecH = OPT.entete || OPT.logo, avecF = OPT.pied;   // parties à inclure dans le Word
+  const avecH = OPTV.entete || OPTV.logo, avecF = OPTV.pied;   // parties à inclure dans le Word
   // Corps du document (un paragraphe vide sépare deux tableaux collés, sinon Word les fusionne)
   let corps = '', precTable = false;
   B.forEach(b => {
@@ -918,7 +924,7 @@ function construireDocx(B, logo){
   // En-tête : logo et/ou infos du cyber, puis filet bleu (selon les cases cochées)
   const cLogo = logo ? imageX(Math.round(55 * logo.w / logo.h * 9525), 55 * 9525) : paraX({runs: [{x: '[LOGO CYBER]', c: '999999'}], sa: 0});
   const cTxt = {blocs: [{runs: [{x: P.nom, b: true, c: '0B6FB8', sz: 30}], sa: 0}, {runs: [{x: P.slogan, i: true, sz: 20}], sa: 0}, {runs: [{x: `Tél : ${P.tel} – ${P.email}`, sz: 18}], sa: 0}]};
-  const cells = (OPT.logo && OPT.entete) ? [{blocs: [{raw: cLogo}]}, cTxt] : OPT.logo ? [{blocs: [{raw: cLogo}]}] : [cTxt];
+  const cells = (OPTV.logo && OPTV.entete) ? [{blocs: [{raw: cLogo}]}, cTxt] : OPTV.logo ? [{blocs: [{raw: cLogo}]}] : [cTxt];
   const entete = avecH ? `${XML}<w:hdr ${NS}>` + tableX({w: cells.length === 2 ? [18, 82] : [100], rows: [cells]}) + paraX({runs: [], bb: true, sa: 0}) + '</w:hdr>' : '';
 
   // Pied de page : adresse + "Page X / Y"
@@ -936,7 +942,7 @@ function construireDocx(B, logo){
              {n: 'word/styles.xml', d: utf8(styles)}];
   if (avecH) f.push({n: 'word/header1.xml', d: utf8(entete)});
   if (avecF) f.push({n: 'word/footer1.xml', d: utf8(pied_)});
-  if (avecH && OPT.logo && logo) {
+  if (avecH && OPTV.logo && logo) {
     f.push({n: 'word/_rels/header1.xml.rels', d: utf8(`${XML}<Relationships xmlns="${PK}"><Relationship Id="rIdLogo" Type="${R}/image" Target="media/logo.png"/></Relationships>`)});
     f.push({n: 'word/media/logo.png', d: logo.data});
   }
@@ -992,7 +998,7 @@ $('#btnGen').onclick = () => {
   a.scrollIntoView({behavior: 'smooth'});
 };
 $('#btnWord').onclick = telechargerWord;
-$('#btnPrint').onclick = () => { cpt++; LS.set('cpt', cpt); majCompteur(); window.print(); };
+$('#btnPrint').onclick = () => { if (MODE === 'cyber') { cpt++; LS.set('cpt', cpt); majCompteur(); } window.print(); };
 $('#prix').onchange = e => { prix = Math.max(0, +e.target.value || 0); LS.set('prix', prix); majCompteur(); };
 $('#btnReset').onclick = () => { if (confirm("Remettre le compteur d'impressions à zéro ?")) { cpt = 0; LS.set('cpt', 0); majCompteur(); } };
 
@@ -1026,7 +1032,17 @@ window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); evtIns
 $('#btnInstall').onclick = async () => { if (evtInstall) { evtInstall.prompt(); evtInstall = null; $('#btnInstall').hidden = true; } };
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 
+// Bouton de changement de mode
+function appliquerMode() {
+  document.body.classList.toggle('public', MODE === 'public');
+  const b = $('#btnMode'); b.textContent = MODE === 'cyber' ? '🏪 Mode cyber' : '👤 Mode particulier';
+  b.title = MODE === 'cyber' ? 'Passer au mode particulier (documents sans en-tête du cyber)' : 'Passer au mode cyber (en-tête, logo, compteur, bilan)';
+  if (blocs && !$('#apercu').hidden) $('#apercu').innerHTML = apercuHtml(blocs);
+}
+$('#btnMode').onclick = () => { MODE = MODE === 'cyber' ? 'public' : 'cyber'; LS.set('mode', MODE); appliquerMode(); };
+
 /* ---------- Démarrage ---------- */
+appliquerMode();
 if (LS.get('logo', null)) $('.brand img').src = logoSur(LS.get('logo'));
 majCompteur();
 afficherAccueil();

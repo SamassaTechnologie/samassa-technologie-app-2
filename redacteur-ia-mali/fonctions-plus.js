@@ -387,7 +387,7 @@ async function aiAuthHeaders() {
   };
   const printBase = $('#btnPrint').onclick;
   $('#btnPrint').onclick = function () {
-    try { noterImpression(); } catch (e) {}
+    try { if (MODE === 'cyber') noterImpression(); } catch (e) {}
     printBase.apply(this, arguments);
   };
 

@@ -91,3 +91,6 @@ dialog::backdrop{background:rgba(0,0,0,.4)}
   #apercu{position:absolute;left:0;top:0;width:100%;max-width:none;margin:0;padding:0;box-shadow:none}
   @page{size:A4;margin:2.5cm}
 }
+
+/* Mode particulier : on masque ce qui ne sert qu'au cyber */
+body.public .cyber-only, body.public #btnBilan{display:none!important}

@@ -20,11 +20,12 @@
   </div>
   <div class="cyber">
     <a id="btnDashboard" class="btn sec" href="../index.html" aria-label="Retour au tableau de bord">← Tableau de bord</a>
-    <label class="prix">Prix : <input id="prix" type="number" min="0" value="500"> F</label>
-    <span class="badge">Impressions : <b id="cptImp">0</b></span>
-    <span class="badge">Estimation : <b id="recette">0</b> F</span>
-    <button id="btnReset" class="lien" type="button">Remise à zéro</button>
-    <button id="btnParam" class="btn sec" type="button">⚙ Paramètres</button>
+    <label class="prix cyber-only">Prix : <input id="prix" type="number" min="0" value="500"> F</label>
+    <span class="badge cyber-only">Impressions : <b id="cptImp">0</b></span>
+    <span class="badge cyber-only">Estimation : <b id="recette">0</b> F</span>
+    <button id="btnReset" class="lien cyber-only" type="button">Remise à zéro</button>
+    <button id="btnMode" class="btn sec" type="button"></button>
+    <button id="btnParam" class="btn sec cyber-only" type="button">⚙ Paramètres</button>
     <button id="btnInstall" class="btn" type="button" hidden>⬇ Installer</button>
   </div>
 </header>
@@ -42,7 +43,7 @@
     <button id="btnRetour" class="btn sec" type="button">← Retour aux modèles</button>
     <h2 id="formTitre"></h2>
     <div id="champs" class="form"></div>
-    <div class="options">
+    <div class="options cyber-only">
       <b>Sur le document :</b>
       <label><input type="checkbox" id="optEntete" checked> En-tête (infos du cyber)</label>
       <label><input type="checkbox" id="optLogo" checked> Logo</label>
