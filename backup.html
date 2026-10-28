@@ -68,6 +68,13 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
     <button class="btn btn-blue" onclick="shareBackup()" style="margin-left:10px">💬 Partager via WhatsApp</button>
   </div>
 
+  <!-- Copies automatiques -->
+  <div class="card">
+    <h2>🕘 Copies automatiques (7 derniers jours)</h2>
+    <p>Une copie de vos données est faite automatiquement chaque jour dans cet appareil. Utile pour revenir en arrière après une suppression par erreur. Pour être protégé si le téléphone est perdu ou cassé, téléchargez aussi le fichier de sauvegarde ci-dessus.</p>
+    <div id="auto-copies"></div>
+  </div>
+
   <!-- Restauration -->
   <div class="card">
     <h2>📥 Restaurer depuis une sauvegarde</h2>
@@ -94,6 +101,7 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
 <script src="auth.js?v=firebase1"></script>
 <script src="firebase-config.js?v=sync4"></script>
 <script src="sync.js?v=5"></script>
+<script src="auto-backup.js?v=1"></script>
 <script>
 const DATA_KEYS = [
   'samassa_recus','samassa_factures','samassa_factures_mat','samassa_factures_cyber',
@@ -220,6 +228,7 @@ function toast(msg, type) {
 }
 
 window.addEventListener('load', loadStats);
+window.addEventListener('load', () => { if (window.AutoBackup) AutoBackup.afficher(document.getElementById('auto-copies'), loadStats); });
 </script>
 <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
 </body>
