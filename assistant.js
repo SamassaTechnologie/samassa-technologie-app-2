@@ -39,7 +39,7 @@
     return out;
   }
 
-  async function jeton() { try { if (window.Auth && Auth.idToken) return await Auth.idToken(); } catch (e) {} return null; }
+  async function jeton() { try { if (typeof Auth !== 'undefined' && Auth.idToken) return await Auth.idToken(); } catch (e) {} return null; }
   function bulle(cls, texte) { var d = document.createElement('div'); d.className = 'b ' + cls; d.textContent = texte; document.getElementById('chat').appendChild(d); d.scrollIntoView({ block: 'end', behavior: 'smooth' }); return d; }
   function outils(b, texte) {
     var t = document.createElement('div'); t.className = 'tools';
@@ -56,7 +56,7 @@
       var h = { 'Content-Type': 'application/json' }, t = await jeton(); if (t) h.Authorization = 'Bearer ' + t;
       var r = await fetch('/api/analyse-ia', { method: 'POST', headers: h, body: JSON.stringify({ donnees: donnees, question: question, historique: historique }), signal: AbortSignal.timeout(28000) });
       var d = await r.json().catch(function () { return {}; });
-      if (!r.ok || !d.text) throw new Error(d.error || 'Service IA indisponible');
+      if (!r.ok || !d.text) throw new Error(r.status === 401 ? 'Session expirée : reconnectez-vous (Déco. puis connexion).' : (d.error || 'Service IA indisponible'));
       att.className = 'b a'; att.textContent = d.text; outils(att, d.text);
       historique.push({ q: question, r: d.text }); historique = historique.slice(-4);
     } catch (e) { att.className = 'b a err'; att.textContent = '⚠️ ' + (e && e.name === 'TimeoutError' ? 'Le service met trop de temps à répondre. Réessayez.' : (e.message || 'Erreur')); }

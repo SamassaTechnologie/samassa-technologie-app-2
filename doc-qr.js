@@ -4,7 +4,7 @@
   var cache = {};
   function chiffres(s) { return parseInt(String(s || '').replace(/\D/g, ''), 10) || 0; }
   function valeur(id) { var e = document.getElementById(id); return e ? (e.value !== undefined && e.tagName !== 'SPAN' && e.tagName !== 'DIV' ? e.value : e.textContent) : ''; }
-  async function jeton() { try { if (window.Auth && Auth.idToken) return await Auth.idToken(); } catch (e) {} return null; }
+  async function jeton() { try { if (typeof Auth !== "undefined" && Auth.idToken) return await Auth.idToken(); } catch (e) {} return null; }
   async function adresse(doc) {
     var k = [doc.type, doc.number, doc.total, doc.date].join('|'); if (cache[k]) return cache[k];
     var t = await jeton(); if (!t) return null;
