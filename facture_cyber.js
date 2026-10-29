@@ -125,7 +125,7 @@ function generateInvoice() {
 /* ── Imprimer ── */
 function printDoc() {
   if (ST.el('docInner').style.display === 'none') generateInvoice();
-  setTimeout(() => window.print(), 150);
+  SamassaPrint();
 }
 
 /* ── Enregistrer ── */

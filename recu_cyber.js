@@ -125,7 +125,7 @@ function generateReceipt() {
 /* ── Imprimer ── */
 function printDoc() {
   if (ST.el('docInner').style.display === 'none') generateReceipt();
-  setTimeout(() => window.print(), 150);
+  SamassaPrint();
 }
 
 /* ── Enregistrer + Caisse ── */

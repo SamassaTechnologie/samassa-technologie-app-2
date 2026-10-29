@@ -292,7 +292,7 @@ window.generateMatInvoice = function () {
 ════════════════════════════════════════ */
 window.printDoc = function () {
   if (ST.el('docInner').style.display === 'none') generateMatInvoice();
-  setTimeout(function () { window.print(); }, 150);
+  SamassaPrint();
 };
 
 /* ════════════════════════════════════════

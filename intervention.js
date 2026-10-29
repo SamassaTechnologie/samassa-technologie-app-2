@@ -76,7 +76,7 @@ function generateIntervention() {
 
 function printDoc() {
   if (ST.el('docInner').style.display === 'none') generateIntervention();
-  setTimeout(() => window.print(), 150);
+  SamassaPrint();
 }
 
 function saveDoc() {

@@ -418,7 +418,7 @@ function generateReceipt() {
 ══════════════════════════════════════════════════════════ */
 function printDoc() {
   if (ST.el('docInner').style.display === 'none') generateReceipt();
-  setTimeout(() => window.print(), 150);
+  SamassaPrint();
 }
 
 /* ══════════════════════════════════════════════════════════

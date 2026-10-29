@@ -54,7 +54,7 @@ function generateRepair(){
 
 function printRepair(){
   if($('docInner').style.display==='none') generateRepair();
-  setTimeout(()=>window.print(),150);
+  SamassaPrint();
 }
 
 /* ── ENREGISTRER + CAISSE ── */

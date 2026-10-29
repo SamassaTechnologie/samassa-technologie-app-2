@@ -70,7 +70,7 @@ function generateQuote() {
 
 function printDoc() {
   if (ST.el('docInner').style.display === 'none') generateQuote();
-  setTimeout(() => window.print(), 150);
+  SamassaPrint();
 }
 
 function saveDoc() {
