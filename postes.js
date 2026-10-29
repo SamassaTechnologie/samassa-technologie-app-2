@@ -95,6 +95,7 @@
   }
   window.Postes = { montantTemps: montantTemps, montantSession: montantSession };
   document.addEventListener('DOMContentLoaded', function () {
+    if (!document.getElementById('kpis')) return;
     document.addEventListener('click', function (e) {
       var b = e.target.closest('button[data-a]'); if (!b) return; var id = b.closest('.pc').dataset.p;
       if (b.dataset.a === 'f') debuter(id, FORFAITS[+b.dataset.i]); else if (b.dataset.a === 'libre') debuter(id, null); else if (b.dataset.a === 'fin') terminer(id); else if (b.dataset.a === 'ann') annuler(id);

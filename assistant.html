@@ -1,0 +1,24 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Assistant IA de gestion — SAMASSA TECHNOLOGIE</title><meta name="theme-color" content="#0A1628"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif}.wrap{max-width:820px;margin:72px auto 40px;padding:0 14px}
+.hero{background:linear-gradient(135deg,#0A1628,#4C1D95,#7C3AED);border-radius:16px;padding:18px 22px;color:#fff;margin-bottom:12px}.hero h1{margin:0 0 4px;font-size:19px}.hero p{margin:0;color:#DDD6FE;font-size:12px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}.chip{background:#fff;border:1px solid #D8CCF5;color:#5B21B6;border-radius:99px;padding:8px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}.chip:disabled{opacity:.5}
+#chat{display:flex;flex-direction:column;gap:10px;min-height:120px;margin-bottom:12px}
+.b{max-width:92%;padding:11px 14px;border-radius:14px;font-size:13px;line-height:1.55;white-space:pre-wrap;word-break:break-word}.u{align-self:flex-end;background:#7C3AED;color:#fff;border-bottom-right-radius:4px}.a{align-self:flex-start;background:#fff;border:1px solid #E2ECF5;color:#0A1628;border-bottom-left-radius:4px}.a.err{background:#FEF2F2;border-color:#FECACA;color:#991B1B}.a.wait{color:#64748B;font-style:italic}
+.tools{display:flex;gap:6px;margin-top:8px}.tools button{border:0;background:#EEF2FF;color:#3730A3;border-radius:7px;padding:5px 9px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.bar{display:flex;gap:8px;position:sticky;bottom:8px;background:#F1F5F9;padding:6px 0}.bar input{flex:1;min-width:0;padding:12px;border:1.5px solid #D8E4EF;border-radius:12px;font:inherit;font-size:14px}.bar button{background:#7C3AED;color:#fff;border:0;border-radius:12px;padding:0 18px;font-weight:800;cursor:pointer;font-size:14px}.bar button:disabled{opacity:.5}
+.note{font-size:11px;color:#64748B;margin-top:10px;line-height:1.5}details{margin-top:10px;font-size:11px;color:#64748B}pre{white-space:pre-wrap;word-break:break-all;background:#fff;border:1px solid #E2ECF5;border-radius:8px;padding:8px;max-height:220px;overflow:auto;font-size:10px}
+</style></head><body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">🤖 Assistant IA</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<main class="wrap">
+<div class="hero"><h1>🤖 Assistant IA de gestion</h1><p>Posez vos questions sur la caisse, le bénéfice, le stock, les réparations, les contrats et les créances.</p></div>
+<div class="chips" id="chips"></div>
+<div id="chat" aria-live="polite"></div>
+<div class="bar"><input id="q" maxlength="300" placeholder="Posez votre question…" aria-label="Votre question" autocomplete="off"><button id="go">Envoyer</button></div>
+<div class="note">L'assistant reçoit uniquement des totaux calculés sur votre appareil (aucun nom de client, aucun numéro de téléphone). Ses réponses sont une aide : vérifiez avant toute décision.</div>
+<details><summary>Voir les données envoyées à l'assistant</summary><pre id="donnees"></pre></details>
+</main>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="utils.js"></script>
+<script src="rentabilite.js"></script><script src="contrats.js"></script><script src="rapprochement.js"></script><script src="commandes.js"></script><script src="suivi.js"></script><script src="assistant.js?v=1"></script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body></html>

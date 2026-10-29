@@ -69,6 +69,7 @@
   }
   window.Rentabilite = { calculer: calculer };
   document.addEventListener('DOMContentLoaded', function () {
+    if (!document.getElementById('kpis')) return;
     document.getElementById('prev').onclick = function () { mois = decaler(mois, -1); rendre(); };
     document.getElementById('next').onclick = function () { mois = decaler(mois, 1); rendre(); };
     document.getElementById('mois').onchange = function () { if (this.value) { mois = this.value; rendre(); } };

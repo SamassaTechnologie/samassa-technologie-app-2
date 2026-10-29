@@ -127,3 +127,13 @@ test('règlement des factures : calcul et créance', () => {
   c = P.synchroCreance(c, { numero: 'FAC-001', client: 'Awa', du: 2000 }); assert.equal(c.length, 1); assert.equal(c[0].amount, 2000);
   c = P.synchroCreance(c, { numero: 'FAC-001', client: 'Awa', du: 0 }); assert.equal(c[0].paid, true);
 });
+
+test('assistant.js : collecte sans données personnelles', () => {
+  const store = { samassa_mouvements: JSON.stringify([{ id: 1, type: 'entree', amount: 5000, date: '2026-10-05', pm: 'Cash', desc: 'Jean Dupont' }]), samassa_creances: JSON.stringify([{ client: 'Awa Traoré', amount: 1000, paid: false, due: '2026-10-01' }]) };
+  global.window = {}; global.document = { addEventListener() {}, getElementById() { return null; } };
+  delete require.cache[require.resolve('../assistant.js')]; require('../assistant.js');
+  const out = window.AssistantIA.collecter({ lire: k => JSON.parse(store[k] || '[]') }, '2026-10-29T10:00:00Z');
+  const txt = JSON.stringify(out);
+  assert.equal(out.creancesClients.total, 1000);
+  assert.ok(!txt.includes('Jean') && !txt.includes('Awa'));
+});

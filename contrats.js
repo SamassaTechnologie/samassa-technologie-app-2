@@ -100,6 +100,7 @@
   }
   window.Contrats = { echeances: echeances, etat: etat, mrr: mrr };
   document.addEventListener('DOMContentLoaded', function () {
+    if (!document.getElementById('kpis')) return;
     document.getElementById('q').addEventListener('input', rendre);
     document.getElementById('nouv').onclick = function () { ouvrir(null); };
     document.getElementById('d-ok').onclick = enregistrer;

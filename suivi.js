@@ -99,6 +99,7 @@
   }
 
   function rendre() {
+    if (!document.getElementById('kpis')) return;
     var tous = lire(), q = (document.getElementById('q').value || '').toLowerCase();
     var cnt = { actifs: tous.filter(actif).length, retard: tous.filter(enRetard).length, prets: tous.filter(function (b) { return b.status === 'Prêt à restituer'; }).length, termines: tous.filter(termine).length };
     var aEnc = tous.filter(actif).reduce(function (s, b) { return s + (Number(b.balance) || 0); }, 0);

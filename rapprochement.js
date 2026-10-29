@@ -73,6 +73,7 @@
   }
   window.Rapprochement = { analyserSms: analyserSms, rapprocher: rapprocher, nombre: nombre };
   document.addEventListener('DOMContentLoaded', function () {
+    if (!document.getElementById('kpis')) return;
     document.getElementById('m-dt').value = new Date().toISOString().slice(0, 10);
     document.getElementById('analyser').onclick = function () {
       var r = analyserSms(document.getElementById('brut').value); brouillon = r.retenus; apercu();

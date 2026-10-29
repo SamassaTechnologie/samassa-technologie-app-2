@@ -96,6 +96,7 @@
   }
   window.Commandes = { appliquerReception: appliquerReception, totalCmd: totalCmd };
   document.addEventListener('DOMContentLoaded', function () {
+    if (!document.getElementById('kpis')) return;
     document.getElementById('q').addEventListener('input', rendre); document.getElementById('flt').addEventListener('change', rendre);
     document.getElementById('nouv').onclick = ouvrir; document.getElementById('f-add').onclick = ligne;
     document.getElementById('d-ok').onclick = enregistrer; document.getElementById('d-no').onclick = function () { document.getElementById('dlg').close(); };
