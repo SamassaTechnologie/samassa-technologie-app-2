@@ -56,3 +56,12 @@ test('rentabilité : bénéfice net', () => {
   assert.equal(r.ca, 100000); assert.equal(r.cout, 30000); assert.equal(r.margeBrute, 70000); assert.equal(r.net, 40000);
   assert.equal(r.produits[0].marge, 20000);
 });
+test('postes cyber : tarification', () => {
+  const ctx = { window: { escHtml: s => s }, document: { addEventListener() {} }, localStorage: { getItem: () => null } };
+  vm.createContext(ctx); vm.runInContext(lire('postes.js'), ctx);
+  const P = ctx.window.Postes, c = { tarifHeure: 400, minimum: 100, pas: 5, prixPage: 75 };
+  assert.equal(P.montantTemps(10, c), 100); assert.equal(P.montantTemps(40, c), 275); assert.equal(P.montantTemps(0, c), 0);
+  const s = { debut: 0, forfait: { minutes: 30, prix: 250 } };
+  assert.equal(P.montantSession(s, 50 * 60000, 2, c).total, 250 + 150 + 150);
+  assert.equal(P.montantSession(s, 32 * 60000, 0, c).total, 250);
+});

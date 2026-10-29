@@ -1,0 +1,31 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Postes du cybercafé — SAMASSA TECHNOLOGIE</title><meta name="theme-color" content="#0A1628"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif}.wrap{max-width:1050px;margin:72px auto 60px;padding:0 16px}
+.hero{background:linear-gradient(135deg,#0A1628,#0C4A6E,#0284C7);border-radius:16px;padding:20px 24px;color:#fff;margin-bottom:14px}.hero h1{margin:0 0 4px;font-size:20px}.hero p{margin:0;color:#BAE6FD;font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}.kpi{background:#fff;border:1px solid #E2ECF5;border-radius:12px;padding:12px}.kpi b{display:block;font-size:19px;color:#0A1628}.kpi span{font-size:11px;color:#64748B}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:16px}
+.pc{background:#fff;border:2px solid #E2ECF5;border-radius:14px;padding:14px}.pc.on{border-color:#0284C7;background:#F0F9FF}.pc.alert{border-color:#DC2626;background:#FEF2F2}
+.pc h3{margin:0 0 4px;font-size:14px;color:#0A1628;display:flex;justify-content:space-between;gap:6px}.st{font-size:10px;font-weight:800;border-radius:99px;padding:3px 8px;background:#DCFCE7;color:#166534}.pc.on .st{background:#DBEAFE;color:#1E40AF}.pc.alert .st{background:#FEE2E2;color:#991B1B}
+.tm{font-size:28px;font-weight:900;color:#0A1628;font-variant-numeric:tabular-nums;margin:6px 0}.sub{font-size:12px;color:#64748B;min-height:16px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.acts button{border:0;border-radius:8px;padding:8px 10px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;background:#EEF2FF;color:#3730A3}.acts .go{background:#0284C7;color:#fff}.acts .stop{background:#DC2626;color:#fff}
+.card{background:#fff;border:1px solid #E2ECF5;border-radius:14px;padding:16px;margin-bottom:14px}.card h2{margin:0 0 10px;font-size:14px;color:#0A1628}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 6px;border-bottom:1px solid #F0F4F8;text-align:left}th{color:#7A94AF;font-size:10px;text-transform:uppercase}.r{text-align:right}
+.cfg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.cfg label{font-size:11px;font-weight:700;color:#4A6080;display:block;margin-bottom:3px}.cfg input{width:100%;box-sizing:border-box;padding:9px;border:1px solid #D8E4EF;border-radius:8px;font:inherit;font-size:13px}
+.btn{border:0;border-radius:8px;padding:9px 13px;font-weight:800;cursor:pointer;background:#0284C7;color:#fff;font:inherit;font-size:13px;margin-top:10px}
+dialog{border:0;border-radius:14px;padding:18px;max-width:360px;width:calc(100% - 32px)}dialog::backdrop{background:rgba(5,10,20,.6)}dialog h3{margin:0 0 10px}dialog .l{display:flex;justify-content:space-between;font-size:13px;padding:4px 0}dialog input,dialog select{width:100%;box-sizing:border-box;padding:9px;border:1px solid #D8E4EF;border-radius:8px;font:inherit;margin:4px 0 8px}
+.empty{color:#7A94AF;font-size:12px;padding:8px 0}
+</style></head><body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">🖥️ Postes du cybercafé</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<main class="wrap">
+<div class="hero"><h1>🖥️ Postes du cybercafé</h1><p>Chronomètre par poste, forfaits, impressions et encaissement automatique en caisse.</p></div>
+<div class="kpis" id="kpis"></div>
+<div class="grid" id="postes"></div>
+<div class="card"><h2>Sessions du jour</h2><div id="jour"></div></div>
+<div class="card"><h2>Réglages</h2>
+<div class="cfg"><div><label for="c-n">Nombre de postes</label><input id="c-n" type="number" min="1" max="40"></div><div><label for="c-h">Tarif à l'heure (FCFA)</label><input id="c-h" type="number" min="0"></div><div><label for="c-m">Minimum facturé (FCFA)</label><input id="c-m" type="number" min="0"></div><div><label for="c-p">Arrondi du temps (minutes)</label><input id="c-p" type="number" min="1" max="60"></div><div><label for="c-pg">Prix d'une page imprimée</label><input id="c-pg" type="number" min="0"></div></div>
+<button class="btn" id="c-save">Enregistrer les réglages</button></div>
+</main>
+<dialog id="dlg"><h3 id="d-t"></h3><div id="d-l"></div><label for="d-pages">Pages imprimées</label><input id="d-pages" type="number" min="0" value="0"><label for="d-pm">Mode de paiement</label><select id="d-pm"><option>Espèces</option><option>Wave</option><option>Orange Money</option><option>Moov Money</option></select><div class="l"><b>Total à encaisser</b><b id="d-tot"></b></div><div class="acts"><button class="go" id="d-ok">✓ Encaisser</button><button id="d-no">Annuler</button></div></dialog>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="utils.js"></script><script src="postes.js?v=1"></script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body></html>
