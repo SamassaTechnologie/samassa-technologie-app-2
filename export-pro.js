@@ -212,8 +212,10 @@
     };
   }
   async function appelIA(question) {
+    const h = { 'Content-Type': 'application/json' };
+    try { if (typeof Auth !== 'undefined' && Auth.idToken) { const t = await Auth.idToken(); if (t) h.Authorization = 'Bearer ' + t; } } catch (e) {}
     const r = await fetch('/api/analyse-ia', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: h,
       body: JSON.stringify({ donnees: chargeIA(), question: question || '' })
     });
     const d = await r.json().catch(() => ({}));
