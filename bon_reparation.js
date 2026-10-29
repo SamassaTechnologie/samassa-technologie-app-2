@@ -81,6 +81,7 @@ function saveRepair(){
     labor:v.labor, parts:v.parts, advance:v.advance,
     total:v.total, balance:v.balance,
     warranty:$('warranty').value, notes:$('notes').value,
+    historique:[{de:'',vers:$('status').value,le:new Date().toISOString()}],
     timestamp:new Date().toISOString()
   };
   list.push(bon);

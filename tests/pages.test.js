@@ -35,3 +35,14 @@ test('piece-id : numéros et téléphones', () => {
 test('les API sensibles exigent une connexion', () => {
   for (const f of fs.readdirSync(path.join(root, 'api'))) { if (f === 'csp-report.js') continue; assert.match(lire('api/' + f), /requireUser|iloveapi-service/, f); }
 });
+test('suivi des réparations : garantie et retard', () => {
+  const ctx = { window: { escHtml: s => s }, document: { addEventListener() {}, getElementById: () => null }, localStorage: { getItem: () => '[]', setItem() {} } };
+  ctx.window.addEventListener = () => {}; ctx.addEventListener = () => {};
+  vm.createContext(ctx); vm.runInContext(lire('suivi.js'), ctx);
+  const S = ctx.window.SuiviRep, hier = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+  assert.equal(S.enRetard({ status: 'En réparation', returnDate: hier }), true);
+  assert.equal(S.enRetard({ status: 'Restitué au client', returnDate: hier }), false);
+  const g = S.garantie({ status: 'Restitué au client', warranty: '30 jours', restitue: new Date().toISOString() });
+  assert.equal(g.valide, true);
+  assert.equal(S.garantie({ status: 'En réparation', warranty: '30 jours' }), null);
+});

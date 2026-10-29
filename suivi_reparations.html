@@ -1,0 +1,23 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Suivi des réparations — SAMASSA TECHNOLOGIE</title><meta name="theme-color" content="#0A1628"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif}.wrap{max-width:1100px;margin:72px auto 60px;padding:0 16px}
+.hero{background:linear-gradient(135deg,#0A1628,#4C1D95,#7C3AED);border-radius:16px;padding:20px 24px;color:#fff;margin-bottom:14px}.hero h1{margin:0 0 4px;font-size:20px}.hero p{margin:0;color:#DDD6FE;font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}.kpi{background:#fff;border:1px solid #E2ECF5;border-radius:12px;padding:12px;cursor:pointer}.kpi b{display:block;font-size:22px;color:#0A1628}.kpi span{font-size:11px;color:#64748B}.kpi.on{border-color:#7C3AED;box-shadow:0 0 0 2px #EDE9FE}.kpi.warn b{color:#DC2626}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.bar input{flex:1;min-width:200px;padding:10px 12px;border:1px solid #D8E4EF;border-radius:9px;font:inherit;font-size:13px}.bar a{background:#7C3AED;color:#fff;border-radius:9px;padding:10px 14px;font-weight:800;font-size:13px;text-decoration:none}
+.card{background:#fff;border:1px solid #E2ECF5;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(10,22,40,.05)}.card.late{border-left:4px solid #DC2626}.card.ready{border-left:4px solid #16A34A}
+.top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}.nm{font-weight:800;color:#0A1628;font-size:14px}.sub{font-size:12px;color:#64748B;margin-top:2px}
+.pill{font-size:11px;font-weight:800;border-radius:99px;padding:4px 10px;background:#EDE9FE;color:#5B21B6;white-space:nowrap}.pill.g{background:#DCFCE7;color:#166534}.pill.r{background:#FEE2E2;color:#991B1B}.pill.o{background:#FEF3C7;color:#92400E}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.acts button,.acts a{border:0;border-radius:8px;padding:8px 11px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;background:#EEF2FF;color:#3730A3;text-decoration:none}.acts .ok{background:#16A34A;color:#fff}.acts .wa{background:#25D366;color:#fff}.acts .sms{background:#0070C0;color:#fff}
+.hist{font-size:11px;color:#64748B;margin-top:8px;border-top:1px dashed #E2ECF5;padding-top:6px}.empty{text-align:center;padding:40px;color:#7A94AF}.gar{font-size:11px;font-weight:700;margin-top:4px}
+select.st{padding:7px;border:1px solid #D8E4EF;border-radius:8px;font:inherit;font-size:12px}
+</style></head><body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">🔧 Suivi des réparations</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<main class="wrap">
+<div class="hero"><h1>🔧 Suivi des réparations</h1><p>Voyez où en est chaque appareil, prévenez le client en un clic, encaissez le solde et suivez les garanties.</p></div>
+<div class="kpis" id="kpis"></div>
+<div class="bar"><input id="q" placeholder="🔍 Client, téléphone, n° de bon, modèle ou n° de série" oninput="rendre()"><a href="bon_reparation.html">➕ Nouveau bon</a></div>
+<div id="liste"></div>
+</main>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="utils.js"></script><script src="suivi.js?v=1"></script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body></html>
