@@ -12,8 +12,20 @@
 </head>
 <body>
 <div class="topbar"><a class="tb-title" href="index.html">SAMASSA TECHNOLOGIE</a><div class="tb-actions"><a class="il-back" href="index.html">← Tableau de bord</a></div></div>
-<main class="il-wrap"><div class="il-card">
-<h1>Outils PDF & images</h1><p class="il-help">Les fichiers sont transmis temporairement au service sélectionné puis téléchargés. Les clés secrètes restent sur le serveur SAMASSA.</p>
+<main class="il-wrap"><div class="il-card" style="margin-bottom:18px">
+<h1>⚡ Outils instantanés <span style="font-size:12px;color:#0A7A3E">gratuits · fonctionnent sur votre téléphone, sans envoi de fichier</span></h1>
+<div class="il-grid">
+<div class="il-field"><label for="lc-tool">Traitement</label><select id="lc-tool"><option value="img2pdf">Images → PDF (plusieurs photos en un PDF)</option><option value="merge">Fusionner des PDF</option><option value="extract">Extraire / diviser des pages d'un PDF</option><option value="rotate">Pivoter un PDF</option><option value="imgcompress">Réduire le poids de photos</option></select></div>
+<div class="il-field il-full"><label for="lc-files">Fichiers (20 maximum)</label><input id="lc-files" type="file" multiple><div id="lc-list" class="il-files">Aucun fichier sélectionné.</div></div>
+<div class="il-field" id="lc-pagesbox" hidden><label for="lc-pages">Pages (exemple : 1-3,5)</label><input id="lc-pages" placeholder="1-3,5" maxlength="80"></div>
+<div class="il-field" id="lc-anglebox" hidden><label for="lc-angle">Angle</label><select id="lc-angle"><option value="90">90° droite</option><option value="270">90° gauche</option><option value="180">180°</option></select></div>
+<div class="il-field" id="lc-imgbox" hidden><label for="lc-max">Taille maximale</label><select id="lc-max"><option value="1280">Petite (1280 px, WhatsApp)</option><option value="1920" selected>Moyenne (1920 px)</option><option value="2800">Grande (2800 px)</option></select><label for="lc-q" style="margin-top:6px">Qualité</label><select id="lc-q"><option value="0.6">Légère</option><option value="0.75" selected>Équilibrée</option><option value="0.9">Haute</option></select></div>
+</div>
+<div class="il-actions"><button class="il-btn" id="lc-run" type="button">Lancer</button></div>
+<div id="lc-status" class="il-status">Prêt.</div>
+</div>
+<div class="il-card">
+<h1>Outils PDF & images (service en ligne)</h1><p class="il-help">Les fichiers sont transmis temporairement au service sélectionné puis téléchargés. Les clés secrètes restent sur le serveur SAMASSA.</p>
 <div class="il-grid">
 <div class="il-field"><label for="il-tool">Traitement</label><select id="il-tool"><optgroup label="PDF"><option value="compress">Compresser un PDF</option><option value="merge">Fusionner des PDF</option><option value="split">Diviser un PDF</option><option value="pdfjpg">PDF vers JPG</option><option value="pdfdocx">PDF vers Word (.docx)</option><option value="pdfxlsx">PDF vers Excel (.xlsx)</option><option value="pdfpptx">PDF vers PowerPoint (.pptx)</option><option value="imagepdf">Images vers PDF</option><option value="officepdf">Office vers PDF</option><option value="pdfocr">OCR PDF</option><option value="rotate">Faire pivoter un PDF</option><option value="watermark">Filigrane PDF</option><option value="protect">Protéger un PDF</option><option value="unlock">Déverrouiller un PDF</option><option value="repair">Réparer un PDF</option></optgroup><optgroup label="Images"><option value="compressimage">Compresser des images</option><option value="convertimage">Convertir des images</option><option value="resizeimage">Redimensionner des images</option><option value="rotateimage">Faire pivoter des images</option><option value="upscaleimage">Améliorer une image</option><option value="removebackgroundimage">Supprimer l’arrière-plan</option></optgroup></select></div>
 <div class="il-field"><label for="il-region">Région de traitement</label><select id="il-region"><option value="eu">Europe</option><option value="fr">France</option><option value="us">États-Unis</option></select></div>
@@ -22,6 +34,7 @@
 <div class="il-actions"><button class="il-btn" id="il-run">Lancer le traitement</button><button class="il-btn secondary" id="il-reset">Réinitialiser</button></div>
 <div id="il-status" class="il-status">Prêt.</div>
 </div></main>
+<script src="pdf-local.js?v=1"></script>
 <script src="firebase-config.js"></script><script src="auth.js"></script>
 <script>
 'use strict';

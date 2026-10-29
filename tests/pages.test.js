@@ -151,3 +151,11 @@ test('scanner-intelligent : recadrage, seuil adaptatif, champs', () => {
   const c = L.champs('Tel 76 12 34 56, mail a@b.com le 12/05/2025 total 150 000 FCFA');
   assert.equal(c.telephones.length, 1); assert.equal(c.emails[0], 'a@b.com'); assert.equal(c.dates[0], '12/05/2025'); assert.equal(c.montants.length, 1);
 });
+
+test('pdf-local : parsePages', () => {
+  global.window = {}; global.document = undefined;
+  delete require.cache[require.resolve('../pdf-local.js')]; require('../pdf-local.js');
+  const f = window.PdfLocal.parsePages;
+  assert.deepEqual(f('1-3,5', 6), [0, 1, 2, 4]); assert.deepEqual(f('3-1', 5), [0, 1, 2]);
+  assert.throws(() => f('7', 5)); assert.throws(() => f('a', 5)); assert.throws(() => f('', 5));
+});
