@@ -1,3 +1,5 @@
+const _e = v => (window.PieceID ? PieceID.esc(v) : String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
+const _pieceLabel = t => (window.PieceID && PieceID.TYPES[t]) ? PieceID.TYPES[t] : null;
 /* ============================================================
    SAMASSA TECHNOLOGIE — recu.js v2.5
    Reçu de Paiement
@@ -375,6 +377,9 @@ function generateReceipt() {
   ST.el('d-firstName').textContent = v('clientFirstName') || '—';
   ST.el('d-cliPhone').textContent  = v('clientPhone')     || '—';
   ST.el('d-nina').textContent      = v('clientNina')      || '—';
+  { const pi = window.PieceID ? PieceID.info(PieceID.typeCourant()) : null;
+    if (ST.el('d-pieceType')) ST.el('d-pieceType').textContent = pi ? pi.label : 'Carte NINA';
+    if (ST.el('d-ninaLbl')) ST.el('d-ninaLbl').textContent = pi ? pi.num : 'N° NINA'; }
 
   const tbody = ST.el('d-items');
   tbody.innerHTML = '';
@@ -388,7 +393,7 @@ function generateReceipt() {
     total += t;
     tbody.innerHTML += `
       <tr>
-        <td>${desc}</td>
+        <td>${_e(desc)}</td>
         <td>${qty}</td>
         <td>${ST.fmtNum(price)} F</td>
         <td style="font-weight:600">${ST.fmtNum(t)} F</td>
@@ -441,8 +446,9 @@ function saveDoc() {
   list.push({
     number:    num,
     client,
-    phone:     ST.v('clientPhone') || '',
+    phone:     (window.PieceID && PieceID.normaliserTel(ST.v('clientPhone')||'').valide) ? PieceID.normaliserTel(ST.v('clientPhone')).texte : (ST.v('clientPhone') || ''),
     nina:      ST.v('clientNina')  || '',
+    pieceType: window.PieceID ? PieceID.typeCourant() : 'nina',
     date,
     rdvDate,
     total,
@@ -595,19 +601,19 @@ function renderPendingCards() {
     const statusLabel = isPast ? '⚠️ En retard' : isReady ? '✅ Prête' : '⏳ En attente';
     return `
     <div style="display:flex;align-items:center;gap:14px;padding:12px 20px;border-bottom:1px solid #F0F5FA;transition:background .15s" onmouseover="this.style.background='#F8FBFD'" onmouseout="this.style.background='white'">
-      <input class="pending-check" type="checkbox" data-rdv-number="${r.number}" onchange="updateBulkRdvSelection()" aria-label="Sélectionner ${r.client}">
+      <input class="pending-check" type="checkbox" data-rdv-number="${_e(r.number)}" onchange="updateBulkRdvSelection()" aria-label="Sélectionner ${_e(r.client)}">
       <div style="width:40px;height:40px;border-radius:10px;background:#EDE9FE;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🪪</div>
       <div style="flex:1;min-width:0">
-        <div style="font-weight:700;font-size:13px;color:#1A2D44">${r.client}</div>
+        <div style="font-weight:700;font-size:13px;color:#1A2D44">${_e(r.client)}</div>
         <div style="font-size:12px;color:#4A6080;margin-top:2px">
-          ${r.phone ? `📞 ${r.phone}` : ''}
-          ${r.nina  ? ` &nbsp;|&nbsp; NINA: ${r.nina}` : ''}
+          ${r.phone ? `📞 ${_e(r.phone)}` : ''}
+          ${r.nina  ? ` &nbsp;|&nbsp; ${_e(_pieceLabel(r.pieceType)?_pieceLabel(r.pieceType).court:'NINA')}: ${_e(r.nina)}` : ''}
         </div>
-        <div style="font-size:11px;color:#8099B0;margin-top:2px">📅 RDV: ${rdvLabel} &nbsp;|&nbsp; Reçu ${r.number} &nbsp;|&nbsp; ${ST.fmtNum(r.total||0)} FCFA</div>
+        <div style="font-size:11px;color:#8099B0;margin-top:2px">📅 RDV: ${rdvLabel} &nbsp;|&nbsp; Reçu ${_e(r.number)} &nbsp;|&nbsp; ${ST.fmtNum(r.total||0)} FCFA</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
         <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:${statusBg};color:${statusColor}">${statusLabel}</span>
-        <button onclick="confirmCardRetrieval('${r.number}')"
+        <button data-num="${_e(r.number)}" onclick="confirmCardRetrieval(this.dataset.num)"
           style="background:#16A34A;color:white;border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">
           ✓ Confirmer récupération
         </button>
@@ -693,13 +699,13 @@ function renderDailyHistory() {
     const stLabel  = r.retrieved ? '✅ Récupérée' : '⏳ En attente';
     const hr       = r.timestamp ? new Date(r.timestamp).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}) : '';
     return `<tr onmouseover="this.style.background='#F8FBFD'" onmouseout="this.style.background='white'" style="transition:background .15s">
-      <td style="padding:9px 14px;border-bottom:1px solid #F0F5FA;font-weight:700;color:#1A2D44">${r.number || '—'}<br><span style="font-size:10px;color:#8099B0;font-weight:400">${hr}</span></td>
+      <td style="padding:9px 14px;border-bottom:1px solid #F0F5FA;font-weight:700;color:#1A2D44">${_e(r.number) || '—'}<br><span style="font-size:10px;color:#8099B0;font-weight:400">${hr}</span></td>
       <td style="padding:9px 14px;border-bottom:1px solid #F0F5FA">
-        <div style="font-weight:600;color:#1A2D44;font-size:13px">${r.client||'—'}</div>
-        <div style="font-size:11px;color:#0088CC">${r.phone||''}</div>
+        <div style="font-weight:600;color:#1A2D44;font-size:13px">${_e(r.client)||'—'}</div>
+        <div style="font-size:11px;color:#0088CC">${_e(r.phone)}</div>
       </td>
-      <td style="padding:9px 14px;border-bottom:1px solid #F0F5FA;font-size:12px;color:#4A6080">${r.nina||'—'}</td>
-      <td style="padding:9px 14px;border-bottom:1px solid #F0F5FA;font-size:12px;color:#4A6080;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${services}</td>
+      <td style="padding:9px 14px;border-bottom:1px solid #F0F5FA;font-size:12px;color:#4A6080">${_e(r.nina)||'—'}${r.nina&&r.pieceType&&r.pieceType!=='nina'&&_pieceLabel(r.pieceType)?`<br><span style="font-size:10px;color:#8099B0">${_e(_pieceLabel(r.pieceType).court)}</span>`:''}</td>
+      <td style="padding:9px 14px;border-bottom:1px solid #F0F5FA;font-size:12px;color:#4A6080;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${_e(services)}</td>
       <td style="padding:9px 14px;border-bottom:1px solid #F0F5FA;text-align:center;font-size:13px">${pmIcon} <span style="font-size:11px">${r.mode||'—'}</span></td>
       <td style="padding:9px 14px;border-bottom:1px solid #F0F5FA;text-align:right;font-weight:700;color:#16A34A;font-size:13px">+${ST.fmtNum(r.total||0)} F</td>
       <td style="padding:9px 14px;border-bottom:1px solid #F0F5FA;text-align:center"><span style="font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;background:${stBg};color:${stColor}">${stLabel}</span></td>
@@ -718,10 +724,10 @@ function exportDailyCSV() {
 
   if (!dayRecords.length) { ST.toast('Aucun reçu pour cette date.', 'error'); return; }
 
-  const rows = [['N° Reçu','Client','Téléphone','NINA','Services','Mode Paiement','Montant (FCFA)','Récupérée','Heure']];
+  const rows = [['N° Reçu','Client','Téléphone','Type pièce','N° pièce','Services','Mode Paiement','Montant (FCFA)','Récupérée','Heure']];
   dayRecords.forEach(r => {
     rows.push([
-      r.number||'', r.client||'', r.phone||'', r.nina||'',
+      r.number||'', r.client||'', r.phone||'', (_pieceLabel(r.pieceType)?_pieceLabel(r.pieceType).label:'Carte NINA'), r.nina||'',
       (r.services||[]).map(s=>s.desc).join(' / ')||'',
       r.mode||'', r.total||0,
       r.retrieved ? 'Oui' : 'Non',

@@ -113,25 +113,25 @@
 
       <div class="section-label green">Client</div>
       <div class="form-grid">
-        <div class="form-group"><label>Nom</label><input type="text" id="clientLastName" placeholder="Nom" value="SAMASSA"></div>
-        <div class="form-group"><label>Prénom</label><input type="text" id="clientFirstName" placeholder="Prénom" value="Boussé"></div>
+        <div class="form-group"><label>Nom</label><input type="text" id="clientLastName" placeholder="Nom" autocomplete="off"></div>
+        <div class="form-group"><label>Prénom</label><input type="text" id="clientFirstName" placeholder="Prénom" autocomplete="off"></div>
         <div class="form-group span2">
-          <label>Numéro NINA</label>
-          <div style="display:flex;gap:8px;align-items:center">
-            <input type="text" id="clientNina" placeholder="Ex: 197CI901041009A" value="197CI901041009A"
-              style="flex:1" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
-            <button type="button" onclick="openNinaScanner('clientNina')"
-              title="Scanner le QR code de la carte NINA"
-              style="width:46px;height:46px;flex-shrink:0;background:linear-gradient(135deg,#0A1628,#0070C0);border:none;border-radius:11px;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(0,112,192,.35);transition:all .2s;touch-action:manipulation"
-              onmouseenter="this.style.transform='scale(1.07)'" onmouseleave="this.style.transform=''">
-              📷
-            </button>
-          </div>
-          <div style="font-size:10px;color:#7A94AF;margin-top:4px;font-weight:500">
-            Appuyez sur 📷 pour scanner le QR code de la carte NINA
-          </div>
+          <label for="idType">Type de pièce d'identité</label>
+          <select id="idType"><option value="nina">Carte NINA</option></select>
         </div>
-        <div class="form-group span2"><label>Téléphone client</label><input type="text" id="clientPhone" placeholder="+223 XX XX XX XX"></div>
+        <div class="form-group span2">
+          <label id="ninaLabel" for="clientNina">Numéro NINA</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="text" id="clientNina" placeholder="Ex: 197CI901041009A"
+              style="flex:1" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+            <button type="button" onclick="openNinaScanner('clientNina')" aria-label="Scanner la pièce d'identité"
+              title="Scanner le code de la pièce"
+              style="width:46px;height:46px;flex-shrink:0;background:linear-gradient(135deg,#0A1628,#0070C0);border:none;border-radius:11px;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(0,112,192,.35);touch-action:manipulation">📷</button>
+          </div>
+          <div id="ninaState" style="font-size:11px;font-weight:700;margin-top:4px"></div>
+          <div id="ninaHint" style="font-size:10px;color:#7A94AF;margin-top:2px;font-weight:500"></div>
+        </div>
+        <div class="form-group span2"><label for="clientPhone">Téléphone client</label><input type="text" id="clientPhone" placeholder="+223 XX XX XX XX" inputmode="tel" autocomplete="off"><div id="phoneState" style="font-size:11px;font-weight:700;margin-top:4px"></div></div>
       </div>
 
       <div class="section-label green">Services</div>
@@ -242,7 +242,8 @@
           </div>
           <div class="ci-box">
             <div class="ci-box-title">Document d'identité</div>
-            <div class="ci-row"><span class="ci-lbl">N° NINA</span><span class="ci-val" id="d-nina"></span></div>
+            <div class="ci-row"><span class="ci-lbl">Type</span><span class="ci-val" id="d-pieceType"></span></div>
+            <div class="ci-row"><span class="ci-lbl" id="d-ninaLbl">N° NINA</span><span class="ci-val" id="d-nina"></span></div>
           </div>
         </div>
 
@@ -323,7 +324,8 @@
 <script src="utils.js"></script>
 <script src="recu.js"></script>
 <script src="jsqr.js"></script>
-<script src="scanner.js"></script>
+<script src="piece-id.js?v=1"></script>
+<script src="scanner.js?v=2"></script>
 <!-- Actualiser les sections si sync distante -->
 <script>
 document.addEventListener('samassa:sync', e => {
