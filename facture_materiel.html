@@ -421,6 +421,9 @@ body{font-family:'Inter',system-ui,-apple-system,sans-serif}
 <script src="sync.js?v=5"></script>
 <script src="utils.js"></script>
 <script src="facture_materiel.js"></script>
+<script src="qrcode.min.js"></script>
+<script src="doc-qr.js?v=1"></script>
+<script>DocQR.brancher({fn:"generateMatInvoice",type:"Facture matériel",number:"invoiceNumber",date:"invoiceDate",total:"d-ttc"});</script>
 <script>if("serviceWorker"in navigator)navigator.serviceWorker.register("service-worker.js");</script>
 <script src="capacitor-plugins.js"></script>
 <script>
