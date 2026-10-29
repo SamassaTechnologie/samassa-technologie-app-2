@@ -33,7 +33,7 @@ test('piece-id : numéros et téléphones', () => {
   assert.equal(P.analyser('https://evil.example/x').numero, '');
 });
 test('les API sensibles exigent une connexion', () => {
-  for (const f of fs.readdirSync(path.join(root, 'api'))) { if (f === 'csp-report.js') continue; assert.match(lire('api/' + f), /requireUser|iloveapi-service/, f); }
+  for (const f of fs.readdirSync(path.join(root, 'api'))) { if (f === 'csp-report.js' || f === 'verifier-doc.js') continue; assert.match(lire('api/' + f), /requireUser|iloveapi-service/, f); }
 });
 test('suivi des réparations : garantie et retard', () => {
   const ctx = { window: { escHtml: s => s }, document: { addEventListener() {}, getElementById: () => null }, localStorage: { getItem: () => '[]', setItem() {} } };
@@ -64,4 +64,15 @@ test('postes cyber : tarification', () => {
   const s = { debut: 0, forfait: { minutes: 30, prix: 250 } };
   assert.equal(P.montantSession(s, 50 * 60000, 2, c).total, 250 + 150 + 150);
   assert.equal(P.montantSession(s, 32 * 60000, 0, c).total, 250);
+});
+test('signature des documents : stable, sensible aux changements', async () => {
+  const { pathToFileURL } = require('url');
+  const m = await import(pathToFileURL(path.join(root, 'lib/doc-signature.js')).href);
+  const d = m.nettoyer({ t: 'Reçu', n: 'REC-001', m: 15000, d: '2026-10-29' });
+  const s1 = await m.signer(d, 'secret-de-test-assez-long-123456'), s2 = await m.signer({ ...d, total: 15001 }, 'secret-de-test-assez-long-123456');
+  assert.match(s1, /^[0-9a-f]{20}$/); assert.notEqual(s1, s2);
+  assert.equal(s1, await m.signer(d, 'secret-de-test-assez-long-123456'));
+  assert.ok(m.egal(s1, s1)); assert.ok(!m.egal(s1, s2));
+  assert.throws(() => m.nettoyer({ t: 'Autre', n: 'x', m: 1, d: '2026-10-29' }));
+  assert.throws(() => m.nettoyer({ t: 'Reçu', n: '<script>', m: 1, d: '2026-10-29' }));
 });

@@ -1,0 +1,21 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Vérification de document — SAMASSA TECHNOLOGIE</title><meta name="robots" content="noindex"><meta name="theme-color" content="#0A1628">
+<style>
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:#F1F5F9;color:#0A1628}.w{max-width:440px;margin:0 auto;padding:24px 16px}
+.h{text-align:center;margin-bottom:16px}.h img{height:56px}.h b{display:block;margin-top:6px;font-size:15px}
+.c{background:#fff;border-radius:16px;padding:22px;box-shadow:0 4px 20px rgba(10,22,40,.08);text-align:center}
+.i{font-size:48px;line-height:1}.t{font-size:18px;font-weight:800;margin:8px 0}.ok .t{color:#166534}.ko .t{color:#991B1B}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px;text-align:left}td{padding:8px 4px;border-bottom:1px solid #EEF2F7}td:last-child{text-align:right;font-weight:700}
+.n{font-size:12px;color:#64748B;margin-top:14px;line-height:1.5}
+</style></head><body><div class="w"><div class="h"><img src="logo.png" alt="Logo"><b>SAMASSA TECHNOLOGIE — Kayes</b></div><div class="c" id="r"><div class="i">⏳</div><div class="t">Vérification en cours…</div></div></div>
+<script>
+(function(){
+  var r=document.getElementById('r'),p=new URLSearchParams(location.search);
+  function e(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function ko(m){r.className='c ko';r.innerHTML='<div class="i">❌</div><div class="t">Document non reconnu</div><div class="n">'+e(m||'Ce document n\'a pas été émis par SAMASSA TECHNOLOGIE, ou ses informations ont été modifiées. Contactez-nous au 77 29 19 31 / 62 97 06 30.')+'</div>';}
+  fetch('/api/verifier-doc?'+p.toString(),{cache:'no-store'}).then(function(x){return x.json();}).then(function(d){
+    if(d&&d.valide){var dt=new Date(d.date+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'long',year:'numeric'});
+      r.className='c ok';r.innerHTML='<div class="i">✅</div><div class="t">Document authentique</div><table><tr><td>Type</td><td>'+e(d.type)+'</td></tr><tr><td>Numéro</td><td>'+e(d.number)+'</td></tr><tr><td>Montant</td><td>'+Number(d.total).toLocaleString('fr-FR')+' FCFA</td></tr><tr><td>Date</td><td>'+e(dt)+'</td></tr></table><div class="n">Ce document a bien été émis par SAMASSA TECHNOLOGIE. Comparez ces informations avec votre exemplaire papier.</div>';}
+    else ko(d&&d.error?d.error:'');
+  }).catch(function(){ko('Impossible de joindre le service de vérification. Réessayez avec une connexion internet.');});
+})();
+</script></body></html>

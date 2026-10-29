@@ -328,8 +328,11 @@
 <script src="recu.js"></script>
 <script src="recu-note.js?v=1"></script>
 <script src="jsqr.js"></script>
+<script src="qrcode.min.js"></script>
+<script src="doc-qr.js?v=1"></script>
 <script src="piece-id.js?v=1"></script>
 <script src="scanner.js?v=2"></script>
+<script>DocQR.brancher({fn:"generateReceipt",type:"Reçu",number:"receiptNumber",date:"receiptDate",total:"totalAmount"});</script>
 <!-- Actualiser les sections si sync distante -->
 <script>
 document.addEventListener('samassa:sync', e => {
