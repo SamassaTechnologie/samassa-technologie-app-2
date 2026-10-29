@@ -1,0 +1,34 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Commandes fournisseurs — SAMASSA TECHNOLOGIE</title><meta name="theme-color" content="#0A1628"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif}.wrap{max-width:1050px;margin:72px auto 60px;padding:0 16px}
+.hero{background:linear-gradient(135deg,#0A1628,#1E3A5F,#0070C0);border-radius:16px;padding:20px 24px;color:#fff;margin-bottom:14px}.hero h1{margin:0 0 4px;font-size:20px}.hero p{margin:0;color:#BAE6FD;font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}.kpi{background:#fff;border:1px solid #E2ECF5;border-radius:12px;padding:12px}.kpi b{display:block;font-size:19px;color:#0A1628}.kpi span{font-size:11px;color:#64748B}.kpi.warn b{color:#DC2626}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.bar input,.bar select{padding:10px 12px;border:1px solid #D8E4EF;border-radius:9px;font:inherit;font-size:13px}.bar input{flex:1;min-width:180px}.bar button{background:#0070C0;color:#fff;border:0;border-radius:9px;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer}
+.card{background:#fff;border:1px solid #E2ECF5;border-radius:14px;padding:14px;margin-bottom:10px}.card.recu{border-left:4px solid #16A34A}.card.att{border-left:4px solid #F59E0B}.card.ann{opacity:.6}
+.top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.nm{font-weight:800;color:#0A1628;font-size:14px}.sub{font-size:12px;color:#64748B;margin-top:2px}
+.pill{font-size:11px;font-weight:800;border-radius:99px;padding:4px 10px;background:#FEF3C7;color:#92400E;white-space:nowrap}.pill.g{background:#DCFCE7;color:#166534}.pill.x{background:#E2E8F0;color:#475569}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.acts button{border:0;border-radius:8px;padding:8px 11px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;background:#EEF2FF;color:#3730A3}.acts .ok{background:#16A34A;color:#fff}.acts .x{background:#FEE2E2;color:#991B1B}
+.lines{font-size:12px;color:#334155;margin-top:8px}.lines div{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px dashed #E8EEF5}
+.empty{text-align:center;padding:36px;color:#7A94AF}
+dialog{border:0;border-radius:14px;padding:18px;max-width:560px;width:calc(100% - 32px)}dialog::backdrop{background:rgba(5,10,20,.6)}dialog h3{margin:0 0 10px}dialog label{display:block;font-size:11px;font-weight:700;color:#4A6080;margin:8px 0 3px}dialog input,dialog select{width:100%;box-sizing:border-box;padding:9px;border:1px solid #D8E4EF;border-radius:8px;font:inherit;font-size:14px}
+.ln{display:grid;grid-template-columns:2fr 70px 100px 100px 28px;gap:6px;align-items:end;margin-top:6px}.ln button{border:0;background:none;color:#DC2626;font-weight:800;cursor:pointer;height:36px}
+@media(max-width:560px){.ln{grid-template-columns:1fr 1fr}.ln button{grid-column:span 2}}
+.note{font-size:11px;color:#64748B;margin-top:8px;line-height:1.5}
+</style></head><body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">📦 Commandes fournisseurs</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<main class="wrap">
+<div class="hero"><h1>📦 Commandes fournisseurs</h1><p>Commandez, réceptionnez : le stock et les prix d'achat se mettent à jour tout seuls.</p></div>
+<div class="kpis" id="kpis"></div>
+<div class="bar"><input id="q" placeholder="🔍 Fournisseur, n° de commande ou article"><select id="flt" aria-label="Filtrer"><option value="">Toutes</option><option>Commandée</option><option>Reçue</option><option>Annulée</option></select><button id="nouv">➕ Nouvelle commande</button></div>
+<div id="liste"></div>
+</main>
+<dialog id="dlg"><h3>Nouvelle commande</h3>
+<label for="f-four">Fournisseur</label><input id="f-four" list="f-four-l" maxlength="80" autocomplete="off"><datalist id="f-four-l"></datalist>
+<div id="f-lines"></div><button type="button" id="f-add" style="margin-top:8px;border:1px dashed #94A3B8;background:#fff;border-radius:8px;padding:8px 12px;font-weight:700;cursor:pointer">+ Ajouter une ligne</button>
+<datalist id="f-art"></datalist>
+<div class="note">Choisissez un article du stock dans la liste, ou tapez un nouveau nom : il sera créé à la réception (prix de vente facultatif).</div>
+<div style="display:flex;justify-content:space-between;margin-top:10px;font-weight:800"><span>Total</span><span id="f-tot">0 FCFA</span></div>
+<div class="acts"><button class="ok" id="d-ok" style="background:#16A34A;color:#fff;border:0;border-radius:8px;padding:9px 13px;font:inherit;font-weight:800;cursor:pointer">Enregistrer la commande</button><button id="d-no" style="border:0;border-radius:8px;padding:9px 13px;font:inherit;font-weight:700;cursor:pointer">Annuler</button></div></dialog>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="utils.js"></script><script src="commandes.js?v=1"></script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body></html>

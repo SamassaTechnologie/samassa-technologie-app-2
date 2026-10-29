@@ -13,7 +13,8 @@
   function calculer(mois, data) {
     var caisse = data.caisse || [], stock = data.stock || [], mvts = data.mvts || [], fixes = data.fixes || [];
     var entrees = caisse.filter(function (m) { return m.type === 'entree' && moisDe(m.date) === mois; });
-    var sorties = caisse.filter(function (m) { return m.type === 'sortie' && moisDe(m.date) === mois; });
+    /* les achats de stock ne sont pas des charges : leur coût est compté à la vente (coût des marchandises) */
+    var sorties = caisse.filter(function (m) { return m.type === 'sortie' && moisDe(m.date) === mois && m.cat !== 'Achat stock'; });
     var ca = entrees.reduce(function (s, m) { return s + (Number(m.amount) || 0); }, 0);
     var parCat = {};
     entrees.forEach(function (m) { var c = m.cat || 'Autres'; parCat[c] = (parCat[c] || 0) + (Number(m.amount) || 0); });

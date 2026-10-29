@@ -33,6 +33,7 @@ const SYNC_KEYS = [
   'samassa_charges_fixes',
   'samassa_sessions_cyber',
   'samassa_contrats',
+  'samassa_commandes',
   'samassa_postes_config',
   'samassa_stock_mouvements',
   'samassa_fournisseurs',

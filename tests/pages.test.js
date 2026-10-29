@@ -87,3 +87,19 @@ test('contrats : échéances, retards et revenu récurrent', () => {
   assert.equal(C.etat({ ...c, statut: 'suspendu' }, '2026-10-29').cle, 'off');
   assert.equal(C.mrr([c, { montant: 5000 }, { montant: 9000, statut: 'suspendu' }]), 25000);
 });
+test('commandes : réception met à jour stock et prix moyen', () => {
+  const ctx = { window: { escHtml: s => s }, document: { addEventListener() {} }, localStorage: { getItem: () => '[]' } };
+  vm.createContext(ctx); vm.runInContext(lire('commandes.js'), ctx);
+  const C = ctx.window.Commandes;
+  const cmd = { numero: 'CMD-001', lignes: [{ nom: 'Souris', qte: 10, prix: 2000, articleId: 1 }, { nom: 'Nouveau câble', qte: 5, prix: 500, pv: 1000 }] };
+  const r = C.appliquerReception(cmd, [{ id: 1, name: 'Souris', qty: 10, pa: 1000, pv: 3000 }], [], '2026-10-29T10:00:00.000Z');
+  assert.equal(r.stock[0].qty, 20); assert.equal(r.stock[0].pa, 1500);
+  assert.equal(r.stock.length, 2); assert.equal(r.stock[1].name, 'Nouveau câble'); assert.equal(r.stock[1].qty, 5); assert.equal(r.stock[1].pv, 1000);
+  assert.equal(r.mvts.length, 2); assert.equal(r.mvts[0].type, 'entree'); assert.equal(C.totalCmd(cmd), 22500);
+});
+test('rentabilité : les achats de stock ne comptent pas comme charges', () => {
+  const ctx = { window: { escHtml: s => s }, document: { addEventListener() {} }, localStorage: { getItem: () => '[]' } };
+  vm.createContext(ctx); vm.runInContext(lire('rentabilite.js'), ctx);
+  const r = ctx.window.Rentabilite.calculer('2026-10', { caisse: [{ type: 'sortie', date: '2026-10-02', amount: 50000, cat: 'Achat stock' }, { type: 'sortie', date: '2026-10-03', amount: 1000, cat: 'Autre' }], stock: [], mvts: [], fixes: [] });
+  assert.equal(r.depenses, 1000);
+});

@@ -21,7 +21,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 6px;b
 <div class="card"><h2>Charges fixes mensuelles</h2><div id="fixes"></div>
 <div class="row"><input class="l" id="fl" placeholder="Ex : Loyer, Électricité, Internet, Salaire" maxlength="60"><input class="m" id="fm" type="number" min="0" placeholder="Montant FCFA"><button class="btn" id="fadd">Ajouter</button></div>
 <div class="note">Ces charges sont comptées chaque mois. Ne les saisissez pas aussi comme « Sortie » dans la caisse pour ne pas les compter deux fois.</div></div>
-<div class="card"><h2>Produits les plus rentables</h2><div id="produits"></div><div class="note">Marge calculée avec le prix d'achat actuellement enregistré dans le stock. Si un prix d'achat est à 0, la marge de ce produit est surestimée : complétez-le dans Stock.</div></div>
+<div class="card"><h2>Produits les plus rentables</h2><div id="produits"></div><div class="note">Les règlements de commandes fournisseurs (catégorie « Achat stock ») ne sont pas comptés comme charges : leur coût entre dans la marge au moment de la vente. Marge calculée avec le prix d'achat actuellement enregistré dans le stock. Si un prix d'achat est à 0, la marge de ce produit est surestimée : complétez-le dans Stock.</div></div>
 </main>
 <script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="utils.js"></script><script src="rentabilite.js?v=1"></script>
 <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
