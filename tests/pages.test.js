@@ -103,3 +103,15 @@ test('rentabilité : les achats de stock ne comptent pas comme charges', () => {
   const r = ctx.window.Rentabilite.calculer('2026-10', { caisse: [{ type: 'sortie', date: '2026-10-02', amount: 50000, cat: 'Achat stock' }, { type: 'sortie', date: '2026-10-03', amount: 1000, cat: 'Autre' }], stock: [], mvts: [], fixes: [] });
   assert.equal(r.depenses, 1000);
 });
+test('rapprochement mobile money : analyse des SMS et rapprochement', () => {
+  const ctx = { window: { escHtml: s => s }, document: { addEventListener() {} }, localStorage: { getItem: () => '[]' } };
+  vm.createContext(ctx); vm.runInContext(lire('rapprochement.js'), ctx);
+  const R = ctx.window.Rapprochement;
+  const a = R.analyserSms('Wave: Vous avez reçu 5 000 FCFA de Awa (76123456) le 29/10/2026. ID: ABC12345\n\nOrange Money: Vous avez reçu 12.500F de 66000000. Trans ID: OM998877\n\nWave: Vous avez envoyé 3000 FCFA à Moussa.\n\nBonne journée', '2026-10-29');
+  assert.equal(a.retenus.length, 2); assert.equal(a.ignores, 2);
+  assert.deepEqual([a.retenus[0].operateur, a.retenus[0].montant, a.retenus[0].date, a.retenus[0].ref], ['Wave', 5000, '2026-10-29', 'ABC12345']);
+  assert.deepEqual([a.retenus[1].operateur, a.retenus[1].montant], ['Orange Money', 12500]);
+  assert.equal(R.nombre('1.250,00'), 1250);
+  const r = R.rapprocher(a.retenus, [{ type: 'entree', pm: 'Wave', amount: 5000, date: '2026-10-29', desc: 'Reçu 1' }, { type: 'entree', pm: 'Moov Money', amount: 7000, date: '2026-10-29', desc: 'Reçu 2' }, { type: 'entree', pm: 'Espèces', amount: 100, date: '2026-10-29', desc: 'x' }]);
+  assert.equal(r.liens.length, 1); assert.equal(r.sansCaisse.length, 1); assert.equal(r.sansPaiement.length, 1); assert.equal(r.sansPaiement[0].desc, 'Reçu 2');
+});

@@ -1,0 +1,31 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rapprochement Mobile Money — SAMASSA TECHNOLOGIE</title><meta name="theme-color" content="#0A1628"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif}.wrap{max-width:1050px;margin:72px auto 60px;padding:0 16px}
+.hero{background:linear-gradient(135deg,#0A1628,#0F766E,#14B8A6);border-radius:16px;padding:20px 24px;color:#fff;margin-bottom:14px}.hero h1{margin:0 0 4px;font-size:20px}.hero p{margin:0;color:#99F6E4;font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}.kpi{background:#fff;border:1px solid #E2ECF5;border-radius:12px;padding:12px}.kpi b{display:block;font-size:19px;color:#0A1628}.kpi span{font-size:11px;color:#64748B}.kpi.warn b{color:#DC2626}.kpi.good b{color:#16A34A}
+.card{background:#fff;border:1px solid #E2ECF5;border-radius:14px;padding:16px;margin-bottom:14px}.card h2{margin:0 0 10px;font-size:14px;color:#0A1628}
+textarea{width:100%;box-sizing:border-box;padding:10px;border:1px solid #D8E4EF;border-radius:9px;font:inherit;font-size:13px;min-height:110px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;align-items:center}.row input,.row select{padding:9px;border:1px solid #D8E4EF;border-radius:8px;font:inherit;font-size:13px}
+.btn{border:0;border-radius:8px;padding:9px 13px;font-weight:800;cursor:pointer;background:#0F766E;color:#fff;font:inherit;font-size:13px}.btn.s{background:#EEF2FF;color:#3730A3}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 6px;border-bottom:1px solid #F0F4F8;text-align:left}th{color:#7A94AF;font-size:10px;text-transform:uppercase}.r{text-align:right}
+.tag{font-size:10px;font-weight:800;border-radius:99px;padding:3px 8px;background:#DCFCE7;color:#166534}.tag.o{background:#FEF3C7;color:#92400E}.tag.r{background:#FEE2E2;color:#991B1B}
+.note{font-size:11px;color:#64748B;margin-top:8px;line-height:1.5}.empty{color:#7A94AF;font-size:12px;padding:8px 0}
+</style></head><body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">📲 Rapprochement Mobile Money</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<main class="wrap">
+<div class="hero"><h1>📲 Rapprochement Mobile Money</h1><p>Comparez les paiements réellement reçus (Wave, Orange, Moov) avec ceux enregistrés en caisse.</p></div>
+<div class="card"><h2>1. Ajouter les paiements reçus</h2>
+<textarea id="brut" placeholder="Collez ici les SMS de confirmation Wave / Orange Money / Moov Money (un message par paragraphe)…" aria-label="SMS à analyser"></textarea>
+<div class="row"><button class="btn" id="analyser">Analyser les SMS</button><span style="font-size:12px;color:#64748B">ou saisir un paiement :</span>
+<select id="m-op" aria-label="Opérateur"><option>Wave</option><option>Orange Money</option><option>Moov Money</option></select><input id="m-mt" type="number" min="1" placeholder="Montant" aria-label="Montant"><input id="m-dt" type="date" aria-label="Date"><input id="m-ref" placeholder="Référence (facultatif)" maxlength="40"><button class="btn s" id="m-add">Ajouter</button></div>
+<div id="apercu"></div>
+<div class="note">Les SMS restent sur cet appareil et dans votre sauvegarde. Seuls les messages de paiement reçu sont retenus.</div></div>
+<div class="row" style="margin:0 0 10px"><label for="mois" style="font-size:12px;font-weight:700;color:#4A6080">Mois</label><input type="month" id="mois"></div>
+<div class="kpis" id="kpis"></div>
+<div class="card"><h2>⚠️ Reçus en caisse sans paiement correspondant</h2><div id="sans-paiement"></div><div class="note">Un montant enregistré en Wave / Orange / Moov que vous n'avez pas reçu sur votre téléphone : vérifiez le client (capture d'écran falsifiée, erreur de saisie).</div></div>
+<div class="card"><h2>💡 Paiements reçus sans reçu en caisse</h2><div id="sans-caisse"></div><div class="note">De l'argent arrivé sur votre numéro mais absent de la caisse : vente oubliée ou paiement personnel.</div></div>
+<div class="card"><h2>✅ Paiements rapprochés</h2><div id="ok"></div></div>
+</main>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="utils.js"></script><script src="rapprochement.js?v=1"></script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body></html>
