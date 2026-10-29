@@ -377,6 +377,7 @@ function generateReceipt() {
   ST.el('d-firstName').textContent = v('clientFirstName') || '—';
   ST.el('d-cliPhone').textContent  = v('clientPhone')     || '—';
   ST.el('d-nina').textContent      = v('clientNina')      || '—';
+  { const nt=(v('rdvNote')||'').trim(); ST.el('d-note').textContent=nt; ST.el('d-noteBox').style.display=nt?'block':'none'; }
   { const pi = window.PieceID ? PieceID.info(PieceID.typeCourant()) : null;
     if (ST.el('d-pieceType')) ST.el('d-pieceType').textContent = pi ? pi.label : 'Carte NINA';
     if (ST.el('d-ninaLbl')) ST.el('d-ninaLbl').textContent = pi ? pi.num : 'N° NINA'; }
@@ -448,6 +449,7 @@ function saveDoc() {
     client,
     phone:     (window.PieceID && PieceID.normaliserTel(ST.v('clientPhone')||'').valide) ? PieceID.normaliserTel(ST.v('clientPhone')).texte : (ST.v('clientPhone') || ''),
     nina:      ST.v('clientNina')  || '',
+    note:      (ST.v('rdvNote')||'').trim().slice(0,140),
     pieceType: window.PieceID ? PieceID.typeCourant() : 'nina',
     date,
     rdvDate,

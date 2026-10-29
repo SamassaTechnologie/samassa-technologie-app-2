@@ -191,8 +191,10 @@
           <input type="datetime-local" id="rdvDate">
         </div>
         <div class="form-group span2">
-          <label>Note pour le client (optionnel)</label>
-          <input type="text" id="rdvNote" placeholder="Ex: Venez avec votre ancienne carte">
+          <label for="rdvNote">Note pour le client (optionnel)</label>
+          <textarea id="rdvNote" rows="2" maxlength="140" placeholder="Ex: Venez avec votre ancienne carte" style="width:100%;box-sizing:border-box;resize:vertical;font-family:inherit"></textarea>
+          <div id="rdvNoteChips" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px"></div>
+          <div id="rdvNoteCount" style="font-size:10px;color:#7A94AF;text-align:right;margin-top:2px">0/140</div>
         </div>
       </div>
 
@@ -247,6 +249,7 @@
           </div>
         </div>
 
+        <div id="d-noteBox" style="display:none;margin-bottom:10px;padding:8px 12px;border-left:3px solid var(--navy);background:#F4F8FB;font-size:12px"><b>Note :</b> <span id="d-note"></span></div>
         <div class="print-section-title" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;background:var(--navy);color:white;padding:7px 14px;border-radius:6px;margin-bottom:10px">Détails de la transaction</div>
         <table class="doc-table">
           <thead><tr><th style="width:45%;text-align:left">Description</th><th>Qté</th><th>Prix unitaire</th><th>Total</th></tr></thead>
@@ -323,6 +326,7 @@
 <script src="sync.js?v=5"></script>
 <script src="utils.js"></script>
 <script src="recu.js"></script>
+<script src="recu-note.js?v=1"></script>
 <script src="jsqr.js"></script>
 <script src="piece-id.js?v=1"></script>
 <script src="scanner.js?v=2"></script>
