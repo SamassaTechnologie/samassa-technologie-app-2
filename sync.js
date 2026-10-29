@@ -30,6 +30,7 @@ const SYNC_KEYS = [
   '_samassa_docs',
   'samassa_audit_log',
   'samassa_clotures',
+  'samassa_charges_fixes',
   'samassa_stock_mouvements',
   'samassa_fournisseurs',
   'samassa_creances'

@@ -1,0 +1,28 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rentabilité — SAMASSA TECHNOLOGIE</title><meta name="theme-color" content="#0A1628"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif}.wrap{max-width:1000px;margin:72px auto 60px;padding:0 16px}
+.hero{background:linear-gradient(135deg,#0A1628,#065F46,#059669);border-radius:16px;padding:20px 24px;color:#fff;margin-bottom:14px}.hero h1{margin:0 0 4px;font-size:20px}.hero p{margin:0;color:#A7F3D0;font-size:12px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}.bar input,.bar button,.bar select{padding:10px 12px;border:1px solid #D8E4EF;border-radius:9px;font:inherit;font-size:13px}.bar button{background:#EEF2FF;color:#3730A3;font-weight:800;cursor:pointer}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}.kpi{background:#fff;border:1px solid #E2ECF5;border-radius:12px;padding:13px}.kpi b{display:block;font-size:19px;color:#0A1628}.kpi span{font-size:11px;color:#64748B}.kpi small{display:block;font-size:11px;margin-top:3px;font-weight:700}
+.pos{color:#059669}.neg{color:#DC2626}.big{border:2px solid #059669}.big.neg-b{border-color:#DC2626}
+.card{background:#fff;border:1px solid #E2ECF5;border-radius:14px;padding:16px;margin-bottom:14px}.card h2{margin:0 0 10px;font-size:14px;color:#0A1628}
+table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 6px;border-bottom:1px solid #F0F4F8;text-align:left}th{color:#7A94AF;font-size:10px;text-transform:uppercase}td.r,th.r{text-align:right}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.row input{padding:9px;border:1px solid #D8E4EF;border-radius:8px;font:inherit;font-size:13px}.row input.l{flex:2;min-width:140px}.row input.m{flex:1;min-width:100px}
+.btn{border:0;border-radius:8px;padding:9px 13px;font-weight:800;cursor:pointer;background:#059669;color:#fff;font:inherit;font-size:13px}.x{background:none;border:0;color:#DC2626;cursor:pointer;font-weight:800}
+.note{font-size:11px;color:#64748B;margin-top:8px;line-height:1.5}.empty{color:#7A94AF;font-size:12px;padding:10px 0}
+.barw{height:8px;background:#E5EDF5;border-radius:99px;overflow:hidden}.barw i{display:block;height:100%;background:#059669}
+</style></head><body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">💹 Rentabilité</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<main class="wrap">
+<div class="hero"><h1>💹 Rentabilité de l'entreprise</h1><p>Chiffre d'affaires, coût des marchandises, charges et bénéfice net du mois.</p></div>
+<div class="bar"><button id="prev" aria-label="Mois précédent">◀</button><input type="month" id="mois" aria-label="Mois"><button id="next" aria-label="Mois suivant">▶</button><button id="csv">⬇ Exporter CSV</button></div>
+<div class="kpis" id="kpis"></div>
+<div class="card"><h2>Détail du mois</h2><div id="detail"></div></div>
+<div class="card"><h2>Charges fixes mensuelles</h2><div id="fixes"></div>
+<div class="row"><input class="l" id="fl" placeholder="Ex : Loyer, Électricité, Internet, Salaire" maxlength="60"><input class="m" id="fm" type="number" min="0" placeholder="Montant FCFA"><button class="btn" id="fadd">Ajouter</button></div>
+<div class="note">Ces charges sont comptées chaque mois. Ne les saisissez pas aussi comme « Sortie » dans la caisse pour ne pas les compter deux fois.</div></div>
+<div class="card"><h2>Produits les plus rentables</h2><div id="produits"></div><div class="note">Marge calculée avec le prix d'achat actuellement enregistré dans le stock. Si un prix d'achat est à 0, la marge de ce produit est surestimée : complétez-le dans Stock.</div></div>
+</main>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="utils.js"></script><script src="rentabilite.js?v=1"></script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body></html>

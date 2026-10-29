@@ -46,3 +46,13 @@ test('suivi des réparations : garantie et retard', () => {
   assert.equal(g.valide, true);
   assert.equal(S.garantie({ status: 'En réparation', warranty: '30 jours' }), null);
 });
+test('rentabilité : bénéfice net', () => {
+  const ctx = { window: { escHtml: s => s }, document: { addEventListener() {}, getElementById: () => null }, localStorage: { getItem: () => '[]' } };
+  vm.createContext(ctx); vm.runInContext(lire('rentabilite.js'), ctx);
+  const r = ctx.window.Rentabilite.calculer('2026-10', {
+    caisse: [{ type: 'entree', date: '2026-10-05', amount: 100000, cat: 'Vente stock' }, { type: 'entree', date: '2026-09-30', amount: 999, cat: 'x' }, { type: 'sortie', date: '2026-10-06', amount: 10000 }],
+    stock: [{ id: 1, pa: 3000 }], mvts: [{ type: 'sortie', date: '2026-10-05', motif: 'Vente', articleId: 1, name: 'Clé USB', qty: 10, prix: 5000 }],
+    fixes: [{ montant: 20000 }] });
+  assert.equal(r.ca, 100000); assert.equal(r.cout, 30000); assert.equal(r.margeBrute, 70000); assert.equal(r.net, 40000);
+  assert.equal(r.produits[0].marge, 20000);
+});
