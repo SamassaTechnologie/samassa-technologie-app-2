@@ -561,10 +561,6 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
       <span class="sb-item-icon">👥</span>
       <span class="sb-item-label">Clients</span>
     </a>
-    <a href="docs_admin.html" class="sb-item">
-      <span class="sb-item-icon">📝</span>
-      <span class="sb-item-label">Documents Admin</span>
-    </a>
     <a href="redacteur-ia-mali/index.html" class="sb-item">
       <span class="sb-item-icon">✨</span>
       <span class="sb-item-label">Rédacteur IA Mali</span>
@@ -740,7 +736,6 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
   <div class="tools-grid" style="margin-bottom:10px">
     <a href="scanner.html" class="tool"><div class="tool-icon" style="background:#E0F2FE">📷</div><div class="tool-txt"><div class="tool-title">Scanner intelligent<span class="tool-badge">Nouveau</span></div><div class="tool-desc">Numérisez, améliorez et convertissez vos documents</div></div><span class="tool-go">›</span></a>
     <a href="iloveapi.html" class="tool"><div class="tool-icon" style="background:#EBF5FF">🛠️</div><div class="tool-txt"><div class="tool-title">Outils PDF &amp; images<span class="tool-badge">Nouveau</span></div><div class="tool-desc">Compresser, fusionner et convertir vos fichiers</div></div><span class="tool-go">›</span></a>
-    <a href="docs_admin.html" class="tool"><div class="tool-icon" style="background:#EDE9FE">📝</div><div class="tool-txt"><div class="tool-title">Documents administratifs<span class="tool-badge ia">IA</span></div><div class="tool-desc">40 modèles conformes au Mali, rédaction assistée</div></div><span class="tool-go">›</span></a>
     <a href="redacteur-ia-mali/index.html" class="tool"><div class="tool-icon" style="background:#EAF4FB">✨</div><div class="tool-txt"><div class="tool-title">Rédacteur IA Mali<span class="tool-badge ia">IA</span></div><div class="tool-desc">Lettres, contrats, successions : export Word</div></div><span class="tool-go">›</span></a>
     <a href="#" class="tool" data-no-recent="1" onclick="showTab('mouvements');return false"><div class="tool-icon" style="background:#F5F3FF">🤖</div><div class="tool-txt"><div class="tool-title">Analyse IA de la caisse<span class="tool-badge ia">IA</span></div><div class="tool-desc">Posez vos questions sur vos chiffres (onglet Mouvements)</div></div><span class="tool-go">›</span></a>
   </div>
@@ -1410,7 +1405,7 @@ function exportRetraits(){const list=getData('samassa_retraits');if(!list.length
 /* ══ HISTORIQUE ══ */
 function renderHistory(){
   const typeFilter=$('h-type')?.value||'',search=($('h-search')?.value||'').toLowerCase();
-  const types=[{key:'samassa_factures',cls:'di-f',icon:'📄',label:'Facture',url:'facture.html'},{key:'samassa_factures_mat',cls:'di-f',icon:'🖥️',label:'Facture Matériel',url:'facture_materiel.html'},{key:'samassa_recus',cls:'di-r',icon:'🧾',label:'Reçu NINA',url:'recu.html'},{key:'samassa_recus_vente',cls:'di-r',icon:'🧾',label:'Reçu Vente',url:'recu_vente.html'},{key:'samassa_bons_reparation',cls:'di-i',icon:'🔧',label:'Bon Réparation',url:'bon_reparation.html'},{key:'samassa_devis',cls:'di-d',icon:'📋',label:'Devis',url:'devis.html'},{key:'samassa_interventions',cls:'di-i',icon:'🔧',label:'Intervention',url:'intervention.html'},{key:'samassa_recus_cyber',cls:'di-r',icon:'🖥️',label:'Reçu Cyber',url:'recu_cyber.html'},{key:'samassa_factures_cyber',cls:'di-f',icon:'🖥️',label:'Facture Cyber',url:'facture_cyber.html'},{key:'samassa_docs_admin',cls:'di-d',icon:'📝',label:'Doc. Admin',url:'docs_admin.html'},{key:'samassa_clients',cls:'di-f',icon:'👥',label:'Client',url:'clients.html'}];
+  const types=[{key:'samassa_factures',cls:'di-f',icon:'📄',label:'Facture',url:'facture.html'},{key:'samassa_factures_mat',cls:'di-f',icon:'🖥️',label:'Facture Matériel',url:'facture_materiel.html'},{key:'samassa_recus',cls:'di-r',icon:'🧾',label:'Reçu NINA',url:'recu.html'},{key:'samassa_recus_vente',cls:'di-r',icon:'🧾',label:'Reçu Vente',url:'recu_vente.html'},{key:'samassa_bons_reparation',cls:'di-i',icon:'🔧',label:'Bon Réparation',url:'bon_reparation.html'},{key:'samassa_devis',cls:'di-d',icon:'📋',label:'Devis',url:'devis.html'},{key:'samassa_interventions',cls:'di-i',icon:'🔧',label:'Intervention',url:'intervention.html'},{key:'samassa_recus_cyber',cls:'di-r',icon:'🖥️',label:'Reçu Cyber',url:'recu_cyber.html'},{key:'samassa_factures_cyber',cls:'di-f',icon:'🖥️',label:'Facture Cyber',url:'facture_cyber.html'},{key:'samassa_docs_admin',cls:'di-d',icon:'📝',label:'Doc. Admin',url:'redacteur-ia-mali/index.html'},{key:'samassa_clients',cls:'di-f',icon:'👥',label:'Client',url:'clients.html'}];
   let all=[];
   (typeFilter?types.filter(t=>t.key===typeFilter):types).forEach(t=>getData(t.key).forEach(d=>all.push({...d,_t:t})));
   if(search)all=all.filter(d=>(d.client||'').toLowerCase().includes(search)||(d.number||'').toLowerCase().includes(search));
