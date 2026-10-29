@@ -159,3 +159,14 @@ test('pdf-local : parsePages', () => {
   assert.deepEqual(f('1-3,5', 6), [0, 1, 2, 4]); assert.deepEqual(f('3-1', 5), [0, 1, 2]);
   assert.throws(() => f('7', 5)); assert.throws(() => f('a', 5)); assert.throws(() => f('', 5));
 });
+
+test('assistant-redaction : classement et lecture de réponse', () => {
+  global.window = {}; global.document = undefined;
+  const f = path.join(__dirname, '../redacteur-ia-mali/assistant-redaction.js');
+  delete require.cache[require.resolve(f)]; require(f);
+  const A = window.AssistantRedaction, M = [{ titre: 'Facture', cat: 'Ventes' }, { titre: 'Demande de congé', cat: 'Lettres', objet: 'Demande de congé annuel' }, { titre: 'Attestation de résidence', cat: 'Attestations' }];
+  assert.equal(A.classer(M, 'je veux un congé pour mariage', 3)[0], 1);
+  assert.equal(A.classer(M, 'blabla', 3).length, 0);
+  const r = A.lireReponse('NOM: **Awa Traoré**\nMOTIF: Je sollicite\nun congé.\nINCONNU: x\nTEL: [À COMPLÉTER]', ['NOM', 'MOTIF', 'TEL']);
+  assert.equal(r.NOM, 'Awa Traoré'); assert.equal(r.MOTIF, 'Je sollicite\nun congé.'); assert.equal(r.TEL, undefined); assert.equal(r.INCONNU, undefined);
+});
