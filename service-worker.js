@@ -2,8 +2,8 @@
    SAMASSA TECHNOLOGIE — Service Worker PWA v4.6
    Tous les modules en cache (hors-ligne complet)
 ============================================================ */
-const CACHE_NAME  = 'samassa-pro-v7.3';
-const CACHE_PAGES = 'samassa-pages-v7.3';
+const CACHE_NAME  = 'samassa-pro-v7.4';
+const CACHE_PAGES = 'samassa-pages-v7.4';
 
 const STATIC_ASSETS = [
   'index.html','iloveapi.html','scanner.html','analytics.html','login.html',
@@ -17,12 +17,12 @@ const STATIC_ASSETS = [
   'stock.html','stock.js',
   'devis.html','devis.js',
   'intervention.html','intervention.js',
-  'clients.html','rapports.html','backup.html','settings.html','utilisateurs.html','journal.html','gestion.html','autoconfig.html','docs_admin.html',
+  'clients.html','rapports.html','backup.html','settings.html','utilisateurs.html','journal.html','gestion.html','docs_admin.html',
   'redacteur-ia-mali/index.html','redacteur-ia-mali/app.js','redacteur-ia-mali/modeles-ventes.js','redacteur-ia-mali/modeles-succession.js','redacteur-ia-mali/fonctions-plus.js','redacteur-ia-mali/style.css','redacteur-ia-mali/manifest.json','redacteur-ia-mali/icon-192.png','redacteur-ia-mali/icon-512.png','redacteur-ia-mali/logo.png','redacteur-ia-mali/sw.js',
   'style.css','mobile.css','dashboard-plus.js','auto-backup.js',
   'auth.js?v=firebase1','utils.js','export-pro.js','sync.js','analytics.js','analytics-dashboard.js',
   'firebase-config.js','ai-firebase.js','cloud-integration.js',
-  'scanner.js','piece-id.js','recu-note.js','scanner-intelligent.js','jsqr.js','qrcode.min.js',
+  'scanner.js','esc.js','piece-id.js','recu-note.js','scanner-intelligent.js','jsqr.js','qrcode.min.js',
   'capacitor-plugins.js',
   'manifest.json',
   'logo.png','icon-192x192.png','icon-512x512.png',

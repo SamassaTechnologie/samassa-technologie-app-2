@@ -98,6 +98,7 @@ body{font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased
 <script src="auth.js?v=firebase1"></script>
 <script src="firebase-config.js?v=sync4"></script>
 <script src="sync.js?v=5"></script>
+<script src="esc.js"></script>
 <script>
 var PERIOD='month';
 var KEYS={recus:'samassa_recus',factures:'samassa_factures',factMat:'samassa_factures_mat',factCyber:'samassa_factures_cyber',recusCyber:'samassa_recus_cyber',bons:'samassa_bons_reparation',ventes:'samassa_recus_vente',mouvements:'samassa_mouvements',clients:'samassa_clients'};
@@ -192,7 +193,7 @@ function drawTop(docs){
   var C=['#0070C0','#059652','#6D28D9','#D97706','#DC2626','#0891B2'];
   if(!top.length){document.getElementById('topSvcs').innerHTML='<p style="color:#7A94AF;text-align:center;padding:16px;font-size:13px">Aucune donnée</p>';return;}
   document.getElementById('topSvcs').innerHTML=top.map(function(e,i){
-    return '<div class="ti"><div style="width:22px;height:22px;border-radius:6px;background:'+C[i]+'22;color:'+C[i]+';font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(i+1)+'</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:#0A1628;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+e[0]+'</div><div class="tbg"><div class="tf" style="width:'+Math.round(e[1]/maxV*100)+'%;background:'+C[i]+'"></div></div></div><div class="tv">'+e[1]+'×</div></div>';
+    return '<div class="ti"><div style="width:22px;height:22px;border-radius:6px;background:'+C[i]+'22;color:'+C[i]+';font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(i+1)+'</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;color:#0A1628;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(e[0])+'</div><div class="tbg"><div class="tf" style="width:'+Math.round(e[1]/maxV*100)+'%;background:'+C[i]+'"></div></div></div><div class="tv">'+e[1]+'×</div></div>';
   }).join('');
 }
 function drawDonut(all){
@@ -218,7 +219,7 @@ function drawDonut(all){
   paths+='<circle cx="'+cx+'" cy="'+cy+'" r="'+ri+'" fill="white"/>';
   paths+='<text x="'+cx+'" y="'+(cy+4)+'" text-anchor="middle" font-size="12" font-weight="900" fill="#0A1628" font-family="Inter,sans-serif">'+total+'</text>';
   document.getElementById('svgDonut').innerHTML=paths;
-  document.getElementById('donutLgd').innerHTML=types.map(function(t){return '<div class="litem"><div class="ldot" style="background:'+t.col+'"></div><span>'+t.l+'</span><span style="margin-left:auto;font-weight:700;color:#0A1628">'+t.c+'</span></div>';}).join('');
+  document.getElementById('donutLgd').innerHTML=types.map(function(t){return '<div class="litem"><div class="ldot" style="background:'+t.col+'"></div><span>'+escHtml(t.l)+'</span><span style="margin-left:auto;font-weight:700;color:#0A1628">'+t.c+'</span></div>';}).join('');
 }
 function drawPM(docs){
   var pm={};
@@ -228,14 +229,14 @@ function drawPM(docs){
   var entries=Object.entries(pm).sort(function(a,b){return b[1]-a[1];});
   if(!entries.length){document.getElementById('pmStats').innerHTML='<p style="color:#7A94AF;text-align:center;padding:16px;font-size:13px">Aucune donnée</p>';return;}
   document.getElementById('pmStats').innerHTML=entries.map(function(e){
-    return '<div class="ti"><div style="font-size:18px;width:28px;text-align:center">'+(ICONS[e[0]]||'💳')+'</div><div style="flex:1"><div style="font-size:12px;font-weight:700;color:#0A1628;margin-bottom:4px">'+e[0]+'</div><div class="tbg"><div class="tf" style="width:'+Math.round(e[1]/total*100)+'%;background:#0070C0"></div></div></div><div style="font-size:12px;font-weight:700;color:#0A1628;min-width:50px;text-align:right">'+e[1]+' ('+Math.round(e[1]/total*100)+'%)</div></div>';
+    return '<div class="ti"><div style="font-size:18px;width:28px;text-align:center">'+(ICONS[e[0]]||'💳')+'</div><div style="flex:1"><div style="font-size:12px;font-weight:700;color:#0A1628;margin-bottom:4px">'+escHtml(e[0])+'</div><div class="tbg"><div class="tf" style="width:'+Math.round(e[1]/total*100)+'%;background:#0070C0"></div></div></div><div style="font-size:12px;font-weight:700;color:#0A1628;min-width:50px;text-align:right">'+e[1]+' ('+Math.round(e[1]/total*100)+'%)</div></div>';
   }).join('');
 }
 function drawClients(clients){
   var recent=clients.slice().reverse().slice(0,5);
   if(!recent.length){document.getElementById('recentCl').innerHTML='<p style="color:#7A94AF;text-align:center;padding:16px;font-size:13px">Aucun client</p>';return;}
   document.getElementById('recentCl').innerHTML=recent.map(function(c){
-    return '<div class="ti"><div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#3730A3,#6366F1);color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+((c.nom||'?')[0]+(c.prenom||'?')[0]).toUpperCase()+'</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:#0A1628;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+c.prenom+' '+c.nom+'</div><div style="font-size:11px;color:#7A94AF">'+c.tel+'</div></div></div>';
+    return '<div class="ti"><div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#3730A3,#6366F1);color:white;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+((c.nom||'?')[0]+(c.prenom||'?')[0]).toUpperCase()+'</div><div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:700;color:#0A1628;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escHtml(c.prenom+' '+c.nom)+'</div><div style="font-size:11px;color:#7A94AF">'+escHtml(c.tel)+'</div></div></div>';
   }).join('');
 }
 function exportCSV(){
