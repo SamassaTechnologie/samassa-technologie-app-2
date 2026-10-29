@@ -115,3 +115,15 @@ test('rapprochement mobile money : analyse des SMS et rapprochement', () => {
   const r = R.rapprocher(a.retenus, [{ type: 'entree', pm: 'Wave', amount: 5000, date: '2026-10-29', desc: 'Reçu 1' }, { type: 'entree', pm: 'Moov Money', amount: 7000, date: '2026-10-29', desc: 'Reçu 2' }, { type: 'entree', pm: 'Espèces', amount: 100, date: '2026-10-29', desc: 'x' }]);
   assert.equal(r.liens.length, 1); assert.equal(r.sansCaisse.length, 1); assert.equal(r.sansPaiement.length, 1); assert.equal(r.sansPaiement[0].desc, 'Reçu 2');
 });
+test('règlement des factures : calcul et créance', () => {
+  const ctx = { window: {}, document: { addEventListener() {} }, localStorage: { getItem: () => '[]' } };
+  vm.createContext(ctx); vm.runInContext(lire('paiement-facture.js'), ctx);
+  const P = ctx.window.PaiementFacture;
+  assert.deepEqual({ ...P.calculer('payé', 0, 10000) }, { paye: 10000, du: 0, statut: 'Payé' });
+  assert.deepEqual({ ...P.calculer('partiel', 4000, 10000) }, { paye: 4000, du: 6000, statut: 'Partiellement payé' });
+  assert.deepEqual({ ...P.calculer('impayé', 500, 10000) }, { paye: 0, du: 10000, statut: 'Impayé' });
+  let c = P.synchroCreance([], { numero: 'FAC-001', client: 'Awa', du: 6000, echeance: '2026-11-30' });
+  assert.equal(c.length, 1); assert.equal(c[0].amount, 6000); assert.equal(c[0].paid, false);
+  c = P.synchroCreance(c, { numero: 'FAC-001', client: 'Awa', du: 2000 }); assert.equal(c.length, 1); assert.equal(c[0].amount, 2000);
+  c = P.synchroCreance(c, { numero: 'FAC-001', client: 'Awa', du: 0 }); assert.equal(c[0].paid, true);
+});
