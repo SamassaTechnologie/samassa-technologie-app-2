@@ -137,3 +137,17 @@ test('assistant.js : collecte sans données personnelles', () => {
   assert.equal(out.creancesClients.total, 1000);
   assert.ok(!txt.includes('Jean') && !txt.includes('Awa'));
 });
+
+test('scanner-intelligent : recadrage, seuil adaptatif, champs', () => {
+  global.window = {}; global.document = undefined;
+  delete require.cache[require.resolve('../scanner-intelligent.js')]; require('../scanner-intelligent.js');
+  const L = window.ScanLib, w = 100, h = 100, g = new Uint8Array(w * h).fill(30);
+  for (let y = 20; y < 80; y++) for (let x = 25; x < 85; x++) g[y * w + x] = 220;
+  const b = L.limitesDocument(g, w, h);
+  assert.ok(b && b.x > .1 && b.x < .3 && b.w > .5 && b.w < .75);
+  assert.equal(L.limitesDocument(new Uint8Array(w * h).fill(200), w, h), null);
+  const t = new Uint8Array(w * h).fill(200); t[50 * w + 50] = 20;
+  const s = L.seuilAdaptatif(t, w, h, 15, .9); assert.equal(s[50 * w + 50], 0); assert.equal(s[10], 255);
+  const c = L.champs('Tel 76 12 34 56, mail a@b.com le 12/05/2025 total 150 000 FCFA');
+  assert.equal(c.telephones.length, 1); assert.equal(c.emails[0], 'a@b.com'); assert.equal(c.dates[0], '12/05/2025'); assert.equal(c.montants.length, 1);
+});

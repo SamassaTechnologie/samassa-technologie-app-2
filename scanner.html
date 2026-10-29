@@ -21,7 +21,7 @@ body{background:var(--scan-bg)}.scanner-shell{max-width:1120px;margin:0 auto;pad
   <div class="scanner-grid">
     <section class="scan-card">
       <h3>1. Capturer un document</h3><p class="scan-help">Pour un meilleur résultat, placez le document sur un fond contrasté et bien éclairé.</p>
-      <label class="dropzone" for="scan-file"><strong>📷 Importer ou prendre une photo</strong><span>JPG, JPEG ou PNG — 20 Mo maximum</span><input id="scan-file" type="file" accept="image/jpeg,image/png,image/*" capture="environment"></label>
+      <label class="dropzone" for="scan-file"><strong>📷 Importer ou prendre une photo</strong><span>Une ou plusieurs photos — 25 Mo max chacune</span><input id="scan-file" type="file" accept="image/jpeg,image/png,image/*" capture="environment"></label>
       <div class="scan-actions"><button class="scan-btn secondary" id="camera-btn" type="button">📷 Ouvrir la caméra</button><button class="scan-btn ghost" id="clear-btn" type="button">Réinitialiser</button></div>
       <div class="preview-wrap"><div class="preview-empty" id="preview-empty"><span>📄</span>Aucun document sélectionné</div><img id="scan-preview" alt="Aperçu du document" hidden></div>
       <div class="tools"><label class="tool-label">Amélioration<select id="enhance-mode"><option value="original">Original</option><option value="gray">Niveaux de gris</option><option value="bw">Noir et blanc</option><option value="contrast">Contraste renforcé</option></select></label><label class="tool-label">Qualité PDF<select id="pdf-quality"><option value="0.88">Haute</option><option value="0.72">Standard</option><option value="0.55">Compacte</option></select></label></div>
@@ -39,6 +39,6 @@ body{background:var(--scan-bg)}.scanner-shell{max-width:1120px;margin:0 auto;pad
 </main>
 <script src="auth.js?v=firebase1"></script>
 <script src="analytics.js?v=1"></script>
-<script src="scanner-intelligent.js?v=1"></script>
+<script src="scanner-intelligent.js?v=2"></script>
 </body>
 </html>
