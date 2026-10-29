@@ -21,7 +21,7 @@ test('les fichiers du service worker existent', () => {
   for (const m of bloc.matchAll(/'([^']+\.(?:html|js|css|json|png))'/g)) assert.ok(fs.existsSync(path.join(root, m[1])), 'SW : ' + m[1] + ' manquant');
 });
 test('les pages qui injectent des données utilisent l\'échappement', () => {
-  for (const p of ['stock.html', 'journal.html', 'rapports.html']) assert.match(lire(p), /esc\.js/, p);
+  for (const p of ['stock.html', 'journal.html', 'rapports.html', 'index.html']) assert.match(lire(p), /esc\.js/, p);
   assert.match(lire('clients.html'), /esc\(/); assert.match(lire('recu.js'), /_e\(/);
 });
 test('piece-id : numéros et téléphones', () => {
@@ -75,4 +75,15 @@ test('signature des documents : stable, sensible aux changements', async () => {
   assert.ok(m.egal(s1, s1)); assert.ok(!m.egal(s1, s2));
   assert.throws(() => m.nettoyer({ t: 'Autre', n: 'x', m: 1, d: '2026-10-29' }));
   assert.throws(() => m.nettoyer({ t: 'Reçu', n: '<script>', m: 1, d: '2026-10-29' }));
+});
+test('contrats : échéances, retards et revenu récurrent', () => {
+  const ctx = { window: { escHtml: s => s }, document: { addEventListener() {} }, localStorage: { getItem: () => '[]' } };
+  vm.createContext(ctx); vm.runInContext(lire('contrats.js'), ctx);
+  const C = ctx.window.Contrats, c = { debut: '2026-08-10', jour: 5, montant: 20000, payes: ['2026-08'] };
+  assert.equal(C.echeances(c, '2026-10-29').length, 3);
+  const e = C.etat(c, '2026-10-29');
+  assert.equal(e.cle, 'late'); assert.equal(e.impayes.length, 2);
+  assert.equal(C.etat({ ...c, payes: ['2026-08', '2026-09', '2026-10'] }, '2026-10-29').cle, 'ok');
+  assert.equal(C.etat({ ...c, statut: 'suspendu' }, '2026-10-29').cle, 'off');
+  assert.equal(C.mrr([c, { montant: 5000 }, { montant: 9000, statut: 'suspendu' }]), 25000);
 });

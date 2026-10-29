@@ -1,0 +1,32 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Contrats de maintenance — SAMASSA TECHNOLOGIE</title><meta name="theme-color" content="#0A1628"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif}.wrap{max-width:1050px;margin:72px auto 60px;padding:0 16px}
+.hero{background:linear-gradient(135deg,#0A1628,#9A3412,#EA580C);border-radius:16px;padding:20px 24px;color:#fff;margin-bottom:14px}.hero h1{margin:0 0 4px;font-size:20px}.hero p{margin:0;color:#FED7AA;font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}.kpi{background:#fff;border:1px solid #E2ECF5;border-radius:12px;padding:12px}.kpi b{display:block;font-size:19px;color:#0A1628}.kpi span{font-size:11px;color:#64748B}.kpi.warn b{color:#DC2626}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.bar input{flex:1;min-width:200px;padding:10px 12px;border:1px solid #D8E4EF;border-radius:9px;font:inherit;font-size:13px}.bar button{background:#EA580C;color:#fff;border:0;border-radius:9px;padding:10px 14px;font-weight:800;font-size:13px;cursor:pointer}
+.card{background:#fff;border:1px solid #E2ECF5;border-radius:14px;padding:14px;margin-bottom:10px}.card.late{border-left:4px solid #DC2626}.card.soon{border-left:4px solid #F59E0B}.card.ok{border-left:4px solid #16A34A}.card.off{opacity:.65}
+.top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}.nm{font-weight:800;color:#0A1628;font-size:14px}.sub{font-size:12px;color:#64748B;margin-top:2px}
+.pill{font-size:11px;font-weight:800;border-radius:99px;padding:4px 10px;white-space:nowrap;background:#DCFCE7;color:#166534}.pill.r{background:#FEE2E2;color:#991B1B}.pill.o{background:#FEF3C7;color:#92400E}.pill.g{background:#E2E8F0;color:#475569}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.acts button{border:0;border-radius:8px;padding:8px 11px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;background:#EEF2FF;color:#3730A3}.acts .ok{background:#16A34A;color:#fff}.acts .wa{background:#25D366;color:#fff}.acts .sms{background:#0070C0;color:#fff}.acts .x{background:#FEE2E2;color:#991B1B}
+.empty{text-align:center;padding:36px;color:#7A94AF}
+dialog{border:0;border-radius:14px;padding:18px;max-width:420px;width:calc(100% - 32px)}dialog::backdrop{background:rgba(5,10,20,.6)}dialog h3{margin:0 0 10px}dialog label{display:block;font-size:11px;font-weight:700;color:#4A6080;margin:8px 0 3px}dialog input,dialog select,dialog textarea{width:100%;box-sizing:border-box;padding:9px;border:1px solid #D8E4EF;border-radius:8px;font:inherit;font-size:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+</style></head><body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">🛡️ Contrats de maintenance</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<main class="wrap">
+<div class="hero"><h1>🛡️ Contrats de maintenance</h1><p>Abonnements mensuels : échéances, paiements, rappels et visites planifiées.</p></div>
+<div class="kpis" id="kpis"></div>
+<div class="bar"><input id="q" placeholder="🔍 Client, téléphone ou objet du contrat"><button id="nouv">➕ Nouveau contrat</button></div>
+<div id="liste"></div>
+</main>
+<dialog id="dlg"><h3 id="d-t">Nouveau contrat</h3>
+<label for="f-client">Client / entreprise</label><input id="f-client" maxlength="80">
+<label for="f-phone">Téléphone</label><input id="f-phone" inputmode="tel" maxlength="30">
+<label for="f-objet">Objet du contrat</label><textarea id="f-objet" rows="2" maxlength="200" placeholder="Ex : Maintenance de 8 ordinateurs et du réseau, 1 visite par mois"></textarea>
+<div class="g2"><div><label for="f-montant">Montant mensuel (FCFA)</label><input id="f-montant" type="number" min="0"></div><div><label for="f-jour">Jour d'échéance (1-28)</label><input id="f-jour" type="number" min="1" max="28" value="5"></div></div>
+<div class="g2"><div><label for="f-debut">Début du contrat</label><input id="f-debut" type="date"></div><div><label for="f-visites">Visites par mois</label><input id="f-visites" type="number" min="0" max="31" value="1"></div></div>
+<div class="sub" style="margin-top:8px;font-size:11px;color:#64748B">Les mois écoulés avant aujourd'hui ne sont pas réclamés : le suivi commence au mois en cours.</div>
+<div class="acts"><button class="ok" id="d-ok">Enregistrer</button><button id="d-no">Annuler</button></div></dialog>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="utils.js"></script><script src="contrats.js?v=1"></script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body></html>

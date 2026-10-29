@@ -506,6 +506,10 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
       <span class="sb-item-icon">🔧</span>
       <span class="sb-item-label">Bon de réparation</span>
     </a>
+    <a href="contrats.html" class="sb-item">
+      <span class="sb-item-icon">🛡️</span>
+      <span class="sb-item-label">Contrats maintenance</span>
+    </a>
     <a href="postes.html" class="sb-item">
       <span class="sb-item-icon">🖥️</span>
       <span class="sb-item-label">Postes cybercafé</span>
@@ -755,6 +759,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     <a href="suivi_reparations.html" class="qa"><div class="qa-icon" style="background:#F5F3FF">📋</div><div class="qa-label">Suivi réparations</div></a>
     <a href="rentabilite.html" class="qa"><div class="qa-icon" style="background:#ECFDF5">💹</div><div class="qa-label">Rentabilité</div></a>
     <a href="postes.html" class="qa"><div class="qa-icon" style="background:#F0F9FF">🖥️</div><div class="qa-label">Postes cyber</div></a>
+    <a href="contrats.html" class="qa"><div class="qa-icon" style="background:#FFF7ED">🛡️</div><div class="qa-label">Contrats</div></a>
     <a href="intervention.html" class="qa"><div class="qa-icon" style="background:var(--purple-bg)">🛠️</div><div class="qa-label">Intervention</div></a>
     <a href="stock.html" class="qa"><div class="qa-icon" style="background:#FFF7ED">📦</div><div class="qa-label">Stock</div></a>
     <a href="gestion.html" class="qa"><div class="qa-icon" style="background:#EEF2FF">🧭</div><div class="qa-label">Gestion avancée</div></a>
@@ -987,6 +992,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
 </div>
 
 <!-- ═══════ SCRIPTS ═══════ -->
+<script src="esc.js"></script>
 <script src="auth.js?v=firebase1"></script>
 <script src="firebase-config.js"></script>
 <script src="sync.js?v=5"></script>
@@ -1324,9 +1330,9 @@ function renderMouvements(){
   const pmI={Wave:'🌊','Orange Money':'🟠','Moov Money':'🔵',Espèces:'💵'};
   const tb=$('mv-tbody');if(!tb)return;
   if(!list.length){tb.innerHTML=`<tr><td colspan="7" style="text-align:center;padding:28px;color:var(--text3)">Aucun mouvement</td></tr>`;return;}
-  tb.innerHTML=list.map(m=>`<tr><td>${new Date(m.date).toLocaleDateString('fr-FR')}</td><td class="td-d">${m.desc}${m.auto?'<span class="auto-b">auto</span>':''}</td><td><span style="font-size:11px;background:var(--bg);color:var(--text2);padding:2px 7px;border-radius:10px">${m.cat}</span></td><td style="font-size:12px;white-space:nowrap">${pmI[m.pm]||''} ${m.pm}</td><td class="td-in">${m.type==='entree'?'+'+fmtNum(m.amount)+' F':'—'}</td><td class="td-out">${m.type==='sortie'?'-'+fmtNum(m.amount)+' F':'—'}</td><td><button class="del-btn" onclick="deleteMv(${m.id})">✕</button></td></tr>`).join('');
+  tb.innerHTML=list.map(m=>`<tr><td>${new Date(m.date).toLocaleDateString('fr-FR')}</td><td class="td-d">${escHtml(m.desc)}${m.auto?'<span class="auto-b">auto</span>':''}</td><td><span style="font-size:11px;background:var(--bg);color:var(--text2);padding:2px 7px;border-radius:10px">${escHtml(m.cat)}</span></td><td style="font-size:12px;white-space:nowrap">${pmI[m.pm]||''} ${escHtml(m.pm)}</td><td class="td-in">${m.type==='entree'?'+'+fmtNum(m.amount)+' F':'—'}</td><td class="td-out">${m.type==='sortie'?'-'+fmtNum(m.amount)+' F':'—'}</td><td><button class="del-btn" data-id="${escHtml(m.id)}" onclick="deleteMv(this.dataset.id)">✕</button></td></tr>`).join('');
 }
-function deleteMv(id){if(!confirm('Supprimer ?'))return;let list=getData('samassa_mouvements').filter(m=>m.id!==id);localStorage.setItem('samassa_mouvements',JSON.stringify(list));renderMouvements();loadStats();}
+function deleteMv(id){if(!confirm('Supprimer ?'))return;let list=getData('samassa_mouvements').filter(m=>String(m.id)!==String(id));localStorage.setItem('samassa_mouvements',JSON.stringify(list));renderMouvements();loadStats();}
 function clearMouvements(){if(!confirm('Effacer TOUS les mouvements ?'))return;localStorage.removeItem('samassa_mouvements');renderMouvements();loadStats();toast('Effacé.','info');}
 function exportCSV(){
   const list=getData('samassa_mouvements');if(!list.length){toast('Aucun mouvement.','error');return;}
