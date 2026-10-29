@@ -116,6 +116,58 @@
     };
   }
 
+  /* ---------- Raccourcis : masquage selon le rôle + « utilisés récemment » ---------- */
+  const fichierDe = a => (a.getAttribute('href') || '').split('?')[0].split('/').pop();
+  const liens = () => Array.from(document.querySelectorAll('#tab-dashboard a.qa, #tab-dashboard a.tool'));
+
+  function filtrerParRole() {
+    if (typeof Auth === 'undefined' || !Auth.canPage || !Auth.role) return false;
+    document.querySelectorAll('#tab-dashboard a[href]').forEach(a => { const f = fichierDe(a); if (f.endsWith('.html') && !Auth.canPage(f)) a.style.display = 'none'; });
+    // bloc « Administration & sécurité » et bandeau stock : cachés entièrement si aucun lien n'est permis
+    ['#admin-access-card', '#stock-alert-section > div'].forEach(sel => {
+      const bloc = document.querySelector('#tab-dashboard ' + sel); if (!bloc) return;
+      const ls = Array.from(bloc.querySelectorAll('a[href]'));
+      if (ls.length && ls.every(a => a.style.display === 'none')) { const cible = sel === '#admin-access-card' ? bloc : bloc.parentElement; cible.setAttribute('data-role-cache', '1'); cible.style.setProperty('display', 'none', 'important'); }
+    });
+    // masque les titres de groupes dont tous les raccourcis sont cachés
+    document.querySelectorAll('#tab-dashboard .qa-group').forEach(t => {
+      const grille = t.nextElementSibling; if (!grille) return;
+      const visibles = Array.from(grille.children).some(c => c.style.display !== 'none');
+      t.style.display = grille.style.display = visibles ? '' : 'none';
+    });
+    const outils = document.querySelector('#tab-dashboard .tools-grid');
+    if (outils) { const v = Array.from(outils.children).some(c => c.style.display !== 'none'); outils.style.display = v ? '' : 'none'; if (outils.previousElementSibling) outils.previousElementSibling.style.display = v ? '' : 'none'; }
+    dessinerRecents();
+    return true;
+  }
+
+  function recents() { try { const r = JSON.parse(localStorage.getItem('samassa_outils_recents') || '[]'); return Array.isArray(r) ? r.filter(x => typeof x === 'string').slice(0, 4) : []; } catch (e) { return []; } }
+  function noter(href) {
+    const l = [href].concat(recents().filter(x => x !== href)).slice(0, 4);
+    try { localStorage.setItem('samassa_outils_recents', JSON.stringify(l)); } catch (e) {}
+  }
+  function dessinerRecents() {
+    const zone = document.getElementById('qa-recents'), grille = document.getElementById('qa-recents-grid'); if (!zone || !grille) return;
+    const tous = liens();
+    const cartes = recents().map(h => tous.find(a => a.getAttribute('href') === h && a.style.display !== 'none' && !a.closest('#qa-recents'))).filter(Boolean);
+    grille.innerHTML = '';
+    cartes.forEach(a => {
+      const ico = a.querySelector('.qa-icon, .tool-icon'), lab = a.querySelector('.qa-label, .tool-title');
+      const n = document.createElement('a'); n.className = 'qa'; n.setAttribute('href', a.getAttribute('href'));
+      const i = document.createElement('div'); i.className = 'qa-icon'; i.setAttribute('style', ico ? ico.getAttribute('style') || '' : ''); i.textContent = ico ? ico.textContent : '';
+      const t = document.createElement('div'); t.className = 'qa-label';
+      t.textContent = lab ? Array.from(lab.childNodes).filter(x => x.nodeType === 3).map(x => x.textContent).join('').trim() || lab.textContent.trim() : '';
+      n.appendChild(i); n.appendChild(t); grille.appendChild(n);
+    });
+    zone.style.display = cartes.length ? '' : 'none';
+  }
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('#tab-dashboard a.qa, #tab-dashboard a.tool');
+    if (a && !a.hasAttribute('data-no-recent') && !a.closest('#qa-recents') && (a.getAttribute('href') || '').indexOf('#') !== 0) noter(a.getAttribute('href'));
+  }, true);
+  (function attendreRole(n) { if (!filtrerParRole() && n < 40) setTimeout(() => attendreRole(n + 1), 500); else dessinerRecents(); })(0);
+  window.__dashPlusRaccourcis = { filtrerParRole, noter, dessinerRecents };
+
   window.__dashPlusCalculer = calculer;
   const base = window.loadDashboard;
   if (typeof base === 'function') window.loadDashboard = function () { const r = base.apply(this, arguments); try { dessiner(); } catch (e) {} return r; };

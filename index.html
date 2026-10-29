@@ -672,12 +672,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     </div>
   </div>
 
-  <a href="iloveapi.html" class="command-card" style="display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;margin-bottom:16px;border-left:4px solid var(--blue)">
-  <span style="font-size:28px">🛠️</span>
-  <span style="flex:1"><strong style="display:block;color:var(--navy);font-size:15px">Outils PDF &amp; images</strong><small style="color:var(--text2)">Compresser, fusionner, convertir et traiter vos fichiers</small></span>
-  <span style="font-size:22px;color:var(--blue)">›</span>
-</a>
-<div class="dashboard-section-label">Pilotage de l’activité</div>
+  <div class="dashboard-section-label">Pilotage de l’activité</div>
   <div class="command-grid">
     <div class="command-card command-accent"><div class="command-card-title">📈 Encaissements du jour</div><div class="command-card-value" id="cmd-today-total">0 F</div><div class="command-card-sub" id="cmd-today-sub">Toutes opérations enregistrées aujourd’hui</div></div>
     <div class="command-card command-accent green"><div class="command-card-title">✅ RDV arrivés</div><div class="command-card-value" id="cmd-due-rdv">0</div><div class="command-card-sub">Clients à prévenir ou servir</div></div>
@@ -705,27 +700,55 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     </div>
   </div>
 
-  <!-- Actions rapides -->
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <span style="font-size:12px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em">⚡ Actions rapides</span>
+  <style>
+  .tools-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:10px;margin-bottom:6px}
+  .tool{display:flex;align-items:center;gap:12px;background:linear-gradient(110deg,#fff,#F4FAFF);border:1px solid var(--border);border-left:4px solid var(--blue);border-radius:var(--r);padding:13px 14px;text-decoration:none;color:inherit;transition:transform .18s,box-shadow .18s,border-color .18s}
+  .tool:hover{transform:translateY(-2px);box-shadow:var(--sh-md);border-color:var(--blue)}
+  .tool-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex:0 0 auto}
+  .tool-txt{flex:1;min-width:0}.tool-title{font-size:13px;font-weight:800;color:var(--navy,var(--text));line-height:1.25}
+  .tool-desc{font-size:11px;color:var(--text2);margin-top:3px;line-height:1.35}.tool-go{font-size:20px;color:var(--blue)}
+  .tool-badge{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;background:#DCFCE7;color:#166534;font-size:9px;font-weight:800;letter-spacing:.04em;vertical-align:middle;text-transform:uppercase}
+  .tool-badge.ia{background:#EDE9FE;color:#6D28D9}
+  @media(max-width:520px){.qa-grid{grid-template-columns:repeat(3,1fr)!important;gap:8px}.qa{padding:11px 4px}.qa-icon{width:38px;height:38px;font-size:18px}.qa-label{font-size:11px}.tools-grid{grid-template-columns:1fr}}
+  .qa-group{font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin:4px 0 8px}
+  </style>
+  <div class="dashboard-section-label">✨ Outils intelligents</div>
+  <div class="tools-grid" style="margin-bottom:10px">
+    <a href="scanner.html" class="tool"><div class="tool-icon" style="background:#E0F2FE">📷</div><div class="tool-txt"><div class="tool-title">Scanner intelligent<span class="tool-badge">Nouveau</span></div><div class="tool-desc">Numérisez, améliorez et convertissez vos documents</div></div><span class="tool-go">›</span></a>
+    <a href="iloveapi.html" class="tool"><div class="tool-icon" style="background:#EBF5FF">🛠️</div><div class="tool-txt"><div class="tool-title">Outils PDF &amp; images<span class="tool-badge">Nouveau</span></div><div class="tool-desc">Compresser, fusionner et convertir vos fichiers</div></div><span class="tool-go">›</span></a>
+    <a href="docs_admin.html" class="tool"><div class="tool-icon" style="background:#EDE9FE">📝</div><div class="tool-txt"><div class="tool-title">Documents administratifs<span class="tool-badge ia">IA</span></div><div class="tool-desc">40 modèles conformes au Mali, rédaction assistée</div></div><span class="tool-go">›</span></a>
+    <a href="redacteur-ia-mali/index.html" class="tool"><div class="tool-icon" style="background:#EAF4FB">✨</div><div class="tool-txt"><div class="tool-title">Rédacteur IA Mali<span class="tool-badge ia">IA</span></div><div class="tool-desc">Lettres, contrats, successions : export Word</div></div><span class="tool-go">›</span></a>
+    <a href="#" class="tool" data-no-recent="1" onclick="showTab('mouvements');return false"><div class="tool-icon" style="background:#F5F3FF">🤖</div><div class="tool-txt"><div class="tool-title">Analyse IA de la caisse<span class="tool-badge ia">IA</span></div><div class="tool-desc">Posez vos questions sur vos chiffres (onglet Mouvements)</div></div><span class="tool-go">›</span></a>
   </div>
-  <div class="qa-grid" style="margin-bottom:20px">
-    <a href="recu.html"              class="qa"><div class="qa-icon" style="background:var(--green-bg)">🧾</div><div class="qa-label">Nouveau reçu</div></a>
-    <a href="facture.html"           class="qa"><div class="qa-icon" style="background:var(--blue-l)">📄</div><div class="qa-label">Facture service</div></a>
-    <a href="facture_materiel.html"  class="qa"><div class="qa-icon" style="background:#EBF5FF">🖥️</div><div class="qa-label">Facture Matériel</div></a>
-    <a href="recu_vente.html"         class="qa"><div class="qa-icon" style="background:#F0FDFA">🧾</div><div class="qa-label">Reçu Vente</div></a>
-    <a href="stock.html"               class="qa"><div class="qa-icon" style="background:#FFF7ED">📦</div><div class="qa-label">Stock</div></a>
+
+  <div id="qa-recents" style="display:none">
+    <div class="dashboard-section-label">🕘 Utilisés récemment</div>
+    <div class="qa-grid" id="qa-recents-grid" style="margin-bottom:6px"></div>
+  </div>
+
+  <div class="dashboard-section-label">⚡ Actions rapides</div>
+  <div class="qa-group">💰 Ventes &amp; caisse</div>
+  <div class="qa-grid" style="margin-bottom:14px">
+    <a href="recu.html" class="qa"><div class="qa-icon" style="background:var(--green-bg)">🧾</div><div class="qa-label">Nouveau reçu</div></a>
+    <a href="facture.html" class="qa"><div class="qa-icon" style="background:var(--blue-l)">📄</div><div class="qa-label">Facture service</div></a>
+    <a href="facture_materiel.html" class="qa"><div class="qa-icon" style="background:#EBF5FF">🖥️</div><div class="qa-label">Facture Matériel</div></a>
+    <a href="facture_cyber.html" class="qa"><div class="qa-icon" style="background:#EEF2FF">☕</div><div class="qa-label">Facture Cyber</div></a>
+    <a href="recu_vente.html" class="qa"><div class="qa-icon" style="background:#F0FDFA">🧾</div><div class="qa-label">Reçu Vente</div></a>
+    <a href="recu_cyber.html" class="qa"><div class="qa-icon" style="background:#EEF2FF">☕</div><div class="qa-label">Reçu Cyber</div></a>
+    <a href="devis.html" class="qa"><div class="qa-icon" style="background:var(--amber-bg)">📋</div><div class="qa-label">Devis</div></a>
+  </div>
+  <div class="qa-group">🔧 Atelier &amp; stock</div>
+  <div class="qa-grid" style="margin-bottom:14px">
+    <a href="bon_reparation.html" class="qa"><div class="qa-icon" style="background:#F5F3FF">🔧</div><div class="qa-label">Bon Réparation</div></a>
+    <a href="intervention.html" class="qa"><div class="qa-icon" style="background:var(--purple-bg)">🛠️</div><div class="qa-label">Intervention</div></a>
+    <a href="stock.html" class="qa"><div class="qa-icon" style="background:#FFF7ED">📦</div><div class="qa-label">Stock</div></a>
     <a href="gestion.html" class="qa"><div class="qa-icon" style="background:#EEF2FF">🧭</div><div class="qa-label">Gestion avancée</div></a>
-
-
-    <a href="bon_reparation.html"      class="qa"><div class="qa-icon" style="background:#F5F3FF">🔧</div><div class="qa-label">Bon Réparation</div></a>
-    <a href="cyber-docs.html"        class="qa"><div class="qa-icon" style="background:#EDE9FE">🖥️</div><div class="qa-label">Cyber &amp; Docs</div></a>
-    <a href="recu_cyber.html"        class="qa"><div class="qa-icon" style="background:#EEF2FF">☕</div><div class="qa-label">Reçu Cyber</div></a>
-    <a href="intervention.html"      class="qa"><div class="qa-icon" style="background:var(--purple-bg)">🔧</div><div class="qa-label">Intervention</div></a>
-    <a href="devis.html"             class="qa"><div class="qa-icon" style="background:var(--amber-bg)">📋</div><div class="qa-label">Devis</div></a>
-    <a href="docs_admin.html"        class="qa"><div class="qa-icon" style="background:#EDE9FE">📝</div><div class="qa-label">Docs Admin 📝</div></a>
-    <a href="redacteur-ia-mali/index.html" class="qa"><div class="qa-icon" style="background:#EAF4FB">✨</div><div class="qa-label">Rédacteur IA Mali</div></a>
-    <a href="scanner.html" class="qa"><div class="qa-icon" style="background:#E0F2FE">📷</div><div class="qa-label">Scanner intelligent</div></a>
+  </div>
+  <div class="qa-group">👥 Clients &amp; analyses</div>
+  <div class="qa-grid" style="margin-bottom:20px">
+    <a href="clients.html" class="qa"><div class="qa-icon" style="background:#ECFEFF">👥</div><div class="qa-label">Clients</div></a>
+    <a href="rapports.html" class="qa"><div class="qa-icon" style="background:#F0FDF4">📈</div><div class="qa-label">Rapports</div></a>
+    <a href="cyber-docs.html" class="qa"><div class="qa-icon" style="background:#EDE9FE">🖥️</div><div class="qa-label">Cyber &amp; Docs</div></a>
   </div>
 
   <section class="admin-access-card" id="admin-access-card">
