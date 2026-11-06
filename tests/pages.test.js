@@ -178,5 +178,5 @@ test('ticket80 : modèle de lignes du reçu', () => {
   const h = T.html(m);
   assert.ok(h.includes('SAMASSA') && h.includes('10 000 FCFA') && h.includes('t-qr'));
   assert.ok(!T.html(T.modele({ societe: { nom: 'X' }, lignes: [], total: 0, qr: false })).includes('t-qr'));
-  assert.ok(T.html(T.modele({ societe: { nom: '<b>x</b>' }, lignes: [], total: 0 })).includes('&lt;b&gt;'));
+  assert.ok(T.html(T.modele({ societe: { nom: '<b>x</b>' }, lignes: [], total: 0 })).includes('&lt;B&gt;'));
 });
