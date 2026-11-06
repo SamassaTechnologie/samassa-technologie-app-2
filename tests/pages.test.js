@@ -170,3 +170,13 @@ test('assistant-redaction : classement et lecture de réponse', () => {
   const r = A.lireReponse('NOM: **Awa Traoré**\nMOTIF: Je sollicite\nun congé.\nINCONNU: x\nTEL: [À COMPLÉTER]', ['NOM', 'MOTIF', 'TEL']);
   assert.equal(r.NOM, 'Awa Traoré'); assert.equal(r.MOTIF, 'Je sollicite\nun congé.'); assert.equal(r.TEL, undefined); assert.equal(r.INCONNU, undefined);
 });
+
+test('ticket80 : modèle de lignes du reçu', () => {
+  global.window = {}; global.document = undefined;
+  const f = path.join(__dirname, '../ticket80.js'); delete require.cache[require.resolve(f)]; require(f);
+  const T = window.Ticket80, m = T.modele({ societe: { nom: 'Samassa' }, numero: 'REC-1', client: 'A B', lignes: [{ desc: 'NINA', qte: 1, pu: 10000, total: 10000 }], total: 10000, mode: 'Wave', qr: true });
+  const h = T.html(m);
+  assert.ok(h.includes('SAMASSA') && h.includes('10 000 FCFA') && h.includes('t-qr'));
+  assert.ok(!T.html(T.modele({ societe: { nom: 'X' }, lignes: [], total: 0, qr: false })).includes('t-qr'));
+  assert.ok(T.html(T.modele({ societe: { nom: '<b>x</b>' }, lignes: [], total: 0 })).includes('&lt;b&gt;'));
+});

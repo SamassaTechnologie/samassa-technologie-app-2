@@ -37,5 +37,5 @@
       return r;
     };
   }
-  window.DocQR = { attacher: attacher, brancher: brancher, _chiffres: chiffres };
+  window.DocQR = { adresse: adresse, attacher: attacher, brancher: brancher, _chiffres: chiffres };
 })();
