@@ -1039,7 +1039,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
       <span class="bn-icon">📂</span><span class="bn-label">Historique</span>
     </div>
     <a class="bn-item" href="iloveapi.html" id="bn-iloveapi" style="text-decoration:none">
-      <span class="bn-icon">🛠️</span><span class="bn-label">PDF</span>
+      <span class="bn-icon">🛠️</span><span class="bn-label">PDF &amp; Scan</span>
     </a>
   </div>
 </div>
@@ -1455,7 +1455,7 @@ function renderHistory(){
   const typeFilter=$('h-type')?.value||'',search=($('h-search')?.value||'').toLowerCase();
   const types=[{key:'samassa_factures',cls:'di-f',icon:'📄',label:'Facture',url:'facture.html'},{key:'samassa_factures_mat',cls:'di-f',icon:'🖥️',label:'Facture Matériel',url:'facture_materiel.html'},{key:'samassa_recus',cls:'di-r',icon:'🧾',label:'Reçu NINA',url:'recu.html'},{key:'samassa_recus_vente',cls:'di-r',icon:'🧾',label:'Reçu Vente',url:'recu_vente.html'},{key:'samassa_bons_reparation',cls:'di-i',icon:'🔧',label:'Bon Réparation',url:'bon_reparation.html'},{key:'samassa_devis',cls:'di-d',icon:'📋',label:'Devis',url:'devis.html'},{key:'samassa_interventions',cls:'di-i',icon:'🔧',label:'Intervention',url:'intervention.html'},{key:'samassa_recus_cyber',cls:'di-r',icon:'🖥️',label:'Reçu Cyber',url:'recu_cyber.html'},{key:'samassa_factures_cyber',cls:'di-f',icon:'🖥️',label:'Facture Cyber',url:'facture_cyber.html'},{key:'samassa_docs_admin',cls:'di-d',icon:'📝',label:'Doc. Admin',url:'redacteur-ia-mali/index.html'},{key:'samassa_clients',cls:'di-f',icon:'👥',label:'Client',url:'clients.html'}];
   let all=[];
-  (typeFilter?types.filter(t=>t.key===typeFilter):types).forEach(t=>getData(t.key).forEach(d=>all.push({...d,_t:t})));
+  (typeFilter?types.filter(t=>(window.HIST_GROUPES&&window.HIST_GROUPES[typeFilter])?window.HIST_GROUPES[typeFilter].includes(t.key):t.key===typeFilter):types).forEach(t=>getData(t.key).forEach(d=>all.push({...d,_t:t})));
   if(search)all=all.filter(d=>(d.client||'').toLowerCase().includes(search)||(d.number||'').toLowerCase().includes(search));
   all.sort((a,b)=>new Date(b.timestamp||0)-new Date(a.timestamp||0));
   const c=$('history-list');if(!c)return;
@@ -1522,6 +1522,7 @@ document.addEventListener('samassa:sync',()=>{
 </script>
 <script src="dashboard-plus.js?v=1"></script>
 <script src="dash-categories.js?v=1"></script>
+<script src="sections-tabs.js?v=1"></script>
 <script src="auto-backup.js?v=1"></script>
 <script src="app-moderne.js?v=1" defer></script>
 </body>
