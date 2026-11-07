@@ -1,0 +1,36 @@
+/* Mode sombre — tableau de bord (index.html). Actif seulement à l'écran, jamais à l'impression. */
+@media screen {
+html[data-theme="dark"]{color-scheme:dark;
+  --bg:#0A121C;--bg2:#0F1A27;--white:#142133;--text:#E7EEF6;--text2:#A8BACE;--text3:#7B92AB;--border:#25374C;
+  --blue-l:#0F2B42;--green-bg:#0E2A1B;--red-bg:#3A1818;--amber-bg:#3A2B0B;--purple-bg:#241C3E;
+  --sh:0 2px 12px rgba(0,0,0,.45);--sh-sm:0 1px 4px rgba(0,0,0,.4);--sh-md:0 8px 24px rgba(0,0,0,.55)}
+html[data-theme="dark"] body{background:var(--bg);color:var(--text)}
+/* fonds clairs écrits en dur dans les styles en ligne */
+html[data-theme="dark"] [style*="background:white"],html[data-theme="dark"] [style*="background:#fff"],html[data-theme="dark"] [style*="background:#FFF"],html[data-theme="dark"] [style*="background: white"],
+html[data-theme="dark"] [style*="gradient(110deg,#fff"],html[data-theme="dark"] [style*="gradient(110deg,#ffffff"]{background:var(--white)!important}
+html[data-theme="dark"] [style*="background:#F"]:not(.qa-icon):not(.tool-icon):not(button):not(a){background:var(--bg2)!important}
+html[data-theme="dark"] [style*="color:#0A1628"],html[data-theme="dark"] [style*="color:#1A2D44"],html[data-theme="dark"] [style*="color:var(--navy)"]{color:var(--text)!important}
+html[data-theme="dark"] [style*="color:#64748B"],html[data-theme="dark"] [style*="color:#475569"]{color:var(--text2)!important}
+/* composants */
+html[data-theme="dark"] .card,html[data-theme="dark"] .kpi,html[data-theme="dark"] .qa,html[data-theme="dark"] .cat,html[data-theme="dark"] .cat-find,html[data-theme="dark"] .command-card,html[data-theme="dark"] .rt-st,html[data-theme="dark"] .st-k,html[data-theme="dark"] .st-chip:not(.on),html[data-theme="dark"] .welcome-banner+*{background:var(--white);border-color:var(--border)}
+html[data-theme="dark"] .topbar{background:#0F1A27;border-bottom-color:var(--border)}
+html[data-theme="dark"] .tb-search,html[data-theme="dark"] .tb-icon-btn{background:var(--bg2);border-color:var(--border)}
+html[data-theme="dark"] .tb-search input,html[data-theme="dark"] input,html[data-theme="dark"] select,html[data-theme="dark"] textarea{background:var(--bg2);color:var(--text);border-color:var(--border)}
+html[data-theme="dark"] .cat-find input{background:none}
+html[data-theme="dark"] input::placeholder{color:var(--text3)}
+html[data-theme="dark"] .cat-t,html[data-theme="dark"] .qa-label,html[data-theme="dark"] .card-title,html[data-theme="dark"] .st-kv{color:var(--text)}
+html[data-theme="dark"] .st-bar{background:#0F1A27}html[data-theme="dark"] .st-b{color:var(--text2)}html[data-theme="dark"] .st-b.on{background:var(--white);color:var(--text)}
+html[data-theme="dark"] .st-chip.on{background:#2B6CB0;border-color:#2B6CB0}
+html[data-theme="dark"] table,html[data-theme="dark"] th,html[data-theme="dark"] td{border-color:var(--border)}
+html[data-theme="dark"] th{background:var(--bg2);color:var(--text2)}html[data-theme="dark"] tr:hover td{background:rgba(255,255,255,.03)}
+html[data-theme="dark"] .doc-item,html[data-theme="dark"] .fbar,html[data-theme="dark"] .rdv-toolbar{background:var(--white);border-color:var(--border);color:var(--text)}
+html[data-theme="dark"] .sc-in{background:var(--green-bg);border-color:#1B4D33}html[data-theme="dark"] .sc-in .sc-lbl{color:#6EE7A0}
+html[data-theme="dark"] .sc-out{background:var(--red-bg);border-color:#6B2525}html[data-theme="dark"] .sc-out .sc-lbl{color:#FCA5A5}
+html[data-theme="dark"] .sc-net{background:#0B1522;border-color:var(--border)}
+html[data-theme="dark"] .bottom-nav{background:#08101A}
+html[data-theme="dark"] .qa-icon,html[data-theme="dark"] .tool-icon{filter:saturate(.9) brightness(.92)}
+html[data-theme="dark"] .modal,html[data-theme="dark"] .modal-box,html[data-theme="dark"] #search-results{background:var(--white);color:var(--text)}
+html[data-theme="dark"] .tb-icon-btn .notif-dot{border-color:var(--bg2)}
+html[data-theme="dark"] a{color:inherit}
+.theme-btn{width:36px;height:36px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;flex:0 0 auto}
+}
