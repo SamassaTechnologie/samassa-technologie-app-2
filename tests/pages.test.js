@@ -209,3 +209,14 @@ test('tableau de bord par catégories : liens valides et sans doublon', () => {
   const nav = idx.slice(idx.indexOf('<nav class="sb-nav">'), idx.indexOf('</nav>', idx.indexOf('<nav class="sb-nav">')));
   (nav.match(/<a href="([^"]+)" class="sb-item"/g) || []).forEach(h => assert.ok(fs.existsSync(path.join(__dirname, '..', h.slice(9).split('"')[0])), 'menu : ' + h));
 });
+
+test('relances: tri, message et encaissement partiel relié à la caisse', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../relances.js')]; require('../relances.js');
+  const R = global.window.Relances;
+  const cr = [{ id: 1, client: 'A', amount: 5000, due: '2026-11-01', paid: false }, { id: 2, client: 'B', amount: 9000, due: '2026-11-20', paid: false }, { id: 3, client: 'C', amount: 0, paid: true }];
+  const o = R.creancesOuvertes(cr, '2026-11-07');
+  assert.equal(o.length, 2); assert.equal(o[0].client, 'A'); assert.equal(o[0].retard, 6); assert.equal(o[0].niveau, 'retard');
+  assert.match(R.message(o[0], 'X'), /6 jours/);
+  const r = R.encaisser(cr, 1, 2000, '2026-11-07'); assert.equal(r.creances[0].amount, 3000); assert.equal(r.mouvement.amount, 2000); assert.equal(r.mouvement.type, 'entree');
+  const r2 = R.encaisser(cr, 1, 99999, '2026-11-07'); assert.equal(r2.mouvement.amount, 5000); assert.equal(r2.creances[0].paid, true);
+});
