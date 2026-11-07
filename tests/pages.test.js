@@ -295,3 +295,13 @@ test('rappels du jour: agrégation de toutes les sources', () => {
   const t = R.compter({ creances: [{ amount: 5000, due: '2026-11-01', paid: false }, { amount: 100, due: '2026-12-01' }], abonnements: [{ expiration: '2026-11-20' }, { expiration: '2027-06-01' }], parc: [{ achat: '2025-11-20', garantieMois: 12 }], prospects: [{ etape: 'Nouveau', relance: '2026-11-07' }, { etape: 'Gagné', relance: '2026-01-01' }], projets: [{ echeance: '2026-11-01', etapes: [{ fait: false }] }], stock: [{ qty: 1, min: 2 }], recus: [{ rdvDate: '2026-11-07', retrieved: false }] }, '2026-11-07');
   assert.deepEqual(t.map(x => x.cle), ['creances', 'abonnements', 'garanties', 'prospects', 'projets', 'stock', 'rdv']); assert.ok(t.every(x => x.n === 1));
 });
+
+test('employés: bulletin (absences, primes, avances), paie, sortie de caisse', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../employes.js')]; require('../employes.js');
+  const E = global.window.Employes; let e = { nom: 'Moussa', salaire: 130000, lignes: [] };
+  e = E.ajouter(e, '2026-11', 'absence', 2, '', '2026-11-07'); e = E.ajouter(e, '2026-11', 'prime', 10000, '', '2026-11-07'); e = E.ajouter(e, '2026-11', 'avance', 20000, '', '2026-11-07'); e = E.ajouter(e, '2026-10', 'prime', 99999, '', '2026-10-01');
+  let b = E.bulletin(e, '2026-11'); assert.equal(b.retenue, 10000); assert.equal(b.net, 110000); assert.equal(b.reste, 110000);
+  const m = E.sortieCaisse(e, 'paie', b.reste, '2026-11-30'); assert.equal(m.type, 'sortie'); assert.equal(m.amount, 110000); assert.equal(m.cat, 'Salaires');
+  e = E.ajouter(e, '2026-11', 'paie', 110000, '', '2026-11-30'); b = E.bulletin(e, '2026-11'); assert.equal(b.reste, 0);
+  assert.equal(E.totalMois([e], '2026-11').paye, 110000);
+});
