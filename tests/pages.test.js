@@ -220,3 +220,12 @@ test('relances: tri, message et encaissement partiel relié à la caisse', () =>
   const r = R.encaisser(cr, 1, 2000, '2026-11-07'); assert.equal(r.creances[0].amount, 3000); assert.equal(r.mouvement.amount, 2000); assert.equal(r.mouvement.type, 'entree');
   const r2 = R.encaisser(cr, 1, 99999, '2026-11-07'); assert.equal(r2.mouvement.amount, 5000); assert.equal(r2.creances[0].paid, true);
 });
+
+test('marketing: profils par téléphone, points, paliers, segments, message', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../marketing.js')]; require('../marketing.js');
+  const M = global.window.Marketing;
+  const p = M.profils({ clients: [{ prenom: 'Awa', nom: 'TRAORÉ', tel: '76 12 34 56' }], achats: [{ client: 'Awa Traoré', phone: '+223 76123456', total: 60000, date: '01/09/2026' }, { client: 'Awa', tel: '76123456', total: 100000, timestamp: '2026-11-01T10:00:00Z' }, { client: 'X', phone: '', total: 5 }] }, '2026-11-07');
+  assert.equal(p.length, 1); assert.equal(p[0].nb, 2); assert.equal(p[0].points, 160); assert.equal(p[0].palier.nom, 'Or'); assert.equal(p[0].inactif, 6);
+  assert.ok(M.SEGMENTS.vip(p[0])); assert.ok(!M.SEGMENTS.inactifs(p[0]));
+  assert.equal(M.rediger('Bonjour {nom} {points} {palier} {offre}', p[0], '-10 %'), 'Bonjour Awa 160 Or -10 %');
+});
