@@ -315,3 +315,12 @@ test('compta: bilan mensuel, TVA TTC/HT, évolution et CSV', () => {
   const e = C.evolution(mv, '2026-11', 2); assert.deepEqual(e.map(x => x.recettes), [5000, 177000]);
   const c = C.csv(mv, '2026-11'); assert.equal(c.split('\n').length, 4); assert.ok(c.includes('"Salaire ""A"""'));
 });
+
+test('inventaire: recherche par code (zéros EAN), écarts, ajustement et mouvements', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../inventaire.js')]; require('../inventaire.js');
+  const I = global.window.Inventaire, st = [{ id: 1, name: 'Clavier', barcode: '0590123412345', qty: 5, pa: 2000 }, { id: 2, name: 'Souris', barcode: 'ABC', qty: 3, pa: 1000 }, { id: 3, name: 'Câble', qty: 9, pa: 100 }];
+  assert.equal(I.trouver(st, '590123412345').name, 'Clavier'); assert.equal(I.trouver(st, ' ABC ').id, 2); assert.equal(I.trouver(st, 'zzz'), null); assert.equal(I.trouver(st, ''), null);
+  const l = I.lignes(st, { 1: 4, 2: 3 }, false); assert.equal(l.length, 2); assert.equal(l[0].ecart, -1); assert.equal(l[1].ecart, 0); assert.equal(I.valeurEcarts(l, st), -2000);
+  const r = I.appliquer(st, { 1: 4, 2: 5 }, false, '2026-11-07'); assert.equal(r.stock[0].qty, 4); assert.equal(r.stock[1].qty, 5); assert.equal(r.stock[2].qty, 9); assert.equal(r.mouvements.length, 2); assert.equal(r.mouvements[0].type, 'sortie'); assert.equal(r.mouvements[1].type, 'entree');
+  assert.equal(I.appliquer(st, { 1: 4 }, true, '2026-11-07').stock[2].qty, 0);
+});
