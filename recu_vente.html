@@ -20,7 +20,13 @@
 <script src="auth.js?v=firebase1"></script>
 <script src="firebase-config.js?v=sync4"></script>
 <script src="sync.js?v=5"></script><script src="utils.js"></script><script src="print-doc.js?v=1"></script>
-<script src="recu_vente.js"></script><script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+<script src="recu_vente.js"></script><script src="qrcode.min.js"></script><script src="doc-qr.js?v=3"></script><script src="ticket80.js?v=2"></script>
+<script>Ticket80.brancher({generer:'generateSaleReceipt',partager:'shareSaleWhatsApp',type:'Reçu vente',prefixe:'recu-vente',lire:function(){
+ var d=collectSale(),iso=el('receiptDate').value,f=function(n){return Ticket80.F(n)+' F';};
+ return{societe:{nom:'SAMASSA TECHNOLOGIE',tel:'77 29 19 31 / 62 97 06 30',email:'samassatechnologie10@gmail.com',adresse:'Grand Marché de Kayes, près du 1er arrondissement de la police, Rue Soundiata Keita — Kayes, Mali'},titre:'REÇU DE VENTE',numero:el('receiptNumber').value||'RV-001',date:iso?new Date(iso+'T12:00:00').toLocaleDateString('fr-FR'):'',_iso:iso,
+ client:el('clientName').value.trim()||'Client comptoir',tel:el('clientPhone').value,avant:[['Opération',el('operationType').value]],
+ lignes:d.items.map(function(i){return{desc:i.desc,qte:i.qty,pu:i.price,total:i.total};}),total:d.total,mode:el('paymentMethod').value,
+ apres:(d.discount?[['Remise',f(d.discount)]]:[]).concat(d.received?[['Reçu',f(d.received)],['Rendu',f(d.change)]]:[]),note:el('notes').value.trim()};}});</script><script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
 <script>
 /* ── Auto-remplissage depuis le répertoire clients ── */
 (function autoFillFromClients() {
