@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0D1B2A">
+<title>Domaines & abonnements — SAMASSA TECHNOLOGIE</title>
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif;background:#F1F5F9}.wrap{max-width:900px;margin:72px auto 60px;padding:0 14px}
+h1{font-size:22px;margin:0 0 4px}.sub{color:#64748B;font-size:13px;margin-bottom:14px}
+#ab-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.k{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:12px}.k b{display:block;font-size:16px}.k span{font-size:11px;color:#64748B}.k.r b{color:#DC2626}
+.card{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:14px;margin-bottom:14px}.card h2{font-size:15px;margin:0 0 10px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:520px){.g{grid-template-columns:1fr}}
+label{display:block;font-size:12px;color:#475569;margin:6px 0 3px}input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #CBD5E1;border-radius:8px;font-size:14px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}.chips button{border:1px solid #CBD5E1;background:#fff;border-radius:99px;padding:6px 12px;font-size:12px;cursor:pointer}.chips button.on{background:#0877B9;color:#fff;border-color:#0877B9}
+.row{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 0;border-top:1px solid #EEF2F7}.row:first-child{border-top:0}
+.m{font-size:12px;color:#64748B;margin-top:2px}.p{font-size:10px;border-radius:99px;padding:2px 8px;background:#E2E8F0;margin-left:4px}.p.r{background:#FEE2E2;color:#B91C1C}.p.a{background:#FEF3C7;color:#B45309}.p.g{background:#DCFCE7;color:#15803D}
+.act{display:flex;gap:6px}.b{border:0;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:600;cursor:pointer;color:#fff}.b.wa{background:#16A34A}.b.ok{background:#0877B9}.b.g2{background:#E2E8F0;color:#334155}
+.pri{background:#0877B9;color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700;margin-top:10px;cursor:pointer}.vide{color:#64748B;font-size:13px}
+</style>
+<link rel="stylesheet" href="theme-dark-pages.css?v=2">
+<script src="theme.js?v=2"></script>
+</head>
+<body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">🌐 Domaines & abonnements</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<div class="wrap" id="ab-app">
+<h1>Domaines & abonnements</h1><div class="sub">Noms de domaine, hébergements, maintenance et licences de vos clients : ne laissez plus rien expirer, et gardez un revenu régulier.</div>
+<div id="ab-kpi"></div>
+<div class="card"><h2>➕ Ajouter / modifier</h2><div class="g">
+<div><label for="ab-client">Client *</label><input id="ab-client"></div><div><label for="ab-tel">Téléphone WhatsApp</label><input id="ab-tel" inputmode="tel"></div>
+<div><label for="ab-type">Type</label><select id="ab-type"></select></div><div><label for="ab-nom">Nom / domaine *</label><input id="ab-nom" placeholder="ex : monsite.ml"></div>
+<div><label for="ab-exp">Date d'expiration *</label><input type="date" id="ab-exp"></div><div><label for="ab-duree">Durée du renouvellement (mois)</label><input type="number" id="ab-duree" value="12" min="1"></div>
+<div><label for="ab-prix">Prix facturé au client (FCFA)</label><input type="number" id="ab-prix" inputmode="numeric"></div><div><label for="ab-cout">Votre coût d'achat (FCFA)</label><input type="number" id="ab-cout" inputmode="numeric"></div>
+<div><label for="ab-four">Fournisseur / registrar</label><input id="ab-four" placeholder="ex : Namecheap, OVH"></div></div>
+<button class="pri" id="ab-ok">Enregistrer</button></div>
+<div class="card"><h2>📋 Abonnements</h2><div class="chips"><button data-f="tous" class="on">Tous</button><button data-f="expire">Expirés</button><button data-f="bientot">À renouveler</button><button data-f="ok">Actifs</button></div><div id="ab-liste"></div></div>
+</div>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="abonnements.js?v=1"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+<script src="app-moderne.js?v=1" defer></script>
+</body>
+</html>

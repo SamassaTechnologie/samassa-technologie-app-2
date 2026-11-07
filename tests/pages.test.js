@@ -229,3 +229,14 @@ test('marketing: profils par téléphone, points, paliers, segments, message', (
   assert.ok(M.SEGMENTS.vip(p[0])); assert.ok(!M.SEGMENTS.inactifs(p[0]));
   assert.equal(M.rediger('Bonjour {nom} {points} {palier} {offre}', p[0], '-10 %'), 'Bonjour Awa 160 Or -10 %');
 });
+
+test('abonnements: états, renouvellement avec fin de mois, encaissement, stats', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../abonnements.js')]; require('../abonnements.js');
+  const A = global.window.Abonnements;
+  assert.equal(A.ajouterMois('2026-01-31', 1), '2026-02-28'); assert.equal(A.ajouterMois('2026-11-15', 12), '2027-11-15');
+  assert.equal(A.etat({ expiration: '2026-11-01' }, '2026-11-07').cle, 'expire'); assert.equal(A.etat({ expiration: '2026-11-20' }, '2026-11-07').cle, 'bientot'); assert.equal(A.etat({ expiration: '2027-05-01' }, '2026-11-07').cle, 'ok');
+  const a = { type: 'Nom de domaine', nom: 'x.ml', client: 'Awa', expiration: '2026-11-01', prix: 15000, cout: 9000, duree: 12 };
+  const r = A.renouveler(a, 12, '2026-11-07', true); assert.equal(r.abonnement.expiration, '2027-11-07'); assert.equal(r.mouvement.amount, 15000); assert.equal(r.abonnement.historique.length, 1);
+  assert.equal(A.renouveler({ ...a, expiration: '2026-12-01' }, 12, '2026-11-07', false).abonnement.expiration, '2027-12-01');
+  const s = A.stats([a, { ...a, expiration: '2027-05-01', prix: 6000, cout: 1000, duree: 6 }], '2026-11-07'); assert.equal(s.revenuAnnuel, 12000); assert.equal(s.margeAnnuelle, 10000); assert.equal(s.expires, 1);
+});
