@@ -39,14 +39,14 @@
 <div style="text-align:center"><canvas id="sheet" aria-label="Planche"></canvas></div>
 <div class="row" style="margin-top:10px"><button class="b v" id="bImp" type="button" disabled>🖨️ Imprimer la planche</button><button class="b" id="bDl" type="button" disabled>⬇️ Planche (JPG)</button></div>
 <div class="row" style="margin-top:8px"><button class="b g" id="bOne" type="button" disabled>⬇️ 1 photo (JPG)</button><button class="b g" id="bWa" type="button" disabled>💬 Envoyer (WhatsApp…)</button></div>
-<div class="row" style="margin-top:10px;align-items:end"><div class="f" style="margin:0"><label for="prix">Prix du service (FCFA)</label><input id="prix" type="number" min="0" step="50" placeholder="1000"></div><div class="f" style="margin:0"><label for="pm">Paiement</label><select id="pm"><option>Espèces</option><option>Wave</option><option>Orange Money</option><option>Moov Money</option></select></div><button class="b g" id="bCaisse" type="button" disabled style="flex:0 0 auto">💰 Encaisser</button></div>
+<div class="row" style="margin-top:10px;align-items:end"><div class="f" style="margin:0"><label for="prix">Prix du service (FCFA)</label><input id="prix" type="number" min="0" step="50" placeholder="1000"></div><div class="f" style="margin:0"><label for="pm">Paiement</label><select id="pm"><option>Espèces</option><option>Wave</option><option>Orange Money</option><option>Moov Money</option></select></div><button class="b g" id="bCaisse" type="button" disabled style="flex:0 0 auto">🧾 Reçu &amp; encaisser</button></div>
 <div id="msg" class="msg" role="status" aria-live="polite"></div>
 </section>
 </div>
 </main>
 <input id="fCam" type="file" accept="image/*" capture="user" hidden><input id="fGal" type="file" accept="image/*" hidden>
 <script src="esc.js"></script><script src="auth.js?v=firebase1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="utils.js"></script>
-<script src="photo-formats.js?v=2"></script><script src="photo-identite.js?v=1"></script>
+<script src="photo-formats.js?v=2"></script><script src="photo-identite.js?v=2"></script>
 <script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
 <script src="app-moderne.js?v=1" defer></script>
 </body></html>

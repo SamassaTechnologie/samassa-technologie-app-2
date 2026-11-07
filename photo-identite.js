@@ -149,11 +149,9 @@
   $('prix').value = (function () { try { return localStorage.getItem('samassa_photo_prix') || ''; } catch (e) { return ''; } })();
   $('bCaisse').onclick = function () {
     var m = Math.round(+$('prix').value); if (!(m > 0)) { msg('Indiquez le prix du service.', 'err'); return; }
-    try {
-      localStorage.setItem('samassa_photo_prix', String(m)); var l = JSON.parse(localStorage.getItem('samassa_mouvements') || '[]'), d = new Date().toISOString();
-      l.push({ id: Date.now(), date: d.slice(0, 10), type: 'entree', desc: 'Photos d\'identité — ' + fmt.pays + ' ' + fmt.doc, amount: m, pm: $('pm').value, cat: 'Vente service', auto: true, timestamp: d });
-      localStorage.setItem('samassa_mouvements', JSON.stringify(l)); msg('✓ ' + m.toLocaleString('fr-FR') + ' FCFA ajoutés à la caisse.', 'ok');
-    } catch (e) { msg('Enregistrement impossible : ' + e.message, 'err'); }
+    try { localStorage.setItem('samassa_photo_prix', String(m)); } catch (e) {}
+    var n = Math.max(1, Math.min(+$('nb').value || disposition().n, disposition().n));
+    location.href = 'recu_photo.html?fmt=' + fmt.id + '&nb=' + n + '&prix=' + m + '&pm=' + encodeURIComponent($('pm').value);
   };
   remplirFormats(); majInfo(); maj();
 })();

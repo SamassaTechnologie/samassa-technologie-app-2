@@ -54,7 +54,7 @@
     var G = window.HIST_GROUPES = {
       'grp:ventes': ['samassa_recus', 'samassa_recus_vente', 'samassa_factures', 'samassa_factures_mat', 'samassa_devis'],
       'grp:atelier': ['samassa_bons_reparation', 'samassa_interventions'],
-      'grp:cyber': ['samassa_recus_cyber', 'samassa_factures_cyber'],
+      'grp:cyber': ['samassa_recus_cyber', 'samassa_factures_cyber', 'samassa_recus_photo'],
       'grp:autres': ['samassa_docs_admin', 'samassa_clients']
     };
     var L = [['', '📂 Tous'], ['grp:ventes', '💰 Ventes'], ['grp:atelier', '🔧 Atelier'], ['grp:cyber', '☕ Cyber'], ['grp:autres', '📝 Autres']];

@@ -22,6 +22,7 @@ const SYNC_KEYS = [
   'samassa_mouvements',
   'samassa_stock',
   'samassa_recus_cyber',
+  'samassa_recus_photo',
   'samassa_factures_cyber',
   'samassa_retraits',
   'samassa_docs_admin',

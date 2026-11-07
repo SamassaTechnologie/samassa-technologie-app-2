@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reçu Photos d'identité — SAMASSA TECHNOLOGIE</title>
+<meta name="theme-color" content="#0D1B2A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Samassa Pro">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512x512.png">
+<link rel="apple-touch-icon" href="icon-512x512.png">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
+<style>
+.panel-header { background: linear-gradient(135deg,#0A1628,#0E5F8F); }
+.panel-header p { color: #BAE0F5; }
+.add-item-btn { background: #EFF6FF; border: 1.5px dashed #0877B9; color: #0877B9; }
+.btn-generate { background: #0877B9; color: white; }
+.btn-generate:hover { background: #066396; }
+.section-label.photo { color: #0877B9; border-bottom-color: #DBEAFE; }
+.doc-z { min-height: 1px; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="photo-identite.html" class="back-link">← Photos</a>
+  <span class="topbar-title">🪪 Reçu Photos d'identité</span>
+  <img src="logo.png" alt="Logo" class="topbar-logo">
+</div>
+
+<div class="layout">
+  <div class="form-panel">
+    <div class="panel-header">
+      <h2>🪪 Reçu Photos d'identité</h2>
+      <p>Ticket 80 mm avec QR de vérification</p>
+    </div>
+    <div class="form-body">
+      <div class="section-label photo">Référence</div>
+      <div class="form-grid">
+        <div class="form-group"><label>N° de reçu</label><input type="text" id="receiptNumber"></div>
+        <div class="form-group"><label>Date</label><input type="date" id="receiptDate"></div>
+      </div>
+
+      <div class="section-label photo">Client</div>
+      <div class="form-grid">
+        <div class="form-group"><label>Nom</label><input type="text" id="clientLastName" placeholder="Nom du client"></div>
+        <div class="form-group"><label>Prénom</label><input type="text" id="clientFirstName" placeholder="Prénom"></div>
+        <div class="form-group span2"><label>Téléphone client (optionnel)</label><input type="text" id="clientPhone" placeholder="+223 XX XX XX XX" inputmode="tel"></div>
+      </div>
+
+      <div class="section-label photo">Prestation</div>
+      <div class="form-group" style="margin-bottom:8px"><label>Ajouter un format</label><select id="fmtSel"><option value="">— Choisir un pays / document —</option></select></div>
+      <div id="itemsContainer"></div>
+      <button class="add-item-btn btn" type="button" onclick="addItem()">+ Ajouter une ligne</button>
+      <div class="form-group" style="margin-top:10px"><label>Montant total</label><input type="text" id="totalAmount" readonly value="0 FCFA" style="font-weight:700;font-size:15px;background:#EFF6FF;border-color:#BFDBFE;color:#0A1628"></div>
+
+      <div class="section-label photo" style="margin-top:14px">Mode de paiement</div>
+      <div class="form-group"><select id="paymentMethod"><option>Espèces</option><option>Wave</option><option>Orange Money</option><option>Moov Money</option></select></div>
+
+      <div class="section-label photo" style="margin-top:14px">Entreprise</div>
+      <div class="form-grid">
+        <div class="form-group span2"><label>Nom</label><input type="text" id="companyName" value="SAMASSA TECHNOLOGIE"></div>
+        <div class="form-group"><label>Téléphone</label><input type="text" id="companyPhone" value="77291931 / 62970630"></div>
+        <div class="form-group"><label>Email</label><input type="text" id="companyEmail" value="samassatechnologie10@gmail.com"></div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-generate" onclick="generateReceipt()">⚙️ Générer</button>
+      <button class="btn btn-print" onclick="printDoc()">🖨️ Imprimer</button>
+      <button class="btn btn-save" onclick="saveDoc()">💾 Enregistrer + Caisse</button>
+      <button class="btn btn-wa" onclick="shareWhatsApp()">💬 WhatsApp</button>
+    </div>
+  </div>
+
+  <div class="doc-panel">
+    <div class="doc-placeholder" id="placeholder">
+      <div class="ph-icon">🪪</div>
+      <p>Remplissez le formulaire<br>et cliquez sur <strong>Générer</strong></p>
+    </div>
+    <div class="doc-inner" id="docInner" style="display:none"><div class="doc-z"></div></div>
+  </div>
+</div>
+
+<script src="esc.js"></script>
+<script src="auth.js?v=firebase1"></script>
+<script src="firebase-config.js"></script>
+<script src="sync.js?v=5"></script>
+<script src="utils.js"></script>
+<script src="print-doc.js?v=1"></script>
+<script src="photo-formats.js?v=2"></script>
+<script src="recu_photo.js?v=1"></script>
+<script src="qrcode.min.js"></script>
+<script src="doc-qr.js?v=3"></script>
+<script src="ticket80.js?v=3"></script>
+<script>Ticket80.brancher({generer:'generateReceipt',partager:'shareWhatsApp',type:'Reçu photo',prefixe:'recu-photo',lire:function(){
+ var v=ST.v,it=lireLignes();
+ return{societe:{nom:v('companyName'),tel:v('companyPhone'),email:v('companyEmail'),adresse:'Grand Marché de Kayes, près du 1er arrondissement de la police, Rue Soundiata Keita — Kayes, Mali'},titre:'REÇU PHOTOS D\'IDENTITÉ',numero:v('receiptNumber'),date:ST.fmtDate(v('receiptDate')),_iso:v('receiptDate'),
+ client:(v('clientFirstName')+' '+v('clientLastName')).trim(),tel:v('clientPhone'),lignes:it.lignes,total:it.total,mode:v('paymentMethod')};}});</script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+<script src="app-moderne.js?v=1" defer></script>
+</body>
+</html>

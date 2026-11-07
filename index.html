@@ -562,6 +562,10 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
       <span class="sb-item-icon">🪪</span>
       <span class="sb-item-label">Photos d'identité</span>
     </a>
+    <a href="recu_photo.html" class="sb-item">
+      <span class="sb-item-icon">🧾</span>
+      <span class="sb-item-label">Reçu Photos ID</span>
+    </a>
     <a href="cyber-docs.html" class="sb-item">
       <span class="sb-item-icon">🖥️</span>
       <span class="sb-item-label">Cyber &amp; Documents</span>
@@ -795,6 +799,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
     <div class="qa-grid cat-body">
       <a href="postes.html" class="qa" data-k="postes cyber sessions postes temps impression"><div class="qa-icon" style="background:#F0F9FF">🖥️</div><div class="qa-label">Postes cyber</div></a>
       <a href="photo-identite.html" class="qa" data-k="photos d'identité photo passeport visa format pays planche"><div class="qa-icon" style="background:#EFF6FF">🪪</div><div class="qa-label">Photos d'identité</div></a>
+      <a href="recu_photo.html" class="qa" data-k="reçu photos identité ticket"><div class="qa-icon" style="background:#EFF6FF">🧾</div><div class="qa-label">Reçu Photos ID</div></a>
       <a href="cyber-docs.html" class="qa" data-k="cyber & documents démarches documents"><div class="qa-icon" style="background:#EDE9FE">📁</div><div class="qa-label">Cyber &amp; Documents</div></a>
     </div>
   </section>
@@ -1006,6 +1011,7 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,13
           <option value="samassa_recus_vente">Reçus Vente 🛒</option>
           <option value="samassa_bons_reparation">Bons Réparation 🔧</option>
           <option value="samassa_recus_cyber">Reçus Cyber</option>
+          <option value="samassa_recus_photo">Reçus Photos ID 🪪</option>
           <option value="samassa_factures_cyber">Factures Cyber</option>
           <option value="samassa_docs_admin">Documents Admin 📝</option>
         </select>
@@ -1216,7 +1222,7 @@ function buildActivity() {
     {k:'samassa_bons_reparation',i:'🔧',l:'Bon Réparation',c:'#7C3AED'},
     {k:'samassa_interventions',i:'🔧',l:'Intervention',c:'#7C3AED'},
     {k:'samassa_devis',i:'📋',l:'Devis',c:'#D97706'},
-    {k:'samassa_recus_cyber',i:'🖥️',l:'Reçu Cyber',c:'#16A34A'},
+    {k:'samassa_recus_cyber',i:'🖥️',l:'Reçu Cyber',c:'#16A34A'},{k:'samassa_recus_photo',i:'🪪',l:'Reçu Photos ID',c:'#0877B9'},
     {k:'samassa_factures_cyber',i:'🖥️',l:'Facture Cyber',c:'#4338CA'},
   ];
   let all=[]; types.forEach(t=>getData(t.k).forEach(d=>all.push({...d,_t:t})));
@@ -1455,7 +1461,7 @@ function exportRetraits(){const list=getData('samassa_retraits');if(!list.length
 /* ══ HISTORIQUE ══ */
 function renderHistory(){
   const typeFilter=$('h-type')?.value||'',search=($('h-search')?.value||'').toLowerCase();
-  const types=[{key:'samassa_factures',cls:'di-f',icon:'📄',label:'Facture',url:'facture.html'},{key:'samassa_factures_mat',cls:'di-f',icon:'🖥️',label:'Facture Matériel',url:'facture_materiel.html'},{key:'samassa_recus',cls:'di-r',icon:'🧾',label:'Reçu NINA',url:'recu.html'},{key:'samassa_recus_vente',cls:'di-r',icon:'🧾',label:'Reçu Vente',url:'recu_vente.html'},{key:'samassa_bons_reparation',cls:'di-i',icon:'🔧',label:'Bon Réparation',url:'bon_reparation.html'},{key:'samassa_devis',cls:'di-d',icon:'📋',label:'Devis',url:'devis.html'},{key:'samassa_interventions',cls:'di-i',icon:'🔧',label:'Intervention',url:'intervention.html'},{key:'samassa_recus_cyber',cls:'di-r',icon:'🖥️',label:'Reçu Cyber',url:'recu_cyber.html'},{key:'samassa_factures_cyber',cls:'di-f',icon:'🖥️',label:'Facture Cyber',url:'facture_cyber.html'},{key:'samassa_docs_admin',cls:'di-d',icon:'📝',label:'Doc. Admin',url:'redacteur-ia-mali/index.html'},{key:'samassa_clients',cls:'di-f',icon:'👥',label:'Client',url:'clients.html'}];
+  const types=[{key:'samassa_factures',cls:'di-f',icon:'📄',label:'Facture',url:'facture.html'},{key:'samassa_factures_mat',cls:'di-f',icon:'🖥️',label:'Facture Matériel',url:'facture_materiel.html'},{key:'samassa_recus',cls:'di-r',icon:'🧾',label:'Reçu NINA',url:'recu.html'},{key:'samassa_recus_vente',cls:'di-r',icon:'🧾',label:'Reçu Vente',url:'recu_vente.html'},{key:'samassa_bons_reparation',cls:'di-i',icon:'🔧',label:'Bon Réparation',url:'bon_reparation.html'},{key:'samassa_devis',cls:'di-d',icon:'📋',label:'Devis',url:'devis.html'},{key:'samassa_interventions',cls:'di-i',icon:'🔧',label:'Intervention',url:'intervention.html'},{key:'samassa_recus_cyber',cls:'di-r',icon:'🖥️',label:'Reçu Cyber',url:'recu_cyber.html'},{key:'samassa_recus_photo',cls:'di-r',icon:'🪪',label:'Reçu Photos ID',url:'recu_photo.html'},{key:'samassa_factures_cyber',cls:'di-f',icon:'🖥️',label:'Facture Cyber',url:'facture_cyber.html'},{key:'samassa_docs_admin',cls:'di-d',icon:'📝',label:'Doc. Admin',url:'redacteur-ia-mali/index.html'},{key:'samassa_clients',cls:'di-f',icon:'👥',label:'Client',url:'clients.html'}];
   let all=[];
   (typeFilter?types.filter(t=>(window.HIST_GROUPES&&window.HIST_GROUPES[typeFilter])?window.HIST_GROUPES[typeFilter].includes(t.key):t.key===typeFilter):types).forEach(t=>getData(t.key).forEach(d=>all.push({...d,_t:t})));
   if(search)all=all.filter(d=>(d.client||'').toLowerCase().includes(search)||(d.number||'').toLowerCase().includes(search));
@@ -1466,12 +1472,12 @@ function renderHistory(){
   const pmI={Wave:'🌊','Orange Money':'🟠','Moov Money':'🔵',Espèces:'💵'};
   c.innerHTML=all.map((d,i)=>{
     const stCls=d.statut==='Payé'?'sb-p':d.statut==='Impayé'?'sb-i':'sb-a';
-    const isRec=d._t.key==='samassa_recus'||d._t.key==='samassa_recus_cyber';
+    const isRec=d._t.key==='samassa_recus'||d._t.key==='samassa_recus_cyber'||d._t.key==='samassa_recus_photo';
     return `<div class="doc-item"><div class="doc-ico ${d._t.cls}">${d._t.icon}</div><div style="flex:1;min-width:0"><div style="font-weight:700;font-size:13px;color:var(--text)">${d._t.label} N° ${d.number||'—'}${d.fromInt?`<span style="font-size:10px;background:#EDE9FE;color:#6D28D9;padding:1px 6px;border-radius:10px;margin-left:5px">🔧 ${d.fromInt}</span>`:''}</div><div style="font-size:12px;color:var(--text2)">${d.client||'—'}${isRec&&d.phone?`<span style="margin-left:7px;color:var(--blue);font-size:11px;font-weight:600">📞 ${d.phone}</span>`:''}</div>${d.mode?`<div style="font-size:11px;color:var(--text3);margin-top:1px">${pmI[d.mode]||''} ${d.mode}</div>`:''}</div><div style="text-align:right;flex-shrink:0"><div style="font-weight:700;font-size:13px;color:var(--text)">${d.total?fmtNum(d.total)+' F':'—'}</div><div style="font-size:11px;color:var(--text3)">${d.date||''}</div>${d.statut?`<span class="sb ${stCls}">${d.statut}</span>`:''}<div style="display:flex;gap:4px;margin-top:5px;justify-content:flex-end;flex-wrap:wrap">${isRec?`<button class="hb hb-d" onclick="showDocDetail(${i})">👁 Détails</button>`:''}<a href="${d._t.url}" class="hb hb-p">🖨️</a></div></div></div>`;
   }).join('');
 }
 function showDocDetail(idx){const d=window._histAll[idx];if(!d)return;const pmI={Wave:'🌊','Orange Money':'🟠','Moov Money':'🔵',Espèces:'💵'};const svc=(d.services||[]).map(s=>`<tr><td style="padding:7px 12px;border-bottom:1px solid #F0F5FA;font-size:13px">${s.desc}</td><td style="padding:7px;text-align:center;border-bottom:1px solid #F0F5FA;font-size:13px">${s.qty}</td><td style="padding:7px 12px;text-align:right;border-bottom:1px solid #F0F5FA;font-size:13px;font-weight:600">${fmtNum(s.price)} F</td></tr>`).join('')||`<tr><td colspan="3" style="padding:12px;text-align:center;color:#8099B0">—</td></tr>`;const m=document.createElement('div');m.id='hist-modal';m.style.cssText='position:fixed;inset:0;background:rgba(13,27,42,.65);z-index:9001;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px)';m.innerHTML=`<div class="modal-sh"><div class="m-head"><div class="m-title">${d._t.icon} ${d._t.label} N° ${d.number||'—'}</div><button class="m-close" onclick="document.getElementById('hist-modal').remove()">✕</button></div><div class="m-body"><div style="background:#F0F5FA;border-radius:10px;padding:13px;margin-bottom:13px"><div style="font-size:10px;font-weight:700;text-transform:uppercase;color:#8099B0;margin-bottom:7px">Client</div><div style="font-size:15px;font-weight:800;color:#1A2D44">${d.client||'—'}</div>${d.phone?`<div style="font-size:13px;color:#0088CC;margin-top:3px">📞 ${d.phone}</div>`:''} ${d.nina?`<div style="font-size:12px;color:#4A6080;margin-top:2px">NINA : ${d.nina}</div>`:''}<div style="font-size:12px;color:#4A6080;margin-top:3px">📅 ${d.date||'—'}</div></div><table style="width:100%;border-collapse:collapse;margin-bottom:13px;border-radius:8px;overflow:hidden"><thead><tr style="background:#0D1B2A"><th style="padding:8px 12px;color:white;font-size:11px;text-align:left">Service</th><th style="padding:8px;color:white;font-size:11px;text-align:center">Qté</th><th style="padding:8px 12px;color:white;font-size:11px;text-align:right">Montant</th></tr></thead><tbody>${svc}</tbody></table><div style="background:#0D1B2A;border-radius:10px;padding:11px 15px;display:flex;justify-content:space-between;align-items:center;margin-bottom:11px"><span style="color:#93B8D4;font-size:13px;font-weight:700">TOTAL</span><span style="color:white;font-size:17px;font-weight:800">${fmtNum(d.total||0)} FCFA</span></div>${d.mode?`<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#F0FDF4;border:1.5px solid #DCFCE7;border-radius:10px"><span style="font-size:20px">${pmI[d.mode]||'💵'}</span><div><div style="font-size:13px;font-weight:700">${d.mode}</div><div style="font-size:11px;color:#4A6080">Paiement confirmé ✅</div></div></div>`:''}</div></div>`;document.body.appendChild(m);m.addEventListener('click',e=>{if(e.target===m)m.remove();});}
-function clearHistory(){if(!confirm('Effacer tout l\'historique ?'))return;['samassa_factures','samassa_factures_mat','samassa_recus','samassa_recus_vente','samassa_bons_reparation','samassa_devis','samassa_interventions','samassa_recus_cyber','samassa_factures_cyber','samassa_docs_admin'].forEach(k=>localStorage.removeItem(k));renderHistory();loadStats();toast('Historique effacé.','info');}
+function clearHistory(){if(!confirm('Effacer tout l\'historique ?'))return;['samassa_factures','samassa_factures_mat','samassa_recus','samassa_recus_photo','samassa_recus_vente','samassa_bons_reparation','samassa_devis','samassa_interventions','samassa_recus_cyber','samassa_factures_cyber','samassa_docs_admin'].forEach(k=>localStorage.removeItem(k));renderHistory();loadStats();toast('Historique effacé.','info');}
 
 /* ══ SEARCH ══ */
 function searchDocs(){
