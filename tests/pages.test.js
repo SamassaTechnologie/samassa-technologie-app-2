@@ -187,3 +187,13 @@ test('ticket80 : montant en lettres', () => {
   const L = window.Ticket80.enLettres, cas = { 0: 'zéro', 21: 'vingt et un', 71: 'soixante et onze', 80: 'quatre-vingts', 81: 'quatre-vingt-un', 91: 'quatre-vingt-onze', 200: 'deux cents', 201: 'deux cent un', 1000: 'mille', 2000: 'deux mille', 10000: 'dix mille', 80000: 'quatre-vingt mille', 1500: 'mille cinq cents', 24000: 'vingt-quatre mille', 1000000: 'un million', 2000000: 'deux millions', 1200000: 'un million deux cent mille', 180000: 'cent quatre-vingt mille' };
   Object.keys(cas).forEach(k => assert.equal(L(+k), cas[k], k));
 });
+
+test('photo-formats : données et grille de planche', () => {
+  const P = require('../photo-formats.js');
+  assert.ok(P.FORMATS.length >= 60);
+  P.FORMATS.forEach(f => { assert.ok(f.w > 0 && f.h > 0 && f.teteMin < f.teteMax && f.teteMax < f.h, f.pays + ' ' + f.doc); });
+  assert.ok(P.FORMATS.some(f => f.pays === 'Mali') && P.FORMATS.some(f => f.pays === 'France' && f.w === 35 && f.h === 45));
+  assert.equal(P.grille(100, 150, 35, 45, 4, 2).n, 6);
+  assert.ok(P.grille(210, 297, 35, 45, 4, 2).n >= 28);
+  assert.equal(P.grille(100, 150, 200, 200, 4, 2).n, 0);
+});

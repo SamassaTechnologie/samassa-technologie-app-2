@@ -1,0 +1,51 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Photos d'identité — SAMASSA TECHNOLOGIE</title><meta name="theme-color" content="#0A1628"><link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+.wrap{max-width:980px;margin:72px auto 40px;padding:0 14px}.hero{background:linear-gradient(135deg,#0A1628,#0E5F8F,#0877B9);border-radius:16px;padding:16px 20px;color:#fff;margin-bottom:12px}.hero h1{margin:0 0 4px;font-size:19px}.hero p{margin:0;color:#BAE0F5;font-size:12px}
+.grid{display:grid;grid-template-columns:1fr;gap:14px}@media(min-width:820px){.grid{grid-template-columns:340px 1fr}}
+.card{background:#fff;border:1px solid #D7E3EE;border-radius:14px;padding:14px}.card h2{font-size:13px;margin:0 0 10px;color:#0A1628;text-transform:uppercase;letter-spacing:.05em}
+.f{margin-bottom:10px}.f label{display:block;font-size:11px;font-weight:700;color:#475569;margin-bottom:3px}.f input[type=text],.f input[type=number],.f select{width:100%;box-sizing:border-box;padding:9px;border:1.5px solid #D7E3EE;border-radius:9px;font:inherit;font-size:14px;background:#fff}.f input[type=range]{width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1;min-width:0}.b{border:0;border-radius:10px;padding:10px 12px;font:inherit;font-weight:800;font-size:13px;cursor:pointer;background:#0877B9;color:#fff}.b.g{background:#EEF2F7;color:#0A1628}.b.v{background:#16A34A}.b:disabled{opacity:.45;cursor:default}
+#zone{position:relative;width:100%;max-width:320px;margin:0 auto;touch-action:none;user-select:none;background:#E2E8F0;border-radius:6px;overflow:hidden}#zone canvas{display:block;width:100%;height:auto}#guide{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.info{font-size:12px;line-height:1.5;color:#334155;background:#F1F5F9;border-radius:10px;padding:10px;margin-bottom:10px}.info.w{background:#FEF3C7;color:#78350F}.info.ok{background:#ECFDF5;color:#065F46}
+#sheet{max-width:100%;border:1px solid #CBD5E1;border-radius:6px;background:#fff}.msg{font-size:12px;margin-top:8px;min-height:16px}
+</style></head><body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">🪪 Photos d'identité</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<main class="wrap">
+<div class="hero"><h1>🪪 Photos d'identité — tous les formats</h1><p>Choisissez le pays et le document, cadrez la photo, imprimez la planche. Tout se passe sur votre appareil : la photo n'est envoyée nulle part.</p></div>
+<div class="grid">
+<section class="card">
+<h2>1 · Photo et format</h2>
+<div class="row"><button class="b" id="bPhoto" type="button">📷 Prendre une photo</button><button class="b g" id="bGalerie" type="button">🖼️ Galerie</button></div>
+<div class="f" style="margin-top:10px"><label for="rech">Pays ou document</label><input id="rech" type="text" placeholder="Ex. : Mali, France, visa, 4x4…" autocomplete="off"></div>
+<div class="f"><select id="fmt" size="1" aria-label="Format"></select></div>
+<div id="infoFmt" class="info"></div>
+<h2>2 · Cadrage</h2>
+<div class="f"><label for="zoom">Zoom</label><input id="zoom" type="range" min="1" max="4" step="0.01" value="1"></div>
+<div class="f"><label for="rot">Rotation</label><input id="rot" type="range" min="-15" max="15" step="0.1" value="0"></div>
+<div class="row"><button class="b g" id="bAuto" type="button">🎯 Centrer sur le visage</button><button class="b g" id="bReset" type="button">↺ Réinitialiser</button></div>
+<h2 style="margin-top:14px">3 · Retouche</h2>
+<div class="f"><label for="lum">Luminosité</label><input id="lum" type="range" min="-40" max="40" step="1" value="0"></div>
+<div class="f"><label for="con">Contraste</label><input id="con" type="range" min="0.8" max="1.4" step="0.01" value="1"></div>
+<div class="f"><label><input id="fondOn" type="checkbox"> Rendre le fond blanc (fond uni et clair)</label><input id="fondTol" type="range" min="20" max="120" step="1" value="55" aria-label="Intensité du fond"></div>
+</section>
+<section class="card">
+<h2>Aperçu</h2>
+<div id="zone"><canvas id="cv" aria-label="Aperçu de la photo"></canvas><svg id="guide" xmlns="http://www.w3.org/2000/svg"></svg></div>
+<div style="text-align:center;margin:8px 0"><label style="font-size:12px"><input id="guideOn" type="checkbox" checked> Afficher le guide de la tête (non imprimé)</label></div>
+<p class="info" style="margin-top:6px">Glissez la photo pour la déplacer ; pincez ou utilisez le zoom pour l'agrandir. La tête (du menton au sommet du crâne) doit remplir l'ovale. Visage de face, expression neutre, yeux ouverts, sans ombre ni reflet.</p>
+<h2>4 · Planche d'impression</h2>
+<div class="row"><div class="f"><label for="feuille">Feuille</label><select id="feuille"></select></div><div class="f"><label for="nb">Nombre de photos</label><input id="nb" type="number" min="1" max="60" value="6"></div></div>
+<div id="infoGrille" class="info"></div>
+<div style="text-align:center"><canvas id="sheet" aria-label="Planche"></canvas></div>
+<div class="row" style="margin-top:10px"><button class="b v" id="bImp" type="button" disabled>🖨️ Imprimer la planche</button><button class="b" id="bDl" type="button" disabled>⬇️ Planche (JPG)</button></div>
+<div class="row" style="margin-top:8px"><button class="b g" id="bOne" type="button" disabled>⬇️ 1 photo (JPG)</button><button class="b g" id="bWa" type="button" disabled>💬 Envoyer (WhatsApp…)</button></div>
+<div class="row" style="margin-top:10px;align-items:end"><div class="f" style="margin:0"><label for="prix">Prix du service (FCFA)</label><input id="prix" type="number" min="0" step="50" placeholder="1000"></div><div class="f" style="margin:0"><label for="pm">Paiement</label><select id="pm"><option>Espèces</option><option>Wave</option><option>Orange Money</option><option>Moov Money</option></select></div><button class="b g" id="bCaisse" type="button" disabled style="flex:0 0 auto">💰 Encaisser</button></div>
+<div id="msg" class="msg" role="status" aria-live="polite"></div>
+</section>
+</div>
+</main>
+<input id="fCam" type="file" accept="image/*" capture="user" hidden><input id="fGal" type="file" accept="image/*" hidden>
+<script src="esc.js"></script><script src="auth.js?v=firebase1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="utils.js"></script>
+<script src="photo-formats.js?v=2"></script><script src="photo-identite.js?v=1"></script>
+<script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+</body></html>
