@@ -287,3 +287,11 @@ test('projets: avancement, soldes, acompte plafonné relié à la caisse, retard
   assert.equal(P.ajouterPaiement(r2.projet, 10, '2026-11-07').mouvement, null);
   const s = P.stats([p, r2.projet], '2026-11-07'); assert.equal(s.encaisse, 100000); assert.equal(s.aEncaisser, 100000);
 });
+
+test('rappels du jour: agrégation de toutes les sources', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../rappels-jour.js')]; require('../rappels-jour.js');
+  const R = global.window.RappelsJour;
+  assert.deepEqual(R.compter({}, '2026-11-07'), []);
+  const t = R.compter({ creances: [{ amount: 5000, due: '2026-11-01', paid: false }, { amount: 100, due: '2026-12-01' }], abonnements: [{ expiration: '2026-11-20' }, { expiration: '2027-06-01' }], parc: [{ achat: '2025-11-20', garantieMois: 12 }], prospects: [{ etape: 'Nouveau', relance: '2026-11-07' }, { etape: 'Gagné', relance: '2026-01-01' }], projets: [{ echeance: '2026-11-01', etapes: [{ fait: false }] }], stock: [{ qty: 1, min: 2 }], recus: [{ rdvDate: '2026-11-07', retrieved: false }] }, '2026-11-07');
+  assert.deepEqual(t.map(x => x.cle), ['creances', 'abonnements', 'garanties', 'prospects', 'projets', 'stock', 'rdv']); assert.ok(t.every(x => x.n === 1));
+});

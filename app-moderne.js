@@ -28,7 +28,7 @@
   /* 3. Pastille sur l'icône de l'application (RDV arrivés + articles à réapprovisionner) */
   function liste(k) { try { var v = JSON.parse(localStorage.getItem(k) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
   function pastille() {
-    if (!('setAppBadge' in navigator)) return;
+    if (!('setAppBadge' in navigator) || window.RappelsJour && document.getElementById('rj-carte') !== null) return;
     var auj = new Date().toISOString().slice(0, 10), rdv = liste('samassa_recus').filter(function (r) { return r && !r.retrieved && r.rdvDate && String(r.rdvDate).slice(0, 10) <= auj; }).length;
     var bas = liste('samassa_stock_v2').filter(function (a) { return a && Number(a.min) > 0 && Number(a.qty) <= Number(a.min); }).length, n = rdv + bas;
     try { (n ? navigator.setAppBadge(n) : navigator.clearAppBadge()).catch(function () {}); } catch (e) {}
