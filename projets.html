@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0D1B2A">
+<title>Projets — SAMASSA TECHNOLOGIE</title>
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif;background:#F1F5F9}.wrap{max-width:900px;margin:72px auto 60px;padding:0 14px}
+h1{font-size:22px;margin:0 0 4px}.sub{color:#64748B;font-size:13px;margin-bottom:14px}
+#pj-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.k{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:12px}.k b{display:block;font-size:17px}.k span{font-size:11px;color:#64748B}.k.r b{color:#DC2626}
+.card{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:14px;margin-bottom:14px}.card h2{font-size:15px;margin:0 0 10px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:520px){.g{grid-template-columns:1fr}}
+label{display:block;font-size:12px;color:#475569;margin:6px 0 3px}input[type=text],input[type=number],input[type=date],input[type=tel],select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #CBD5E1;border-radius:8px;font-size:14px}
+.pj{border:1px solid #E2E8F0;border-radius:12px;padding:12px;margin-top:10px;background:#fff}.top{display:flex;justify-content:space-between;gap:8px}
+.bar{height:8px;background:#E2E8F0;border-radius:99px;margin:8px 0;overflow:hidden}.bar i{display:block;height:100%;background:#16A34A}
+.et{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px;margin:6px 0}.et label{margin:0;display:flex;gap:6px;align-items:center;font-size:12px;color:inherit}
+.m{font-size:12px;color:#64748B;margin-top:2px}.p{font-size:10px;border-radius:99px;padding:2px 8px;background:#E2E8F0;margin-left:4px}.p.r{background:#FEE2E2;color:#B91C1C}
+.act{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.b{border:0;border-radius:8px;padding:9px 11px;font-size:12px;font-weight:600;cursor:pointer;color:#fff}.b.wa{background:#16A34A}.b.ok{background:#0877B9}.b.g2{background:#E2E8F0;color:#334155}
+.pri{background:#0877B9;color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700;margin-top:10px;cursor:pointer}.vide{color:#64748B;font-size:13px}
+</style>
+<link rel="stylesheet" href="theme-dark-pages.css?v=2">
+<script src="theme.js?v=2"></script>
+</head>
+<body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">🚀 Projets</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<div class="wrap" id="pj-app">
+<h1>Projets web & informatique</h1><div class="sub">Sites, boutiques, applications, installations : étapes, avancement, acomptes et soldes. Chaque acompte est ajouté à la caisse.</div>
+<div id="pj-kpi"></div>
+<div class="card"><h2>➕ Nouveau projet</h2><div class="g">
+<div><label for="pj-client">Client *</label><input type="text" id="pj-client"></div><div><label for="pj-tel">Téléphone WhatsApp</label><input type="tel" id="pj-tel"></div>
+<div><label for="pj-titre">Titre *</label><input type="text" id="pj-titre" placeholder="ex : Site de la boutique Awa"></div><div><label for="pj-type">Type</label><select id="pj-type"></select></div>
+<div><label for="pj-prix">Prix convenu (FCFA)</label><input type="number" id="pj-prix" inputmode="numeric"></div><div><label for="pj-acompte">Acompte reçu (FCFA)</label><input type="number" id="pj-acompte" inputmode="numeric"></div>
+<div><label for="pj-ech">Date de livraison</label><input type="date" id="pj-ech"></div></div>
+<button class="pri" id="pj-ok">Créer le projet</button></div>
+<div class="card"><h2>📋 Projets</h2><div id="pj-liste"></div></div>
+</div>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="projets.js?v=1"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+<script src="app-moderne.js?v=1" defer></script>
+</body>
+</html>

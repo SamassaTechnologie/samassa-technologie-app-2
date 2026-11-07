@@ -275,3 +275,15 @@ test('parc: garantie (états, fin de mois), stats, recherche', () => {
   const s = P.stats(l, '2026-11-07'); assert.equal(s.total, 2); assert.equal(s.sous, 1); assert.equal(s.pannes, 1); assert.equal(s.coutPannes, 5000);
   assert.equal(P.chercher(l, 'abc1').length, 1); assert.equal(P.chercher(l, '').length, 2);
 });
+
+test('projets: avancement, soldes, acompte plafonné relié à la caisse, retard', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../projets.js')]; require('../projets.js');
+  const P = global.window.Projets;
+  let p = { client: 'Awa', titre: 'Site', prix: 100000, echeance: '2026-11-01', etapes: P.ETAPES.map(n => ({ nom: n, fait: false })), paiements: [] };
+  assert.equal(P.progression(p), 0); assert.ok(P.enRetard(p, '2026-11-07'));
+  p = P.basculer(p, 0, '2026-11-07'); p = P.basculer(p, 1, '2026-11-07'); assert.equal(P.progression(p), 29);
+  const r = P.ajouterPaiement(p, 30000, '2026-11-07', 'Acompte'); assert.equal(P.solde(r.projet), 70000); assert.equal(r.mouvement.amount, 30000);
+  const r2 = P.ajouterPaiement(r.projet, 999999, '2026-11-07'); assert.equal(r2.mouvement.amount, 70000); assert.equal(P.solde(r2.projet), 0);
+  assert.equal(P.ajouterPaiement(r2.projet, 10, '2026-11-07').mouvement, null);
+  const s = P.stats([p, r2.projet], '2026-11-07'); assert.equal(s.encaisse, 100000); assert.equal(s.aEncaisser, 100000);
+});
