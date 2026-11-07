@@ -77,9 +77,9 @@
   
   /* ===== Intégration : Ticket80.brancher({generer, partager, type, lire}) =====
      lire() renvoie les données du modèle + _iso (date AAAA-MM-JJ) ; generer/partager = noms des fonctions globales de la page */
-  var css = document.createElement('style'); var injecte = false;
+  var injecte = false;
   function styles() {
-    if (injecte || typeof document === 'undefined') return; injecte = true;
+    if (injecte || typeof document === 'undefined') return; injecte = true; var css = document.createElement('style');
     css.textContent = '.doc-inner.is-t80>.doc-z,.doc-inner.is-t80>.watermark{display:none!important}.doc-inner.is-t80{background:transparent;padding:10px 0}' +
       '.t80{width:302px;max-width:100%;margin:0 auto;background:#fff;color:#000;font:13px/1.45 "Courier New",Courier,monospace;padding:16px 14px;box-shadow:0 2px 14px rgba(0,0,0,.18);box-sizing:border-box}' +
       '.t80 .t-c{text-align:center;word-break:break-word}.t80 .t-b{font-weight:700}.t80 .t-s{font-size:11px}.t80 .t-l{word-break:break-word}.t80 .t-r{text-align:right;margin-bottom:3px}' +
