@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0D1B2A">
+<title>Catalogue en ligne — SAMASSA TECHNOLOGIE</title>
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif;background:#F1F5F9}.wrap{max-width:900px;margin:72px auto 60px;padding:0 14px}
+h1{font-size:22px;margin:0 0 4px}.sub{color:#64748B;font-size:13px;margin-bottom:14px}.card{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:14px;margin-bottom:14px}.card h2{font-size:15px;margin:0 0 10px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:520px){.g{grid-template-columns:1fr}}label{display:block;font-size:12px;color:#475569;margin:6px 0 3px}
+input[type=text],input[type=number],input[type=tel]{width:100%;box-sizing:border-box;padding:10px;border:1px solid #CBD5E1;border-radius:8px;font-size:14px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #EEF2F7;font-size:13px}.row:first-child{border-top:0}.row label{margin:0;display:flex;gap:8px;align-items:center;font-size:13px;color:inherit}
+.b{border:0;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;cursor:pointer;color:#fff;background:#0877B9}.b.wa{background:#16A34A}.b.g2{background:#E2E8F0;color:#334155}
+#cg-lien{width:100%;box-sizing:border-box;padding:10px;font-size:12px;border:1px solid #CBD5E1;border-radius:8px;margin:8px 0}.note{font-size:12px;color:#64748B;margin-top:6px}#cg-qr{margin-top:10px}
+</style>
+<link rel="stylesheet" href="theme-dark-pages.css?v=2">
+<script src="theme.js?v=2"></script>
+</head>
+<body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">🛍️ Catalogue en ligne</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<div class="wrap">
+<h1>Catalogue en ligne</h1><div class="sub">Créez un lien que vos clients ouvrent sur leur téléphone : produits, services, prix et bouton « Commander sur WhatsApp ».</div>
+<div class="card"><h2>🏪 Votre boutique</h2><div class="g"><div><label for="cg-nom">Nom</label><input type="text" id="cg-nom" value="SAMASSA TECHNOLOGIE"></div><div><label for="cg-tel">Numéro WhatsApp des commandes</label><input type="tel" id="cg-tel" value="77291931"></div></div><label for="cg-adr">Adresse affichée</label><input type="text" id="cg-adr" value="Grand Marché de Kayes — Mali"></div>
+<div class="card"><h2>📦 Produits du stock (prix de vente &gt; 0, en stock)</h2><div id="cg-stock"></div></div>
+<div class="card"><h2>🛠️ Services</h2><div id="cg-serv"></div><div class="g" style="margin-top:8px"><input type="text" id="cg-sn" placeholder="Nom du service"><input type="number" id="cg-sp" placeholder="Prix FCFA" inputmode="numeric"></div><button class="b g2" id="cg-add" style="margin-top:8px">➕ Ajouter le service</button></div>
+<div class="card"><h2>🔗 Lien à partager</h2><button class="b" id="cg-gen">Générer le lien du catalogue</button><input type="text" id="cg-lien" readonly style="display:none"><div id="cg-act" style="display:none"><button class="b g2" id="cg-copy">📋 Copier</button> <button class="b wa" id="cg-wa">💬 Partager sur WhatsApp</button> <a class="b g2" id="cg-open" target="_blank" style="text-decoration:none;display:inline-block">👁️ Voir</a></div><div id="cg-qr"></div><div class="note" id="cg-note">Le catalogue est figé au moment où vous générez le lien : régénérez-le après un changement de prix ou de stock.</div></div>
+</div>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="qrcode.min.js"></script><script src="catalogue.js?v=1"></script><script src="catalogue-gestion.js?v=1"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+<script src="app-moderne.js?v=1" defer></script>
+</body>
+</html>

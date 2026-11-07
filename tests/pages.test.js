@@ -240,3 +240,14 @@ test('abonnements: états, renouvellement avec fin de mois, encaissement, stats'
   assert.equal(A.renouveler({ ...a, expiration: '2026-12-01' }, 12, '2026-11-07', false).abonnement.expiration, '2027-12-01');
   const s = A.stats([a, { ...a, expiration: '2027-05-01', prix: 6000, cout: 1000, duree: 6 }], '2026-11-07'); assert.equal(s.revenuAnnuel, 12000); assert.equal(s.margeAnnuelle, 10000); assert.equal(s.expires, 1);
 });
+
+test('catalogue: aller-retour du lien, filtre des articles, lien de commande', async () => {
+  delete require.cache[require.resolve('../catalogue.js')]; require('../catalogue.js');
+  const C = (global.window && global.window.Catalogue) || globalThis.Catalogue;
+  const l = C.articles([{ id: 1, name: 'Clavier', pv: 5000, qty: 3, cat: 'Accessoires' }, { id: 2, name: 'Souris', pv: 2000, qty: 0 }, { id: 3, name: 'Écran', pv: 0, qty: 5 }, { id: 4, name: 'Câble', pv: 500, qty: 9 }], { exclus: [4], services: [{ n: 'Photos', p: 1000 }] });
+  assert.deepEqual(l, [['Clavier', 5000, 'Accessoires'], ['Photos', 1000, 'Services']]);
+  const code = await C.encoder({ s: { n: 'É', t: '77291931' }, i: l }); const d = await C.decoder(code);
+  assert.deepEqual(d.i, l); assert.equal(d.s.n, 'É');
+  assert.match(C.lienCommande('77 29 19 31', 'S', 'Clavier', 5000), /^https:\/\/wa\.me\/22377291931\?text=/);
+  const code2 = await C.encoder({ s: {}, i: [['é', 1, 'x']] }); assert.ok(/^[gp]/.test(code2));
+});
