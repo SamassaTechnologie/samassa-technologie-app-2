@@ -251,3 +251,14 @@ test('catalogue: aller-retour du lien, filtre des articles, lien de commande', a
   assert.match(C.lienCommande('77 29 19 31', 'S', 'Clavier', 5000), /^https:\/\/wa\.me\/22377291931\?text=/);
   const code2 = await C.encoder({ s: {}, i: [['é', 1, 'x']] }); assert.ok(/^[gp]/.test(code2));
 });
+
+test('prospects: stats, étape suivante, conversion en client sans doublon', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../prospects.js')]; require('../prospects.js');
+  const P = global.window.Prospects;
+  const l = [{ etape: 'Nouveau', montant: 1000, relance: '2026-11-01', source: 'Facebook' }, { etape: 'Gagné', montant: 5000, source: 'Facebook' }, { etape: 'Perdu', source: 'WhatsApp' }, { etape: 'Gagné', montant: 2000, source: 'WhatsApp' }];
+  const s = P.stats(l, '2026-11-07'); assert.equal(s.ouverts, 1); assert.equal(s.valeurGagnee, 7000); assert.equal(s.conversion, 67); assert.equal(s.aRelancer, 1); assert.equal(s.sources.Facebook.gagnes, 1);
+  assert.equal(P.suivante('Nouveau'), 'Contacté'); assert.equal(P.suivante('Négociation'), null);
+  const c = P.versClient({ nom: 'Awa Traoré', tel: '76123456', source: 'Facebook', besoin: 'site' }, []); assert.equal(c.nom, 'TRAORÉ'); assert.equal(c.prenom, 'Awa');
+  assert.equal(P.versClient({ nom: 'Awa', tel: '+223 76 12 34 56' }, [{ tel: '76123456' }]), null);
+  assert.match(P.msgAvis('Awa Traoré', 'https://x'), /Bonjour Awa.*https:\/\/x/);
+});
