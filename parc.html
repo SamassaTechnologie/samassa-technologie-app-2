@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0D1B2A">
+<title>Parc & garanties — SAMASSA TECHNOLOGIE</title>
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif;background:#F1F5F9}.wrap{max-width:900px;margin:72px auto 60px;padding:0 14px}
+h1{font-size:22px;margin:0 0 4px}.sub{color:#64748B;font-size:13px;margin-bottom:14px}
+#pc-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.k{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:12px}.k b{display:block;font-size:18px}.k span{font-size:11px;color:#64748B}
+.card{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:14px;margin-bottom:14px}.card h2{font-size:15px;margin:0 0 10px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8px}@media(max-width:520px){.g{grid-template-columns:1fr}}
+label{display:block;font-size:12px;color:#475569;margin:6px 0 3px}input,select{width:100%;box-sizing:border-box;padding:10px;border:1px solid #CBD5E1;border-radius:8px;font-size:14px}
+.row{display:flex;gap:10px;justify-content:space-between;align-items:center;flex-wrap:wrap;padding:10px 0;border-top:1px solid #EEF2F7}.row:first-child{border-top:0}
+.m{font-size:12px;color:#64748B;margin-top:2px}.p{font-size:10px;border-radius:99px;padding:2px 8px;background:#E2E8F0;margin-left:4px}.p.r{background:#FEE2E2;color:#B91C1C}.p.a{background:#FEF3C7;color:#B45309}.p.g{background:#DCFCE7;color:#15803D}
+.act{display:flex;gap:6px;flex-wrap:wrap}.b{border:0;border-radius:8px;padding:9px 11px;font-size:12px;font-weight:600;cursor:pointer;color:#fff}.b.wa{background:#16A34A}.b.ok{background:#0877B9}.b.g2{background:#E2E8F0;color:#334155}
+.pri{background:#0877B9;color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:700;margin-top:10px;cursor:pointer}.vide{color:#64748B;font-size:13px}
+#pc-cert{display:none}
+@media print{body.imp-cert>*:not(#pc-cert){display:none!important}body.imp-cert #pc-cert{display:block;padding:24px;background:#fff;color:#000}}
+</style>
+<link rel="stylesheet" href="theme-dark-pages.css?v=2">
+<script src="theme.js?v=2"></script>
+</head>
+<body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">🖥️ Parc & garanties</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<div class="wrap" id="pc-app">
+<h1>Parc informatique & garanties</h1><div class="sub">Les équipements de vos clients : numéro de série, garantie, historique des pannes, certificat à imprimer.</div>
+<div id="pc-kpi"></div>
+<div class="card"><h2>➕ Ajouter / modifier un équipement</h2><div class="g">
+<div><label for="pc-client">Client *</label><input id="pc-client"></div><div><label for="pc-tel">Téléphone WhatsApp</label><input id="pc-tel" inputmode="tel"></div>
+<div><label for="pc-type">Type</label><select id="pc-type"></select></div><div><label for="pc-marque">Marque *</label><input id="pc-marque" placeholder="ex : HP"></div>
+<div><label for="pc-modele">Modèle</label><input id="pc-modele" placeholder="ex : EliteBook 840"></div><div><label for="pc-serie">N° de série</label><input id="pc-serie"></div>
+<div><label for="pc-achat">Date d'achat / de vente</label><input type="date" id="pc-achat"></div><div><label for="pc-gar">Garantie (mois)</label><input type="number" id="pc-gar" value="12" min="0"></div>
+<div><label for="pc-prix">Prix (FCFA)</label><input type="number" id="pc-prix" inputmode="numeric"></div></div>
+<button class="pri" id="pc-ok">Enregistrer</button></div>
+<div class="card"><h2>📋 Équipements</h2><input id="pc-q" placeholder="🔎 Client, marque, n° de série…" style="margin-bottom:8px"><div id="pc-liste"></div></div>
+</div>
+<div id="pc-cert"></div>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="parc.js?v=1"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+<script src="app-moderne.js?v=1" defer></script>
+</body>
+</html>

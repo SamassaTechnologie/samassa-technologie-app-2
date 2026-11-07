@@ -262,3 +262,16 @@ test('prospects: stats, étape suivante, conversion en client sans doublon', () 
   assert.equal(P.versClient({ nom: 'Awa', tel: '+223 76 12 34 56' }, [{ tel: '76123456' }]), null);
   assert.match(P.msgAvis('Awa Traoré', 'https://x'), /Bonjour Awa.*https:\/\/x/);
 });
+
+test('parc: garantie (états, fin de mois), stats, recherche', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../parc.js')]; require('../parc.js');
+  const P = global.window.Parc;
+  assert.equal(P.garantie({ achat: '2026-01-31', garantieMois: 1 }, '2026-02-01').fin, '2026-02-28');
+  assert.equal(P.garantie({ achat: '2025-01-10', garantieMois: 12 }, '2026-11-07').cle, 'expiree');
+  assert.equal(P.garantie({ achat: '2025-11-20', garantieMois: 12 }, '2026-11-07').cle, 'bientot');
+  assert.equal(P.garantie({ achat: '2026-10-01', garantieMois: 24 }, '2026-11-07').cle, 'ok');
+  assert.equal(P.garantie({ achat: '2026-10-01', garantieMois: 0 }, '2026-11-07').cle, 'aucune');
+  const l = [{ client: 'Awa', marque: 'HP', serie: 'ABC123', achat: '2026-10-01', garantieMois: 12, pannes: [{ cout: 5000 }] }, { client: 'Bako', marque: 'Dell', achat: '2024-01-01', garantieMois: 12 }];
+  const s = P.stats(l, '2026-11-07'); assert.equal(s.total, 2); assert.equal(s.sous, 1); assert.equal(s.pannes, 1); assert.equal(s.coutPannes, 5000);
+  assert.equal(P.chercher(l, 'abc1').length, 1); assert.equal(P.chercher(l, '').length, 2);
+});

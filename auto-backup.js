@@ -13,7 +13,7 @@
 
   const KEYS = [
     'samassa_recus','samassa_factures','samassa_factures_mat','samassa_factures_cyber',
-    'samassa_recus_cyber','samassa_recus_photo','samassa_campagnes','samassa_abonnements','samassa_catalogue','samassa_prospects','samassa_bons_reparation','samassa_recus_vente','samassa_devis',
+    'samassa_recus_cyber','samassa_recus_photo','samassa_campagnes','samassa_abonnements','samassa_catalogue','samassa_prospects','samassa_parc','samassa_bons_reparation','samassa_recus_vente','samassa_devis',
     'samassa_interventions','samassa_charges_fixes','samassa_sessions_cyber','samassa_contrats','samassa_commandes','samassa_mm_releves','samassa_postes_config','samassa_mouvements','samassa_retraits','samassa_clients',
     'samassa_stock_v2','samassa_stock_mouvements','samassa_docs_admin',
     'samassa_mouvements_cyber','samassa_recus_counter','samassa_factures_mat_counter',
