@@ -22,5 +22,10 @@
       maj(); parent.insertBefore(b, avant || parent.firstChild);
     }
   };
-  document.addEventListener('DOMContentLoaded', function () { var z = document.querySelector('.tb-actions'); if (z) window.Theme.bouton(z); });
+  if (!document.querySelector('link[href^="theme-dark.css"]')) document.documentElement.setAttribute('data-dk', 'inv');
+  document.addEventListener('DOMContentLoaded', function () {
+    var z = document.querySelector('.tb-actions');
+    if (z) window.Theme.bouton(z);
+    else { window.Theme.bouton(document.body, null); var b = document.getElementById('theme-btn'); if (b) b.classList.add('flottant'); }
+  });
 })();

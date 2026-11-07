@@ -1,0 +1,8 @@
+/* Mode sombre — pages de gestion (inversion globale, médias et aperçus de documents ré-inversés). Écran uniquement. */
+@media screen{
+html[data-theme="dark"][data-dk="inv"]{filter:invert(1) hue-rotate(180deg);background:#fff;color-scheme:dark}
+html[data-theme="dark"][data-dk="inv"] img,html[data-theme="dark"][data-dk="inv"] canvas,html[data-theme="dark"][data-dk="inv"] video,html[data-theme="dark"][data-dk="inv"] iframe,
+html[data-theme="dark"][data-dk="inv"] #docInner,html[data-theme="dark"][data-dk="inv"] #t80,html[data-theme="dark"][data-dk="inv"] .doc-z,html[data-theme="dark"][data-dk="inv"] .theme-btn{filter:invert(1) hue-rotate(180deg)}
+.theme-btn.flottant{position:fixed;left:12px;bottom:76px;z-index:9999;width:38px;height:38px;border-radius:50%;background:#fff;border:1px solid #cbd5e1;box-shadow:0 2px 8px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer}
+}
+@media print{.theme-btn{display:none!important}}
