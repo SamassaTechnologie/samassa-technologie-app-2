@@ -3,6 +3,31 @@
 'use strict';
 (function () {
   var F = function (n) { return Math.round(Number(n) || 0).toLocaleString('fr-FR').replace(/[  ]/g, ' '); };
+  /* Montant en lettres (français) : 10000 -> « dix mille francs CFA » */
+  var U = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix', 'onze', 'douze', 'treize', 'quatorze', 'quinze', 'seize', 'dix-sept', 'dix-huit', 'dix-neuf'];
+  var D = ['', '', 'vingt', 'trente', 'quarante', 'cinquante', 'soixante'];
+  function sous100(n) {
+    if (n < 20) return U[n];
+    var d = Math.floor(n / 10), u = n % 10;
+    if (d === 7 || d === 9) { var base = d === 7 ? 'soixante' : 'quatre-vingt', r = 10 + u; return base + (d === 7 && u === 1 ? ' et ' : '-') + U[r]; }
+    if (d === 8) return u ? 'quatre-vingt-' + U[u] : 'quatre-vingts';
+    return D[d] + (u === 1 ? ' et un' : u ? '-' + U[u] : '');
+  }
+  function sous1000(n, fin) {
+    var c = Math.floor(n / 100), r = n % 100, t = '';
+    if (c) t = (c > 1 ? U[c] + ' ' : '') + 'cent' + (c > 1 && !r && fin ? 's' : '');
+    if (r) t += (t ? ' ' : '') + (r === 80 && !fin ? 'quatre-vingt' : sous100(r));
+    return t;
+  }
+  function enLettres(n) {
+    n = Math.round(Number(n) || 0); if (n < 0) return 'moins ' + enLettres(-n); if (n === 0) return 'zéro';
+    var parts = [], noms = [['milliard', 1e9], ['million', 1e6]], t = [];
+    noms.forEach(function (x) { var q = Math.floor(n / x[1]); if (q) { t.push(sous1000(q, true) + ' ' + x[0] + (q > 1 ? 's' : '')); n %= x[1]; } });
+    var m = Math.floor(n / 1000), r = n % 1000;
+    if (m) t.push(m === 1 ? 'mille' : sous1000(m, false) + ' mille');
+    if (r) t.push(sous1000(r, true));
+    return t.join(' ');
+  }
   /* d : {societe:{nom,tel,email,adresse}, titre, numero, date, client, tel, piece:{label,num}, lignes:[{desc,qte,pu,total}], total, mode, note, rdv, qr:bool} */
   function modele(d) {
     var L = [], s = d.societe || {};
@@ -20,6 +45,7 @@
       L.push({ k: 'r', t: x.qte + ' x ' + F(x.pu) + ' = ' + F(x.total) + ' F' });
     });
     L.push({ k: 'sep' }, { k: 'lr', l: 'MONTANT', r: F(d.total) + ' FCFA', b: 1 });
+    if (d.total) L.push({ k: 'l', t: 'Arrêté à : ' + enLettres(d.total) + ' francs CFA' });
     kv('Mode', d.mode);
     (d.apres || []).forEach(function (x) { kv(x[0], x[1]); });
     if (d.rdv) kv('Retrait prévu', d.rdv);
@@ -127,5 +153,5 @@
       avis('Image du reçu téléchargée : joignez-la dans la conversation WhatsApp 📎', 'success');
     };
   }
-  window.Ticket80 = { modele: modele, html: html, dessiner: dessiner, F: F, brancher: brancher };
+  window.Ticket80 = { modele: modele, html: html, dessiner: dessiner, F: F, enLettres: enLettres, brancher: brancher };
 })();

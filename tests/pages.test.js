@@ -180,3 +180,10 @@ test('ticket80 : modèle de lignes du reçu', () => {
   assert.ok(!T.html(T.modele({ societe: { nom: 'X' }, lignes: [], total: 0, qr: false })).includes('t-qr'));
   assert.ok(T.html(T.modele({ societe: { nom: '<b>x</b>' }, lignes: [], total: 0 })).includes('&lt;B&gt;'));
 });
+
+test('ticket80 : montant en lettres', () => {
+  global.window = {}; global.document = undefined;
+  const f = path.join(__dirname, '../ticket80.js'); delete require.cache[require.resolve(f)]; require(f);
+  const L = window.Ticket80.enLettres, cas = { 0: 'zéro', 21: 'vingt et un', 71: 'soixante et onze', 80: 'quatre-vingts', 81: 'quatre-vingt-un', 91: 'quatre-vingt-onze', 200: 'deux cents', 201: 'deux cent un', 1000: 'mille', 2000: 'deux mille', 10000: 'dix mille', 80000: 'quatre-vingt mille', 1500: 'mille cinq cents', 24000: 'vingt-quatre mille', 1000000: 'un million', 2000000: 'deux millions', 1200000: 'un million deux cent mille', 180000: 'cent quatre-vingt mille' };
+  Object.keys(cas).forEach(k => assert.equal(L(+k), cas[k], k));
+});

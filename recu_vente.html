@@ -20,7 +20,7 @@
 <script src="auth.js?v=firebase1"></script>
 <script src="firebase-config.js?v=sync4"></script>
 <script src="sync.js?v=5"></script><script src="utils.js"></script><script src="print-doc.js?v=1"></script>
-<script src="recu_vente.js"></script><script src="qrcode.min.js"></script><script src="doc-qr.js?v=3"></script><script src="ticket80.js?v=2"></script>
+<script src="recu_vente.js"></script><script src="qrcode.min.js"></script><script src="doc-qr.js?v=3"></script><script src="ticket80.js?v=3"></script>
 <script>Ticket80.brancher({generer:'generateSaleReceipt',partager:'shareSaleWhatsApp',type:'Reçu vente',prefixe:'recu-vente',lire:function(){
  var d=collectSale(),iso=el('receiptDate').value,f=function(n){return Ticket80.F(n)+' F';};
  return{societe:{nom:'SAMASSA TECHNOLOGIE',tel:'77 29 19 31 / 62 97 06 30',email:'samassatechnologie10@gmail.com',adresse:'Grand Marché de Kayes, près du 1er arrondissement de la police, Rue Soundiata Keita — Kayes, Mali'},titre:'REÇU DE VENTE',numero:el('receiptNumber').value||'RV-001',date:iso?new Date(iso+'T12:00:00').toLocaleDateString('fr-FR'):'',_iso:iso,
