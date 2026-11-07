@@ -58,6 +58,39 @@
       ]
     },
     {
+      "name": "Reçu de Vente",
+      "short_name": "Vente",
+      "url": "recu_vente.html",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Photos d'identité",
+      "short_name": "Photos ID",
+      "url": "photo-identite.html",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Assistant IA",
+      "short_name": "Assistant",
+      "url": "assistant.html",
+      "icons": [
+        {
+          "src": "icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
       "name": "Facture Service",
       "short_name": "Facture",
       "url": "facture.html",
@@ -83,17 +116,6 @@
       "name": "Bon de Réparation",
       "short_name": "Réparation",
       "url": "bon_reparation.html",
-      "icons": [
-        {
-          "src": "icon-192x192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Reçu de Vente",
-      "short_name": "Vente",
-      "url": "recu_vente.html",
       "icons": [
         {
           "src": "icon-192x192.png",

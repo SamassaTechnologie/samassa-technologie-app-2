@@ -5,4 +5,5 @@ function render(){let list=logs().slice().reverse(),days=Number(document.getElem
 function exportLog(){const rows=[['Date','Opération','Module','Page','Utilisateur','Rôle'],...logs().map(x=>[x.timestamp,x.action,moduleNames[x.key]||x.key,x.page||'',x.user||'',x.role||''])];const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(';')).join('\n')],{type:'text/csv;charset=utf-8'}));a.download='journal-samassa-'+new Date().toISOString().slice(0,10)+'.csv';a.click()}
 function clearLog(){if(Auth.role!=='administrateur')return alert('Action réservée à l’administrateur.');if(confirm('Supprimer le journal local ?')){localStorage.removeItem('samassa_audit_log');render()}}
 window.addEventListener('load',()=>setTimeout(render,800));
-</script><script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script></body></html>
+</script><script>if('serviceWorker'in navigator)navigator.serviceWorker.register('service-worker.js');</script><script src="app-moderne.js?v=1" defer></script>
+</body></html>

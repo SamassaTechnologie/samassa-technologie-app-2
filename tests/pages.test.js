@@ -197,3 +197,15 @@ test('photo-formats : données et grille de planche', () => {
   assert.ok(P.grille(210, 297, 35, 45, 4, 2).n >= 28);
   assert.equal(P.grille(100, 150, 200, 200, 4, 2).n, 0);
 });
+
+test('tableau de bord par catégories : liens valides et sans doublon', () => {
+  const fs = require('fs'), idx = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
+  const cats = idx.split('<section class="cat"').slice(1);
+  assert.ok(cats.length >= 8);
+  const hrefs = [];
+  cats.forEach(c => (c.split('</section>')[0].match(/<a href="([^"#][^"]*)"/g) || []).forEach(h => hrefs.push(h.slice(9, -1))));
+  hrefs.forEach(h => assert.ok(fs.existsSync(path.join(__dirname, '..', h)), 'page absente : ' + h));
+  assert.equal(new Set(hrefs).size, hrefs.length, 'lien en double');
+  const nav = idx.slice(idx.indexOf('<nav class="sb-nav">'), idx.indexOf('</nav>', idx.indexOf('<nav class="sb-nav">')));
+  (nav.match(/<a href="([^"]+)" class="sb-item"/g) || []).forEach(h => assert.ok(fs.existsSync(path.join(__dirname, '..', h.slice(9).split('"')[0])), 'menu : ' + h));
+});

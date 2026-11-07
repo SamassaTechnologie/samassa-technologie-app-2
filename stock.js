@@ -141,7 +141,7 @@ function renderInventaire() {
   $('kValue').textContent    = fmt(list.reduce((s,x) => s + x.qty * x.pa, 0));
   const alertCount           = list.filter(x => x.qty <= x.min).length;
   $('kLow').textContent      = alertCount;
-  $('kLow').closest('.stock-kpi').style.background = alertCount > 0 ? '#FEF3C7' : '';
+  { const kb = $('kLow').closest('.kpi-box'); if (kb) kb.style.background = alertCount > 0 ? '#FEF3C7' : ''; }
 
   const body = $('stockBody');
   if (!filtered.length) {
