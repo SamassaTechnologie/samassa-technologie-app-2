@@ -18,7 +18,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}td,th{padding:8px 6px;b
 <div class="hero"><h1>📲 Rapprochement Mobile Money</h1><p>Comparez les paiements réellement reçus (Wave, Orange, Moov) avec ceux enregistrés en caisse.</p></div>
 <div class="card"><h2>1. Ajouter les paiements reçus</h2>
 <textarea id="brut" placeholder="Collez ici les SMS de confirmation Wave / Orange Money / Moov Money (un message par paragraphe)…" aria-label="SMS à analyser"></textarea>
-<div class="row"><button class="btn" id="analyser">Analyser les SMS</button><span style="font-size:12px;color:#64748B">ou saisir un paiement :</span>
+<div class="row"><button class="btn" id="coller">📋 Coller et analyser</button> <button class="btn" id="analyser">Analyser les SMS</button><span style="font-size:12px;color:#64748B">ou saisir un paiement :</span>
 <select id="m-op" aria-label="Opérateur"><option>Wave</option><option>Orange Money</option><option>Moov Money</option></select><input id="m-mt" type="number" min="1" placeholder="Montant" aria-label="Montant"><input id="m-dt" type="date" aria-label="Date"><input id="m-ref" placeholder="Référence (facultatif)" maxlength="40"><button class="btn s" id="m-add">Ajouter</button></div>
 <div id="apercu"></div>
 <div class="note">Les SMS restent sur cet appareil et dans votre sauvegarde. Seuls les messages de paiement reçu sont retenus.</div></div>

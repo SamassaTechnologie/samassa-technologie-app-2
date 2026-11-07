@@ -324,3 +324,11 @@ test('inventaire: recherche par code (zéros EAN), écarts, ajustement et mouvem
   const r = I.appliquer(st, { 1: 4, 2: 5 }, false, '2026-11-07'); assert.equal(r.stock[0].qty, 4); assert.equal(r.stock[1].qty, 5); assert.equal(r.stock[2].qty, 9); assert.equal(r.mouvements.length, 2); assert.equal(r.mouvements[0].type, 'sortie'); assert.equal(r.mouvements[1].type, 'entree');
   assert.equal(I.appliquer(st, { 1: 4 }, true, '2026-11-07').stock[2].qty, 0);
 });
+
+test('rapprochement: un paiement reçu ajouté en caisse se rapproche tout seul', () => {
+  const ctx = { window: { escHtml: s => s }, document: { addEventListener() {} }, localStorage: { getItem: () => '[]' } };
+  vm.createContext(ctx); vm.runInContext(lire('rapprochement.js'), ctx);
+  const R = ctx.window.Rapprochement, x = { operateur: 'Wave', montant: 15000, date: '2026-11-05', ref: 'TX12345' };
+  const mv = R.versCaisse(x); assert.equal(mv.type, 'entree'); assert.equal(mv.pm, 'Wave'); assert.equal(mv.amount, 15000);
+  const r = R.rapprocher([x], [mv]); assert.equal(r.liens.length, 1); assert.equal(r.sansCaisse.length, 0);
+});

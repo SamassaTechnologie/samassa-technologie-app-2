@@ -55,7 +55,7 @@
     var recu = rel.reduce(function (s, x) { return s + x.montant; }, 0), enreg = cai.filter(function (m) { return m.type === 'entree' && operateur(m.pm); }).reduce(function (s, m) { return s + (Number(m.amount) || 0); }, 0);
     document.getElementById('kpis').innerHTML = '<div class="kpi"><b>' + money(recu) + '</b><span>Reçu sur le téléphone</span></div><div class="kpi"><b>' + money(enreg) + '</b><span>Enregistré en caisse (mobile)</span></div><div class="kpi ' + (r.sansPaiement.length ? 'warn' : 'good') + '"><b>' + r.sansPaiement.length + '</b><span>Reçus sans paiement</span></div><div class="kpi ' + (r.sansCaisse.length ? 'warn' : 'good') + '"><b>' + r.sansCaisse.length + '</b><span>Paiements hors caisse</span></div><div class="kpi good"><b>' + r.liens.length + '</b><span>Rapprochés</span></div>';
     document.getElementById('sans-paiement').innerHTML = tableau([['Date'], ['Description'], ['Mode'], ['Montant', 1]], r.sansPaiement.map(function (m) { return '<tr><td>' + fr(m.date) + '</td><td>' + H(m.desc) + '</td><td><span class="tag o">' + H(m.pm) + '</span></td><td class="r"><b>' + money(m.amount) + '</b></td></tr>'; }));
-    document.getElementById('sans-caisse').innerHTML = tableau([['Date'], ['Opérateur'], ['Référence'], ['Montant', 1], ['', 1]], r.sansCaisse.map(function (x) { return '<tr><td>' + fr(x.date) + '</td><td><span class="tag o">' + H(x.operateur) + '</span></td><td>' + H(x.ref || '—') + '</td><td class="r"><b>' + money(x.montant) + '</b></td><td class="r"><button class="btn s" data-del="' + H(x.id) + '" aria-label="Retirer">✕</button></td></tr>'; }));
+    document.getElementById('sans-caisse').innerHTML = tableau([['Date'], ['Opérateur'], ['Référence'], ['Montant', 1], ['', 1]], r.sansCaisse.map(function (x) { return '<tr><td>' + fr(x.date) + '</td><td><span class="tag o">' + H(x.operateur) + '</span></td><td>' + H(x.ref || '—') + '</td><td class="r"><b>' + money(x.montant) + '</b></td><td class="r"><button class="btn s" data-cai="' + H(x.id) + '" aria-label="Ajouter à la caisse">➕ Caisse</button> <button class="btn s" data-del="' + H(x.id) + '" aria-label="Retirer">✕</button></td></tr>'; }));
     document.getElementById('ok').innerHTML = tableau([['Date'], ['Opérateur'], ['Caisse'], ['Montant', 1]], r.liens.map(function (l) { return '<tr><td>' + fr(l.releve.date) + '</td><td><span class="tag">' + H(l.releve.operateur) + '</span></td><td>' + H(l.caisse.desc) + '</td><td class="r">' + money(l.releve.montant) + '</td></tr>'; }));
   }
   function apercu() {
@@ -71,7 +71,9 @@
     };
     document.getElementById('ann').onclick = function () { brouillon = []; apercu(); };
   }
-  window.Rapprochement = { analyserSms: analyserSms, rapprocher: rapprocher, nombre: nombre };
+  /* Entrée de caisse correspondant à un paiement reçu (même opérateur, montant et date : il se rapprochera tout seul) */
+  function versCaisse(x) { return { id: 'MM-' + Date.now(), date: x.date, type: 'entree', desc: 'Paiement ' + x.operateur + (x.ref ? ' réf. ' + x.ref : ''), amount: x.montant, pm: x.operateur, cat: 'Vente service', auto: true, timestamp: new Date().toISOString() }; }
+  window.Rapprochement = { analyserSms: analyserSms, rapprocher: rapprocher, nombre: nombre, versCaisse: versCaisse };
   document.addEventListener('DOMContentLoaded', function () {
     if (!document.getElementById('kpis')) return;
     document.getElementById('m-dt').value = new Date().toISOString().slice(0, 10);
@@ -86,7 +88,16 @@
       ecrire(l); document.getElementById('m-mt').value = ''; document.getElementById('m-ref').value = ''; rendre();
     };
     document.getElementById('mois').onchange = function () { if (this.value) { mois = this.value; rendre(); } };
-    document.addEventListener('click', function (e) { var b = e.target.closest('[data-del]'); if (b) { ecrire(lire(KEY).filter(function (x) { return x.id !== b.dataset.del; })); rendre(); } });
+    document.getElementById('coller') && (document.getElementById('coller').onclick = function () {
+      if (!navigator.clipboard || !navigator.clipboard.readText) { alert('Collez les SMS à la main dans la zone de texte (appui long → Coller).'); return; }
+      navigator.clipboard.readText().then(function (t) { document.getElementById('brut').value = t; document.getElementById('analyser').click(); }).catch(function () { alert('Autorisez l\'accès au presse-papiers, ou collez à la main.'); });
+    });
+    document.addEventListener('click', function (e) {
+      var c = e.target.closest('[data-cai]'); if (c) {
+        var x = lire(KEY).find(function (y) { return y.id === c.dataset.cai; }); if (!x) return;
+        var cs = lire('samassa_mouvements'); cs.push(window.Rapprochement.versCaisse(x)); localStorage.setItem('samassa_mouvements', JSON.stringify(cs)); rendre(); return;
+      }
+      var b = e.target.closest('[data-del]'); if (b) { ecrire(lire(KEY).filter(function (x) { return x.id !== b.dataset.del; })); rendre(); } });
     window.addEventListener('storage', rendre); rendre();
   });
 })();
