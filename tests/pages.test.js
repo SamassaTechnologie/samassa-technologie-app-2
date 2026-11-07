@@ -305,3 +305,13 @@ test('employés: bulletin (absences, primes, avances), paie, sortie de caisse', 
   e = E.ajouter(e, '2026-11', 'paie', 110000, '', '2026-11-30'); b = E.bulletin(e, '2026-11'); assert.equal(b.reste, 0);
   assert.equal(E.totalMois([e], '2026-11').paye, 110000);
 });
+
+test('compta: bilan mensuel, TVA TTC/HT, évolution et CSV', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../compta.js')]; require('../compta.js');
+  const C = global.window.Compta;
+  const mv = [{ date: '2026-11-02', type: 'entree', amount: 118000, cat: 'Vente service', pm: 'Espèces' }, { date: '2026-11-03', type: 'entree', amount: 59000, cat: 'Vente matériel', pm: 'Orange Money' }, { date: '2026-11-05', type: 'sortie', amount: 80000, cat: 'Salaires', desc: 'Salaire "A"' }, { date: '2026-10-05', type: 'entree', amount: 5000 }];
+  const b = C.bilan(mv, '2026-11', 18, true); assert.equal(b.recettes, 177000); assert.equal(b.depenses, 80000); assert.equal(b.resultat, 97000); assert.equal(b.tva, 27000); assert.equal(b.recettesHT, 150000); assert.equal(b.parCatRecettes[0].nom, 'Vente service');
+  assert.equal(C.bilan(mv, '2026-11', 18, false).tva, 31860); assert.equal(C.bilan(mv, '2026-11', 0, true).tva, 0);
+  const e = C.evolution(mv, '2026-11', 2); assert.deepEqual(e.map(x => x.recettes), [5000, 177000]);
+  const c = C.csv(mv, '2026-11'); assert.equal(c.split('\n').length, 4); assert.ok(c.includes('"Salaire ""A"""'));
+});

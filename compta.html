@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0D1B2A">
+<title>Comptabilité — SAMASSA TECHNOLOGIE</title>
+<link rel="manifest" href="manifest.json"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="mobile.css">
+<style>
+body{font-family:Inter,system-ui,sans-serif;background:#F1F5F9}.wrap{max-width:900px;margin:72px auto 60px;padding:0 14px}
+h1{font-size:22px;margin:0 0 4px}.sub{color:#64748B;font-size:13px;margin-bottom:14px}
+#cp-kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.k{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:12px}.k b{display:block;font-size:16px}.k span{font-size:11px;color:#64748B}.k.r b{color:#DC2626}.k.v b{color:#15803D}
+.card{background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:14px;margin-bottom:14px}.card h2{font-size:15px;margin:0 0 10px}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:600px){.g2{grid-template-columns:1fr}}
+label{display:block;font-size:12px;color:#475569;margin:6px 0 3px}input[type=month],input[type=number]{width:100%;box-sizing:border-box;padding:10px;border:1px solid #CBD5E1;border-radius:8px;font-size:14px}
+.row{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid #EEF2F7;font-size:13px}.row:first-child{border-top:0}.vide{color:#64748B;font-size:13px}
+.b{border:0;border-radius:8px;padding:11px 14px;font-size:13px;font-weight:700;cursor:pointer;color:#fff;background:#0877B9}.b.g3{background:#16A34A}
+#cp-evo{display:flex;gap:10px;align-items:flex-end;height:100px}.ev{flex:1;text-align:center;font-size:10px;color:#64748B}.bars{height:72px;display:flex;gap:3px;align-items:flex-end;justify-content:center}.bars i{display:block;width:12px;border-radius:3px 3px 0 0}.bars .r{background:#16A34A}.bars .d{background:#DC2626}
+.note{font-size:12px;color:#64748B;margin-top:6px}#cp-imp{display:none}@media print{body.imp-cert>*:not(#cp-imp){display:none!important}body.imp-cert #cp-imp{display:block;padding:24px;background:#fff;color:#000}}
+</style>
+<link rel="stylesheet" href="theme-dark-pages.css?v=2">
+<script src="theme.js?v=2"></script>
+</head>
+<body>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">📒 Comptabilité</span><img src="logo.png" class="topbar-logo" alt="Logo"></div>
+<div class="wrap" id="cp-app">
+<h1>Comptabilité simple</h1><div class="sub">Le bilan du mois à partir de la caisse : recettes, dépenses (salaires compris), résultat et TVA estimée.</div>
+<div class="card"><div class="g"><div><label for="cp-mois">Mois</label><input type="month" id="cp-mois"></div><div><label for="cp-tva">Taux de TVA (%) — 0 si non assujetti</label><input type="number" id="cp-tva" value="18" min="0" max="100"></div></div><label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="cp-ttc" checked style="width:auto"> Mes recettes incluent déjà la TVA (prix TTC)</label><div class="note" id="cp-note"></div></div>
+<div id="cp-kpi"></div>
+<div class="g2"><div class="card"><h2>📈 Recettes par catégorie</h2><div id="cp-rec"></div></div><div class="card"><h2>📉 Dépenses par catégorie</h2><div id="cp-dep"></div></div></div>
+<div class="g2"><div class="card"><h2>💳 Recettes par mode de paiement</h2><div id="cp-mode"></div></div><div class="card"><h2>📌 À savoir</h2><div id="cp-aut"></div></div></div>
+<div class="card"><h2>6 derniers mois <small style="font-weight:400;color:#64748B">(vert : recettes · rouge : dépenses)</small></h2><div id="cp-evo"></div></div>
+<div class="card"><button class="b" id="cp-imprimer">🖨️ Imprimer le bilan</button> <button class="b g3" id="cp-csv">📥 Exporter en Excel (CSV)</button><div class="note">La TVA affichée est une estimation indicative sur les recettes de la caisse : faites-la valider par votre comptable avant toute déclaration.</div></div>
+</div>
+<div id="cp-imp"></div>
+<script src="esc.js"></script><script src="auth.js?v=roles1"></script><script src="firebase-config.js?v=sync4"></script><script src="sync.js?v=5"></script><script src="compta.js?v=1"></script>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('service-worker.js');</script>
+<script src="app-moderne.js?v=1" defer></script>
+</body>
+</html>
