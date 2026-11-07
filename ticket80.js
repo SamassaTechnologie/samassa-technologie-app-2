@@ -145,11 +145,24 @@
     };
     window[cfg.partager] = async function () {
       var di = document.getElementById('docInner'); if (di.style.display === 'none' || !document.getElementById('t80')) window[cfg.generer]();
+      var d0 = dernier.d, num = numWa(d0 && d0.tel), avecNum = num.length >= 9;
+      /* Numéro renseigné : on copie l'image (geste tactile conservé grâce à la promesse) puis on ouvre directement la conversation avec ce numéro */
+      var copie = null;
+      if (avecNum && window.ClipboardItem && navigator.clipboard && navigator.clipboard.write) {
+        try { copie = navigator.clipboard.write([new ClipboardItem({ 'image/png': Promise.resolve(dernier.blob || dernier.pret) })]); } catch (e) { copie = null; }
+      }
       var blob = dernier.blob || await dernier.pret; if (!blob) { avis('Impossible de préparer le reçu.', 'error'); return; }
       var d = dernier.d, nom = (cfg.prefixe || 'recu') + '-' + (d.numero || 'samassa') + '.png', file = new File([blob], nom, { type: 'image/png' }), texte = (d.titre || 'Reçu') + ' N° ' + d.numero + ' — ' + d.societe.nom;
+      if (avecNum) {
+        var copie_ok = false; if (copie) { try { await copie; copie_ok = true; } catch (e) {} }
+        if (!copie_ok) { var a0 = document.createElement('a'); a0.href = URL.createObjectURL(blob); a0.download = nom; a0.click(); setTimeout(function () { URL.revokeObjectURL(a0.href); }, 5000); }
+        avis(copie_ok ? 'Image copiée ✅ — dans WhatsApp, appuyez longuement sur le message puis « Coller » et envoyez.' : 'Image enregistrée — joignez-la dans la conversation WhatsApp 📎', 'success');
+        setTimeout(function () { window.location.href = 'https://wa.me/' + num + '?text=' + encodeURIComponent('Bonjour, voici votre ' + texte); }, 900);
+        return;
+      }
       try { if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: texte }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
       var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nom; a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000);
-      window.open('https://wa.me/' + numWa(d.tel) + '?text=' + encodeURIComponent('Bonjour, voici votre ' + texte), '_blank');
+      window.open('https://wa.me/?text=' + encodeURIComponent('Bonjour, voici votre ' + texte), '_blank');
       avis('Image du reçu téléchargée : joignez-la dans la conversation WhatsApp 📎', 'success');
     };
   }

@@ -94,7 +94,7 @@
 <script src="recu_photo.js?v=1"></script>
 <script src="qrcode.min.js"></script>
 <script src="doc-qr.js?v=3"></script>
-<script src="ticket80.js?v=3"></script>
+<script src="ticket80.js?v=4"></script>
 <script>Ticket80.brancher({generer:'generateReceipt',partager:'shareWhatsApp',type:'Reçu photo',prefixe:'recu-photo',lire:function(){
  var v=ST.v,it=lireLignes();
  return{societe:{nom:v('companyName'),tel:v('companyPhone'),email:v('companyEmail'),adresse:'Grand Marché de Kayes, près du 1er arrondissement de la police, Rue Soundiata Keita — Kayes, Mali'},titre:'REÇU PHOTOS D\'IDENTITÉ',numero:v('receiptNumber'),date:ST.fmtDate(v('receiptDate')),_iso:v('receiptDate'),
