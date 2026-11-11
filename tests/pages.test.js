@@ -345,3 +345,33 @@ test('catalogue: lien court — publication vérifiée par lecture publique, rep
   const fetchNoWrite = async () => ({ ok: false, status: 401 });
   assert.equal((await C.publier(base, id, { i: [] }, 'tok', fetchNoWrite)).etape, 'ecriture');
 });
+
+test('rédaction libre: nettoyage, mise en page et marquage des valeurs inventées', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../redacteur-ia-mali/redaction-libre.js')]; require('../redacteur-ia-mali/redaction-libre.js');
+  const R = global.window.RedactionLibre;
+  const brut = "Voici votre document :\n\n```\n┌──────────────┐\n│ RÉPUBLIQUE DU MALI │\n└──────────────┘\nUn Peuple – Un But – Une Foi\n\n**Awa TRAORÉ**\n[[Quartier Liberté, Kayes]]\nTél : [À COMPLÉTER]\n\nObjet : Demande de congé\n\nMonsieur le Maire,\n\nJ'ai l'honneur de solliciter un congé de 10 jours à compter du [[3 décembre 2026]], afin d'assister au mariage de ma sœur, qui se tiendra à Kayes en présence de toute la famille.\n\n- Acte de naissance\n\nATTESTATION SUR L'HONNEUR\n```";
+  const t = R.nettoyer(brut);
+  assert.ok(!/[┌│└`]|\*\*|Voici/.test(t)); assert.ok(t.startsWith('RÉPUBLIQUE DU MALI'));
+  assert.deepEqual(R.compter(t), { exemples: 2, vides: 1 });
+  const B = R.versBlocs(brut);
+  assert.equal(B[0].al, 'center'); assert.equal(B[0].runs[0].b, true);
+  const adr = B.find(b => b.runs.some(r => r.x === 'Quartier Liberté, Kayes')); assert.ok(adr.runs[0].hl);
+  const tel = B.find(b => b.runs.some(r => /À COMPLÉTER/.test(r.x))); assert.ok(tel.runs.find(r => /À COMPLÉTER/.test(r.x)).hl);
+  const awa = B.find(b => b.runs[0].x === 'Awa TRAORÉ'); assert.ok(!awa.runs[0].hl);
+  const corps = B.find(b => b.al === 'both'); assert.ok(corps.fi); assert.deepEqual(corps.runs.map(r => !!r.hl), [false, true, false]);
+  assert.ok(B.some(b => b.ind === 567)); assert.ok(B.some(b => b.runs[0].x === "ATTESTATION SUR L'HONNEUR" && b.runs[0].u));
+  assert.ok(!JSON.stringify(B).includes('[['));
+  assert.equal(R.titreDe(brut, 'x'), 'IA – Demande de congé');
+  assert.equal(R.sansMarques('a [[b ]] [À COMPLÉTER]'), 'a b [À COMPLÉTER]');
+});
+
+test('rédaction libre: consigne « exemple complet » côté serveur', async () => {
+  const { pathToFileURL } = require('url');
+  const m = await import(pathToFileURL(path.join(root, 'lib/redaction-prompt.js')).href);
+  const p = m.construirePrompt({ prompt: 'demande de congé pour Awa', completer: 'exemple' }, 'mercredi 11 novembre 2026');
+  assert.match(p, /^DEMANDE : demande de congé pour Awa/); assert.match(p, /EXEMPLE COMPLET/); assert.match(p, /\[\[/); assert.match(p, /mercredi 11 novembre 2026/);
+  assert.ok(!m.construirePrompt({ prompt: 'x' }, 'd').includes('EXEMPLE COMPLET'));
+  const a = m.construirePrompt({ mode: 'affiner', previous: 'DOC [[x]]', instruction: 'plus court', completer: 'exemple' }, 'd');
+  assert.match(a, /DOC \[\[x\]\]/); assert.match(a, /plus court/); assert.match(a, /doubles crochets/);
+  assert.ok(!m.construirePrompt({ mode: 'affiner', previous: 'D', instruction: 'i' }, 'd').includes('doubles crochets'));
+});

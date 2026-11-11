@@ -3,6 +3,7 @@
 // SYSTEM_PROMPT ultra-détaillé avec templates Mali + mode affinage
 
 import { requireUser } from '../lib/iloveapi-service.js';
+import { construirePrompt } from '../lib/redaction-prompt.js';
 
 export const config = { runtime: 'edge' };
 
@@ -261,28 +262,7 @@ export default async function handler(req) {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
     });
 
-    let fullPrompt = '';
-
-    if (mode === 'affiner') {
-      fullPrompt = `DOCUMENT EXISTANT À AMÉLIORER :
-═══════════════════════════════
-${previous}
-═══════════════════════════════
-
-INSTRUCTION D'AMÉLIORATION :
-${instruction || prompt}
-
-Applique l'instruction ci-dessus au document. Retourne UNIQUEMENT le document amélioré, sans commentaire.`;
-    } else {
-      fullPrompt = `DEMANDE : ${prompt}`;
-      if (dest) fullPrompt += `\nDestinataire : ${dest}`;
-      if (nom)  fullPrompt += `\nDemandeur : ${nom}`;
-      fullPrompt += `\nForme : ${forme}`;
-      fullPrompt += `\nLongueur souhaitée : ${longueur}`;
-      fullPrompt += `\nTon : ${ton}`;
-      fullPrompt += `\nDate du jour : ${today}`;
-      fullPrompt += `\nVille : Kayes, Mali`;
-    }
+    const fullPrompt = construirePrompt(body, today);
 
     let text = '', model = '', tokens = 0;
     // Budget de temps : la fonction doit répondre en moins de 25 s. Chaque appel est limité pour laisser une chance au suivant.

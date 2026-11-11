@@ -835,6 +835,7 @@ const ALC = {left: 'left', center: 'center', right: 'right', both: 'justify'};
 const runHtml = r => {
   let s = esc(r.x).replace(/\n/g, '<br>');
   if (r.b) s = `<b>${s}</b>`; if (r.i) s = `<i>${s}</i>`; if (r.u) s = `<u>${s}</u>`;
+  if (r.hl) s = `<mark class="ia-ex">${s}</mark>`;
   return (r.sz || r.c) ? `<span style="${r.sz ? `font-size:${r.sz / 2}pt;` : ''}${r.c ? `color:#${r.c}` : ''}">${s}</span>` : s;
 };
 function blocHtml(b){
