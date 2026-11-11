@@ -14,7 +14,7 @@ input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #CBD5E1;bor
 <div class="h"><img src="logo.png" alt="Logo"><b id="nom">SAMASSA TECHNOLOGIE</b><span id="adr"></span></div>
 <div id="app"><div class="v">Chargement du catalogue…</div></div></div>
 <div class="fx" id="fx" style="display:none"><a id="wa" href="#">💬 Nous écrire sur WhatsApp</a></div>
-<script src="catalogue.js?v=1"></script>
+<script src="catalogue.js?v=2"></script>
 <script>
 (function(){
   var app=document.getElementById('app'),h=(location.hash.match(/c=([^&]+)/)||[])[1];
@@ -22,12 +22,12 @@ input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #CBD5E1;bor
   if(!h){app.innerHTML='<div class="v">Ce lien de catalogue est incomplet. Demandez-en un nouveau à SAMASSA TECHNOLOGIE.</div>';return}
   Catalogue.decoder(h).then(function(d){
     var s=d.s||{},cat='Tout',q='';document.getElementById('nom').textContent=s.n||'SAMASSA TECHNOLOGIE';document.getElementById('adr').textContent=s.a||'';document.title='Catalogue — '+(s.n||'SAMASSA TECHNOLOGIE');
-    var fx=document.getElementById('fx');fx.style.display='block';document.getElementById('wa').href=Catalogue.lienCommande(s.t,s.n,'des informations').replace('je souhaite commander : des informations. Est-ce disponible ?','je voudrais des informations.');
+    var fx=document.getElementById('fx');fx.style.display='block';document.getElementById('wa').href=Catalogue.lienCommande(s.t,s.n,'des informations').replace('je souhaite commander : des informations. Pouvez-vous me donner le prix et la disponibilité ?','je voudrais des informations.');
     var cats=['Tout'].concat(Array.from(new Set(d.i.map(function(x){return x[2]}))));
     function draw(){
       var l=d.i.filter(function(x){return(cat==='Tout'||x[2]===cat)&&x[0].toLowerCase().indexOf(q)>-1});
       app.innerHTML='<input id="q" placeholder="🔎 Rechercher un produit ou un service" value="'+esc(q)+'"><div class="cats">'+cats.map(function(c){return'<button class="'+(c===cat?'on':'')+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join('')+'</div>'+
-        (l.length?l.map(function(x){return'<div class="it"><div><b>'+esc(x[0])+'</b><small>'+esc(x[2])+'</small></div><div style="text-align:right"><div class="pr">'+Number(x[1]).toLocaleString('fr-FR')+' F</div><a class="cmd" href="'+Catalogue.lienCommande(s.t,s.n,x[0],x[1])+'">Commander</a></div></div>'}).join(''):'<div class="v">Aucun résultat.</div>');
+        (l.length?l.map(function(x){return'<div class="it"><div><b>'+esc(x[0])+'</b><small>'+esc(x[2])+'</small></div><div style="text-align:right"><div class="pr">'+(Number(x[1])>0?Number(x[1]).toLocaleString('fr-FR')+' F':'Sur devis')+'</div><a class="cmd" href="'+Catalogue.lienCommande(s.t,s.n,x[0],x[1])+'">Commander</a></div></div>'}).join(''):'<div class="v">Aucun résultat.</div>');
       var i=document.getElementById('q');i.oninput=function(){q=i.value.toLowerCase();var p=i.selectionStart;draw();var n=document.getElementById('q');n.focus();n.setSelectionRange(p,p)};
       app.querySelectorAll('[data-c]').forEach(function(b){b.onclick=function(){cat=b.dataset.c;draw()}});
     }

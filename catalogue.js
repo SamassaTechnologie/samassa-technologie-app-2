@@ -16,7 +16,7 @@
     var d = JSON.parse(new TextDecoder().decode(b)); if (!d || !Array.isArray(d.i)) throw new Error('catalogue invalide'); return d;
   }
   function numWa(t) { var n = String(t || '').replace(/\D/g, ''); if (n.length > 8 && n.indexOf('223') !== 0) n = n.slice(0, 8); return n.length === 8 ? '223' + n : n; }
-  function lienCommande(tel, boutique, article, prix) { return 'https://wa.me/' + numWa(tel) + '?text=' + encodeURIComponent('Bonjour ' + (boutique || '') + ', je souhaite commander : ' + article + (prix ? ' (' + Number(prix).toLocaleString('fr-FR') + ' FCFA)' : '') + '. Est-ce disponible ?'); }
+  function lienCommande(tel, boutique, article, prix) { return 'https://wa.me/' + numWa(tel) + '?text=' + encodeURIComponent('Bonjour ' + (boutique || '') + ', je souhaite commander : ' + article + (Number(prix) > 0 ? ' (' + Number(prix).toLocaleString('fr-FR') + ' FCFA)' : '') + '. Pouvez-vous me donner le prix et la disponibilité ?'); }
   /* Construit les articles : stock (pv > 0, qty > 0, non exclus) + services personnalisés */
   function articles(stock, cfg) {
     var ex = {}; (cfg.exclus || []).forEach(function (id) { ex[id] = 1; });
