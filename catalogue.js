@@ -24,5 +24,18 @@
     (cfg.services || []).forEach(function (s) { if (s.n && Number(s.p) >= 0) l.push([String(s.n), Math.round(Number(s.p)), String(s.c || 'Services')]); });
     return l;
   }
-  root.Catalogue = { encoder: encoder, decoder: decoder, lienCommande: lienCommande, articles: articles, numWa: numWa };
+  /* Lien court : le catalogue est enregistré dans la base Firebase (écriture réservée au compte connecté) puis relu SANS connexion pour vérifier que le lien fonctionnera chez vos clients. */
+  var CH = 'abcdefghjkmnpqrstuvwxyz23456789';
+  function idCourt() { var a = new Uint8Array(7), s = ''; (root.crypto || {}).getRandomValues ? root.crypto.getRandomValues(a) : a.forEach(function (_, i) { a[i] = Math.random() * 256; }); for (var i = 0; i < a.length; i++) s += CH[a[i] % CH.length]; return s; }
+  function urlBase(db, id, token) { return db.replace(/\/$/, '') + '/samassa_catalogues/' + encodeURIComponent(id) + '.json' + (token ? '?auth=' + encodeURIComponent(token) : ''); }
+  async function publier(db, id, data, token, f) {
+    f = f || root.fetch;
+    var r = await f(urlBase(db, id, token), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(Object.assign({}, data, { maj: new Date().toISOString() })) });
+    if (!r.ok) return { ok: false, etape: 'ecriture', statut: r.status };
+    var l = await f(urlBase(db, id, null)); /* lecture publique, sans jeton */
+    if (!l.ok) return { ok: false, etape: 'lecture', statut: l.status };
+    var d = await l.json(); return d && Array.isArray(d.i) ? { ok: true } : { ok: false, etape: 'lecture', statut: 0 };
+  }
+  async function charger(db, id, f) { var r = await (f || root.fetch)(urlBase(db, id, null)); if (!r.ok) throw new Error('lecture ' + r.status); var d = await r.json(); if (!d || !Array.isArray(d.i)) throw new Error('catalogue introuvable'); return d; }
+  root.Catalogue = { idCourt: idCourt, publier: publier, charger: charger, encoder: encoder, decoder: decoder, lienCommande: lienCommande, articles: articles, numWa: numWa };
 })(typeof window !== 'undefined' ? window : globalThis);

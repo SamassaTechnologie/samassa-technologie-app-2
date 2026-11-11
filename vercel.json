@@ -1,4 +1,5 @@
 {
+  "rewrites": [{ "source": "/c/:id", "destination": "/catalogue.html" }],
   "headers": [
     {
       "source": "/(.*)",

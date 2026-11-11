@@ -332,3 +332,16 @@ test('rapprochement: un paiement reçu ajouté en caisse se rapproche tout seul'
   const mv = R.versCaisse(x); assert.equal(mv.type, 'entree'); assert.equal(mv.pm, 'Wave'); assert.equal(mv.amount, 15000);
   const r = R.rapprocher([x], [mv]); assert.equal(r.liens.length, 1); assert.equal(r.sansCaisse.length, 0);
 });
+
+test('catalogue: lien court — publication vérifiée par lecture publique, repli si refusée', async () => {
+  delete require.cache[require.resolve('../catalogue.js')]; require('../catalogue.js');
+  const C = (global.window && global.window.Catalogue) || globalThis.Catalogue, base = 'https://db.example.com', st = {};
+  const fetchOk = async (u, o) => { const id = /samassa_catalogues\/([^.]+)\.json/.exec(u)[1]; if (o && o.method === 'PUT') { st[id] = JSON.parse(o.body); return { ok: true }; } return { ok: !!st[id], status: st[id] ? 200 : 401, json: async () => st[id] }; };
+  const id = C.idCourt(); assert.match(id, /^[a-z2-9]{7}$/);
+  assert.deepEqual(await C.publier(base, id, { s: {}, i: [['A', 1, 'x']] }, 'tok', fetchOk), { ok: true });
+  assert.equal((await C.charger(base, id, fetchOk)).i[0][0], 'A');
+  const fetchNoRead = async (u, o) => (o && o.method === 'PUT') ? { ok: true } : { ok: false, status: 401 };
+  assert.deepEqual(await C.publier(base, id, { i: [] }, 'tok', fetchNoRead), { ok: false, etape: 'lecture', statut: 401 });
+  const fetchNoWrite = async () => ({ ok: false, status: 401 });
+  assert.equal((await C.publier(base, id, { i: [] }, 'tok', fetchNoWrite)).etape, 'ecriture');
+});

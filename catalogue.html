@@ -9,27 +9,35 @@ input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #CBD5E1;bor
 .it{background:#fff;border-radius:12px;padding:12px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;gap:10px;box-shadow:0 1px 4px rgba(10,22,40,.06)}.it b{font-size:14px}.it small{display:block;color:#64748B;margin-top:2px}.pr{font-weight:800;color:#0877B9;white-space:nowrap}
 .cmd{display:inline-block;margin-top:6px;background:#16A34A;color:#fff;text-decoration:none;border-radius:8px;padding:9px 11px;font-size:12px;font-weight:700;white-space:nowrap}
 .fx{position:fixed;left:0;right:0;bottom:0;padding:10px 14px;background:#fff;border-top:1px solid #E2E8F0;text-align:center}.fx a{display:block;max-width:612px;margin:0 auto;background:#16A34A;color:#fff;text-decoration:none;border-radius:12px;padding:13px;font-weight:800}
+details.g{margin-top:8px}details.g>summary{cursor:pointer;list-style:none;background:#fff;border-radius:12px;padding:13px 14px;font-weight:800;font-size:14px;display:flex;justify-content:space-between;box-shadow:0 1px 4px rgba(10,22,40,.06)}details.g>summary::-webkit-details-marker{display:none}details.g>summary::after{content:"▾";margin-left:8px}details.g[open]>summary::after{content:"▴"}details.g>summary span{margin-left:auto;font-weight:600;color:#64748B;font-size:12px}
 .v{text-align:center;color:#64748B;padding:30px 10px}
 </style></head><body><div class="w">
-<div class="h"><img src="logo.png" alt="Logo"><b id="nom">SAMASSA TECHNOLOGIE</b><span id="adr"></span></div>
+<div class="h"><img src="/logo.png" alt="Logo"><b id="nom">SAMASSA TECHNOLOGIE</b><span id="adr"></span></div>
 <div id="app"><div class="v">Chargement du catalogue…</div></div></div>
 <div class="fx" id="fx" style="display:none"><a id="wa" href="#">💬 Nous écrire sur WhatsApp</a></div>
-<script src="catalogue.js?v=2"></script>
+<script src="/firebase-config.js"></script><script src="/catalogue.js?v=3"></script>
 <script>
 (function(){
-  var app=document.getElementById('app'),h=(location.hash.match(/c=([^&]+)/)||[])[1];
+  var app=document.getElementById('app'),h=(location.hash.match(/c=([^&]+)/)||[])[1],m=location.pathname.match(/^\/c\/([A-Za-z0-9]+)/);
   function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-  if(!h){app.innerHTML='<div class="v">Ce lien de catalogue est incomplet. Demandez-en un nouveau à SAMASSA TECHNOLOGIE.</div>';return}
-  Catalogue.decoder(h).then(function(d){
-    var s=d.s||{},cat='Tout',q='';document.getElementById('nom').textContent=s.n||'SAMASSA TECHNOLOGIE';document.getElementById('adr').textContent=s.a||'';document.title='Catalogue — '+(s.n||'SAMASSA TECHNOLOGIE');
+  var src;
+  if(m&&typeof FIREBASE_CONFIG!=='undefined')src=Catalogue.charger(FIREBASE_CONFIG.databaseURL,m[1]);
+  else if(h)src=Catalogue.decoder(h);
+  else{app.innerHTML='<div class="v">Ce lien de catalogue est incomplet. Demandez-en un nouveau à SAMASSA TECHNOLOGIE.</div>';return}
+  src.then(function(d){
+    var s=d.s||{},cat='Tout',q='',ouvert={};document.getElementById('nom').textContent=s.n||'SAMASSA TECHNOLOGIE';document.getElementById('adr').textContent=s.a||'';document.title='Catalogue — '+(s.n||'SAMASSA TECHNOLOGIE');
     var fx=document.getElementById('fx');fx.style.display='block';document.getElementById('wa').href=Catalogue.lienCommande(s.t,s.n,'des informations').replace('je souhaite commander : des informations. Pouvez-vous me donner le prix et la disponibilité ?','je voudrais des informations.');
     var cats=['Tout'].concat(Array.from(new Set(d.i.map(function(x){return x[2]}))));
+    function ligne(x){return'<div class="it"><div><b>'+esc(x[0])+'</b><small>'+esc(x[2])+'</small></div><div style="text-align:right"><div class="pr">'+(Number(x[1])>0?Number(x[1]).toLocaleString('fr-FR')+' F':'Sur devis')+'</div><a class="cmd" href="'+Catalogue.lienCommande(s.t,s.n,x[0],x[1])+'">Commander</a></div></div>'}
     function draw(){
-      var l=d.i.filter(function(x){return(cat==='Tout'||x[2]===cat)&&x[0].toLowerCase().indexOf(q)>-1});
-      app.innerHTML='<input id="q" placeholder="🔎 Rechercher un produit ou un service" value="'+esc(q)+'"><div class="cats">'+cats.map(function(c){return'<button class="'+(c===cat?'on':'')+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join('')+'</div>'+
-        (l.length?l.map(function(x){return'<div class="it"><div><b>'+esc(x[0])+'</b><small>'+esc(x[2])+'</small></div><div style="text-align:right"><div class="pr">'+(Number(x[1])>0?Number(x[1]).toLocaleString('fr-FR')+' F':'Sur devis')+'</div><a class="cmd" href="'+Catalogue.lienCommande(s.t,s.n,x[0],x[1])+'">Commander</a></div></div>'}).join(''):'<div class="v">Aucun résultat.</div>');
+      var l=d.i.filter(function(x){return(cat==='Tout'||x[2]===cat)&&x[0].toLowerCase().indexOf(q)>-1}),groupe=cat==='Tout'&&!q,corps;
+      if(!l.length)corps='<div class="v">Aucun résultat.</div>';
+      else if(groupe)corps=cats.slice(1).map(function(c,i){var it=d.i.filter(function(x){return x[2]===c});return'<details class="g"'+((ouvert[c]===undefined?i===0:ouvert[c])?' open':'')+' data-g="'+esc(c)+'"><summary>'+esc(c)+' <span>'+it.length+'</span></summary>'+it.map(ligne).join('')+'</details>'}).join('');
+      else corps=l.map(ligne).join('');
+      app.innerHTML='<input id="q" placeholder="🔎 Rechercher un produit ou un service" value="'+esc(q)+'"><div class="cats">'+cats.map(function(c){return'<button class="'+(c===cat?'on':'')+'" data-c="'+esc(c)+'">'+esc(c)+'</button>'}).join('')+'</div>'+corps;
       var i=document.getElementById('q');i.oninput=function(){q=i.value.toLowerCase();var p=i.selectionStart;draw();var n=document.getElementById('q');n.focus();n.setSelectionRange(p,p)};
       app.querySelectorAll('[data-c]').forEach(function(b){b.onclick=function(){cat=b.dataset.c;draw()}});
+      app.querySelectorAll('details.g').forEach(function(e){e.ontoggle=function(){ouvert[e.dataset.g]=e.open}});
     }
     draw();
   }).catch(function(){app.innerHTML='<div class="v">Impossible de lire ce catalogue. Demandez un nouveau lien à SAMASSA TECHNOLOGIE.</div>'});
