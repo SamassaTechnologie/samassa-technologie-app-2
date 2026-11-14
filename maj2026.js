@@ -60,9 +60,14 @@
     }
     /* Libellé relié au champ : toucher le libellé place le curseur, et les lecteurs d'écran l'annoncent */
     if (!e.getAttribute('aria-label') && !e.closest('label') && !(id && document.querySelector('label[for="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'))) {
-      var g = e.closest('.form-group, .field, .il-field, .champ'), l = g && g.querySelector('label:not([for])');
+      var g = e.closest('.form-group, .fg, .field, .il-field, .champ'), l = g && g.querySelector('label:not([for])');
       if (l && g.querySelectorAll('input:not([type=hidden]), select, textarea').length === 1) { if (!e.id) e.id = 'mj-champ-' + (++n); l.htmlFor = e.id; }
-      else if (e.placeholder) e.setAttribute('aria-label', e.placeholder);
+      else {
+        /* Libellé visuel écrit dans un simple bloc au-dessus du champ */
+        var bloc = e.parentNode && e.parentNode.querySelector('[class*="lbl"], [class*="label"], .section-label'), txt = bloc && bloc !== e ? bloc.textContent.replace(/[*:]/g, '').trim() : '';
+        if (txt && txt.length < 60) e.setAttribute('aria-label', txt); else if (e.placeholder) e.setAttribute('aria-label', e.placeholder);
+        else if (tag === 'SELECT' && e.options.length) e.setAttribute('aria-label', 'Filtre : ' + e.options[0].textContent.trim()); else if (e.type === 'date') e.setAttribute('aria-label', 'Date');
+      }
     }
   }
   function parcourir(r) { (r.querySelectorAll ? r : document).querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=radio]):not([type=file]), select, textarea').forEach(preparer); }
@@ -121,6 +126,14 @@
       var g = z.querySelector('.mj-racc-g'); choix.forEach(function (h) { var c = parHref[h].cloneNode(true); c.removeAttribute('data-filtre'); c.style.display = ''; g.appendChild(c); });
     }
     dessiner(); setTimeout(dessiner, 1500);   /* après l'application des droits de l'utilisateur */
+    /* Carte « Quoi de neuf » affichée une seule fois */
+    var V = '2026.1', KV = 'samassa_maj_vue', vue = ''; try { vue = localStorage.getItem(KV) || ''; } catch (e) {}
+    if (vue !== V) {
+      var n = document.createElement('section'); n.id = 'mj-neuf';
+      n.innerHTML = '<div class="mj-racc-t">🎉 Mise à jour 2026</div><ul><li>Reçus, factures et devis : tout tient dans l\'écran du téléphone, tous les boutons sont visibles.</li><li>Tickets avec logo, heure, numéros lisibles, et un avertissement si le QR manque.</li><li>Vos clients sont proposés pendant la saisie du nom : le téléphone se remplit tout seul.</li><li>Bons claviers (chiffres, téléphone), plus de zoom gênant sur iPhone.</li><li>« Vos raccourcis » : vos fonctions les plus utilisées en haut du tableau de bord.</li></ul><button type="button" id="mj-neuf-ok">J\'ai compris</button>';
+      grille.parentNode.insertBefore(n, grille);
+      n.querySelector('#mj-neuf-ok').onclick = function () { try { localStorage.setItem(KV, V); } catch (e) {} n.remove(); };
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { init(); tableauDeBord(); }); else { init(); tableauDeBord(); }
 })(typeof window !== 'undefined' ? window : globalThis);
