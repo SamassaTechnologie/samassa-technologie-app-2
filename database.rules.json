@@ -1,5 +1,12 @@
 {
   "rules": {
+    "samassa_catalogues": {
+      "$id": {
+        ".read": true,
+        ".write": "auth != null && root.child('kayes-principal').child('user_roles').child(auth.uid).child('role').val() == 'administrateur'",
+        ".validate": "newData.hasChildren(['i'])"
+      }
+    },
     "$store": {
       ".read": "auth != null && root.child($store).child('user_roles').child(auth.uid).exists()",
       "user_roles": {
