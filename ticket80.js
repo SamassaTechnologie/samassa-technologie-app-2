@@ -163,6 +163,7 @@
       } catch (e) { console.error('Ticket 80 mm :', e); }
       return r;
     };
+    window.Ticket80.image = function () { return dernier.blob ? Promise.resolve(dernier.blob) : dernier.pret; };
     window[cfg.partager] = async function () {
       var di = document.getElementById('docInner'); if (di.style.display === 'none' || !document.getElementById('t80')) window[cfg.generer]();
       var d0 = dernier.d, num = numWa(d0 && d0.tel), avecNum = num.length >= 9;

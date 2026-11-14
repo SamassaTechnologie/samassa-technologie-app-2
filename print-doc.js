@@ -26,9 +26,15 @@
       '<div class="pd-bar"><span>Sur iPhone : Imprimer, ou Partager → Imprimer / Enregistrer en PDF</span><button onclick="window.print()">🖨️ Imprimer</button></div>' + clone.outerHTML + '</body></html>');
     w.document.close(); w.focus();
   }
-  /* Appelée par chaque bouton « Imprimer » après la génération du document */
+  /* Appelée par chaque bouton « Imprimer » après la génération du document.
+     iPhone / application installée : panneau dans la page (PDF + feuille de partage), jamais de fenêtre à part sans retour. */
   window.SamassaPrint = function () {
-    if (iosOuInstallee()) { ouvrirPageImpression(); return; }
+    var src = document.getElementById('docInner');
+    if (iosOuInstallee() && window.ImpressionMobile && src) {
+      var t80 = document.getElementById('t80'), num = (document.querySelector('#receiptNumber, #invoiceNumber, #quoteNumber, #docNumber, #bonNumber, #interventionNumber') || {}).value || '';
+      window.ImpressionMobile.ouvrir({ source: t80 || src, largeurMm: t80 ? 80 : 210, titre: (document.title.split('—')[0].trim() + ' ' + num).trim(), image: t80 && window.Ticket80 && window.Ticket80.image ? window.Ticket80.image() : null });
+      return;
+    }
     try { window.print(); } catch (e) { ouvrirPageImpression(); }
   };
 })();

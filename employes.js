@@ -44,6 +44,7 @@
     var b = bulletin(e, M), ligne = function (a, v) { return '<tr><td style="border:1px solid #999;padding:8px">' + a + '</td><td style="border:1px solid #999;padding:8px;text-align:right">' + v + '</td></tr>'; };
     $('em-cert').innerHTML = '<div style="text-align:center"><img src="logo.png" alt="" style="height:56px"><h2 style="margin:6px 0">BULLETIN DE PAIE — ' + M.split('-').reverse().join('/') + '</h2><div>SAMASSA TECHNOLOGIE — Kayes, Mali</div></div><p><b>Employé :</b> ' + H(e.nom) + ' &nbsp; <b>Poste :</b> ' + H(e.poste || '—') + '</p><table style="width:100%;border-collapse:collapse;font-size:14px">' +
       ligne('Salaire de base', fcfa(b.base)) + ligne('Retenue absences (' + b.absences + ' j)', '− ' + fcfa(b.retenue)) + ligne('Primes', '+ ' + fcfa(b.primes)) + ligne('Avances déjà versées', '− ' + fcfa(b.avances)) + ligne('<b>Net à payer</b>', '<b>' + fcfa(b.net) + '</b>') + ligne('Déjà payé', fcfa(b.paye)) + '</table><div style="display:flex;justify-content:space-between;margin-top:40px;font-size:13px"><span>Signature de l\'employé</span><span>Cachet & signature SAMASSA TECHNOLOGIE</span></div>';
+    if (window.ImpressionMobile && ImpressionMobile.besoin()) { ImpressionMobile.ouvrir({ source: document.getElementById('em-cert'), titre: 'Bulletin de paie ' + e.nom + ' ' + M }); return; }
     document.body.classList.add('imp-cert'); window.print(); setTimeout(function () { document.body.classList.remove('imp-cert'); }, 500);
   }
   document.addEventListener('input', function (e) { if (e.target.id === 'em-mois') rendre(); });

@@ -1031,7 +1031,11 @@ function pageImpression(){
   w.document.close(); w.focus(); return true;
 }
 function imprimerDoc(){
-  if (iosOuInstallee()) { if (!pageImpression()) alert('Autorisez les fenêtres pop-up pour imprimer, ou utilisez « Télécharger Word ».'); return; }
+  if (iosOuInstallee()) {
+    /* Panneau dans la page : PDF puis feuille de partage d'iOS (jamais de fenêtre à part sans bouton retour) */
+    if (window.ImpressionMobile) { ImpressionMobile.ouvrir({ source: $('#apercu'), titre: modele && modele.titre || 'Document', html2canvas: '../html2canvas.min.js' }); return; }
+    if (!pageImpression()) alert('Autorisez les fenêtres pop-up pour imprimer, ou utilisez « Télécharger Word ».'); return;
+  }
   try { window.print(); } catch (e) { pageImpression(); }
 }
 $('#btnPrint').onclick = () => { if (MODE === 'cyber') { cpt++; LS.set('cpt', cpt); majCompteur(); } imprimerDoc(); };

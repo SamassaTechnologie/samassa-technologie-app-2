@@ -405,3 +405,17 @@ test('maj 2026: raccourcis du tableau de bord selon l\'usage', () => {
   assert.deepEqual(R({ 'compta.html': 9, 'stock.html': 2, 'interdit.html': 50 }, dispo, 3), ['compta.html', 'stock.html', 'recu.html']);
   assert.equal(R({}, [], 6).length, 0); assert.equal(R({}, dispo).length, 6);
 });
+
+test('impression mobile : coupes de pages, PDF valide, nom de fichier', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../impression-mobile.js')]; require('../impression-mobile.js');
+  const I = global.window.ImpressionMobile;
+  assert.deepEqual(I.coupes(900, 1000), [900]); assert.deepEqual(I.coupes(2500, 1000), [1000, 2000, 2500]);
+  assert.deepEqual(I.coupes(2500, 1000, y => y % 1000 === 950), [950, 1950, 2500]);          // remonte jusqu'à une ligne vide
+  assert.deepEqual(I.coupes(2100, 1000, () => false), [1000, 2000, 2100]);                   // aucune ligne vide : coupe franche
+  const jpeg = new Uint8Array([255, 216, 255, 217]), b = I.pdf([{ jpeg, wPx: 10, hPx: 20, wPt: 595.28, hPt: 841.89 }, { jpeg, wPx: 10, hPx: 5, wPt: 595.28, hPt: 841.89 }]);
+  const t = Buffer.from(b).toString('latin1');
+  assert.ok(t.startsWith('%PDF-1.4')); assert.ok(t.trimEnd().endsWith('%%EOF')); assert.match(t, /\/Count 2/); assert.equal((t.match(/\/DCTDecode/g) || []).length, 2);
+  const x = Number(/startxref\n(\d+)/.exec(t)[1]); assert.equal(t.slice(x, x + 4), 'xref');
+  const lignes = t.slice(x).split('\n').slice(3, 3 + 8); lignes.forEach((l, i) => { const off = Number(l.slice(0, 10)); assert.equal(t.slice(off, off + String(i + 1).length + 6), (i + 1) + ' 0 obj'); });
+  assert.equal(I.nomFichier('Reçu de Paiement REC-001'), 'Recu-de-Paiement-REC-001.pdf'); assert.equal(I.nomFichier(''), 'document.pdf');
+});

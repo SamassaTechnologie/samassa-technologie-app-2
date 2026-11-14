@@ -41,6 +41,7 @@
     var M = $('cp-mois').value, b = rendre();
     var t = function (a) { return a.map(function (x) { return '<tr><td style="border:1px solid #999;padding:6px">' + H(x.nom) + '</td><td style="border:1px solid #999;padding:6px;text-align:right">' + fcfa(x.total) + '</td></tr>'; }).join('') || '<tr><td colspan="2" style="padding:6px">—</td></tr>'; };
     $('cp-imp').innerHTML = '<div style="text-align:center"><img src="logo.png" alt="" style="height:56px"><h2 style="margin:6px 0">BILAN MENSUEL — ' + M.split('-').reverse().join('/') + '</h2><div>SAMASSA TECHNOLOGIE — Kayes, Mali</div></div><h3>Recettes : ' + fcfa(b.recettes) + '</h3><table style="width:100%;border-collapse:collapse">' + t(b.parCatRecettes) + '</table><h3>Dépenses : ' + fcfa(b.depenses) + '</h3><table style="width:100%;border-collapse:collapse">' + t(b.parCatDepenses) + '</table><h2>Résultat : ' + fcfa(b.resultat) + '</h2><p>TVA estimée (' + $('cp-tva').value + ' %) : ' + fcfa(b.tva) + '. Estimation indicative à valider avec votre comptable.</p>';
+    if (window.ImpressionMobile && ImpressionMobile.besoin()) { ImpressionMobile.ouvrir({ source: document.getElementById('cp-imp'), titre: 'Bilan mensuel ' + M }); return; }
     document.body.classList.add('imp-cert'); window.print(); setTimeout(function () { document.body.classList.remove('imp-cert'); }, 500);
   }
   document.addEventListener('input', function (e) { if (['cp-mois', 'cp-tva', 'cp-ttc'].indexOf(e.target.id) >= 0) rendre(); });
