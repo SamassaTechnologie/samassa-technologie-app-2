@@ -26,6 +26,6 @@
   document.addEventListener('DOMContentLoaded', function () {
     var z = document.querySelector('.tb-actions');
     if (z) window.Theme.bouton(z);
-    else { window.Theme.bouton(document.body, null); var b = document.getElementById('theme-btn'); if (b) b.classList.add('flottant'); }
+    else { var tb = document.querySelector('.topbar'); window.Theme.bouton(tb || document.body, tb ? tb.querySelector('.topbar-logo') : null); if (tb && !tb.querySelector('.topbar-logo')) tb.appendChild(document.getElementById('theme-btn')); var b = document.getElementById('theme-btn'); if (b && !tb) b.classList.add('flottant'); }
   });
 })();

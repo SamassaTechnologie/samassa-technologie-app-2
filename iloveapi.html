@@ -10,10 +10,11 @@
 @media(max-width:680px){.il-grid{grid-template-columns:1fr}.il-full{grid-column:auto}}
 </style>
 <link rel="stylesheet" href="theme-dark-pages.css?v=2">
-<script src="theme.js?v=2"></script>
+<script src="theme.js?v=3"></script>
+<link rel="stylesheet" href="maj2026.css?v=1">
 </head>
 <body>
-<div class="topbar"><a class="tb-title" href="index.html">SAMASSA TECHNOLOGIE</a><div class="tb-actions"><a class="il-back" href="index.html">← Tableau de bord</a></div></div>
+<div class="topbar"><a href="index.html" class="back-link">← Retour</a><span class="topbar-title">📄 PDF &amp; Scan</span><img src="logo.png" alt="Logo" class="topbar-logo"></div>
 <main class="il-wrap"><div class="il-card" style="margin-bottom:18px">
 <h1>⚡ Outils instantanés <span style="font-size:12px;color:#0A7A3E">gratuits · fonctionnent sur votre téléphone, sans envoi de fichier</span></h1>
 <div class="il-grid">
@@ -51,4 +52,5 @@ async function runTool(){if(!selected.length){status('Sélectionnez au moins un 
 run.addEventListener('click',runTool);$('il-reset').addEventListener('click',()=>{filesEl.value='';selected=[];$('il-file-list').textContent='Aucun fichier sélectionné.';status('Prêt.');});
 </script>
 <script src="app-moderne.js?v=1" defer></script>
+<script src="maj2026.js?v=1" defer></script>
 </body></html>

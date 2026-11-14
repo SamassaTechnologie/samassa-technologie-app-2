@@ -1,0 +1,72 @@
+/* SAMASSA PRO — Mise à jour 2026 : cohérence du design et confort mobile.
+   Chargée en dernier sur toutes les pages de l'application. Écran uniquement : l'impression n'est pas touchée. */
+@media screen {
+  /* Police unique dans toute l'application (les documents imprimés gardent la leur) */
+  body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  html { -webkit-text-size-adjust: 100%; }
+  *, *::before, *::after { -webkit-tap-highlight-color: rgba(8, 119, 185, .12); }
+
+  /* Champs : contour net au focus, même hauteur partout */
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]):focus, select:focus, textarea:focus {
+    outline: none; border-color: #0877B9 !important; box-shadow: 0 0 0 3px rgba(8, 119, 185, .18) !important;
+  }
+  input.mj-err, select.mj-err { border-color: #DC2626 !important; box-shadow: 0 0 0 3px rgba(220, 38, 38, .15) !important; }
+  .mj-aide { font-size: 11px; color: #B45309; margin-top: 3px; }
+  button:focus-visible, a:focus-visible, [role=button]:focus-visible { outline: 3px solid rgba(8, 119, 185, .45); outline-offset: 2px; }
+  button, .btn, .b, a.qa { touch-action: manipulation; }
+  button:disabled, .btn:disabled { opacity: .55; cursor: not-allowed; }
+
+  /* Bouton de thème rangé dans le bandeau (ne recouvre plus le contenu) */
+  .topbar .theme-btn { position: static; flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .25); box-shadow: none; display: flex; align-items: center; justify-content: center; font-size: 16px; cursor: pointer; margin-left: auto; }
+  .topbar .theme-btn + .topbar-logo, .topbar .topbar-logo + .theme-btn { margin-left: 8px; }
+
+  /* Bandeau : le titre ne pousse jamais les boutons hors de l'écran */
+  .topbar { min-width: 0; }
+  .topbar .topbar-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Le bandeau est déjà dans le flux : plus de grand vide entre lui et le contenu */
+  .topbar + div:not(.layout), .topbar + main:not(.layout) { margin-top: 18px !important; }
+
+  /* Liste de suggestions de clients */
+  .mj-sugg { position: absolute; z-index: 300; left: 0; right: 0; top: 100%; background: #fff; border: 1px solid #CBD5E1; border-radius: 10px; box-shadow: 0 10px 28px rgba(10, 22, 40, .18); max-height: 220px; overflow: auto; margin-top: 2px; }
+  .mj-sugg button { display: block; width: 100%; text-align: left; border: 0; border-top: 1px solid #EEF2F7; background: none; padding: 10px 12px; font: inherit; font-size: 14px; cursor: pointer; color: #0A1628; }
+  .mj-sugg button:first-child { border-top: 0; }
+  .mj-sugg button small { display: block; color: #64748B; font-size: 11px; }
+  .mj-sugg button:hover, .mj-sugg button:focus { background: #EFF6FF; }
+}
+
+@media screen and (max-width: 768px) {
+  /* Correctif majeur : les colonnes de formulaire ne dépassent plus la largeur du téléphone */
+  .layout { grid-template-columns: minmax(0, 1fr) !important; }
+  .layout > *, .form-panel, .doc-panel, .form-body, .form-grid, .form-group { min-width: 0 !important; max-width: 100%; }
+  .form-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  input, select, textarea { max-width: 100%; box-sizing: border-box; }
+
+  .layout *, .il-wrap *, .wrap * { min-width: 0; }
+  .item-inputs { grid-template-columns: minmax(0, 1fr) 58px 96px !important; }
+  .mat-row2, .mat-row3, .il-grid { grid-template-columns: repeat(auto-fit, minmax(0, 1fr)) !important; }
+  .il-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .st-bar, .tabs, .cats { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .st-bar::-webkit-scrollbar, .tabs::-webkit-scrollbar { display: none; }
+  div:has(> table) { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* Barre d'actions : « Générer » en grand, les autres boutons en grille de trois, tous visibles */
+  .form-panel > .actions { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px !important; padding: 8px 10px !important; }
+  .form-panel > .actions .btn { min-width: 0 !important; width: 100%; white-space: normal !important; line-height: 1.15; min-height: 42px; flex: none; padding: 6px 4px !important; font-size: 11.5px !important; gap: 4px; text-align: center; }
+  .form-panel > .actions .btn:first-child { grid-column: 1 / -1; min-height: 46px; font-size: 14px !important; }
+  .form-panel > .actions .btn:nth-child(3n+2):last-child { grid-column: 1 / -1; }
+  .form-panel > .actions .btn:nth-child(3n):last-child { grid-column: span 2; }
+
+  /* iPhone : un champ en dessous de 16 px déclenche un zoom automatique à chaque saisie */
+  input:not([type=checkbox]):not([type=radio]):not([type=range]), select, textarea { font-size: 16px !important; }
+  input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), select { min-height: 44px; }
+
+  /* Cibles tactiles confortables */
+  .b, .chips button, .btn-hero, .tab, .st-b, .act button, .pri { min-height: 40px; }
+  .act { row-gap: 8px; }
+
+  /* Tableaux et graphiques larges : défilement dans leur cadre, pas de toute la page */
+  table { max-width: 100%; }
+  .a-panel, .bars { max-width: 100%; overflow-x: auto; }
+  body { overflow-x: hidden; }
+}

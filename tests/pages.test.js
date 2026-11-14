@@ -375,3 +375,14 @@ test('rédaction libre: consigne « exemple complet » côté serveur', async ()
   assert.match(a, /DOC \[\[x\]\]/); assert.match(a, /plus court/); assert.match(a, /doubles crochets/);
   assert.ok(!m.construirePrompt({ mode: 'affiner', previous: 'D', instruction: 'i' }, 'd').includes('doubles crochets'));
 });
+
+test('maj 2026: téléphone malien, fusion des clients, suggestions', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../maj2026.js')]; require('../maj2026.js');
+  const M = global.window.Maj2026;
+  assert.equal(M.formaterTel('76123456'), '76 12 34 56'); assert.equal(M.formaterTel('+223 76123456'), '76 12 34 56'); assert.equal(M.formaterTel('77291931 / 62970630'), '77291931 / 62970630'); assert.equal(M.formaterTel('7612'), '7612');
+  assert.equal(M.telIncomplet('7612'), true); assert.equal(M.telIncomplet('76 12 34 56'), false); assert.equal(M.telIncomplet(''), false); assert.equal(M.telIncomplet('+33 6 12 34 56 78'), false); assert.equal(M.telIncomplet('77291931 / 62970630'), false);
+  const l = M.fusionner({ clients: [{ nom: 'TRAORÉ', prenom: 'Awa', tel: '76 12 34 56', adresse: 'Kayes Plateau' }], documents: [{ client: 'Awa Traoré', phone: '+22376123456' }, { client: 'Moussa Keita', phone: '66000111' }, { client: 'Moussa Keita', phone: '66000111' }, { client: 'Sans Numéro' }, { client: '' }] });
+  assert.equal(l.length, 3); assert.equal(l[0].complet, 'Awa TRAORÉ'); assert.equal(l[0].poids, 6); assert.equal(l[1].poids, 2);
+  assert.deepEqual(M.suggerer(l, 'tra').map(c => c.complet), ['Awa TRAORÉ']); assert.deepEqual(M.suggerer(l, 'mous').map(c => c.tel), ['66000111']);
+  assert.equal(M.suggerer(l, '6600')[0].complet, 'Moussa Keita'); assert.equal(M.suggerer(l, 'a').length, 0); assert.equal(M.suggerer(l, 'zzz').length, 0);
+});
