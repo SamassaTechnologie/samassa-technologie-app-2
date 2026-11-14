@@ -89,7 +89,7 @@
   .thank-you { font-size:13px; margin-top:18px; }
 }
 </style>
-<link rel="stylesheet" href="maj2026.css?v=1">
+<link rel="stylesheet" href="maj2026.css?v=2">
 </head>
 <body>
 
@@ -334,7 +334,7 @@
 <script src="doc-qr.js?v=3"></script>
 <script src="piece-id.js?v=1"></script>
 <script src="scanner.js?v=2"></script>
-<script src="ticket80.js?v=4"></script>
+<script src="ticket80.js?v=6"></script>
 <script>Ticket80.brancher({generer:'generateReceipt',partager:'shareWhatsApp',type:'Reçu',prefixe:'recu',lire:function(){
  var v=ST.v,it=(function(){var l=[],t=0;document.querySelectorAll('.item-row').forEach(function(r){var i=r.querySelectorAll('.item-inputs input'),q=parseFloat(i[1].value)||0,p=parseFloat(i[2].value)||0;if(!i[0].value.trim()&&!(q*p))return;t+=q*p;l.push({desc:i[0].value.trim(),qte:q,pu:p,total:q*p});});return{lignes:l,total:t};})(),pi=window.PieceID?PieceID.info(PieceID.typeCourant()):null,rdv=v('rdvDate');
  return{societe:{nom:v('companyName'),tel:v('companyPhone'),email:v('companyEmail'),adresse:'Grand Marché de Kayes, près du 1er arrondissement de la police, Rue Soundiata Keita — Kayes, Mali'},titre:'REÇU DE PAIEMENT',numero:v('receiptNumber'),date:ST.fmtDate(v('receiptDate')),_iso:v('receiptDate'),
@@ -386,6 +386,6 @@ if ("serviceWorker" in navigator) navigator.serviceWorker.register("service-work
 })();
 </script>
 <script src="app-moderne.js?v=1" defer></script>
-<script src="maj2026.js?v=1" defer></script>
+<script src="maj2026.js?v=2" defer></script>
 </body>
 </html>

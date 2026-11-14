@@ -386,3 +386,22 @@ test('maj 2026: téléphone malien, fusion des clients, suggestions', () => {
   assert.deepEqual(M.suggerer(l, 'tra').map(c => c.complet), ['Awa TRAORÉ']); assert.deepEqual(M.suggerer(l, 'mous').map(c => c.tel), ['66000111']);
   assert.equal(M.suggerer(l, '6600')[0].complet, 'Moussa Keita'); assert.equal(M.suggerer(l, 'a').length, 0); assert.equal(M.suggerer(l, 'zzz').length, 0);
 });
+
+test('ticket80 : téléphones et dates lisibles, logo, heure', () => {
+  global.window = {}; global.document = undefined;
+  const f = path.join(__dirname, '../ticket80.js'); delete require.cache[require.resolve(f)]; require(f);
+  const T = window.Ticket80;
+  assert.equal(T.telLisible('77291931 / 62970630'), '77 29 19 31 / 62 97 06 30'); assert.equal(T.telLisible('00223 77291931'), '77 29 19 31'); assert.equal(T.telLisible('+33 6 12 34 56 78'), '+33 6 12 34 56 78'); assert.equal(T.telLisible(''), '');
+  assert.equal(T.dateLisible('14/11/2026'), '14 novembre 2026'); assert.equal(T.dateLisible('2026-11-04'), '4 novembre 2026'); assert.equal(T.dateLisible('14 novembre 2026'), '14 novembre 2026');
+  const h = T.html(T.modele({ societe: { nom: 'S', tel: '77291931' }, logo: true, numero: 'R-1', date: '14/11/2026', heure: '09:05', tel: '76123456', lignes: [], total: 0 }));
+  assert.ok(h.includes('t-logo') && h.includes('Tél : 77 29 19 31') && h.includes('Date : 14 novembre 2026 à 09:05') && h.includes('Tél : 76 12 34 56'));
+  assert.ok(!T.html(T.modele({ societe: { nom: 'S' }, lignes: [], total: 0 })).includes('t-logo'));
+});
+
+test('maj 2026: raccourcis du tableau de bord selon l\'usage', () => {
+  global.window = global.window || {}; delete require.cache[require.resolve('../maj2026.js')]; require('../maj2026.js');
+  const R = global.window.Maj2026.raccourcis, dispo = ['recu.html', 'stock.html', 'clients.html', 'compta.html', 'recu_vente.html', 'x.html', 'y.html', 'z.html'];
+  assert.deepEqual(R({}, dispo, 4), ['recu.html', 'recu_vente.html', 'stock.html', 'clients.html']);
+  assert.deepEqual(R({ 'compta.html': 9, 'stock.html': 2, 'interdit.html': 50 }, dispo, 3), ['compta.html', 'stock.html', 'recu.html']);
+  assert.equal(R({}, [], 6).length, 0); assert.equal(R({}, dispo).length, 6);
+});

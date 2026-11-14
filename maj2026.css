@@ -27,6 +27,15 @@
   /* Le bandeau est déjà dans le flux : plus de grand vide entre lui et le contenu */
   .topbar + div:not(.layout), .topbar + main:not(.layout) { margin-top: 18px !important; }
 
+  /* Tableau de bord : raccourcis */
+  #mj-racc { background: #fff; border: 1px solid #E2E8F0; border-radius: 16px; padding: 12px 12px 14px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(10, 22, 40, .05); }
+  .mj-racc-t { font-weight: 800; font-size: 14px; margin: 2px 4px 10px; color: #0A1628; }
+  .mj-racc-t small { font-weight: 500; color: #64748B; font-size: 11px; margin-left: 6px; }
+  .mj-racc-g { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
+  @media (max-width: 900px) { .mj-racc-g { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  html[data-theme="dark"] #mj-racc { background: var(--card, #111C2B); border-color: var(--border, #24344A); }
+  html[data-theme="dark"] .mj-racc-t { color: var(--text, #E7EEF6); }
+
   /* Liste de suggestions de clients */
   .mj-sugg { position: absolute; z-index: 300; left: 0; right: 0; top: 100%; background: #fff; border: 1px solid #CBD5E1; border-radius: 10px; box-shadow: 0 10px 28px rgba(10, 22, 40, .18); max-height: 220px; overflow: auto; margin-top: 2px; }
   .mj-sugg button { display: block; width: 100%; text-align: left; border: 0; border-top: 1px solid #EEF2F7; background: none; padding: 10px 12px; font: inherit; font-size: 14px; cursor: pointer; color: #0A1628; }
@@ -57,6 +66,15 @@
   .form-panel > .actions .btn:nth-child(3n+2):last-child { grid-column: 1 / -1; }
   .form-panel > .actions .btn:nth-child(3n):last-child { grid-column: span 2; }
 
+  /* Aperçu des factures et devis : le tableau tient dans l'écran, colonne « Total » comprise */
+  .doc-inner .doc-table:not(.doc-table-mat) { display: table !important; width: 100% !important; table-layout: auto; white-space: normal !important; overflow: visible !important; }
+  .doc-inner .doc-table:not(.doc-table-mat) th, .doc-inner .doc-table:not(.doc-table-mat) td { white-space: normal !important; padding: 6px 4px !important; font-size: 10px !important; overflow-wrap: anywhere; vertical-align: top; }
+  .doc-inner .doc-table:not(.doc-table-mat) th:not(:first-child), .doc-inner .doc-table:not(.doc-table-mat) td:not(:first-child) { overflow-wrap: normal; white-space: nowrap !important; }
+  .doc-inner .doc-table:not(.doc-table-mat) td:last-child:not(:nth-child(-n+4)), .doc-inner .doc-table:not(.doc-table-mat) th:last-child:not(:nth-child(-n+4)) { white-space: normal !important; overflow-wrap: anywhere; }
+  .doc-inner .doc-table:not(.doc-table-mat) th { white-space: nowrap !important; overflow-wrap: normal !important; }
+  .doc-inner .doc-table-mat { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .mj-glisser { font-size: 11px; color: #64748B; text-align: right; margin: -10px 0 8px; }
+
   /* iPhone : un champ en dessous de 16 px déclenche un zoom automatique à chaque saisie */
   input:not([type=checkbox]):not([type=radio]):not([type=range]), select, textarea { font-size: 16px !important; }
   input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=file]), select { min-height: 44px; }
@@ -65,8 +83,19 @@
   .b, .chips button, .btn-hero, .tab, .st-b, .act button, .pri { min-height: 40px; }
   .act { row-gap: 8px; }
 
+  /* Tableau de bord : indicateurs compacts sur deux colonnes (moins de défilement avant les fonctions) */
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 10px !important; }
+  .kpi-grid .kpi { padding: 12px 12px 12px 14px !important; }
+  .kpi-grid .kpi .kpi-top { margin-bottom: 6px; }
+  .kpi-grid .kpi .kpi-icon { width: 34px; height: 34px; font-size: 17px; }
+  .kpi-grid .kpi .kpi-val { font-size: 20px !important; }
+  .kpi-grid .kpi .kpi-lbl { font-size: 10px; }
+  .kpi-grid .kpi .kpi-sub { font-size: 10.5px; }
+  .mj-racc-t small { display: block; margin: 2px 0 0; }
+
   /* Tableaux et graphiques larges : défilement dans leur cadre, pas de toute la page */
   table { max-width: 100%; }
   .a-panel, .bars { max-width: 100%; overflow-x: auto; }
   body { overflow-x: hidden; }
 }
+@media print { .mj-glisser, .mj-sugg, .mj-aide { display: none !important; } }

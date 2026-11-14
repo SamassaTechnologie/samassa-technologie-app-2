@@ -29,7 +29,15 @@
     return liste.map(function (c) { var nom = sansAccent(c.complet), inv = sansAccent(c.nom + ' ' + c.prenom); var r = nom.indexOf(s) === 0 || inv.indexOf(s) === 0 ? 3 : (nom.indexOf(s) > 0 ? 2 : (n.length >= 3 && c.tel.indexOf(n) > -1 ? 1 : 0)); return { c: c, r: r }; })
       .filter(function (x) { return x.r; }).sort(function (a, b) { return b.r - a.r || b.c.poids - a.c.poids; }).slice(0, max || 6).map(function (x) { return x.c; });
   }
-  root.Maj2026 = { formaterTel: formaterTel, telIncomplet: telIncomplet, fusionner: fusionner, suggerer: suggerer, tel8: tel8 };
+  /* Raccourcis du tableau de bord : les fonctions les plus utilisées d'abord, complétées par une liste par défaut */
+  var RACC_DEFAUT = ['recu.html', 'recu_vente.html', 'recu_cyber.html', 'photo-identite.html', 'stock.html', 'clients.html'];
+  function raccourcis(compteurs, disponibles, n) {
+    var dispo = {}; disponibles.forEach(function (h) { dispo[h] = 1; });
+    var tri = Object.keys(compteurs || {}).filter(function (h) { return dispo[h] && compteurs[h] > 0; }).sort(function (a, b) { return compteurs[b] - compteurs[a] || (a < b ? -1 : 1); });
+    RACC_DEFAUT.concat(disponibles).forEach(function (h) { if (dispo[h] && tri.indexOf(h) < 0) tri.push(h); });
+    return tri.slice(0, n || 6);
+  }
+  root.Maj2026 = { raccourcis: raccourcis, formaterTel: formaterTel, telIncomplet: telIncomplet, fusionner: fusionner, suggerer: suggerer, tel8: tel8 };
   if (typeof document === 'undefined') return;
 
   /* ---------- Champs ---------- */
@@ -93,9 +101,26 @@
     /* Les lignes ajoutées plus tard (articles, services…) reçoivent le même traitement */
     try { new MutationObserver(function (ms) { ms.forEach(function (m) { m.addedNodes.forEach(function (x) { if (x.nodeType === 1) { if (x.matches && x.matches('input, select, textarea')) preparer(x); parcourir(x); } }); }); PAIRES.forEach(brancher); }).observe(document.body, { childList: true, subtree: true }); } catch (e) {}
     window.addEventListener('storage', function () { cache = null; });
+    /* Tableau plus large que l'écran (facture matériel) : on le dit clairement */
+    var di = document.getElementById('docInner');
+    if (di) { try { new MutationObserver(function () { di.querySelectorAll('.doc-table-mat').forEach(function (t) { var prev = t.previousElementSibling, a = prev && prev.classList.contains('mj-glisser'); if (t.scrollWidth > t.clientWidth + 4) { if (!a) { var h = document.createElement('div'); h.className = 'mj-glisser'; h.textContent = '↔ Faites glisser le tableau pour voir toutes les colonnes'; t.parentNode.insertBefore(h, t); } } else if (a) prev.remove(); }); }).observe(di, { childList: true, subtree: true }); } catch (e) {} }
     /* Bouton de thème : rangé à droite du bandeau, avant le logo */
     var tb = document.querySelector('.topbar'), th = document.getElementById('theme-btn');
     if (tb && th && th.parentNode === tb) { var logo = tb.querySelector('.topbar-logo'); if (logo) tb.insertBefore(th, logo); else tb.appendChild(th); }
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  /* ---------- Tableau de bord : « Vos raccourcis » ---------- */
+  function tableauDeBord() {
+    var grille = document.querySelector('.kpi-grid'), tuiles = document.querySelectorAll('section.cat a.qa'); if (!grille || !tuiles.length) return;
+    var K = 'samassa_raccourcis', cpt = {}; try { cpt = JSON.parse(localStorage.getItem(K) || '{}') || {}; } catch (e) {}
+    document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a.qa'); if (!a) return; var h = a.getAttribute('href'); if (!h) return; cpt[h] = (cpt[h] || 0) + 1; try { localStorage.setItem(K, JSON.stringify(cpt)); } catch (x) {} });
+    function dessiner() {
+      var parHref = {}, dispo = []; tuiles.forEach(function (a) { var h = a.getAttribute('href'); if (a.dataset.cache === '1' || parHref[h]) return; parHref[h] = a; dispo.push(h); });
+      var choix = raccourcis(cpt, dispo, 6), z = document.getElementById('mj-racc'); if (!choix.length) { if (z) z.remove(); return; }
+      if (!z) { z = document.createElement('section'); z.id = 'mj-racc'; z.setAttribute('aria-label', 'Vos raccourcis'); grille.parentNode.insertBefore(z, grille); }
+      z.innerHTML = '<div class="mj-racc-t">⚡ Vos raccourcis <small>les fonctions que vous utilisez le plus</small></div><div class="mj-racc-g"></div>';
+      var g = z.querySelector('.mj-racc-g'); choix.forEach(function (h) { var c = parHref[h].cloneNode(true); c.removeAttribute('data-filtre'); c.style.display = ''; g.appendChild(c); });
+    }
+    dessiner(); setTimeout(dessiner, 1500);   /* après l'application des droits de l'utilisateur */
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { init(); tableauDeBord(); }); else { init(); tableauDeBord(); }
 })(typeof window !== 'undefined' ? window : globalThis);

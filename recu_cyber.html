@@ -63,7 +63,7 @@
 .qs-btn:hover { background: #E0E7FF; border-color: #6366F1; }
 .qs-label { font-size: 10px; font-weight: 700; color: #6366F1; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; margin-top: 4px; }
 </style>
-<link rel="stylesheet" href="maj2026.css?v=1">
+<link rel="stylesheet" href="maj2026.css?v=2">
 </head>
 <body>
 
@@ -279,7 +279,7 @@
 <script src="recu_cyber.js"></script>
 <script src="qrcode.min.js"></script>
 <script src="doc-qr.js?v=3"></script>
-<script src="ticket80.js?v=4"></script>
+<script src="ticket80.js?v=6"></script>
 <script>Ticket80.brancher({generer:'generateReceipt',partager:'shareWhatsApp',type:'Reçu cyber',prefixe:'recu-cyber',lire:function(){
  var v=ST.v,it=(function(){var l=[],t=0;document.querySelectorAll('.item-row').forEach(function(r){var i=r.querySelectorAll('.item-inputs input'),q=parseFloat(i[1].value)||0,p=parseFloat(i[2].value)||0;if(!i[0].value.trim()&&!(q*p))return;t+=q*p;l.push({desc:i[0].value.trim(),qte:q,pu:p,total:q*p});});return{lignes:l,total:t};})();
  return{societe:{nom:v('companyName'),tel:v('companyPhone'),email:v('companyEmail'),adresse:'Grand Marché de Kayes, près du 1er arrondissement de la police, Rue Soundiata Keita — Kayes, Mali'},titre:'REÇU CYBER',numero:v('receiptNumber'),date:ST.fmtDate(v('receiptDate')),_iso:v('receiptDate'),
@@ -306,6 +306,6 @@
 })();
 </script>
 <script src="app-moderne.js?v=1" defer></script>
-<script src="maj2026.js?v=1" defer></script>
+<script src="maj2026.js?v=2" defer></script>
 </body>
 </html>
